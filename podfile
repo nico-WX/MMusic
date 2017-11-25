@@ -1,0 +1,8 @@
+platform:ios,'11.0'
+
+target "MMusic" do
+
+pod 'MJExtension'
+pod 'SDWebImage'
+
+end
