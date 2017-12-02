@@ -6,12 +6,10 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
-@interface PlayParameters : NSObject
+@interface PlayParameters : MMObject
 @property(nonatomic, copy) NSString *identifier; //id
 @property(nonatomic, copy) NSString *kind;
 
-+(instancetype)playParametersWithDict:(NSDictionary*) dict;
--(instancetype)initWithDict:(NSDictionary*) dict;
 @end

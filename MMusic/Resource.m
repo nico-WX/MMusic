@@ -14,8 +14,8 @@
     return @{@"identifier":@"id"};
 }
 
-+(instancetype)resourceWithDict:(NSDictionary *)dict{
-    return [[self alloc] initWithDict:dict];
++(instancetype)instanceWithDict:(NSDictionary *)dict{
+    return [[self alloc ]initWithDict:dict];
 }
 -(instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [super init]) {

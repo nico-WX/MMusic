@@ -6,16 +6,14 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
 @class EditorialNotes;
-
-@interface Artist : NSObject
+/**艺人*/
+@interface Artist : MMObject
 @property(nonatomic, strong) NSArray<NSString*> *genreNames;
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *url;
 
--(instancetype)initWithDict:(NSDictionary*) dict;
-+(instancetype)artistWithDict:(NSDictionary*) dict;
 @end

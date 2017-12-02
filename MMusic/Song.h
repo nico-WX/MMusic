@@ -6,18 +6,23 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
 @class Artwork;
 @class EditorialNotes;
 @class PlayParameters;
 @class Preview;
 
-@interface Song : NSObject
+@interface Song : MMObject
+/**艺人名称*/
 @property(nonatomic, copy) NSString *artistName;
+/**作家*/
 @property(nonatomic, copy) NSString *composerName;
+/**内容评级*/
 @property(nonatomic, copy) NSString *contentRating;
+/**国际标准录音编码*/
 @property(nonatomic, copy) NSString *isrc;
+
 @property(nonatomic, copy) NSString *movementName;
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *releaseDate;
@@ -37,6 +42,4 @@
 @property(nonatomic, assign) int movementNumber;
 @property(nonatomic, assign) int trackNumber;
 
--(instancetype)initWithDict:(NSDictionary*) dict;
-+(instancetype)songWithDict:(NSDictionary*) dict;
 @end

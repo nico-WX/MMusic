@@ -6,9 +6,9 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
-@interface Artwork : NSObject
+@interface Artwork : MMObject
 @property(nonatomic,assign) NSInteger width;
 @property(nonatomic,assign) NSInteger height;
 
@@ -19,6 +19,4 @@
 @property(nonatomic, copy) NSString *textColor3;
 @property(nonatomic, copy) NSString *textColor4;
 
--(instancetype)initWithDict:(NSDictionary*) dict;
-+(instancetype)artworkWithDict:(NSDictionary*) dict;
 @end

@@ -11,9 +11,8 @@
 @implementation RecommendationsCell
 
 -(void)drawRect:(CGRect)rect{
-    Log(@">>>>>>>>>");
     [self.contentView setBackgroundColor:[UIColor brownColor]];
-    [self.layer setCornerRadius:20];
+    [self.layer setCornerRadius:10];
     [self.layer setMasksToBounds:YES];
 }
 @end

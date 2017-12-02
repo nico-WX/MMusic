@@ -7,21 +7,16 @@
 //
 
 #import "Chart.h"
-#import "Resource.h"
-
 #import <MJExtension.h>
 
 @implementation Chart
-+(NSDictionary *)mj_objectClassInArray{
-    return @{@"data":@"Resource"};
-}
 -(instancetype)initWithDict:(NSDictionary *)dict{
     if (self =[super init]) {
         [self mj_setKeyValues:dict];
     }
     return self;
 }
-+(instancetype)chartWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 @end

@@ -7,18 +7,15 @@
 //
 
 #import "Activity.h"
+#import "Artwork.h"
 #import "Playlist.h"
 #import "EditorialNotes.h"
-#import "Artwork.h"
 
 #import <MJExtension.h>
 
 @implementation Activity
 
-+(NSDictionary *)mj_objectClassInArray{
-    return @{@"playlists":@"Playlist"};
-}
-+(instancetype)activityWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 -(instancetype)initWithDict:(NSDictionary *)dict{
@@ -28,3 +25,5 @@
     return self;
 }
 @end
+
+

@@ -21,7 +21,7 @@
     }
     return self;
 }
-+(instancetype)albumWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 +(NSDictionary *)mj_objectClassInArray{

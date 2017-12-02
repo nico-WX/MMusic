@@ -1,15 +1,14 @@
 //
-//  Storefront.m
+//  Genre.m
 //  MMusic
 //
-//  Created by Magician on 2017/11/9.
+//  Created by Magician on 2017/12/1.
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "Storefront.h"
+#import "Genre.h"
 #import <MJExtension.h>
-
-@implementation Storefront
+@implementation Genre
 
 -(instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [super init]) {
@@ -20,5 +19,4 @@
 +(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
-
 @end

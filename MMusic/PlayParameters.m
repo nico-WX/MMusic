@@ -13,7 +13,7 @@
 +(NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{@"identifier":@"id"};
 }
-+(instancetype)playParametersWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 -(instancetype)initWithDict:(NSDictionary *)dict{

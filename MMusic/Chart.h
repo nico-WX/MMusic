@@ -7,12 +7,9 @@
 //
 
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
-
-@class Resource;
-
-@interface Chart : NSObject
+@interface Chart : MMObject
 /**排行榜名称*/
 @property(nonatomic, copy) NSString *name;
 /**排行榜Identifier*/
@@ -21,10 +18,7 @@
 @property(nonatomic, copy) NSString *href;
 /**(Optional) 排行榜下一页URL*/
 @property(nonatomic, copy) NSString *next;
-
 /**请求的类型 内容*/
-@property(nonatomic, strong) NSArray<Resource*> *data;;
+@property(nonatomic, strong) NSArray *data;;
 
--(instancetype)initWithDict:(NSDictionary*)  dict;
-+(instancetype)chartWithDict:(NSDictionary*) dict;
 @end

@@ -8,10 +8,9 @@
 
 #import "Song.h"
 #import "Artwork.h"
-//#import "Artwork.h";
-//#import "EditorialNotes.h";
-//#import "PlayParameters.h";
-//#import "Preview.h";
+#import "EditorialNotes.h"
+#import "PlayParameters.h"
+#import "Preview.h"
 
 #import <MJExtension.h>
 
@@ -24,13 +23,11 @@
     return self;
 }
 
-+(instancetype)songWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 +(NSDictionary *)mj_objectClassInArray{
-    return @{@"previews":@"Preview"};
+    return @{@"previews":@"Preview",@"genreNames":@"NSString"};
 }
-+(NSDictionary *)mj_replacedKeyFromPropertyName{
-    return @{};
-}
+
 @end

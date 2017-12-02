@@ -18,6 +18,7 @@ extern NSString *storefrontDefaultsKey;
 -(instancetype)init{
     if (self = [super init]) {
         _storefront = [AuthorizationManager shareAuthorizationManager].storefront;
+        //拼接前段路径
         _rootPath = @"https://api.music.apple.com";
         _rootPath = [_rootPath stringByAppendingPathComponent:@"v1"];
         _rootPath = [_rootPath stringByAppendingPathComponent:@"catalog"];
@@ -33,7 +34,6 @@ extern NSString *storefrontDefaultsKey;
     //设置开发者Token 请求头
     NSString *developerToken = [AuthorizationManager shareAuthorizationManager].developerToken;
     if (developerToken) {
-        //Log(@"%s >>developerToken:%@",__func__,developerToken);
         developerToken = [NSString stringWithFormat:@"Bearer %@",developerToken];
         [request setValue:developerToken forHTTPHeaderField:@"Authorization"];
     }
@@ -42,7 +42,6 @@ extern NSString *storefrontDefaultsKey;
     if (needSetupUserToken == YES) {
         NSString *userToken = [AuthorizationManager shareAuthorizationManager].userToken;
         if (userToken){ [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];}
-        //Log(@"%s >>userToken: %@",__func__,userToken);
     }
 }
 
@@ -70,7 +69,7 @@ extern NSString *storefrontDefaultsKey;
     return string;
 }
 
-/**解析类型 并返回字符串path*/
+/**解析类型 并返回subPath*/
 -(NSString *) resolveRequestType:(RequestType) type{
     NSString *string;
     switch (type) {
@@ -144,7 +143,7 @@ extern NSString *storefrontDefaultsKey;
     return string;
 }
 
-/**枚举参数转换到具体的字符串参数*/
+/**解析排行榜类型参数*/
 -(NSString*) resolveStringWithChartType:(ChartType) type{
     switch (type) {
         case ChartSongsType:
@@ -198,6 +197,5 @@ extern NSString *storefrontDefaultsKey;
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
 
-#pragma mark 个性化请求
 
 @end

@@ -11,7 +11,10 @@
 
 @implementation Playlist
 
-+(instancetype)playlistWithDict:(NSDictionary *)dict{
++(NSDictionary*)mj_replacedKeyFromPropertyName{
+    return @{@"desc":@"description"};
+}
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 -(instancetype)initWithDict:(NSDictionary *)dict{

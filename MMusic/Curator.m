@@ -20,7 +20,7 @@
     }
     return self;
 }
-+(instancetype)curatorWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 @end

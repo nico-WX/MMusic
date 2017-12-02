@@ -6,11 +6,6 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-//@class Artwork;
-//@class EditorialNotes;
-//@class PlayParameters;
-//@class Preview;
-
 #import "MusicVideo.h"
 #import "Artwork.h"
 #import "Preview.h"
@@ -26,7 +21,7 @@
     }
     return self;
 }
-+(instancetype)musicVideoWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 +(NSDictionary *)mj_objectClassInArray{

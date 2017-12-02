@@ -6,16 +6,10 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
-@interface Source: NSObject
-@property(nonatomic, copy)   NSString *parameter;
-@property(nonatomic, strong) NSDictionary  *pointer;
 
-- initWithDict:(NSDictionary*) dict;
-@end
-
-@interface Error : NSObject
+@interface Error : MMObject
 @property(nonatomic, copy) NSString *identifier ; //id
 @property(nonatomic, copy) NSString *about;
 @property(nonatomic, copy) NSString *status;
@@ -23,11 +17,7 @@
 @property(nonatomic, copy) NSString *title;
 @property(nonatomic, copy) NSString *detail;
 
-@property(nonatomic, strong) id  meta;
-@property(nonatomic, strong) Source  *source;
-
-
-- (instancetype)initWithDict:(NSDictionary*) dict;
-+ (instancetype)errorWithDict:(NSDictionary*) dict;
+@property(nonatomic, strong) NSDictionary *meta;
+@property(nonatomic, strong) NSDictionary *source;
 
 @end

@@ -6,30 +6,23 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
 @class Artwork;
 @class EditorialNotes;
 @class PlayParameters;
 
-typedef enum : NSUInteger {
-    user_shared,//user-shared
-    editorial,
-    external,
-    personal_mix,//personal-mix
-} PlaylistType;
-
-@interface Playlist : NSObject
+@interface Playlist : MMObject
 @property(nonatomic, copy) NSString *curatorName;
 @property(nonatomic, copy) NSString *url;
+@property(nonatomic, copy) NSString *playlistType;
+@property(nonatomic, copy) NSString *lastModifiedDate;
+@property(nonatomic, copy) NSString *name;
 
 @property(nonatomic, strong) Artwork *artwork;
 @property(nonatomic, strong) EditorialNotes *desc; //description
 @property(nonatomic, strong) PlayParameters *playParams;
 
-@property(nonatomic, assign) PlaylistType playlistType;
-
--(instancetype)initWithDict:(NSDictionary*) dict;
-+(instancetype)playlistWithDict:(NSDictionary*) dict;
 @end
+
 

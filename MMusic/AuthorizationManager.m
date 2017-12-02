@@ -9,11 +9,13 @@
 #import "AuthorizationManager.h"
 #import <StoreKit/StoreKit.h>
 
+/**Token缓存Key*/
 NSString *userTokenUserDefaultsKey  = @"userTokenUserDefaultsKey";
 NSString *developerTokenDefaultsKey = @"developerTokenDefaultsKey";
 NSString *storefrontDefaultsKey     = @"storefrontDefaultsKey";
 
-NSString *developerTokenExpireNotification  = @"developerTokenExpire";
+/**开发者Token过期通知*/
+NSString * const developerTokenExpireNotification  = @"developerTokenExpire";
 
 @interface AuthorizationManager()
 @end
@@ -21,6 +23,7 @@ NSString *developerTokenExpireNotification  = @"developerTokenExpire";
 static AuthorizationManager *_instance;
 @implementation AuthorizationManager
 
+# pragma mark 初始化及单例实现
 -(instancetype)init{
     if (self = [super init]) {
         //开发者Token 过期消息 (UserToken不会过期) 删除旧的developerToken  并请求一个新的
@@ -81,12 +84,12 @@ static AuthorizationManager *_instance;
 }
 #endif
 
-
+#pragma mark 懒加载
 //检查developerToken
 -(NSString *)developerToken{
     if (!_developerToken) {
         _developerToken = [[NSUserDefaults standardUserDefaults] objectForKey:developerTokenDefaultsKey];
-        _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTA5MDk2NTI3LCJleHAiOjE1MTE2ODg1Mjd9.Jx4E2hUbZGMAqwlre23l3o0iXBs3Epp61JQTyNSqdfUkl0j_VdHeXl3TDi05kRMN1eQKgUeteUZYv1OIVZMqow";
+        _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTExODgyNjU5LCJleHAiOjE1Mjc0MzQ2NTl9.fbtthWV4K0kUedKa55CYN3y02SsrzwZLtTPhLfqQhYtovw-b5uk7ab-3O1YKQ1TtXn68Wdtv6TOUhw164Lv1hQ";
         if (!_developerToken) {
             [self requestDeveloperToken];
         }
@@ -113,9 +116,12 @@ static AuthorizationManager *_instance;
     return _storefront;
 }
 
+#pragma mark 从网络请求token
+/**请求开发者Token 并缓存在默认设置*/
 - (void)requestDeveloperToken{
     __block NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:developerTokenDefaultsKey];
     if (!token) {
+#warning DeveloperTokenURL no set!
         NSString *urlStr = @"";
         NSURL *url = [NSURL URLWithString:urlStr];
         [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -128,6 +134,8 @@ static AuthorizationManager *_instance;
                     [[NSUserDefaults standardUserDefaults] setObject:token forKey:developerTokenDefaultsKey];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                 }
+            }else{
+                Log(@"Error: %@, %s",error,__FILE__);
             }
         }] resume];
     }
@@ -149,7 +157,6 @@ static AuthorizationManager *_instance;
 
             [controller requestCapabilitiesWithCompletionHandler:^(SKCloudServiceCapability capabilities, NSError * _Nullable error) {
                // Log(@">>>>>>>>%d error:%@",capabilities,error);
-
                 switch (capabilities) {
                     case SKCloudServiceCapabilityNone:
                         Log(@"SKCloudServiceCapabilityNone");
@@ -162,7 +169,6 @@ static AuthorizationManager *_instance;
                         break;
                     case SKCloudServiceCapabilityMusicCatalogSubscriptionEligible:
                         Log(@"SKCloudServiceCapabilityMusicCatalogSubscriptionEligible");
-
                         break;
 
                     default:

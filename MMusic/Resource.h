@@ -6,10 +6,10 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-@class Relationship;
+#import "MMObject.h"
 
-@interface Resource : NSObject
+/**大体的资源对象,详细对象在attributes中*/
+@interface Resource : MMObject
 /**资源id*/
 @property(nonatomic, copy) NSString *identifier;  // id
 /**资源类型*/
@@ -19,12 +19,10 @@
 
 /**具体的资源*/
 @property(nonatomic, strong) NSDictionary *attributes;
-/**关于请求或者响应的后台参数*/
+/**(可选)关于请求或者响应的后台参数*/
 @property(nonatomic, strong) NSDictionary *meta;
 
 /**有关系的资源*/
-@property(nonatomic, strong) Relationship *relationships;
+@property(nonatomic, strong) NSDictionary *relationships;
 
--(instancetype)initWithDict:(NSDictionary*) dict;
-+(instancetype)resourceWithDict:(NSDictionary*) dict;
 @end

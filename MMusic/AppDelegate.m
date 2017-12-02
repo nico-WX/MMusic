@@ -9,14 +9,15 @@
 #import <StoreKit/StoreKit.h>
 
 #import "AppDelegate.h"
-#import "BrowseCollectionViewController.h"
 #import "BrowseNavigationController.h"
 #import "BrowseViewController.h"
 #import "MyMusicViewController.h"
-#import "AuthorizationManager.h"
 
+#import "AuthorizationManager.h" 
 #import "RequestFactory.h"
 #import "PersonalizedRequestFactory.h"
+
+#import "NSObject+Serialization.h"
 
 extern NSString *userTokenUserDefaultsKey;
 @interface AppDelegate ()
@@ -33,25 +34,7 @@ extern NSString *userTokenUserDefaultsKey;
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.auth = [AuthorizationManager shareAuthorizationManager];
 
-    {
-    RequestFactory *requestFac = [[RequestFactory alloc] init];
-    PersonalizedRequestFactory *personal = [[PersonalizedRequestFactory alloc] init];
-//    NSArray *arr = @[@"203709340",@"201281527"];
-//    NSURLRequest *request = [requestFac createRequestWithType:RequestMultipleSongType resourceIds:arr];
-//    NSURLRequest *request = [requestFac createRequestWithType:RequestGenresType resourceIds:@[@"35"]];
-//    NSURLRequest *request = [requestFac createSearchHintsWithTerm:@"星"];
-    NSURLRequest *request = [personal createRequestWithType:PersonalizedMultipleRecommendationType resourceIds:@[@"6",@"5",@"2"]];
-    Log(@"%@",request.URL.absoluteString);
-    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (data) {
-            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            Log(@"%@",dict);
-        }else if(error){
-            Log(@"Error:%@",error);
-        }
 
-    }] resume];
-    }
 
     //我的音乐
     MyMusicViewController   *musicCtr = [[MyMusicViewController alloc] initWithStyle:UITableViewStylePlain];

@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+
 /**请求类型*/
 typedef NS_OPTIONS(NSUInteger, RequestType){
     /**单张专辑*/
@@ -53,37 +54,32 @@ typedef NS_OPTIONS(NSUInteger, RequestType){
     RequestMultipleGenresType
 
 };
+
 /**排行榜类型*/
 typedef NS_OPTIONS(NSUInteger, ChartType){
+    /**歌曲排行榜*/
     ChartSongsType,
+    /**专辑排行榜*/
     ChartAlbumsType,
+    /**音乐视频排行榜*/
     ChartMusicVideosType
 };
+
 
 /**普通请求工厂类*/
 @interface RequestFactory : NSObject
 /**根路径*/
 @property(nonatomic, copy) NSString *rootPath;
 /**当前用户商店代码*/
-@property(nonatomic, strong) NSString *storefront;
+@property(nonatomic, copy) NSString *storefront;
 
-/**一般请求*/
--(instancetype)init;
-
-/**
- 设置请求头信息
- @param request 请求对象
- @param needSetupUserToken 指定YES  设置User-Music-Token 请求头参数 开启个性化请求
- */
--(void)setupAuthorizationWithRequest:(NSMutableURLRequest*) request setupMusicUserToken:(BOOL)needSetupUserToken;
-/**(一般请求)请求体创建*/
+/**(一般请求)请求*/
 -(NSURLRequest*) createRequestWithType:(RequestType)type resourceIds:(NSArray<NSString*>*) ids;
-/**排行榜请求体创建*/
+/**排行榜请求*/
 -(NSURLRequest*) createChartWithChartType:(ChartType) type;
-/**搜索*/
+/**搜索请求*/
 -(NSURLRequest*) createSearchWithText:(NSString*) searchText;
 /**通过文本获取搜索历史*/
 -(NSURLRequest*) createSearchHintsWithTerm:(NSString*) term;
-
 
  @end

@@ -6,20 +6,23 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
 @class Artwork;
-@class EditorialNotes;
 @class Playlist;
+@class EditorialNotes;
 
-@interface Activity : NSObject
 
+/**活动*/
+@interface Activity : MMObject
+//属性
+/**活动海报*/
 @property(nonatomic, strong) Artwork        *artwork;
+/**在iTunes Store上的注释*/
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
+/**本地活动名称*/
 @property(nonatomic, copy) NSString *name;
+/**iTuens Store URL*/
 @property(nonatomic, copy) NSString *url;
-@property(nonatomic, strong) NSArray<Playlist*> *playlists;
-
--(instancetype)initWithDict:(NSDictionary*) dict;
-+(instancetype)activityWithDict:(NSDictionary*) dict;
 @end
+

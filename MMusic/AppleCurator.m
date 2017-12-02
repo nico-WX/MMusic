@@ -17,10 +17,10 @@
 #import <MJExtension.h>
 
 @implementation AppleCurator
-
-+(instancetype)appleCuratorWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
+
 -(instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [super init]) {
         [self mj_setKeyValues:dict];

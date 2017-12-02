@@ -6,18 +6,15 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
 @class Artwork;
 @class EditorialNotes;
 
-@interface Curator : NSObject
+@interface Curator : MMObject
 @property(nonatomic, strong) Artwork *artwork;
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *url;
 
-
--(instancetype)initWithDict:(NSDictionary*) dict;
-+(instancetype)curatorWithDict:(NSDictionary*) dict;
 @end

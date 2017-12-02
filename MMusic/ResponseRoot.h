@@ -6,10 +6,10 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 @class Resource;
 
-@interface ResponseRoot : NSObject
+@interface ResponseRoot : MMObject
 @property(nonatomic, copy) NSString  *next;
 @property(nonatomic, copy) NSString  *href;
 
@@ -19,6 +19,4 @@
 @property(nonatomic, strong) NSDictionary *results;
 @property(nonatomic, strong) NSDictionary *meta;
 
--(instancetype)initWithDict:(NSDictionary*) dict;
-+(instancetype)responseRootWithDict:(NSDictionary*) dict;
 @end

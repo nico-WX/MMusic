@@ -6,14 +6,13 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
-@interface Storefront : NSObject
+@interface Storefront : MMObject
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *defaultLanguageTag;
 
 @property(nonatomic, strong) NSArray<NSString*> *supportedLanguageTags;
-
 @property(nonatomic, strong) NSNumber *storefrontId;
 
 @end

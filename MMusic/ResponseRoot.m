@@ -16,7 +16,7 @@
     return @{@"data":@"Resource"};
 }
 
-+(instancetype)responseRootWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 -(instancetype)initWithDict:(NSDictionary *)dict{

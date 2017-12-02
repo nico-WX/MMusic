@@ -6,16 +6,13 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
-@interface Relationship : NSObject
+@interface Relationship : MMObject
 
 @property(nonatomic, copy) NSString *href;
 @property(nonatomic, copy) NSString *next;
-
 @property(nonatomic, strong) NSArray *data;
 @property(nonatomic, strong) NSDictionary *meta;
 
-+(instancetype)relationshipWithDict:(NSDictionary*) dict;
--(instancetype)initWithDict:(NSDictionary*) dict;
 @end

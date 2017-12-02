@@ -6,12 +6,10 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
-@interface EditorialNotes : NSObject
+@interface EditorialNotes : MMObject
 @property(nonatomic, copy) NSString *standard;
 @property(nonatomic, copy) NSString *shortNotes; //short
 
--(instancetype)initWithDict:(NSDictionary*) dict;
-+(instancetype)editorialNotesWithDict:(NSDictionary*) dict;
 @end

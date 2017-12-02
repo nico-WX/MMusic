@@ -17,7 +17,7 @@
     }
     return self;
 }
-+(instancetype)previewWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 @end

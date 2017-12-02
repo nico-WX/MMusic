@@ -29,7 +29,7 @@
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:rect];
     [self.contentView addSubview:imageView];
     self.imageView = imageView;
-    Song *song = [Song songWithDict:self.resource.attributes];
+    Song *song = [Song instanceWithDict:self.resource.attributes];
     NSString *withString = [NSString stringWithFormat:@"460x460"]; //@"%dx%d",(int)rect.size.width,(int)rect.size.width];
 
     NSString *urlString = [NSString stringWithString:song.artwork.url];

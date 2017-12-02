@@ -19,7 +19,7 @@
     }
     return self;
 }
-+(instancetype)artistWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 +(NSDictionary *)mj_objectClassInArray{

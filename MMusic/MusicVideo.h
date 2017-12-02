@@ -6,14 +6,14 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
 @class Artwork;
 @class EditorialNotes;
 @class PlayParameters;
 @class Preview;
 
-@interface MusicVideo : NSObject
+@interface MusicVideo : MMObject
 @property(nonatomic, copy) NSString *artistName;
 @property(nonatomic, copy) NSString *contentRating;
 @property(nonatomic, copy) NSString *isrc;
@@ -31,8 +31,5 @@
 
 @property(nonatomic, strong) NSNumber *durationInMillis;
 @property(nonatomic, strong) NSNumber *trackNumber;
-
--(instancetype)initWithDict:(NSDictionary*) dict;
-+(instancetype)musicVideoWithDict:(NSDictionary*) dict;
 
 @end

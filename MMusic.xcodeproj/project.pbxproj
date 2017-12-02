@@ -12,6 +12,9 @@
 		3B4806641FC6D49E009035CD /* RecommendationsCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4806631FC6D49E009035CD /* RecommendationsCollectionViewController.m */; };
 		3B48066D1FC805C8009035CD /* RecommendationsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B48066C1FC805C8009035CD /* RecommendationsCell.m */; };
 		3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */; };
+		3B5371E21FCE9235009AFE47 /* NSObject+Serialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E11FCE9235009AFE47 /* NSObject+Serialization.m */; };
+		3B5371E51FD148B6009AFE47 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E41FD148B6009AFE47 /* Genre.m */; };
+		3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E71FD2BC60009AFE47 /* MMObject.m */; };
 		3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA86B1FB04B5700720085 /* AppDelegate.m */; };
 		3B9AA8721FB04B5700720085 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B9AA8701FB04B5700720085 /* Main.storyboard */; };
 		3B9AA8741FB04B5700720085 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9AA8731FB04B5700720085 /* Assets.xcassets */; };
@@ -58,6 +61,12 @@
 		3B48066C1FC805C8009035CD /* RecommendationsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RecommendationsCell.m; sourceTree = "<group>"; };
 		3B4806741FC96585009035CD /* PersonalizedRequestFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersonalizedRequestFactory.h; sourceTree = "<group>"; };
 		3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PersonalizedRequestFactory.m; sourceTree = "<group>"; };
+		3B5371E01FCE9235009AFE47 /* NSObject+Serialization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+Serialization.h"; sourceTree = "<group>"; };
+		3B5371E11FCE9235009AFE47 /* NSObject+Serialization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Serialization.m"; sourceTree = "<group>"; };
+		3B5371E31FD148B6009AFE47 /* Genre.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Genre.h; sourceTree = "<group>"; };
+		3B5371E41FD148B6009AFE47 /* Genre.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Genre.m; sourceTree = "<group>"; };
+		3B5371E61FD2BC60009AFE47 /* MMObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMObject.h; sourceTree = "<group>"; };
+		3B5371E71FD2BC60009AFE47 /* MMObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMObject.m; sourceTree = "<group>"; };
 		3B9AA8671FB04B5700720085 /* MMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B9AA86A1FB04B5700720085 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3B9AA86B1FB04B5700720085 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -197,6 +206,8 @@
 				3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */,
 				3B9AA9141FB588AF00720085 /* AuthorizationManager.h */,
 				3B9AA9151FB588AF00720085 /* AuthorizationManager.m */,
+				3B5371E01FCE9235009AFE47 /* NSObject+Serialization.h */,
+				3B5371E11FCE9235009AFE47 /* NSObject+Serialization.m */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -297,6 +308,8 @@
 				3B9AA8EE1FB46F9300720085 /* Chart.m */,
 				3B9AA8F01FB4708E00720085 /* Curator.h */,
 				3B9AA8F11FB4708E00720085 /* Curator.m */,
+				3B5371E31FD148B6009AFE47 /* Genre.h */,
+				3B5371E41FD148B6009AFE47 /* Genre.m */,
 				3B9AA8F31FB4719A00720085 /* MusicVideo.h */,
 				3B9AA8F41FB4719A00720085 /* MusicVideo.m */,
 				3B9AA8F61FB4759F00720085 /* EditorialNotes.h */,
@@ -315,6 +328,8 @@
 				3B9AA9091FB47D6B00720085 /* Station.m */,
 				3B9AA90B1FB47E0700720085 /* Storefront.h */,
 				3B9AA90C1FB47E0700720085 /* Storefront.m */,
+				3B5371E61FD2BC60009AFE47 /* MMObject.h */,
+				3B5371E71FD2BC60009AFE47 /* MMObject.m */,
 			);
 			name = "Resource Object";
 			sourceTree = "<group>";
@@ -471,17 +486,20 @@
 				3B9AA8DB1FB4535400720085 /* Error.m in Sources */,
 				3B9AA8D81FB452FF00720085 /* ResponseRoot.m in Sources */,
 				3B9AA8D71FB452FF00720085 /* Resource.m in Sources */,
+				3B5371E21FCE9235009AFE47 /* NSObject+Serialization.m in Sources */,
 				3B9AA8E01FB461CD00720085 /* Activity.m in Sources */,
 				3B9AA8D61FB452FF00720085 /* Relationship.m in Sources */,
 				3B9AA8E31FB463E800720085 /* Album.m in Sources */,
 				3B9AA9011FB479B700720085 /* Preview.m in Sources */,
 				3B9AA90A1FB47D6B00720085 /* Station.m in Sources */,
+				3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */,
 				3B9AA9041FB47A6C00720085 /* Recommendation.m in Sources */,
 				3B9AA8EF1FB46F9300720085 /* Chart.m in Sources */,
 				3B9AA8FB1FB4769500720085 /* Playlist.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
 				3B9AA90D1FB47E0700720085 /* Storefront.m in Sources */,
 				3BCA78451FBAFADC0099F0BB /* BrowseCollectionViewCell.m in Sources */,
+				3B5371E51FD148B6009AFE47 /* Genre.m in Sources */,
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
 				3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */,
 				3B9AA8AB1FB441C700720085 /* BrowseCollectionViewController.m in Sources */,

@@ -17,7 +17,7 @@
     }
     return self;
 }
-+(instancetype)artworkWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 @end

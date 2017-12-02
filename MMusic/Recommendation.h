@@ -6,34 +6,21 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "MMObject.h"
 
-@class Resource;
-
-@interface Relationships :NSObject
-@property(nonatomic, strong) NSArray<Resource*> *contents;
-@property(nonatomic, strong) NSArray<Resource*> *recommendations;
-
-@end
-
-@interface Attributes : NSObject
-@property(nonatomic, assign) Boolean isGroupRecommendation;
-@property(nonatomic, strong) id title;
-@property(nonatomic, strong) id reason;
-
-@property(nonatomic, strong) NSArray<NSString*> *resourceTypes;
-@property(nonatomic, copy) NSString *nextUpdateDate;
-
-@end
-
-@interface Recommendation : NSObject
-@property(nonatomic, copy) NSString *identifier; //id
+@interface Recommendation : MMObject
+/**推荐ID*/
+@property(nonatomic, copy) NSString *identifier;
+/**下一页*/
 @property(nonatomic, copy) NSString *next;
+/**推荐URL*/
 @property(nonatomic, copy) NSString *href;
+/**value always “personal-recommendation”*/
 @property(nonatomic, copy) NSString *type;
 
-@property(nonatomic, strong) Relationships *relationships;
-
-@property(nonatomic, strong) Attributes *attributes;
+/**相关的*/
+@property(nonatomic, strong) NSDictionary *relationships;
+/**推荐属性*/
+@property(nonatomic, strong) NSDictionary *attributes;
 
 @end

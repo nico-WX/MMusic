@@ -1,24 +1,22 @@
 //
-//  Storefront.m
+//  MMObject.m
 //  MMusic
 //
-//  Created by Magician on 2017/11/9.
+//  Created by Magician on 2017/12/2.
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "Storefront.h"
-#import <MJExtension.h>
+#import "MMObject.h"
 
-@implementation Storefront
+@implementation MMObject
 
 -(instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [super init]) {
-        [self mj_setKeyValues:dict];
+
     }
     return self;
 }
 +(instancetype)instanceWithDict:(NSDictionary *)dict{
-    return [[self alloc] initWithDict:dict];
+    return [[self alloc]initWithDict:dict];
 }
-
 @end

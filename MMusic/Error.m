@@ -12,9 +12,9 @@
 @implementation Error
 
 +(NSDictionary *)mj_replacedKeyFromPropertyName{
-    return @{@"ID":@"id"};
+    return @{@"identifier":@"id"};
 }
-+ (instancetype)errorWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 
@@ -25,14 +25,6 @@
     return self;
 }
 
-
 @end
 
-@implementation Source
--(id)initWithDict:(NSDictionary *)dict{
-    if (self = [super init]) {
-        [self mj_setKeyValues:dict];
-    }
-    return self;
-}
-@end
+

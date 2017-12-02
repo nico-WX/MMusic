@@ -14,7 +14,7 @@
 +(NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{@"shortNotes":@"short"};
 }
-+(instancetype)editorialNotesWithDict:(NSDictionary *)dict{
++(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
 }
 -(instancetype)initWithDict:(NSDictionary *)dict{
