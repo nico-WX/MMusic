@@ -10,6 +10,9 @@
 #import "AuthorizationManager.h"
 
 @implementation PersonalizedRequestFactory
++(instancetype)personalizedRequestFactory{
+    return [[self alloc] init];
+}
 -(instancetype)init{
     if (self = [super init]) {
         _rootPath = @"https://api.music.apple.com";

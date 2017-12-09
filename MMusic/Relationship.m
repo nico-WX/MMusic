@@ -12,8 +12,6 @@
 @implementation Relationship
 -(instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [super init]) {
-        dict = [dict objectForKey:@"contents"];
-        Log(@"Dict: %@",dict);
         [self mj_setKeyValues:dict];
     }
     return self;

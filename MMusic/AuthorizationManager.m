@@ -16,6 +16,7 @@ NSString *storefrontDefaultsKey     = @"storefrontDefaultsKey";
 
 /**开发者Token过期通知*/
 NSString * const developerTokenExpireNotification  = @"developerTokenExpire";
+NSString * const userAuthorizedNotification        = @"userAuthorized";
 
 @interface AuthorizationManager()
 @end
@@ -145,6 +146,7 @@ static AuthorizationManager *_instance;
     [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
         SKCloudServiceController *controller = [[SKCloudServiceController  alloc] init];
         if (status == SKCloudServiceAuthorizationStatusAuthorized) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:userAuthorizedNotification object:nil];
             //请求userToken 并缓存到默认设置
             [controller requestUserTokenForDeveloperToken:self.developerToken completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
                 if (userToken) {
@@ -154,27 +156,7 @@ static AuthorizationManager *_instance;
                     [userDef synchronize];
                 }
             }];
-
-            [controller requestCapabilitiesWithCompletionHandler:^(SKCloudServiceCapability capabilities, NSError * _Nullable error) {
-               // Log(@">>>>>>>>%d error:%@",capabilities,error);
-                switch (capabilities) {
-                    case SKCloudServiceCapabilityNone:
-                        Log(@"SKCloudServiceCapabilityNone");
-                        break;
-                    case SKCloudServiceCapabilityMusicCatalogPlayback:
-                        Log(@"SKCloudServiceCapabilityMusicCatalogPlayback");
-                        break;
-                    case SKCloudServiceCapabilityAddToCloudMusicLibrary:
-                        Log(@"SKCloudServiceCapabilityAddToCloudMusicLibrary");
-                        break;
-                    case SKCloudServiceCapabilityMusicCatalogSubscriptionEligible:
-                        Log(@"SKCloudServiceCapabilityMusicCatalogSubscriptionEligible");
-                        break;
-
-                    default:
-                        break;
-                }
-            }];
+            
         }
     }];
 }

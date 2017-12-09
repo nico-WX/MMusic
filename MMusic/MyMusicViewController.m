@@ -71,8 +71,6 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
     }
     // Configure the cell...
 
-
-    // [cell.detailTextLabel setText:detailStr];
     
     return cell;
 }

@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Recommendation.h"
+#import "Resource.h"
 
 @interface RecommendationsCell : UICollectionViewCell
-
+@property(nonatomic, strong) Recommendation *recommendation;
 @end

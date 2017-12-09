@@ -7,20 +7,43 @@
 //
 
 #import "MMObject.h"
+@class Resource;
+@class Contents;
+@class Recommendations;
+@class Recommendation;
 
+/**推荐 的Attributes 属性*/
+@interface Attributes : MMObject
+@property(nonatomic, assign) BOOL isGroupRecommendation;
+@property(nonatomic, strong) NSDictionary *title;
+@property(nonatomic, strong) NSDictionary *reason;
+@property(nonatomic, strong) NSArray<NSString*> *resourceTypes;
+@property(nonatomic, copy)   NSString *nextUpdateDate;
+@end
+
+/**推荐的关联属性*/
+@interface Relationships : MMObject
+@property(nonatomic, strong) Contents *contents;
+@property(nonatomic, strong) Recommendations *recommendations;
+@end
+
+/**关联非组类型内容*/
+@interface Contents : MMObject
+@property(nonatomic, strong) NSArray<Resource*> *data;
+@end
+/**关联组类型内容 主内容数组内包含着推荐集合*/
+@interface Recommendations : MMObject
+@property(nonatomic, strong) NSArray<Recommendation*> *data;
+@end
+
+/**推荐*/
 @interface Recommendation : MMObject
-/**推荐ID*/
 @property(nonatomic, copy) NSString *identifier;
-/**下一页*/
 @property(nonatomic, copy) NSString *next;
-/**推荐URL*/
 @property(nonatomic, copy) NSString *href;
 /**value always “personal-recommendation”*/
 @property(nonatomic, copy) NSString *type;
-
-/**相关的*/
-@property(nonatomic, strong) NSDictionary *relationships;
-/**推荐属性*/
-@property(nonatomic, strong) NSDictionary *attributes;
+@property(nonatomic, strong) Relationships *relationships;
+@property(nonatomic, strong) Attributes *attributes;
 
 @end

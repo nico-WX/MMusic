@@ -8,7 +8,6 @@
 
 #import "MMObject.h"
 
-
 @interface Error : MMObject
 @property(nonatomic, copy) NSString *identifier ; //id
 @property(nonatomic, copy) NSString *about;
@@ -19,5 +18,4 @@
 
 @property(nonatomic, strong) NSDictionary *meta;
 @property(nonatomic, strong) NSDictionary *source;
-
 @end

@@ -14,6 +14,9 @@ extern NSString *developerTokenDefaultsKey;
 extern NSString *storefrontDefaultsKey;
 
 @implementation RequestFactory
++(instancetype)requestFactory{
+    return [[self alloc] init];
+}
 /**一般请求*/
 -(instancetype)init{
     if (self = [super init]) {
@@ -196,6 +199,10 @@ extern NSString *storefrontDefaultsKey;
     path = [path stringByAppendingString:term];
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
-
+-(NSURLRequest *)createRequestWithHerf:(NSString *)herf{
+    NSString *path = @"https://api.music.apple.com";
+    path = [path stringByAppendingPathComponent:herf];
+    return [self createRequestWithURLString:path setupUserToken:NO];
+}
 
 @end

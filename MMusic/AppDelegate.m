@@ -32,9 +32,12 @@ extern NSString *userTokenUserDefaultsKey;
     // Override point for customization after application launch.
     //实例化主窗口
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.auth = [AuthorizationManager shareAuthorizationManager];
 
-
+    [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
+        if (status == SKCloudServiceAuthorizationStatusAuthorized) {
+            self.auth = [AuthorizationManager shareAuthorizationManager];
+        }
+    }];
 
     //我的音乐
     MyMusicViewController   *musicCtr = [[MyMusicViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -45,7 +48,7 @@ extern NSString *userTokenUserDefaultsKey;
     //浏览
     BrowseViewController *bVC = [[BrowseViewController alloc] init];
     [bVC setTitle:@"浏览"];
-    BrowseNavigationController      *bnavCtr = [[BrowseNavigationController alloc] initWithRootViewController:bVC];
+    BrowseNavigationController *bnavCtr = [[BrowseNavigationController alloc] initWithRootViewController:bVC];
     [barCtr addChildViewController:bnavCtr];
     [barCtr setSelectedIndex:1];
     //添加并显示(不隐藏)
@@ -53,7 +56,6 @@ extern NSString *userTokenUserDefaultsKey;
     [self.window makeKeyAndVisible];
     return YES;
 }
-
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

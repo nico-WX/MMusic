@@ -9,10 +9,10 @@
 #import "BrowseViewController.h"
 #import "BrowseCollectionViewController.h"
 #import "BrowseCollectionFlowLayout.h"
-#import "RecommendationsCollectionViewController.h"
+#import "MMRecommendationViewController.h"
 
 @interface BrowseViewController ()
-@property(nonatomic, strong) RecommendationsCollectionViewController *recommendationCtr;
+@property(nonatomic, strong) MMRecommendationViewController *recommendationCtr;
 @end
 
 @implementation BrowseViewController
@@ -20,7 +20,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self.view setBackgroundColor:[UIColor brownColor]];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
 
     [self setupTodayRecommendations];
 }
@@ -34,9 +34,10 @@
     CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);
 
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    self.recommendationCtr = [[RecommendationsCollectionViewController alloc] initWithCollectionViewLayout:layout];
+    self.recommendationCtr = [[MMRecommendationViewController alloc] initWithCollectionViewLayout:layout];
     [self.recommendationCtr.collectionView setFrame:CGRectMake(x, y, width,height)];
     [self.view addSubview:self.recommendationCtr.collectionView];
+    [self addChildViewController:self.recommendationCtr];
 }
 
 - (void)didReceiveMemoryWarning {

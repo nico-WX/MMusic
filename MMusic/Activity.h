@@ -9,15 +9,13 @@
 #import "MMObject.h"
 
 @class Artwork;
-@class Playlist;
 @class EditorialNotes;
-
 
 /**活动*/
 @interface Activity : MMObject
 //属性
 /**活动海报*/
-@property(nonatomic, strong) Artwork        *artwork;
+@property(nonatomic, strong) Artwork *artwork;
 /**在iTunes Store上的注释*/
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
 /**本地活动名称*/

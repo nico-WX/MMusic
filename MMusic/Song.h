@@ -31,7 +31,7 @@
 
 @property(nonatomic, strong) Artwork *artwork;
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
-@property(nonatomic, strong) PlayParameters *playParams;
+@property(nonatomic, strong) NSDictionary *playParams;
 
 @property(nonatomic, strong) NSNumber *durationInMillis;
 @property(nonatomic, strong) NSArray<NSString*> *genreNames;

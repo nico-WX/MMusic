@@ -14,7 +14,7 @@
 
 @implementation Station
 -(instancetype)initWithDict:(NSDictionary *)dict{
-    if (self = [super init]) {
+    if (self = [super initWithDict:dict]) {
         [self mj_setKeyValues:dict];
     }
     return self;

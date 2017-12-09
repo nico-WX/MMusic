@@ -78,6 +78,8 @@ typedef NS_OPTIONS(NSUInteger, ManageRatingsType){
 /**根路径*/
 @property(nonatomic,copy) NSString *rootPath;
 
+//便捷方法
++(instancetype) personalizedRequestFactory;
 
 #pragma mark instance method
 /**创建个性化请求, 注意:(单张推荐和多张推荐需要在ids中提供Identifier,其他请求设置空数组)*/
