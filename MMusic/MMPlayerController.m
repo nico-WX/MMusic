@@ -21,13 +21,7 @@ static MMPlayerController *_instance;
     if (!_player) {
         _player = [MPMusicPlayerController systemMusicPlayer];
     }
-    NSMutableArray *temp = [NSMutableArray array];
-    for (NSDictionary *dict in _parameters ) {
-        MPMusicPlayerPlayParameters *parameter = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:dict];
-        [temp addObject:parameter];
-    }
-    MPMusicPlayerPlayParametersQueueDescriptor *des = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:temp];
-    [_player setQueueWithDescriptor:des];
+    [_player setRepeatMode:MPMusicRepeatModeAll];
     return _player;
 }
 

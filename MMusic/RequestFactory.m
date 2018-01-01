@@ -8,6 +8,7 @@
 
 #import "RequestFactory.h"
 #import "AuthorizationManager.h"
+#import "NSObject+Tool.h"
 
 extern NSString *userTokenUserDefaultsKey ;
 extern NSString *developerTokenDefaultsKey;
@@ -31,33 +32,6 @@ extern NSString *storefrontDefaultsKey;
 }
 
 #pragma mark Tool Method
-/**设置请求头*/
--(void)setupAuthorizationWithRequest:(NSMutableURLRequest *)request setupMusicUserToken:(BOOL)needSetupUserToken{
-
-    //设置开发者Token 请求头
-    NSString *developerToken = [AuthorizationManager shareAuthorizationManager].developerToken;
-    if (developerToken) {
-        developerToken = [NSString stringWithFormat:@"Bearer %@",developerToken];
-        [request setValue:developerToken forHTTPHeaderField:@"Authorization"];
-    }
-
-    //个性化请求 设置UserToken 请求头
-    if (needSetupUserToken == YES) {
-        NSString *userToken = [AuthorizationManager shareAuthorizationManager].userToken;
-        if (userToken){ [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];}
-    }
-}
-
-/**通过urlString 生成请求体 并设置请求头*/
--(NSURLRequest*) createRequestWithURLString:(NSString*) urlString setupUserToken:(BOOL) setupUserToken{
-    //转换URL中文及空格
-    urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    //设置请求头
-    [self setupAuthorizationWithRequest:request setupMusicUserToken:setupUserToken];
-    return request;
-}
 
 /**解析字符串数组参数 并拼接返回*/
 -(NSString *) resolveStringArrayWithArray:(NSArray<NSString*> *) ids{
@@ -169,18 +143,21 @@ extern NSString *storefrontDefaultsKey;
     NSString *resourceType = [self resolveRequestType:type];
     NSString *identifier   = [self resolveStringArrayWithArray:ids];
 
+    // 拼接路径,并判断请求单个或多个资源, 同时处理参数拼接方式
     NSString *path = [self.rootPath stringByAppendingPathComponent:resourceType];
-    //判断请求单个或多个资源, 并处理参数拼接方式
     if (ids.count == 1) {
+
         path = [path stringByAppendingPathComponent:identifier];
     }else{
         path = [path stringByAppendingString:identifier];
     }
+    //普通请求  不需要设置userToken
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
 
 -(NSURLRequest *)createChartWithChartType:(ChartType)type{
     //URL Map https://api.music.apple.com/v1/catalog/{storefront}/charts?types={types}
+
     NSString *typeStr = [self resolveStringWithChartType:type];
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"charts?types="];
     //参数直接拼接 
@@ -199,6 +176,7 @@ extern NSString *storefrontDefaultsKey;
     path = [path stringByAppendingString:term];
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
+
 -(NSURLRequest *)createRequestWithHerf:(NSString *)herf{
     NSString *path = @"https://api.music.apple.com";
     path = [path stringByAppendingPathComponent:herf];

@@ -13,9 +13,8 @@
 @property(nonatomic, strong) NSArray<Resource*> *resourceData;
 @end
 
-@implementation MMDetailTopViewController
-
 static NSString * const reuseIdentifier = @"DetailTopViewCell";
+@implementation MMDetailTopViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -28,12 +27,12 @@ static NSString * const reuseIdentifier = @"DetailTopViewCell";
 
     [self.collectionView setBackgroundColor:[UIColor whiteColor]];
     // Do any additional setup after loading the view.
-    
 
     //重新覆盖布局
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     [layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
     [self.collectionView setCollectionViewLayout:layout animated:YES];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -45,8 +44,9 @@ static NSString * const reuseIdentifier = @"DetailTopViewCell";
     if (_recommendation != recommendation) {
         _recommendation = recommendation;
     }
-    self.resourceData = _recommendation.relationships.contents.data;
-    if (!self.resourceData) {
+    _resourceData = _recommendation.relationships.contents.data;
+    //组类型  内部有子推荐集合
+    if (!_resourceData) {
         NSMutableArray *temp = [NSMutableArray array];
         for (Recommendation *subRecomm in _recommendation.relationships.recommendations.data) {
             for (Resource *resource in subRecomm.relationships.contents.data) {
@@ -59,9 +59,7 @@ static NSString * const reuseIdentifier = @"DetailTopViewCell";
 
 #pragma mark <UICollectionViewDataSource>
 
-
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-//#warning Incomplete implementation, return the number of items
     return self.resourceData.count;
 }
 
@@ -79,7 +77,6 @@ static NSString * const reuseIdentifier = @"DetailTopViewCell";
     if (self.resourceData.count <= 2) {
         //居中
     }
-    
     return CGSizeMake(cellW, cellH);
 }
 
@@ -88,33 +85,5 @@ static NSString * const reuseIdentifier = @"DetailTopViewCell";
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     self.selectedData([self.resourceData objectAtIndex:indexPath.row]);
 }
-/*
-// Uncomment this method to specify if the specified item should be highlighted during tracking
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
-}
-*/
-
-/*
-// Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-*/
-
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
-}
-*/
 
 @end

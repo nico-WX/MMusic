@@ -11,5 +11,6 @@
 #import "Resource.h"
 
 @interface RecommendationsCell : UICollectionViewCell
+@property(nonatomic, strong) NSString *title;
 @property(nonatomic, strong) Recommendation *recommendation;
 @end

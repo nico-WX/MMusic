@@ -11,6 +11,6 @@
 
 @interface MMDetailTopViewController : UICollectionViewController
 @property(nonatomic, strong) Recommendation *recommendation;
-/**将选择的数据逆传到父控制器*/
+/**逆传数据*/
 @property(nonatomic, strong) void(^selectedData)(Resource* resource);
 @end

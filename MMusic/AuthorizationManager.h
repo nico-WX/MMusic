@@ -17,5 +17,6 @@
 /**用户令牌*/
 @property(nonatomic, copy) NSString *userToken;
 
+/**单例*/
 +(instancetype) shareAuthorizationManager;
 @end

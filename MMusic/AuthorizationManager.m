@@ -9,14 +9,18 @@
 #import "AuthorizationManager.h"
 #import <StoreKit/StoreKit.h>
 
-/**Token缓存Key*/
+//Token缓存Key
 NSString *userTokenUserDefaultsKey  = @"userTokenUserDefaultsKey";
 NSString *developerTokenDefaultsKey = @"developerTokenDefaultsKey";
 NSString *storefrontDefaultsKey     = @"storefrontDefaultsKey";
 
-/**开发者Token过期通知*/
+//开发者Token过期通知
 NSString * const developerTokenExpireNotification  = @"developerTokenExpire";
-NSString * const userAuthorizedNotification        = @"userAuthorized";
+//userToken  问题
+NSString * const userTokenIssueNotification        = @"userTokenIssueOrNotAccepted";
+//更新
+NSString * const developerTokenUpdatedNotification = @"developerTokenUpdated";
+NSString * const userTokenUpdatedNotification      = @"userTokenUpdated";
 
 @interface AuthorizationManager()
 @end
@@ -25,22 +29,31 @@ static AuthorizationManager *_instance;
 @implementation AuthorizationManager
 
 # pragma mark 初始化及单例实现
+
 -(instancetype)init{
     if (self = [super init]) {
-        //开发者Token 过期消息 (UserToken不会过期) 删除旧的developerToken  并请求一个新的
-        [[NSNotificationCenter defaultCenter] addObserverForName:developerTokenExpireNotification object:self queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        //开发者Token 过期消息 删除旧的developerToken  并请求一个新的
+        [[NSNotificationCenter defaultCenter] addObserverForName:developerTokenExpireNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
             //移除过期DeveloperToken
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:developerTokenDefaultsKey];
             //请求新的developerToken
             [self requestDeveloperToken];
         }];
+
+
+        [[NSNotificationCenter defaultCenter] addObserverForName:userTokenIssueNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+            Log(@"obser");
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:userTokenUserDefaultsKey];
+            [self requestUserToken];
+        }];
+
     }
     return self;
 }
 
 -(void)dealloc{
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center removeObserver:self name:developerTokenExpireNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:developerTokenExpireNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:userTokenIssueNotification object:nil];
 }
 
 +(instancetype)shareAuthorizationManager{
@@ -85,11 +98,12 @@ static AuthorizationManager *_instance;
 }
 #endif
 
-#pragma mark 懒加载
-//检查developerToken
+#pragma mark layz
+
 -(NSString *)developerToken{
     if (!_developerToken) {
         _developerToken = [[NSUserDefaults standardUserDefaults] objectForKey:developerTokenDefaultsKey];
+#warning The token is set manually
         _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTExODgyNjU5LCJleHAiOjE1Mjc0MzQ2NTl9.fbtthWV4K0kUedKa55CYN3y02SsrzwZLtTPhLfqQhYtovw-b5uk7ab-3O1YKQ1TtXn68Wdtv6TOUhw164Lv1hQ";
         if (!_developerToken) {
             [self requestDeveloperToken];
@@ -102,7 +116,9 @@ static AuthorizationManager *_instance;
     if (!_userToken) {
         _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:userTokenUserDefaultsKey];
         if (!_userToken) {
-            [self requestUserToken];
+            //本地无Token,  网络请求
+            // [self requestUserToken];
+            //[[NSNotificationCenter defaultCenter] postNotificationName:userTokenIssueNotification object:nil];
         }
     }
     return _userToken;
@@ -111,7 +127,7 @@ static AuthorizationManager *_instance;
     if (!_storefront) {
         _storefront = [[NSUserDefaults standardUserDefaults] objectForKey:storefrontDefaultsKey];
         if (!_storefront) {
-            [self requestStorefront];
+            //[self requestStorefront];
         }
     }
     return _storefront;
@@ -120,40 +136,43 @@ static AuthorizationManager *_instance;
 #pragma mark 从网络请求token
 /**请求开发者Token 并缓存在默认设置*/
 - (void)requestDeveloperToken{
-    __block NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:developerTokenDefaultsKey];
-    if (!token) {
+    __block NSString *token ;//= [[NSUserDefaults standardUserDefaults] objectForKey:developerTokenDefaultsKey];
+    //if (!token) {
 #warning DeveloperTokenURL no set!
-        NSString *urlStr = @"";
-        NSURL *url = [NSURL URLWithString:urlStr];
+        NSURL *url = [NSURL URLWithString:@""];
         [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 
             NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
             if (res.statusCode == 200) {
                 token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 if (token) {
+                    Log(@"dev Token: %@",token);
                     _developerToken = token;
                     [[NSUserDefaults standardUserDefaults] setObject:token forKey:developerTokenDefaultsKey];
                     [[NSUserDefaults standardUserDefaults] synchronize];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenUpdatedNotification object:nil];
                 }
             }else{
                 Log(@"Error: %@, %s",error,__FILE__);
             }
         }] resume];
-    }
+    //}
 
 }
+
+/**请求用户Token*/
 - (void)requestUserToken{
     [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
         SKCloudServiceController *controller = [[SKCloudServiceController  alloc] init];
         if (status == SKCloudServiceAuthorizationStatusAuthorized) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:userAuthorizedNotification object:nil];
             //请求userToken 并缓存到默认设置
             [controller requestUserTokenForDeveloperToken:self.developerToken completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
                 if (userToken) {
+                    Log(@"userToken: %@",userToken);
                     _userToken = userToken;
-                    NSUserDefaults *userDef = [NSUserDefaults standardUserDefaults];
-                    [userDef setObject:userToken forKey:userTokenUserDefaultsKey];
-                    [userDef synchronize];
+                    [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:userTokenUserDefaultsKey];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:userTokenUpdatedNotification object:nil];
                 }
             }];
             

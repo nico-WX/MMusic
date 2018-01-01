@@ -12,14 +12,16 @@
 #import "BrowseNavigationController.h"
 #import "BrowseViewController.h"
 #import "MyMusicViewController.h"
+#import "TodayCollectionViewController.h"
 
 #import "AuthorizationManager.h" 
 #import "RequestFactory.h"
 #import "PersonalizedRequestFactory.h"
 
-#import "NSObject+Serialization.h"
+#import "NSObject+Tool.h"
 
 extern NSString *userTokenUserDefaultsKey;
+
 @interface AppDelegate ()
 @property(nonatomic, strong) AuthorizationManager *auth;
 @property(nonatomic, strong) SKCloudServiceController *controller;
@@ -47,10 +49,20 @@ extern NSString *userTokenUserDefaultsKey;
 
     //浏览
     BrowseViewController *bVC = [[BrowseViewController alloc] init];
-    [bVC setTitle:@"浏览"];
     BrowseNavigationController *bnavCtr = [[BrowseNavigationController alloc] initWithRootViewController:bVC];
+    [bVC setTitle:@"浏览"];
+    [bnavCtr setTitle:bVC.title];
     [barCtr addChildViewController:bnavCtr];
-    [barCtr setSelectedIndex:1];
+
+    //Today
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    TodayCollectionViewController *today = [[TodayCollectionViewController alloc] initWithCollectionViewLayout:layout];
+    [today setTitle:@"今日推荐"];
+    UINavigationController *todayNav = [[UINavigationController alloc] initWithRootViewController:today];
+
+    [barCtr addChildViewController:todayNav];
+
+    [barCtr setSelectedIndex:2];
     //添加并显示(不隐藏)
     [self.window setRootViewController:barCtr];
     [self.window makeKeyAndVisible];

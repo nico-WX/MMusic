@@ -85,12 +85,7 @@ typedef NS_OPTIONS(NSUInteger, ManageRatingsType){
 /**创建个性化请求, 注意:(单张推荐和多张推荐需要在ids中提供Identifier,其他请求设置空数组)*/
 -(NSURLRequest*) createRequestWithType:(PersonalizedType) type resourceIds:(NSArray<NSString*>*) ids;
 
-/**评价管理请求(增加评价需要另外设置请求体 1为喜欢 -1为不喜欢) format:(
- {"type":"rating",
-  "attributes":{
-    "value":1 Or -1
-  }
- })*/
+/**评价管理请求(增加评价需要另外设置请求体 (yes)1为喜欢 (no)-1为不喜欢)*/
 -(NSURLRequest*) createManageRatingsRequestWithType:(ManageRatingsType) type resourceIds:(NSArray<NSString*> *) ids isLikes:(BOOL) likes;
 
 /**设置请求评价他请求体*/

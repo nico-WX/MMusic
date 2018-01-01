@@ -19,10 +19,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    id test = @"aaaa";
-    const char *name = object_getClassName(test);
 
-    BOOL b = [test isKindOfClass:[NSString class]];
 }
 
 - (void)didReceiveMemoryWarning {

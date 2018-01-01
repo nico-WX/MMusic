@@ -7,9 +7,10 @@
 //
 
 #import "PersonalizedRequestFactory.h"
-#import "AuthorizationManager.h"
+#import "NSObject+Tool.h"
 
 @implementation PersonalizedRequestFactory
+
 +(instancetype)personalizedRequestFactory{
     return [[self alloc] init];
 }
@@ -23,33 +24,6 @@
 }
 
 #pragma mark Tool
-/**设置请求头*/
--(void)setupAuthorizationWithRequest:(NSMutableURLRequest *)request setupMusicUserToken:(BOOL)needSetupUserToken{
-
-    //设置开发者Token 请求头
-    NSString *developerToken = [AuthorizationManager shareAuthorizationManager].developerToken;
-    if (developerToken) {
-        developerToken = [NSString stringWithFormat:@"Bearer %@",developerToken];
-        [request setValue:developerToken forHTTPHeaderField:@"Authorization"];
-    }
-
-    //个性化请求 设置UserToken 请求头
-    if (needSetupUserToken == YES) {
-        NSString *userToken = [AuthorizationManager shareAuthorizationManager].userToken;
-        if (userToken){ [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];}
-    }
-}
-
-/**通过urlString 生成请求体 并设置请求头*/
--(NSURLRequest*) createRequestWithURLString:(NSString*) urlString setupUserToken:(BOOL) setupUserToken{
-    //转换URL中文及空格
-    urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    //设置请求头
-    [self setupAuthorizationWithRequest:request setupMusicUserToken:setupUserToken];
-    return request;
-}
 
 /**解析字符串数组参数 并拼接返回*/
 -(NSString *) resolveStringArrayWithArray:(NSArray<NSString*> *) ids{

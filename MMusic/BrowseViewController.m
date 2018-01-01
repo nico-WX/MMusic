@@ -7,8 +7,6 @@
 //
 
 #import "BrowseViewController.h"
-#import "BrowseCollectionViewController.h"
-#import "BrowseCollectionFlowLayout.h"
 #import "MMRecommendationViewController.h"
 
 @interface BrowseViewController ()
@@ -22,8 +20,10 @@
     // Do any additional setup after loading the view.
     [self.view setBackgroundColor:[UIColor whiteColor]];
 
+    //添加顶部推荐 视图
     [self setupTodayRecommendations];
 }
+
 /**设置推荐集合视图*/
 -(void) setupTodayRecommendations{
     //推荐视图 Frame
