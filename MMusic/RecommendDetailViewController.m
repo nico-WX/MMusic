@@ -40,9 +40,7 @@ static NSString *reuseIdentifier = @"cellReuseIdentifier";
     CGFloat w = size.width - 4;
     CGFloat h = w *0.4;
     [layout setItemSize:CGSizeMake(w, h)];
-
 }
-
 
 #pragma mark <UICollectionViewDataSource>
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
@@ -55,10 +53,10 @@ static NSString *reuseIdentifier = @"cellReuseIdentifier";
 }
 #pragma mark <UICollectionViewDelegate>
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    RecommendDetailCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-
+    RecommendDetailCell *cell = (RecommendDetailCell*)[collectionView cellForItemAtIndexPath:indexPath];
     ResourceDetailViewController *detail = [[ResourceDetailViewController alloc] init];
     detail.resource = cell.resource;
+    [detail setTitle:cell.curatorLabel.text];
     [self.navigationController pushViewController:detail animated:YES];
     
 }

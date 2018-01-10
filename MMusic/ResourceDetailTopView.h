@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ResourceDetailTopView : UIView
+@class Playlist;
+@class Album;
 
+@interface ResourceDetailTopView : UIView
+@property(nonatomic, strong) Album *album;
+@property(nonatomic, strong) Playlist *playlist;
 @end

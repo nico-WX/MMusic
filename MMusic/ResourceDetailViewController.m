@@ -14,6 +14,8 @@
 #import "Artwork.h"
 #import "NSObject+Tool.h"
 
+#import "ResourceDetailTopView.h"
+
 @interface ResourceDetailViewController ()
 @property(nonatomic, strong)Playlist *playlist;
 @property(nonatomic, strong)Album *album;
@@ -25,27 +27,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view setBackgroundColor:[UIColor whiteColor]];
-
-
-
     CGRect rect = self.view.frame;
-    CGRect artRect = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.width);
-    UIImageView *artImage = [[UIImageView alloc] initWithFrame:artRect];
-    [self.view addSubview:artImage];
+    ResourceDetailTopView *topView = [[ResourceDetailTopView alloc] initWithFrame:CGRectMake(0, 64, rect.size.width, rect.size.height/6)];
+    [self.view addSubview:topView];
 
-    Artwork *art;
-    if (self.album) {
-        art = self.album.artwork;
-    }else if(self.playlist ){
-        art = self.playlist.artwork;
+    if (_playlist) {
+        topView.playlist = self.playlist;
+    }else{
+        topView.album = self.album;
     }
-    NSString *path = [self stringReplacingOfString:art.url height:rect.size.width width:rect.size.width];
-    NSURL *artURL = [NSURL URLWithString:path];
-    
-    [artImage sd_setImageWithURL:artURL completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-
-    }];
-
 }
 
 - (void)didReceiveMemoryWarning {

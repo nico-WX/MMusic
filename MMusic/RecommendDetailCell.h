@@ -10,5 +10,6 @@
 
 @class Resource;
 @interface RecommendDetailCell : UICollectionViewCell
+@property(nonatomic, strong) UILabel *curatorLabel;
 @property(nonatomic, strong) Resource *resource;
 @end
