@@ -1,0 +1,31 @@
+//
+//  MMusic.pch
+//  MMusic
+//
+//  Created by Magician on 2017/11/6.
+//  Copyright © 2017年 com.😈. All rights reserved.
+//
+
+#ifndef MMusic_pch
+#define MMusic_pch
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+    #ifdef __OBJC__     //OC 有效
+        #ifdef DEBUG        //Debug 模式导入
+            #define Log(...) NSLog(__VA_ARGS__)
+        #else
+            #define
+            #define Log(...)    //发布模式取消Log
+        #endif
+
+#import "NSString+Hash.h"
+#import "NSObject+Tool.h"
+//Artwork 目录
+#define ARTWORKIMAGEPATH [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"artwork"]
+//封面图片地址
+#define IMAGEPATH_FOR_URL(urlString) [[ARTWORKIMAGEPATH stringByAppendingPathComponent:[urlString md5String]] stringByAppendingString:@".png"]
+    #endif
+#endif /* MMusic_pch */
+
+
+

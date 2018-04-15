@@ -45,11 +45,12 @@
         make.height.equalTo(@(artH));
     }];
 
+    UIEdgeInsets padding = UIEdgeInsetsMake(2, 5, 2, 2);
     //title
     CGFloat titleH = (CGRectGetHeight(self.contentView.bounds) -artH)/2;
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.artworkView.mas_bottom);
-        make.left.equalTo(superview.mas_left);
+        make.left.equalTo(superview.mas_left).with.offset(padding.left);
         make.right.equalTo(superview.mas_right);
         make.height.mas_equalTo(titleH);
     }];
@@ -57,7 +58,7 @@
     //artist
     [self.artistLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.titleLabel.mas_bottom);
-        make.left.equalTo(superview.mas_left);
+        make.left.equalTo(superview.mas_left).with.offset(padding.left);
         make.right.equalTo(superview.mas_right);
         make.height.mas_equalTo(titleH);
     }];

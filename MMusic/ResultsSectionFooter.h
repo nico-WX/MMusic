@@ -1,5 +1,5 @@
 //
-//  ResultsSectionView.h
+//  ResultsSectionFooter.h
 //  MMusic
 //
 //  Created by Magician on 2018/4/10.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-/**搜索结果头视图*/
-@interface ResultsSectionHeader : UITableViewHeaderFooterView
+/**搜索结果脚视图*/
+@interface ResultsSectionFooter : UITableViewHeaderFooterView
 
 @end
