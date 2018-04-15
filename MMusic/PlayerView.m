@@ -10,6 +10,7 @@
 #import "PlayProgressView.h"
 #import "PlayControllerView.h"
 #import <Masonry.h>
+#import <VBFPopFlatButton.h>
 
 @implementation PlayerView
 
@@ -135,10 +136,10 @@
     }];
     //控制
     [self.playCtrView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.artistLabel.mas_bottom).with.offset(padding.top);
+        make.top.mas_equalTo(weakSelf.artistLabel.mas_bottom).with.offset(padding.top/2);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
-        make.height.mas_equalTo(66);
+        make.height.mas_equalTo(55);
     }];
 }
 

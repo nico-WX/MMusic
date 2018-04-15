@@ -23,8 +23,9 @@
 @property(nonatomic, strong) UILabel *songNameLabel;
 /**艺人名 或者 专辑信息*/
 @property(nonatomic, strong) UILabel *artistLabel;
-/**播放控制*/
-@property(nonatomic, strong) PlayControllerView *playCtrView;
+
+@property(nonatomic ,strong) PlayControllerView *playCtrView;
+
 /**喜爱按钮*/
 @property(nonatomic, strong) UIButton *like;
 /**循环模式*/

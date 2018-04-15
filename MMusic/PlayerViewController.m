@@ -6,8 +6,9 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 #import <UIImageView+WebCache.h>
-#import "PlayerViewController.h"
+#import <VBFPopFlatButton.h>
 
+#import "PlayerViewController.h"
 #import "PlayerView.h"
 #import "PlayProgressView.h"
 #import "PlayControllerView.h"
@@ -78,14 +79,14 @@ static PlayerViewController *_instance;
         //播放状态 更改, 改变按钮
         switch (weakSelf.playerController.playbackState) {
             case MPMusicPlaybackStatePlaying:
-                [_playerView.playCtrView.play setImage:[UIImage imageNamed:@"stop"] forState:UIControlStateNormal];
+                [_playerView.playCtrView.play setCurrentButtonType:buttonPausedType];
                 [self.timer fire];
                 break;
 
             case MPMusicPlaybackStatePaused:
             case MPMusicPlaybackStateStopped:
             case MPMusicPlaybackStateInterrupted:
-                [_playerView.playCtrView.play setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
+                [_playerView.playCtrView.play animateToType:buttonRightTriangleType];
                 [weakSelf.timer invalidate];    //取消计时
                 weakSelf.timer = nil;           //下次开始播放时, 重新实例计时器
                 break;

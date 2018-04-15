@@ -3,6 +3,10 @@ platform:ios,'11.0'
 target "MMusic" do
 
 pod 'MJExtension'
+pod 'MJRefresh'
 pod 'SDWebImage'
+pod 'MBProgressHUD'
+pod 'Masonry'
+pod 'VBFPopFlatButton'
 
 end
