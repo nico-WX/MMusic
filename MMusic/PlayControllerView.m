@@ -26,7 +26,6 @@
 
     CGSize size = CGSizeMake(CGRectGetWidth(rect)/3,CGRectGetHeight(rect));
     __weak typeof(self) weakSelf = self;
-
     //布局中间层
     [self.preView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.mas_top);
@@ -60,12 +59,7 @@
         make.center.mas_equalTo(weakSelf.nextView.center);
         make.size.mas_equalTo(buttonSize);
     }];
-
-    //[self.play setFrame:CGRectMake(0, 0,44, 44)];
-    Log(@"ra  = %@",NSStringFromCGRect(self.play.bounds));
-    self.play.tintColor = UIColor.blueColor;
 }
-
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {

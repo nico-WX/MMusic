@@ -20,6 +20,7 @@
 
 @interface PlayerViewController ()
 @property(nonatomic, strong) PlayerView *playerView;
+/**定时获取播放时间,更新UI*/
 @property(nonatomic, strong) NSTimer *timer;
 @property(nonatomic, strong) UIActivityIndicatorView *indicator;
 @end
@@ -50,16 +51,15 @@ static PlayerViewController *_instance;
     return _instance;
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
     self.view = self.playerView;
 
+
     //监听消息
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-
     __weak typeof(self) weakSelf = self;
     // 播放项目改变
     [center addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
@@ -68,33 +68,12 @@ static PlayerViewController *_instance;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self updateNowPlayItemToView];
         });
-
         //向外传出正在播放的项目
         _nowPlayingItem(self.playerController.nowPlayingItem);
     }];
 
-    //播放状态改变
-    [center addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-
-        //播放状态 更改, 改变按钮
-        switch (weakSelf.playerController.playbackState) {
-            case MPMusicPlaybackStatePlaying:
-                [_playerView.playCtrView.play setCurrentButtonType:buttonPausedType];
-                [self.timer fire];
-                break;
-
-            case MPMusicPlaybackStatePaused:
-            case MPMusicPlaybackStateStopped:
-            case MPMusicPlaybackStateInterrupted:
-                [_playerView.playCtrView.play animateToType:buttonRightTriangleType];
-                [weakSelf.timer invalidate];    //取消计时
-                weakSelf.timer = nil;           //下次开始播放时, 重新实例计时器
-                break;
-
-            default:
-                break;
-        }
-    }];
+    //开始获取当前播放时间
+    [self.timer fire];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -109,7 +88,6 @@ static PlayerViewController *_instance;
 - (void)dealloc{
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center removeObserver:self name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil];
-    [center removeObserver:self name:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil];
     [self.playerController endGeneratingPlaybackNotifications];
 }
 
@@ -169,8 +147,6 @@ static PlayerViewController *_instance;
 -(MPMusicPlayerController *)playerController{
     if (!_playerController) {
         _playerController = [MPMusicPlayerController systemMusicPlayer];
-        //[_playerController setRepeatMode:MPMusicRepeatModeDefault];     //默认循环模式
-
         [_playerController beginGeneratingPlaybackNotifications];       //开启消息
     }
     return _playerController;
@@ -195,9 +171,9 @@ static PlayerViewController *_instance;
 /** 播放时长计时器, 更新已经播放时间和 进度*/
 - (NSTimer *)timer{
     if (!_timer) {
-
         __weak typeof(self) weakSelf = self;
         _timer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+
             //当前播放时间
             NSTimeInterval current = _playerController.currentPlaybackTime;//秒
             int min = (int)current/60;
@@ -208,7 +184,8 @@ static PlayerViewController *_instance;
             NSTimeInterval duration = weakSelf.playerController.nowPlayingItem.playbackDuration; //秒
             CGFloat value = (current/duration);
             [weakSelf.playerView.progressView.progressSlider setValue:value animated:YES];
-             //Log(@"current=%f, duration=%f value=%f",current,duration, value);
+
+            //Log(@"current =%lf",self.playerController.currentPlaybackTime);
         }];
     }
     return _timer;
@@ -222,29 +199,24 @@ static PlayerViewController *_instance;
 }
 #pragma mark 播放器 按钮事件
 - (void)sliderChange:(UISlider*) slider{
-
     NSTimeInterval duration = self.playerController.nowPlayingItem.playbackDuration; //秒
     NSTimeInterval current = duration * slider.value;
-    int min = current/60;
-    int sec = current - min*60;
-    //Log(@"duration=%.0f  time:%.0f current=%.0f",duration,self.playerController.currentPlaybackTime,current);
-    //更新已经播放时长
-    [_playerView.progressView.currentTime setText:[NSString stringWithFormat:@"%.2d:%.2d",min,sec]];
-
     [self.playerController setCurrentPlaybackTime:current];
 }
 
 - (void)previous:(UIButton*) button{
     [self.playerController skipToPreviousItem];
 }
-- (void)playOrPause:(UIButton*) button{
+- (void)playOrPause:(VBFPopFlatButton*) button{
     switch (self.playerController.playbackState) {
         case MPMusicPlaybackStatePlaying:
             [self.playerController pause];
+            [button setCurrentButtonType:buttonRightTriangleType];
             break;
         case MPMusicPlaybackStatePaused:
         case MPMusicPlaybackStateStopped:
             [self.playerController play];
+            [button setCurrentButtonType:buttonPausedType];
             break;
 
         default:
@@ -254,9 +226,10 @@ static PlayerViewController *_instance;
 -(void)next:(UIButton*) button{
     [self.playerController skipToNextItem];
 }
-
 - (void)changeLove:(UIButton*) button{
     
 }
+
+
 
 @end

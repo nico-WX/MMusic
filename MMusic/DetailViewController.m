@@ -5,7 +5,7 @@
 //  Created by Magician on 2018/3/9.
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
-
+#import <VBFPopFlatButton.h>
 #import <UIImageView+WebCache.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <MBProgressHUD.h>
@@ -96,36 +96,30 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     //更新 正在播放项目指示
     __weak typeof(self) weakSelf = self;
     self.playerVC.nowPlayingItem = ^(MPMediaItem *item) {
-        NSString *nowPlaySongID = item.playbackStoreID;
 
+        NSString *nowPlaySongID = item.playbackStoreID;
         //遍历当前songs 列表, 找到id相匹配的 song和song所在的cell
         for (Song *song in weakSelf.songs) {
             NSString *songID = [song.playParams objectForKey:@"id"];
-
             NSIndexPath *path= [NSIndexPath indexPathForRow:[weakSelf.songs indexOfObject:song] inSection:0];
             SongCell *cell = [weakSelf.tableView cellForRowAtIndexPath:path];
             UIColor *blue = [UIColor blueColor];
+
             //修改在正在播放的song cell 颜色
             if ([songID isEqualToString:nowPlaySongID]) {
-                [UIView animateWithDuration:1 animations:^{
-                    [cell.sortLabel setTextColor:blue];
-                    [cell.songNameLabel setTextColor:blue];
-                    [cell.artistLabel setTextColor:blue];
-                }];
-
+                [cell.sortLabel setTextColor:blue];
+                [cell.songNameLabel setTextColor:blue];
+                [cell.artistLabel setTextColor:blue];
             }else{
-                //上一次播放的cell 改回原来的颜色
+                //上一次播放的cell 改回原来的颜色  通过比对颜色,
                 if (CGColorEqualToColor(blue.CGColor, cell.songNameLabel.textColor.CGColor)) {
-                    [UIView animateWithDuration:1 animations:^{
-                        [cell.sortLabel setTextColor:[UIColor grayColor]];
-                        [cell.songNameLabel setTextColor:[UIColor blackColor]];
-                        [cell.artistLabel setTextColor:[UIColor grayColor]];
-                    }];
+                    [cell.sortLabel setTextColor:[UIColor grayColor]];
+                    [cell.songNameLabel setTextColor:[UIColor blackColor]];
+                    [cell.artistLabel setTextColor:[UIColor grayColor]];
                 }
             }
         }
     };
-
 }
 
 //显示专辑或者播放列表 头部信息视图
@@ -201,75 +195,60 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     return songList;
 }
 
--(void) moreActive:(UIButton*) button{
-    Song *song = [self.songs objectAtIndex:button.tag];
-    NSString *songID = [song.playParams objectForKey:@"id"];
+-(void) moreActive:(UILongPressGestureRecognizer*) gesture{
 
-    UIAlertAction *nextPlay = [UIAlertAction actionWithTitle:@"下一首播放" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        MBProgressHUD *hud = self.hud;
-        MPMusicPlayerPlayParameters *paramters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
-        MPMusicPlayerPlayParametersQueueDescriptor *queueDes;
-        queueDes = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[paramters,]];
-        [self.playerVC.playerController prependQueueDescriptor:queueDes];
-        [hud hideAnimated:YES afterDelay:1.0f];
-        self.hud = nil;  //赋值空, 下一使用重新添加到View中
-    }];
+    //确认选中 的Cell
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        CGPoint point = [gesture locationInView:self.tableView];
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint: point];
+        if (indexPath==nil) return;
 
-    UIAlertAction *nowPlay = [UIAlertAction actionWithTitle:@"播放" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        MBProgressHUD *hud = self.hud;
-        MPMusicPlayerPlayParameters *paramters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
-        [self.prametersQueue setStartItemPlayParameters:paramters];
-        [self.playerVC.playerController setQueueWithDescriptor:self.prametersQueue];
-        [self.playerVC.playerController play];
-        [hud hideAnimated:YES afterDelay:1.0f];
-        self.hud = nil;
-    }];
+        Song *song = [self.songs objectAtIndex:indexPath.row];
+        //获取歌曲ID
+        NSString *songID = [song.playParams objectForKey:@"id"];
 
-    PersonalizedRequestFactory *factort = [PersonalizedRequestFactory personalizedRequestFactory];
-    UIAlertAction *love = [UIAlertAction actionWithTitle:@"喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-
-        MBProgressHUD *hud = self.hud;
-        //PUT
-        NSURLRequest *request = [factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
-        [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            Log(@"statusCode:%ld",((NSHTTPURLResponse*)response).statusCode);
-            [hud performSelectorOnMainThread:@selector(hideAnimated:) withObject:@YES waitUntilDone:NO];
-            self.hud = nil;
+        //下一首
+        UIAlertAction *nextPlay = [UIAlertAction actionWithTitle:@"下一首播放" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            //播放队列
+            MPMusicPlayerPlayParameters *paramters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
+            MPMusicPlayerPlayParametersQueueDescriptor *queueDes;
+            queueDes = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[paramters,]];
+            //插入当前队列
+            [self.playerVC.playerController prependQueueDescriptor:queueDes];
         }];
 
-        NSString *url =@"https://api.music.apple.com/v1/me/library?ids[songs]=280911996";
-        NSMutableURLRequest *addLib = (NSMutableURLRequest*)[factort createRequestWithURLString:url setupUserToken:YES];
-        [addLib setHTTPMethod:@"POST"];
-        [self dataTaskWithdRequest:addLib completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            if (!error) {
-                Log(@"lib status=%ld",((NSHTTPURLResponse*)response).statusCode);
-            }
+        PersonalizedRequestFactory *factort = [PersonalizedRequestFactory personalizedRequestFactory];
+        UIAlertAction *notLove = [UIAlertAction actionWithTitle:@"不喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            //DELETE
+            NSURLRequest *request = [factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
+            [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                Log(@"statusCode:%ld",((NSHTTPURLResponse*)response).statusCode);
+            }];
         }];
-    }];
 
-    UIAlertAction *notLove = [UIAlertAction actionWithTitle:@"不喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        MBProgressHUD *hud = self.hud;
-        //DELETE
-        NSURLRequest *request = [factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
-        [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            Log(@"statusCode:%ld",((NSHTTPURLResponse*)response).statusCode);
-            [hud performSelectorOnMainThread:@selector(hideAnimated:) withObject:@YES waitUntilDone:NO];
-            self.hud = nil;
+        UIAlertAction *love = [UIAlertAction actionWithTitle:@"喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            //PUT
+            NSURLRequest *request = [factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
+            [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                Log(@"statusCode:%ld",((NSHTTPURLResponse*)response).statusCode);
+                MBProgressHUD *hud = MBProgressHUD
+
+            }];
         }];
-    }];
 
-    //取消
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"cacel" style:UIAlertActionStyleCancel handler:nil];
+        //取消
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:nil];
 
-    NSString *title = [NSString stringWithFormat:@"歌曲:%@ -- %@",song.name,song.artistName];
-    UIAlertController *alertCtr = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    [alertCtr addAction:nextPlay];
-    [alertCtr addAction:nowPlay];
-    [alertCtr addAction:love];
-    [alertCtr addAction:notLove];
-    [alertCtr addAction:cancel];
+        //提醒视图
+        NSString *title = [NSString stringWithFormat:@"歌曲: %@ ",song.name];
+        UIAlertController *alertCtr = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleAlert];
+        [alertCtr addAction:nextPlay];
+        [alertCtr addAction:love];
+        [alertCtr addAction:notLove];
+        [alertCtr addAction:cancel];
 
-    [self presentViewController:alertCtr animated:YES completion:NULL];
+        [self presentViewController:alertCtr animated:YES completion:NULL];
+    }
 }
 
 #pragma mark - Table view data source
@@ -280,21 +259,22 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier forIndexPath:indexPath];
     // Configure the cell...
 
+    //安装长按手势识别器, 弹出操作菜单
+    UILongPressGestureRecognizer *longGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(moreActive:)];
+    [cell addGestureRecognizer:longGR];
+
     //song info
     Song *song = [self.songs objectAtIndex:indexPath.row];
     cell.sortLabel.text = [NSString stringWithFormat:@"%ld",indexPath.row+1];
     cell.songNameLabel.text = song.name;
     cell.artistLabel.text = song.artistName;
 
-    //绑定Tag 用于获取选中了那首歌曲 index
-    [cell.moreButton setTag:indexPath.row];
-    [cell.moreButton addTarget:self action:@selector(moreActive:) forControlEvents:UIControlEventTouchUpInside];
 
     //判断 当前cell显示的 与正在播放的item 是否为同一个,
     NSString *nowPlaySongID = self.playerVC.playerController.nowPlayingItem.playbackStoreID;
     NSString *cellSongID = [song.playParams objectForKey:@"id"];
 
-    //不相同,把原来改色的cell恢复颜色,
+    //不相同,把原来改色的cell恢复颜色,<重用遗留>
     if (![nowPlaySongID isEqualToString:cellSongID]) {
         [cell.sortLabel setTextColor:[UIColor grayColor]];
         [cell.songNameLabel setTextColor:[UIColor blackColor]];
@@ -317,15 +297,25 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         [self.prametersQueue setStartItemPlayParameters:[self.prameters objectAtIndex:indexPath.row]];
         [self.playerVC.playerController setQueueWithDescriptor:self.prametersQueue];
         [self.playerVC.playerController prepareToPlay];
-
-        [self.playerVC setNowPlaySong:[self.songs objectAtIndex:indexPath.row]];
-        [self.playerVC setSongs:self.songs];
     }
 
+    [self.playerVC setNowPlaySong:[self.songs objectAtIndex:indexPath.row]];
+    [self.playerVC setSongs:self.songs];
     //显示视图
     [self presentViewController:self.playerVC animated:YES completion:nil];
 
 }
+
+////长按显示菜单 (复制黏贴等);
+//-(BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath{
+//    return YES; //允许显示
+//}
+//-(BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender{
+//    return YES;  //支持所有方法
+//}
+//-(void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender{
+//    Log(@"AC");
+//}
 
 #pragma mark Layz
 -(PlayerViewController *)playerVC{

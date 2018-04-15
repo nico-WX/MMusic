@@ -35,17 +35,19 @@
             label;
         });
 
-        self.moreButton = ({
-            UIButton *button = [[UIButton alloc] init];
-            [button setImage:[UIImage imageNamed:@"more-gray"] forState:UIControlStateNormal];
-            [button setImage:[UIImage imageNamed:@"more-blue"] forState:UIControlStateHighlighted];
-            [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-            [self.contentView addSubview:button];
-            button;
-        });
+
+//        self.moreButton = ({
+//            UIButton *button = [[UIButton alloc] init];
+//            [button setImage:[UIImage imageNamed:@"more-gray"] forState:UIControlStateNormal];
+//            [button setImage:[UIImage imageNamed:@"more-blue"] forState:UIControlStateHighlighted];
+//            [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+//            [self.contentView addSubview:button];
+//            button;
+//        });
     }
     return self;
 }
+
 
 
 - (void)layoutSubviews{
@@ -83,15 +85,17 @@
         labelRect;
     });
 
-    //more button
-    self.moreButton.frame = ({
-        CGFloat h = CGRectGetHeight(rect) -4;
-        CGFloat w = h;
-        CGFloat x = CGRectGetMaxX(rect) - w -2;
-        CGFloat y = CGRectGetMinY(rect) - 2;
-        CGRect buttonRect = CGRectMake(x, y, w, h);
-        buttonRect;
-    });
+//    //more button
+//    self.moreButton.frame = ({
+//        CGFloat h = CGRectGetHeight(rect) -4;
+//        CGFloat w = h;
+//        CGFloat x = CGRectGetMaxX(rect) - w -2;
+//        CGFloat y = CGRectGetMinY(rect) - 2;
+//        CGRect buttonRect = CGRectMake(x, y, w, h);
+//        buttonRect;
+//    });
+
+
 }
 
 - (void)awakeFromNib {

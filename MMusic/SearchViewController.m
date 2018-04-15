@@ -98,23 +98,8 @@ static NSString *const footerId = @"footerSectionReuseId";
         view;
     });
 
-    CGRect rect = CGRectMake(100, 300, 44, 44);
-    VBFPopFlatButton *button = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonPausedType buttonStyle:buttonPlainStyle animateToInitialState:YES];
-    [self.view addSubview:button];
-    button.tintColor = UIColor.redColor;
-    button.roundBackgroundColor = UIColor.brownColor;
-
-    [button addTarget:self action:@selector(changeValue:) forControlEvents:UIControlEventTouchUpInside];
 }
 
--(void)changeValue:(VBFPopFlatButton*) button{
-    if (button.currentButtonType == buttonRightTriangleType) {
-        [button animateToType:buttonPausedType];
-    }else{
-        [button animateToType: buttonRightTriangleType];
-    }
-
-}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
