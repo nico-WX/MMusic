@@ -130,6 +130,25 @@ static PlayerViewController *_instance;
     self.playerView.progressView.durationTime.text =[NSString stringWithFormat:@"%.2d:%.2d",min,sec];
 
     //是否是喜爱的歌曲
+    NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
+    NSURLRequest *request = [[PersonalizedRequestFactory personalizedRequestFactory] createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[songID,]];
+
+    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (!error && data ) {
+
+            NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
+            NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
+            if (json && res.statusCode==200) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.playerView.like setImage:[UIImage imageNamed:@"love-red"] forState:UIControlStateNormal];
+                });
+            }else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.playerView.like setImage:[UIImage imageNamed:@"love-gray"] forState:UIControlStateNormal];
+                });
+            }
+        }
+    }];
 }
 
 #pragma mark layz 加载指示器
@@ -226,10 +245,51 @@ static PlayerViewController *_instance;
 -(void)next:(UIButton*) button{
     [self.playerController skipToNextItem];
 }
+/**点击喜爱按钮*/
 - (void)changeLove:(UIButton*) button{
-    
-}
+    PersonalizedRequestFactory *factort = [PersonalizedRequestFactory personalizedRequestFactory];
+    NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
 
+    NSURLRequest *getRating = [factort createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[songID,]];
+    [self dataTaskWithdRequest:getRating completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (!error && data ) {
+            NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
+            NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
+            //喜欢
+            if (json && res.statusCode==200) {
+                //取消喜欢
+                //DELETE
+                NSURLRequest *request = [factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
+                [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                    NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
+                    Log(@"delete =%ld",res.statusCode);
+                    if (!error && res.statusCode/10 == 20) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.playerView.like setImage:[UIImage imageNamed:@"love-gray"] forState:UIControlStateNormal];
+                        });
+                    }
+                }];
+            //不喜欢
+            }else{
+                //添加喜欢
+                //PUT
+                NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
+                NSURLRequest *request = [factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
+                [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                    NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
+                    Log(@"PUT add =%ld",res.statusCode);
+                    if (!error && res.statusCode/10==20) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.playerView.like setImage:[UIImage imageNamed:@"love-red"] forState:UIControlStateNormal];
+                        });
+                    }
+                }];
+
+            }
+        }
+    }];
+
+}
 
 
 @end

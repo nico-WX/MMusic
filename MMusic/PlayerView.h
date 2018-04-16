@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <VBFPopFlatButton.h>
 @class PlayProgressView;
 @class PlayControllerView;
 
@@ -14,7 +15,7 @@
 @interface PlayerView : UIView
 
 /**关闭视图按钮*/
-@property(nonatomic, strong) UIButton *closeButton;
+@property(nonatomic, strong) VBFPopFlatButton *closeButton;
 /**专辑封面*/
 @property(nonatomic, strong) UIImageView *artworkView;
 /**播放进度视图*/

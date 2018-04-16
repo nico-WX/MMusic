@@ -33,12 +33,9 @@
 - (void) setupSubview{
     //close button
     self.closeButton = ({
-        UIButton *button = UIButton.new;
-        [button setTitle:@"X" forState:UIControlStateNormal];
-        button.backgroundColor = UIColor.grayColor;
-        button.alpha = 0.75F;
-        button.titleLabel.textAlignment = NSTextAlignmentCenter;
-        button.titleLabel.font = [UIFont systemFontOfSize:26.0f];
+        VBFPopFlatButton *button = [[VBFPopFlatButton alloc] initWithFrame:CGRectMake(0, 0, 20, 20) buttonType:buttonCloseType buttonStyle:buttonRoundedStyle animateToInitialState:YES];
+        //button.tintColor = UIColor.blueColor;
+        button.roundBackgroundColor = UIColor.grayColor;
 
         [self addSubview:button];
         button;
@@ -100,12 +97,6 @@
 - (void)layoutSubviews{
     UIEdgeInsets padding = UIEdgeInsetsMake(40, 40, 40, 40);
     __weak typeof(self) weakSelf = self;
-    //关闭按钮 >>刚好在封面右上角
-    [self.closeButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.mas_top).with.offset(padding.top);
-        make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
-        make.size.mas_equalTo(CGSizeMake(30, 30));
-    }];
     //封面
     [self.artworkView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.mas_top).with.offset(padding.top);
@@ -113,6 +104,13 @@
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
         make.height.mas_equalTo(CGRectGetWidth(weakSelf.bounds)-(padding.left*2));
     }];
+    //关闭按钮
+    [self.closeButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.artworkView.mas_top);
+        make.right.mas_equalTo(weakSelf.artworkView.mas_right);
+        make.size.mas_equalTo(CGSizeMake(25, 25));
+    }];
+
     //进度
     [self.progressView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.artworkView.mas_bottom);
@@ -141,12 +139,16 @@
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
         make.height.mas_equalTo(55);
     }];
+
+    [self.like mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.playCtrView.play.mas_bottom).with.offset(padding.top);
+        make.leading.mas_equalTo(weakSelf.playCtrView.play.mas_leading);
+        make.size.mas_equalTo(CGSizeMake(44, 44));
+    }];
 }
 
 - (void)drawRect:(CGRect)rect{
-    //关闭按钮圆形
-    self.closeButton.layer.cornerRadius = CGRectGetHeight(self.closeButton.bounds)/2;
-    self.closeButton.layer.masksToBounds = YES;
+    
 }
 
 @end

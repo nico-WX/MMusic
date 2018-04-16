@@ -12,7 +12,6 @@
 		3B3D9981205512FA000F2E9E /* SongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9980205512FA000F2E9E /* SongCell.m */; };
 		3B3D998420553CD4000F2E9E /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D998320553CD4000F2E9E /* PlayerViewController.m */; };
 		3B3D9989205540A0000F2E9E /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9988205540A0000F2E9E /* PlayerView.m */; };
-		3B3D99E7205C0B89000F2E9E /* Canvas 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B3D99E6205C0B87000F2E9E /* Canvas 1.png */; };
 		3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D99E9205E990F000F2E9E /* NSString+Hash.m */; };
 		3B3D99F0205EADB6000F2E9E /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B3D99EB205EADB3000F2E9E /* play.png */; };
 		3B3D99F1205EADB6000F2E9E /* skip-next.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B3D99EC205EADB4000F2E9E /* skip-next.png */; };
@@ -97,7 +96,6 @@
 		3B3D998320553CD4000F2E9E /* PlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerViewController.m; sourceTree = "<group>"; };
 		3B3D9987205540A0000F2E9E /* PlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
 		3B3D9988205540A0000F2E9E /* PlayerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerView.m; sourceTree = "<group>"; };
-		3B3D99E6205C0B87000F2E9E /* Canvas 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Canvas 1.png"; sourceTree = "<group>"; };
 		3B3D99E8205E990D000F2E9E /* NSString+Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hash.h"; sourceTree = "<group>"; };
 		3B3D99E9205E990F000F2E9E /* NSString+Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hash.m"; sourceTree = "<group>"; };
 		3B3D99EB205EADB3000F2E9E /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
@@ -302,7 +300,6 @@
 				3B3D99F7205EE0A0000F2E9E /* love-red.png */,
 				3B3D99F5205EE09D000F2E9E /* love-gray.png */,
 				3B3D99FD205EE241000F2E9E /* stop.png */,
-				3B3D99E6205C0B87000F2E9E /* Canvas 1.png */,
 			);
 			name = ImageSource;
 			sourceTree = "<group>";
@@ -613,7 +610,6 @@
 				3B3D9A04205EE689000F2E9E /* list-32.png in Resources */,
 				3B7862B52063D23B00E9A26A /* more-blue.png in Resources */,
 				3B7862EA20691E2300E9A26A /* player.png in Resources */,
-				3B3D99E7205C0B89000F2E9E /* Canvas 1.png in Resources */,
 				3B9AA8741FB04B5700720085 /* Assets.xcassets in Resources */,
 				3B3D9A03205EE689000F2E9E /* list-64.png in Resources */,
 				3B3D99F2205EADB6000F2E9E /* skip-previous.png in Resources */,
