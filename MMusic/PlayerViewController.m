@@ -5,6 +5,7 @@
 //  Created by Magician on 2018/3/11.
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
+#import <MBProgressHUD.h>
 #import <UIImageView+WebCache.h>
 #import <VBFPopFlatButton.h>
 
@@ -16,13 +17,13 @@
 #import "Artwork.h"
 #import "Song.h"
 #import "PersonalizedRequestFactory.h"
+#import "RequestFactory.h"
 #import "NSObject+Tool.h"
 
 @interface PlayerViewController ()
 @property(nonatomic, strong) PlayerView *playerView;
 /**定时获取播放时间,更新UI*/
 @property(nonatomic, strong) NSTimer *timer;
-@property(nonatomic, strong) UIActivityIndicatorView *indicator;
 @end
 
 static PlayerViewController *_instance;
@@ -57,7 +58,6 @@ static PlayerViewController *_instance;
 
     self.view = self.playerView;
 
-
     //监听消息
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     __weak typeof(self) weakSelf = self;
@@ -68,8 +68,11 @@ static PlayerViewController *_instance;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self updateNowPlayItemToView];
         });
-        //向外传出正在播放的项目
-        _nowPlayingItem(self.playerController.nowPlayingItem);
+
+        //块是否为空, 不为空,向外传递正在播放的项目
+        if (_nowPlayingItem) {
+            _nowPlayingItem(weakSelf.playerController.nowPlayingItem);
+        }
     }];
 
     //开始获取当前播放时间
@@ -94,6 +97,7 @@ static PlayerViewController *_instance;
 /**更新当前播放的音乐信息到视图上*/
 - (void) updateNowPlayItemToView{
 
+    [self.playerView.closeButton animateToType:buttonCloseType];
     //歌曲封面
     NSString *imagePath = IMAGEPATH_FOR_URL(self.nowPlaySong.artwork.url);
     UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
@@ -106,16 +110,13 @@ static PlayerViewController *_instance;
         NSString *url = self.nowPlaySong.artwork.url;
         url = [self stringReplacingOfString:url height:h width:w];
 
-        //网络加载指示器
-        [self.playerView.artworkView addSubview:self.indicator];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.playerView.artworkView animated:YES];
 
         //添加 封面 图片
         [_playerView.artworkView sd_setImageWithURL:[NSURL URLWithString:url] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            [self.indicator stopAnimating];
-            [self.indicator removeFromSuperview];
-            self.indicator = nil;
             BOOL sucess = [[NSFileManager defaultManager] createFileAtPath:imagePath contents:UIImagePNGRepresentation(image) attributes:nil];
             if (sucess==NO) [[NSFileManager defaultManager] removeItemAtPath:imagePath error:nil];
+            [hud hideAnimated:YES];
         }];
     }
 
@@ -151,15 +152,12 @@ static PlayerViewController *_instance;
     }];
 }
 
-#pragma mark layz 加载指示器
--(UIActivityIndicatorView *)indicator{
-    if (!_indicator) {
-        _indicator = [[UIActivityIndicatorView alloc] initWithFrame:_playerView.artworkView.bounds];
-        [_indicator setHidesWhenStopped:YES];
-        [_indicator setColor:[UIColor grayColor]];
-        [_indicator startAnimating];
+-(Song *)nowPlaySong{
+    if (!_nowPlaySong) {
+        NSString *songID = self.playerController.nowPlayingItem.playbackStoreID;
+       // [RequestFactory requestFactory] create
     }
-    return _indicator;
+    return _nowPlaySong;
 }
 
 #pragma mark layz 音乐播放控制器
@@ -178,16 +176,16 @@ static PlayerViewController *_instance;
 
         //事件绑定
         [_playerView.progressView.progressSlider addTarget:self action:@selector(sliderChange:) forControlEvents:UIControlEventValueChanged];
-        [_playerView.closeButton addTarget:self action:@selector(closeViewController) forControlEvents:UIControlEventTouchDown];
-        [_playerView.like addTarget:self action:@selector(changeLove:) forControlEvents:UIControlEventTouchDown];
-        [_playerView.playCtrView.previous addTarget:self action:@selector(previous:) forControlEvents:UIControlEventTouchDown];
-        [_playerView.playCtrView.play addTarget:self action:@selector(playOrPause:) forControlEvents:UIControlEventTouchDown];
-        [_playerView.playCtrView.next addTarget:self action:@selector(next:) forControlEvents:UIControlEventTouchDown];
+        [_playerView.closeButton addTarget:self action:@selector(closeViewController:) forControlEvents:UIControlEventTouchUpInside];
+        [_playerView.like addTarget:self action:@selector(changeLove:) forControlEvents:UIControlEventTouchUpInside];
+        [_playerView.playCtrView.previous addTarget:self action:@selector(previous:) forControlEvents:UIControlEventTouchUpInside];
+        [_playerView.playCtrView.play addTarget:self action:@selector(playOrPause:) forControlEvents:UIControlEventTouchUpInside];
+        [_playerView.playCtrView.next addTarget:self action:@selector(next:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _playerView;
 }
 
-/** 播放时长计时器, 更新已经播放时间和 进度*/
+/** 定时获取当前播放时间*/
 - (NSTimer *)timer{
     if (!_timer) {
         __weak typeof(self) weakSelf = self;
@@ -211,9 +209,11 @@ static PlayerViewController *_instance;
 }
 
 /**关闭 播放器视图控制器*/
-- (void)closeViewController{
-    dispatch_async(dispatch_get_main_queue(), ^{
+- (void)closeViewController:(VBFPopFlatButton*) button{
+    [button animateToType:buttonDownBasicType];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self dismissViewControllerAnimated:YES completion:nil];
+        [button animateToType:buttonUpBasicType];
     });
 }
 #pragma mark 播放器 按钮事件
@@ -223,8 +223,13 @@ static PlayerViewController *_instance;
     [self.playerController setCurrentPlaybackTime:current];
 }
 
-- (void)previous:(UIButton*) button{
+- (void)previous:(VBFPopFlatButton*) button{
     [self.playerController skipToPreviousItem];
+    //动画
+    [button animateToType:buttonBackType];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [button animateToType:buttonRewindType];
+    });
 }
 - (void)playOrPause:(VBFPopFlatButton*) button{
     switch (self.playerController.playbackState) {
@@ -233,7 +238,7 @@ static PlayerViewController *_instance;
             [button setCurrentButtonType:buttonRightTriangleType];
             break;
         case MPMusicPlaybackStatePaused:
-        case MPMusicPlaybackStateStopped:
+        //case MPMusicPlaybackStateStopped:
             [self.playerController play];
             [button setCurrentButtonType:buttonPausedType];
             break;
@@ -242,8 +247,13 @@ static PlayerViewController *_instance;
             break;
     }
 }
--(void)next:(UIButton*) button{
+-(void)next:(VBFPopFlatButton*) button{
     [self.playerController skipToNextItem];
+    //动画
+    [button animateToType:buttonForwardType];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [button animateToType:buttonFastForwardType];
+    });
 }
 /**点击喜爱按钮*/
 - (void)changeLove:(UIButton*) button{

@@ -5,10 +5,11 @@
 //  Created by Magician on 2018/4/8.
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
-
+#import <UIImageView+WebCache.h>
 #import <VBFPopFlatButton.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <Masonry.h>
+
 
 #import "SearchViewController.h"
 #import "ResultsViewController.h"
@@ -17,7 +18,9 @@
 #import "SearchSectionWaitingFooter.h"
 #import "WaitingCell.h"
 #import "RequestFactory.h"
+#import "PlayerViewController.h"
 
+#import "Artwork.h"
 #import "Activity.h"
 #import "Artist.h"
 #import "AppleCurator.h"
@@ -40,13 +43,13 @@
 @property(nonatomic, assign) CGFloat statusH;
 @property(nonatomic, assign) CGFloat searchBarH;
 
-//next
-@property(nonatomic, strong) NSDictionary *nextPageDict;
+@property(nonatomic, strong) PlayerViewController *playerVC;
+
+@property(nonatomic, strong) NSString *previousSearchText;
 @end
 
 static NSString *const cellId = @"SearchViewCell";
 static NSString *const headerId = @"haderSectionReuseId";
-static NSString *const footerId = @"footerSectionReuseId";
 @implementation SearchViewController
 
 - (void)viewDidLoad {
@@ -87,7 +90,6 @@ static NSString *const footerId = @"footerSectionReuseId";
         //注册重用
         [view registerClass:[WaitingCell class] forCellReuseIdentifier:cellId];
         [view registerClass:[SearchSectionWaitingHeader class] forHeaderFooterViewReuseIdentifier:headerId];
-        [view registerClass:[SearchSectionWaitingFooter class] forHeaderFooterViewReuseIdentifier:footerId];
 
         view.dataSource = self;
         view.delegate = self;
@@ -131,10 +133,13 @@ static NSString *const footerId = @"footerSectionReuseId";
 
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     [self searchText:searchText];
+    self.previousSearchText = searchText;
+
 }
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
     [searchBar resignFirstResponder];
     [self searchText:searchBar.text];
+    self.previousSearchText = searchBar.text;
 
     CGFloat tabBarH = CGRectGetHeight(self.tabBarController.tabBar.frame);
     CGRect rect = self.tableView.frame;
@@ -156,6 +161,10 @@ static NSString *const footerId = @"footerSectionReuseId";
 
 #pragma mark  tool method
 - (void) searchText:(NSString*) text{
+    if ([text isEqualToString:self.previousSearchText]) {
+        return;
+    }
+
     NSURLRequest *request = [[RequestFactory requestFactory] createSearchWithText:text];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data) {
@@ -171,12 +180,15 @@ static NSString *const footerId = @"footerSectionReuseId";
     json = [json objectForKey:@"results"];
     NSMutableArray *tempAll = NSMutableArray.new;   //所有数据
     NSMutableArray *sectionTitle = NSMutableArray.new;  //节title
+    NSMutableDictionary *nextPage = [NSMutableDictionary dictionary];   //部分数据有分页, 记录
 
     //返回的JSON 不确定内容 使用枚举器
     for ( NSEnumerator *rator in [json keyEnumerator]) {
         [sectionTitle addObject:(NSString*)rator];
         NSDictionary *subJSON = [json objectForKey:rator];
         NSMutableArray *tempSection = NSMutableArray.new;
+        //记录分页地址
+        if ([subJSON objectForKey:@"next"]) [nextPage setObject:[subJSON objectForKey:@"next"] forKey:(NSString*)rator];
         for (NSDictionary *dict in [subJSON objectForKey:@"data"]) {
             //activities, artists, apple-curators, albums, curators, songs, playlists, music-videos,  stations.
             Class cls =  [self classForResourceType:[dict objectForKey:@"type"]];
@@ -184,13 +196,14 @@ static NSString *const footerId = @"footerSectionReuseId";
         }
         [tempAll addObject:tempSection];
     }
+
     self.allSearchDatas = tempAll;
-    self.titles = sectionTitle;
+    self.titles         = sectionTitle;
+
     //刷新
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView reloadData];
     });
-    //Log(@"all=%@",tempAll);
 }
 
 -(Class) classForResourceType:(NSString*)type{
@@ -207,6 +220,18 @@ static NSString *const footerId = @"footerSectionReuseId";
     return cls;
 }
 
+-(void) loadNextPageFromPagePath:(NSString*) nextPage{
+    NSURLRequest *request = [[RequestFactory requestFactory] createRequestWithHerf:nextPage];
+    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (!error && data) {
+            NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
+            if (json) {
+                [self serializatonJSON:json];
+            }
+        }
+    }];
+}
+
 #pragma mark 搜索栏候选表视图 Data Source
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.allSearchDatas.count;
@@ -215,12 +240,34 @@ static NSString *const footerId = @"footerSectionReuseId";
     return [self.allSearchDatas objectAtIndex:section].count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
+    WaitingCell *cell = (WaitingCell*)[tableView dequeueReusableCellWithIdentifier:cellId];
     cell.contentView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.8];
 
     id obj = [[self.allSearchDatas objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    NSString *text = [obj valueForKey:@"name"];
-    cell.textLabel.text = text;
+
+    cell.name.text = [obj valueForKey:@"name"];
+
+    if ([obj respondsToSelector:@selector(artistName)]) {
+        NSString *artist = [obj valueForKey:@"artistName"];
+        cell.artistName.text = artist;
+    }else{
+        cell.artistName.text = nil;
+    }
+
+    if ([obj respondsToSelector:@selector(artwork)]) {
+        Artwork *artwork = [obj valueForKey:@"artwork"];
+        NSString *path = IMAGEPATH_FOR_URL(artwork.url);
+        UIImage *image = [UIImage imageWithContentsOfFile:path];
+        if (image) {
+            cell.artworkView.image = image;
+        }else{
+            CGFloat h = CGRectGetHeight(cell.contentView.bounds);
+            CGFloat w = h;
+            NSString *urlPath = [self stringReplacingOfString:artwork.url height:h width:w];
+            NSURL *url = [NSURL URLWithString:urlPath];
+            [cell.artworkView sd_setImageWithURL:url];
+        }
+    }
     return cell;
 }
 
@@ -231,24 +278,21 @@ static NSString *const footerId = @"footerSectionReuseId";
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 25.f;
 }
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+   return 44.0f;
+}
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     SearchSectionWaitingHeader *header = (SearchSectionWaitingHeader*)[tableView dequeueReusableHeaderFooterViewWithIdentifier:headerId];
     NSString *title = [self.titles objectAtIndex:section];
     header.titleLabel.text = title;
+    header.contentView.backgroundColor = UIColor.whiteColor;
     return header;
-}
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    SearchSectionWaitingFooter *footer = (SearchSectionWaitingFooter*)[tableView dequeueReusableHeaderFooterViewWithIdentifier:footerId];
-    footer.contentView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.96 alpha:0.6];
-    footer.contentView.backgroundColor = UIColor.whiteColor;
-
-
-    return footer;
 }
 
 #pragma mark UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 
+    [self.serachBar resignFirstResponder];
     id obj = [[self.allSearchDatas objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     //歌曲直接播放
     if ([obj isKindOfClass:Song.class]) {
@@ -257,8 +301,15 @@ static NSString *const footerId = @"footerSectionReuseId";
             MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
             MPMusicPlayerPlayParametersQueueDescriptor *queue;
             queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[parameters,]];
-            [[MPMusicPlayerController systemMusicPlayer] setQueueWithDescriptor:queue];
-            [[MPMusicPlayerController systemMusicPlayer] play];
+
+            self.playerVC = [PlayerViewController sharePlayerViewController];
+            [self.playerVC.playerController setQueueWithDescriptor:queue];
+            [self.playerVC.playerController play];
+            self.playerVC.nowPlaySong = song;
+            self.playerVC.songs = [self.allSearchDatas objectAtIndex:indexPath.section];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentViewController:self.playerVC animated:YES completion:nil];
+            });
         });
 
     }
@@ -274,6 +325,7 @@ static NSString *const footerId = @"footerSectionReuseId";
         [self.navigationController pushViewController:resultsVC animated:YES];
     }
 }
+
 
 
 @end

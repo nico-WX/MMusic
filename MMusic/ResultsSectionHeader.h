@@ -10,5 +10,6 @@
 
 /**搜索结果头视图*/
 @interface ResultsSectionHeader : UITableViewHeaderFooterView
-
+@property(nonatomic, strong) UILabel *title;
+@property(nonatomic, strong) UIButton *more;
 @end

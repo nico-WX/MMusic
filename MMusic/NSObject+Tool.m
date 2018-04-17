@@ -8,6 +8,7 @@
 
 #import "NSObject+Tool.h"
 #import "AuthorizationManager.h"
+#import <UIKit/UIKit.h>
 
 
 extern NSString *developerTokenExpireNotification;
@@ -54,9 +55,9 @@ extern NSString *userTokenIssueNotification;
 //替换海报URL中的占位字符串,
 -(NSString *)stringReplacingOfString:(NSString *)target height:(int)height width:(int)width{
     //图片大小倍数
-    int times = 3;
-    NSString *w = [NSString stringWithFormat:@"%d",(width * times)];
-    NSString *h = [NSString stringWithFormat:@"%d",(height * times)];
+    CGFloat times = [UIScreen mainScreen].scale;
+    NSString *w = [NSString stringWithFormat:@"%d",(int)((CGFloat)width * times)];
+    NSString *h = [NSString stringWithFormat:@"%d",(int)((CGFloat)height * times)]; //注意占位不能是浮点数, 只能是整数, 不然报CFNetwork 385错误
     target = [target stringByReplacingOccurrencesOfString:@"{h}" withString:h];
     target = [target stringByReplacingOccurrencesOfString:@"{w}" withString:w];
     return target;

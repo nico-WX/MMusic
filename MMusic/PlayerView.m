@@ -33,9 +33,9 @@
 - (void) setupSubview{
     //close button
     self.closeButton = ({
-        VBFPopFlatButton *button = [[VBFPopFlatButton alloc] initWithFrame:CGRectMake(0, 0, 20, 20) buttonType:buttonCloseType buttonStyle:buttonRoundedStyle animateToInitialState:YES];
-        //button.tintColor = UIColor.blueColor;
-        button.roundBackgroundColor = UIColor.grayColor;
+        CGRect rect = CGRectMake(0, 0, 25, 25);
+        VBFPopFlatButton *button = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonCloseType buttonStyle:buttonPlainStyle animateToInitialState:YES];
+        button.tintColor = UIColor.redColor;
 
         [self addSubview:button];
         button;
@@ -148,7 +148,8 @@
 }
 
 - (void)drawRect:(CGRect)rect{
-    
+    self.closeButton.layer.cornerRadius = CGRectGetHeight(self.closeButton.bounds)/2;
+    self.closeButton.layer.masksToBounds = YES;
 }
 
 @end

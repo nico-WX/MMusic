@@ -10,5 +10,7 @@
 
 /**候选 内容Cell*/
 @interface WaitingCell : UITableViewCell
-
+@property(nonatomic, strong) UILabel *name;
+@property(nonatomic, strong) UILabel *artistName;
+@property(nonatomic, strong) UIImageView *artworkView;
 @end

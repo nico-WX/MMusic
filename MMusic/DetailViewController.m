@@ -272,6 +272,10 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
             queueDes = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[paramters,]];
             //插入当前队列
             [self.playerVC.playerController prependQueueDescriptor:queueDes];
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+            hud.mode = MBProgressHUDModeCustomView;
+            hud.label.text = @"OK";
+            [hud hideAnimated:YES afterDelay:1.5];
         }];
 
         PersonalizedRequestFactory *factort = [PersonalizedRequestFactory personalizedRequestFactory];
@@ -309,7 +313,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 /**显示HUD 到指定的视图中*/
 -(void) showHUDToView:(UIView*) view withResponse:(NSHTTPURLResponse*) response{
     dispatch_async(dispatch_get_main_queue(), ^{
-
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
         UIImage *image;
         //200 段

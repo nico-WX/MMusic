@@ -80,7 +80,6 @@
 		3BDBBBAD2078BE4D00680CCB /* ChartsSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBBBAC2078BE4D00680CCB /* ChartsSongCell.m */; };
 		3BDFCB56207CC09700D85021 /* SearchSectionWaitingHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB55207CC09700D85021 /* SearchSectionWaitingHeader.m */; };
 		3BDFCB59207CE3DE00D85021 /* ResultsSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB58207CE3DE00D85021 /* ResultsSectionHeader.m */; };
-		3BDFCB5C207CEFDC00D85021 /* ResultsSectionFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB5B207CEFDC00D85021 /* ResultsSectionFooter.m */; };
 		3BDFCB5F207CF68C00D85021 /* SearchSectionWaitingFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB5E207CF68C00D85021 /* SearchSectionWaitingFooter.m */; };
 		3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB6120820A4700D85021 /* PlayControllerView.m */; };
 		3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB672082219900D85021 /* PlayProgressView.m */; };
@@ -217,8 +216,6 @@
 		3BDFCB55207CC09700D85021 /* SearchSectionWaitingHeader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchSectionWaitingHeader.m; sourceTree = "<group>"; };
 		3BDFCB57207CE3DE00D85021 /* ResultsSectionHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsSectionHeader.h; sourceTree = "<group>"; };
 		3BDFCB58207CE3DE00D85021 /* ResultsSectionHeader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsSectionHeader.m; sourceTree = "<group>"; };
-		3BDFCB5A207CEFDC00D85021 /* ResultsSectionFooter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsSectionFooter.h; sourceTree = "<group>"; };
-		3BDFCB5B207CEFDC00D85021 /* ResultsSectionFooter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsSectionFooter.m; sourceTree = "<group>"; };
 		3BDFCB5D207CF68C00D85021 /* SearchSectionWaitingFooter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchSectionWaitingFooter.h; sourceTree = "<group>"; };
 		3BDFCB5E207CF68C00D85021 /* SearchSectionWaitingFooter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchSectionWaitingFooter.m; sourceTree = "<group>"; };
 		3BDFCB6020820A4700D85021 /* PlayControllerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayControllerView.h; sourceTree = "<group>"; };
@@ -527,8 +524,6 @@
 				3BB731E0207BAF7E00DC629B /* ResultsViewController.m */,
 				3BDFCB57207CE3DE00D85021 /* ResultsSectionHeader.h */,
 				3BDFCB58207CE3DE00D85021 /* ResultsSectionHeader.m */,
-				3BDFCB5A207CEFDC00D85021 /* ResultsSectionFooter.h */,
-				3BDFCB5B207CEFDC00D85021 /* ResultsSectionFooter.m */,
 				3BDFCB54207CC09700D85021 /* SearchSectionWaitingHeader.h */,
 				3BDFCB55207CC09700D85021 /* SearchSectionWaitingHeader.m */,
 				3BDFCB5D207CF68C00D85021 /* SearchSectionWaitingFooter.h */,
@@ -694,7 +689,6 @@
 				3B9AA8EF1FB46F9300720085 /* Chart.m in Sources */,
 				3B9AA8FB1FB4769500720085 /* Playlist.m in Sources */,
 				3BDFCB5F207CF68C00D85021 /* SearchSectionWaitingFooter.m in Sources */,
-				3BDFCB5C207CEFDC00D85021 /* ResultsSectionFooter.m in Sources */,
 				3BDBBB2F2073D84600680CCB /* ChartsAlbumCell.m in Sources */,
 				3B87992E204FF7E000EE9D2A /* HeadCell.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,

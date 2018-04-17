@@ -81,7 +81,7 @@ typedef NS_OPTIONS(NSUInteger, ChartType){
 -(NSURLRequest*) createSearchWithText:(NSString*) searchText;
 /**通过文本获取搜索历史*/
 -(NSURLRequest*) createSearchHintsWithTerm:(NSString*) term;
-/**通过Herf 请求资源*/
+/**通过(子路径)Herf 请求资源*/
 - (NSURLRequest*)createRequestWithHerf:(NSString*) herf;
 
 /**快捷方法*/
