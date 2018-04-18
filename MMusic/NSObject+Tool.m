@@ -5,10 +5,21 @@
 //  Created by Magician on 2017/12/9.
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
-
+#import <MBProgressHUD.h>
+#import <UIImageView+WebCache.h>
 #import "NSObject+Tool.h"
 #import "AuthorizationManager.h"
 #import <UIKit/UIKit.h>
+
+#import "Album.h"
+#import "Artist.h"
+#import "Activity.h"
+#import "AppleCurator.h"
+#import "Curator.h"
+#import "Song.h"
+#import "Station.h"
+#import "Playlist.h"
+#import "MusicVideo.h"
 
 
 extern NSString *developerTokenExpireNotification;
@@ -87,13 +98,67 @@ extern NSString *userTokenIssueNotification;
 
 /**通过urlString 生成请求体 并设置请求头*/
 -(NSURLRequest*) createRequestWithURLString:(NSString*) urlString setupUserToken:(BOOL) setupUserToken{
-    //转换URL中文及空格
-    urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL *url = [NSURL URLWithString:urlString];
+//转换URL中文及空格 (有二次转码问题)
+//urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    //转码
+//    NSString *encodedString = (NSString *)
+//    CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+//                                                              (CFStringRef)urlString,
+//                                                              (CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",
+//                                                              NULL,
+//                                                              kCFStringEncodingUTF8));
+
+    //转码方法2
+    NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:urlString];
+    NSString *encodedString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:set];
+
+    NSURL *url = [NSURL URLWithString:encodedString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     //设置请求头
     [self setupAuthorizationWithRequest:request setupMusicUserToken:setupUserToken];
     return request;
 }
+
+/**模型中的类型 映射*/
+-(Class) classForResourceType:(NSString*)type{
+    Class cls;
+    if ([type isEqualToString:@"activities"])       cls = Activity.class;
+    if ([type isEqualToString:@"artists"])          cls = Artist.class;
+    if ([type isEqualToString:@"apple-curators"])   cls = AppleCurator.class;
+    if ([type isEqualToString:@"albums"])           cls = Album.class;
+    if ([type isEqualToString:@"curators"])         cls = Curator.class;
+    if ([type isEqualToString:@"songs"])            cls = Song.class;
+    if ([type isEqualToString:@"playlists"])        cls = Playlist.class;
+    if ([type isEqualToString:@"music-videos"])     cls = MusicVideo.class;
+    if ([type isEqualToString:@"stations"])         cls = Station.class;
+    return cls;
+}
+
+-(void)showImageToView:(UIImageView *)imageView withImageURL:(NSString *)url cacheToMemory:(BOOL)cache{
+    NSString *path = IMAGEPATH_FOR_URL(url);
+    UIImage *image = [UIImage imageWithContentsOfFile:path];
+    if (image) {
+        [imageView setImage:image];
+    }else{
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:imageView animated:YES];
+        CGFloat h = CGRectGetHeight(imageView.bounds);
+        CGFloat w = h;
+        NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
+        NSURL *url = [NSURL URLWithString:urlStr];
+        [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            if (cache == YES) {
+                BOOL sucess = [[NSFileManager defaultManager] createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
+                if (sucess == NO) [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+            }
+            Log(@"image=%@",image);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [hud hideAnimated:YES];
+                [hud removeFromSuperview];
+                Log(@"hid=%@",hud);
+            });
+        }];
+    }
+}
+
 
 @end

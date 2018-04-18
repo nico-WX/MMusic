@@ -10,9 +10,11 @@
 @class Resource;
 
 @interface ResponseRoot : MMObject
+/**分页UR(子路径)L*/
 @property(nonatomic, copy) NSString  *next;
+/**当前资源地址(子路径)*/
 @property(nonatomic, copy) NSString  *href;
-
+/**结果对象*/
 @property(nonatomic, strong) NSArray<Resource*> *data;
 @property(nonatomic, strong) NSArray *errors;
 

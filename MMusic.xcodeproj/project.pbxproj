@@ -83,6 +83,7 @@
 		3BDFCB5F207CF68C00D85021 /* SearchSectionWaitingFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB5E207CF68C00D85021 /* SearchSectionWaitingFooter.m */; };
 		3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB6120820A4700D85021 /* PlayControllerView.m */; };
 		3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB672082219900D85021 /* PlayProgressView.m */; };
+		3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -222,6 +223,8 @@
 		3BDFCB6120820A4700D85021 /* PlayControllerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayControllerView.m; sourceTree = "<group>"; };
 		3BDFCB662082219900D85021 /* PlayProgressView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayProgressView.h; sourceTree = "<group>"; };
 		3BDFCB672082219900D85021 /* PlayProgressView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayProgressView.m; sourceTree = "<group>"; };
+		3BDFCBD1208634CD00D85021 /* UIButton+BlockButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIButton+BlockButton.h"; sourceTree = "<group>"; };
+		3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIButton+BlockButton.m"; sourceTree = "<group>"; };
 		914C9E31CA7BED805770445B /* Pods-MMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MMusic.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MMusic/Pods-MMusic.debug.xcconfig"; sourceTree = "<group>"; };
 		B50B155B334DAF7591C6EA42 /* libPods-MMusic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MMusic.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -397,6 +400,8 @@
 				3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */,
 				3B5371E91FD3F500009AFE47 /* MMPlayerController.h */,
 				3B5371EA1FD3F500009AFE47 /* MMPlayerController.m */,
+				3BDFCBD1208634CD00D85021 /* UIButton+BlockButton.h */,
+				3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */,
 			);
 			name = Tool;
 			sourceTree = "<group>";
@@ -693,6 +698,7 @@
 				3B87992E204FF7E000EE9D2A /* HeadCell.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
 				3B469ADE1FF2464D0035E138 /* TodayCell.m in Sources */,
+				3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */,
 				3B23AC751FF236A800F0A9CA /* TodayCollectionViewController.m in Sources */,
 				3BAAB7C9207A45B6007A74EA /* SearchViewController.m in Sources */,
 				3B9AA90D1FB47E0700720085 /* Storefront.m in Sources */,

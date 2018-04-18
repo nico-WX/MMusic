@@ -104,20 +104,23 @@ static PlayerViewController *_instance;
     if (image) {
         [self.playerView.artworkView setImage:image];
     }else{
-        //图片地址
-        int h = CGRectGetHeight(self.playerView.artworkView.bounds);
-        int w = h;
-        NSString *url = self.nowPlaySong.artwork.url;
-        url = [self stringReplacingOfString:url height:h width:w];
 
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.playerView.artworkView animated:YES];
+        [self showImageToView:_playerView.artworkView withImageURL:self.nowPlaySong.artwork.url cacheToMemory:YES];
 
-        //添加 封面 图片
-        [_playerView.artworkView sd_setImageWithURL:[NSURL URLWithString:url] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            BOOL sucess = [[NSFileManager defaultManager] createFileAtPath:imagePath contents:UIImagePNGRepresentation(image) attributes:nil];
-            if (sucess==NO) [[NSFileManager defaultManager] removeItemAtPath:imagePath error:nil];
-            [hud hideAnimated:YES];
-        }];
+//        //图片地址
+//        int h = CGRectGetHeight(self.playerView.artworkView.bounds);
+//        int w = h;
+//        NSString *url = self.nowPlaySong.artwork.url;
+//        url = [self stringReplacingOfString:url height:h width:w];
+//
+//        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.playerView.artworkView animated:YES];
+//        //添加 封面 图片
+//        [_playerView.artworkView sd_setImageWithURL:[NSURL URLWithString:url] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+//            BOOL sucess = [[NSFileManager defaultManager] createFileAtPath:imagePath contents:UIImagePNGRepresentation(image) attributes:nil];
+//            if (sucess==NO) [[NSFileManager defaultManager] removeItemAtPath:imagePath error:nil];
+//            [hud hideAnimated:YES afterDelay:0.1];
+//            [hud removeFromSuperview];
+//        }];
     }
 
     //歌曲  歌手信息
@@ -152,13 +155,13 @@ static PlayerViewController *_instance;
     }];
 }
 
--(Song *)nowPlaySong{
-    if (!_nowPlaySong) {
-        NSString *songID = self.playerController.nowPlayingItem.playbackStoreID;
-       // [RequestFactory requestFactory] create
-    }
-    return _nowPlaySong;
-}
+//-(Song *)nowPlaySong{
+//    if (!_nowPlaySong) {
+//        NSString *songID = self.playerController.nowPlayingItem.playbackStoreID;
+//       // [RequestFactory requestFactory] create
+//    }
+//    return _nowPlaySong;
+//}
 
 #pragma mark layz 音乐播放控制器
 -(MPMusicPlayerController *)playerController{
