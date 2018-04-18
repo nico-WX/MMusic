@@ -92,21 +92,8 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     [super viewDidAppear:animated];
     //封面海报
     Artwork *artowrk = self.album ? self.album.artwork : self.playlist.artwork;
-    NSString *path = IMAGEPATH_FOR_URL(artowrk.url);
-    UIImage *image = [UIImage imageWithContentsOfFile:path];
-    if (image) {
-        [self.header.artworkView setImage:image];
-    }else{
-        CGFloat w = CGRectGetWidth(self.header.artworkView.bounds);
-        CGFloat h = w;
-        NSString *urlPath = [self stringReplacingOfString:artowrk.url height:h width:w];
-        [self.header.artworkView sd_setImageWithURL:[NSURL URLWithString:urlPath] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            //图片缓存入内存
-            BOOL sucess = [[NSFileManager defaultManager] createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
-            //存入失败, 删除
-            if (sucess == NO) [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
-        }];
-    }
+    [self showImageToView:self.header.artworkView withImageURL:artowrk.url cacheToMemory:YES];
+
     // 专辑或播放列表信息
     self.header.nameLabel.text = _album ? _album.name : _playlist.name;
     self.header.desc.text      = _album ? _album.artistName : _playlist.desc.standard;

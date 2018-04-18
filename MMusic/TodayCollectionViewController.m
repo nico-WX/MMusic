@@ -197,35 +197,9 @@ static NSString *const cellIdentifier = @"todayCell";
         playlist = (Playlist*)resource;
     }
 
-
     Artwork *artwork = album ? album.artwork : playlist.artwork;
-    //封面图片在磁盘中的路径(如果有,url作为md5加密, 加密后的字符作为文件名称: urlMD5String.png)
-    NSString *filePath = IMAGEPATH_FOR_URL(artwork.url);
-    UIImage *image = [UIImage imageWithContentsOfFile:filePath];
-    if (image) {
-        [cell.artworkView setImage:image];
-    }
-    else{
-        //image URL
-        CGFloat w = CGRectGetWidth(cell.contentView.bounds);
-        CGFloat h = w;
-        if (h!=0) {
-            NSString *imagePath = [self stringReplacingOfString:artwork.url height:h width:w];
-            NSURL *imageURL = [NSURL URLWithString:imagePath];
-            [cell.artworkView sd_setImageWithURL:imageURL completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+    [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
 
-                NSFileManager *fm = [NSFileManager defaultManager];
-                BOOL isDir = NO;
-                BOOL exist = [fm fileExistsAtPath:ARTWORKIMAGEPATH isDirectory:&isDir];
-                //目标文件夹不存在就创建
-                if (!(isDir && exist)){
-                    [fm createDirectoryAtPath:ARTWORKIMAGEPATH withIntermediateDirectories:YES attributes:nil error:nil];
-                }
-                BOOL sucessed = [fm createFileAtPath:filePath contents:UIImagePNGRepresentation(image) attributes:nil];
-                if (!sucessed) [fm removeItemAtPath:filePath error:&error];
-           }];
-        }
-    }
     return cell;
 }
 

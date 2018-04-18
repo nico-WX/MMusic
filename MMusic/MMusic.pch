@@ -25,6 +25,8 @@
 #define ARTWORKIMAGEPATH [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"artwork"]
 //封面图片地址
 #define IMAGEPATH_FOR_URL(urlString) [[ARTWORKIMAGEPATH stringByAppendingPathComponent:[urlString md5String]] stringByAppendingString:@".png"]
+
+    //end __OBJC__
     #endif
 #endif /* MMusic_pch */
 

@@ -98,15 +98,8 @@ extern NSString *userTokenIssueNotification;
 
 /**通过urlString 生成请求体 并设置请求头*/
 -(NSURLRequest*) createRequestWithURLString:(NSString*) urlString setupUserToken:(BOOL) setupUserToken{
-//转换URL中文及空格 (有二次转码问题)
-//urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    //转码
-//    NSString *encodedString = (NSString *)
-//    CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-//                                                              (CFStringRef)urlString,
-//                                                              (CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",
-//                                                              NULL,
-//                                                              kCFStringEncodingUTF8));
+    //转换URL中文及空格 (有二次转码问题)
+    //urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
     //转码方法2
     NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:urlString];
@@ -139,22 +132,43 @@ extern NSString *userTokenIssueNotification;
     UIImage *image = [UIImage imageWithContentsOfFile:path];
     if (image) {
         [imageView setImage:image];
+        //重用(如果是重用)遗留
+        for (UIView *view in imageView.subviews) {
+            if ([view isKindOfClass:MBProgressHUD.class]) {
+                [view removeFromSuperview];
+            }
+        }
     }else{
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:imageView animated:YES];
+        //在块中移除
+        [MBProgressHUD showHUDAddedTo:imageView animated:YES];
         CGFloat h = CGRectGetHeight(imageView.bounds);
-        CGFloat w = h;
+        CGFloat w = CGRectGetWidth(imageView.bounds);
         NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
         NSURL *url = [NSURL URLWithString:urlStr];
         [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             if (cache == YES) {
-                BOOL sucess = [[NSFileManager defaultManager] createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
-                if (sucess == NO) [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+
+                //判断目标文件夹是否存在
+                NSFileManager *fm = [NSFileManager defaultManager];
+                BOOL isDir = NO;
+                BOOL exist = [fm fileExistsAtPath:ARTWORKIMAGEPATH isDirectory:&isDir];
+                //目标文件夹不存在就创建
+                if (!(isDir && exist)){
+                    [fm createDirectoryAtPath:ARTWORKIMAGEPATH withIntermediateDirectories:YES attributes:nil error:nil];
+                }
+
+                //存储文件
+                BOOL sucess = [fm createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
+                if (sucess == NO) [fm removeItemAtPath:path error:nil];
             }
-            Log(@"image=%@",image);
+            //删除HUD
             dispatch_async(dispatch_get_main_queue(), ^{
-                [hud hideAnimated:YES];
-                [hud removeFromSuperview];
-                Log(@"hid=%@",hud);
+                //多次添加
+                for (UIView *view in imageView.subviews) {
+                    if ([view isKindOfClass:MBProgressHUD.class]) {
+                        [view removeFromSuperview];
+                    }
+                }
             });
         }];
     }

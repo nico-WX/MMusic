@@ -195,24 +195,8 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
     cell.artistLabel.text = mv.artistName;
 
     Artwork *art = mv.artwork;
-    NSString *path = IMAGEPATH_FOR_URL(art.url);
-    UIImage *image = [UIImage imageWithContentsOfFile:path];
-    if (image) {
-        cell.artworkView.image = image;
-    }else{
-        CGFloat w  = CGRectGetWidth(cell.contentView.bounds);
-        CGFloat h = w*0.561;
-        if (h != 0) {
-            NSString *urlStr = [self stringReplacingOfString:art.url height:h width:w];
-            [cell.artworkView sd_setImageWithURL:[NSURL URLWithString:urlStr] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-                if (!error) {
-                    NSData *data = UIImagePNGRepresentation(image);
-                    BOOL succeed = [[NSFileManager defaultManager] createFileAtPath:path contents:data attributes:nil];
-                    if (succeed==NO) [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
-                }
-            }];
-        }
-    }
+    [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:YES];
+
     cell.backgroundColor = UIColor.whiteColor;
     return cell;
 }

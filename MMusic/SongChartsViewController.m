@@ -170,23 +170,8 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
     cell.artistLabel.text = song.artistName;
 
     Artwork *art = song.artwork;
-    NSString *path = IMAGEPATH_FOR_URL(art.url);
-    UIImage *image = [UIImage imageWithContentsOfFile:path];
-    if (image) {
-        [cell.artworkView setImage:image];
-    }else{
-        CGFloat h = CGRectGetHeight(cell.bounds);
-        CGFloat w = h;
-        if (h != 0 ) {
-            NSString *imageStr = [self stringReplacingOfString:art.url height:h width:w];
-            [cell.artworkView sd_setImageWithURL:[NSURL URLWithString:imageStr] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-                BOOL sucessed = [[NSFileManager defaultManager] createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
-                if (sucessed == NO) {
-                    [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
-                }
-            }];
-        }
-    }
+    [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:YES];
+
     cell.contentView.backgroundColor = [UIColor colorWithRed:0.96 green:0.96 blue:0.96 alpha:0.95];
     return cell;
 }

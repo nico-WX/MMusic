@@ -185,21 +185,8 @@ CGFloat spacing = 5.0f;
 
     //专辑
     Artwork *artwork = album.artwork;
-    NSString *path = IMAGEPATH_FOR_URL(artwork.url);
-    UIImage *image = [UIImage imageWithContentsOfFile:path];
-    if (image) {
-        [cell.artworkView setImage:image];
-    }else{
-        CGFloat w = CGRectGetWidth(cell.bounds);
-        CGFloat h = w;//CGRectGetHeight(cell.bounds);
-        if (h != 0) {
-            NSString *url = [self stringReplacingOfString:artwork.url height:h width:w];
-            [cell.artworkView sd_setImageWithURL:[NSURL URLWithString:url] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-                BOOL succeed = [[NSFileManager defaultManager] createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
-                if (!succeed) [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
-            }];
-        }
-    }
+    [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
+
     cell.backgroundColor = UIColor.whiteColor;
     return cell;
 }

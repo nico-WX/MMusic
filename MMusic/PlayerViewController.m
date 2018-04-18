@@ -65,9 +65,7 @@ static PlayerViewController *_instance;
     [center addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
         //更新本地现在播放项目  及 播放项目的index  在设值方法中触发更新UI方法
         weakSelf.nowPlaySong = [weakSelf.songs objectAtIndex:weakSelf.playerController.indexOfNowPlayingItem];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self updateNowPlayItemToView];
-        });
+        [weakSelf updateNowPlayItemToView];
 
         //块是否为空, 不为空,向外传递正在播放的项目
         if (_nowPlayingItem) {
@@ -97,31 +95,10 @@ static PlayerViewController *_instance;
 /**更新当前播放的音乐信息到视图上*/
 - (void) updateNowPlayItemToView{
 
+
     [self.playerView.closeButton animateToType:buttonCloseType];
     //歌曲封面
-    NSString *imagePath = IMAGEPATH_FOR_URL(self.nowPlaySong.artwork.url);
-    UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
-    if (image) {
-        [self.playerView.artworkView setImage:image];
-    }else{
-
-        [self showImageToView:_playerView.artworkView withImageURL:self.nowPlaySong.artwork.url cacheToMemory:YES];
-
-//        //图片地址
-//        int h = CGRectGetHeight(self.playerView.artworkView.bounds);
-//        int w = h;
-//        NSString *url = self.nowPlaySong.artwork.url;
-//        url = [self stringReplacingOfString:url height:h width:w];
-//
-//        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.playerView.artworkView animated:YES];
-//        //添加 封面 图片
-//        [_playerView.artworkView sd_setImageWithURL:[NSURL URLWithString:url] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-//            BOOL sucess = [[NSFileManager defaultManager] createFileAtPath:imagePath contents:UIImagePNGRepresentation(image) attributes:nil];
-//            if (sucess==NO) [[NSFileManager defaultManager] removeItemAtPath:imagePath error:nil];
-//            [hud hideAnimated:YES afterDelay:0.1];
-//            [hud removeFromSuperview];
-//        }];
-    }
+    [self showImageToView:self.playerView.artworkView withImageURL:self.nowPlaySong.artwork.url cacheToMemory:YES];
 
     //歌曲  歌手信息
     self.playerView.songNameLabel.text = self.nowPlaySong.name;
@@ -155,13 +132,6 @@ static PlayerViewController *_instance;
     }];
 }
 
-//-(Song *)nowPlaySong{
-//    if (!_nowPlaySong) {
-//        NSString *songID = self.playerController.nowPlayingItem.playbackStoreID;
-//       // [RequestFactory requestFactory] create
-//    }
-//    return _nowPlaySong;
-//}
 
 #pragma mark layz 音乐播放控制器
 -(MPMusicPlayerController *)playerController{
