@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+/**排行榜分页显示 视图控制器*/
 @interface ChartsViewController : UIViewController
 
 @end

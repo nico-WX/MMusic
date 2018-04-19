@@ -13,9 +13,6 @@
 
 @interface DetailViewController : UIViewController
 
-@property(nonatomic, strong) Album *album;
-@property(nonatomic, strong) Playlist *playlist;
-
 -(instancetype)initWithAlbum:(Album*)album;
 -(instancetype)initWithPlaylist:(Playlist*) playlist;
 /**直接通过专辑,或者播放列表初始化*/

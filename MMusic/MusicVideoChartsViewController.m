@@ -5,6 +5,7 @@
 //  Created by Magician on 2018/4/2.
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
+#import <MJRefresh.h>
 #import <Masonry.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <UIImageView+WebCache.h>
@@ -17,7 +18,8 @@
 #import "MusicVideo.h"
 #import "Artwork.h"
 
-@interface MusicVideoChartsViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,MPSystemMusicPlayerController,UICollectionViewDelegateFlowLayout>
+@interface MusicVideoChartsViewController()<UICollectionViewDataSource,
+UICollectionViewDelegate,MPSystemMusicPlayerController,UICollectionViewDelegateFlowLayout>
 /**卡片视图*/
 @property(nonatomic, strong) NewCardView *cardView;
 
@@ -75,7 +77,7 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
         CGFloat navH = CGRectGetHeight(self.navigationController.navigationBar.frame);
         CGFloat tabH = 0.0f;//CGRectGetHeight(self.tabBarController.tabBar.frame);
 
-        UIEdgeInsets padding = UIEdgeInsetsMake((statusH+navH+10), 5, (tabH+0), 5);
+        UIEdgeInsets padding = UIEdgeInsetsMake((statusH+navH+4), 4, (tabH+0), 4);
         //layout cardView
         UIView *superview = self.view;
         [self.cardView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -93,6 +95,22 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
         }];
     });
 
+    __weak typeof(self) weakSelf = self;
+    //刷新
+    self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        weakSelf.mvList = nil;
+        [weakSelf requestData];
+        [weakSelf.collectionView.mj_header endRefreshing];
+    }];
+
+    //上拉加载更多
+    self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        if (weakSelf.next) {
+            [weakSelf loadNextPage];
+        }else{
+            [weakSelf.collectionView.mj_footer endRefreshingWithNoMoreData];
+        }
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -108,7 +126,6 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             if (json) {
                 [self serializationDict:json];
-                [self.collectionView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }else{
                 [self requestHongKongMVData];
             }
@@ -116,42 +133,8 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
     }];
 }
 
-/**解析返回的JSON 到对象模型中*/
-- (void)serializationDict:(NSDictionary*) json{
-    json = [json objectForKey:@"results"];
-    for (NSDictionary *temp in [json objectForKey:@"music-videos"] ) {
-        NSString *page = [temp objectForKey:@"next"];
-        self.next = page ? page : nil;
-
-        [self.cardView.titleLabel performSelectorOnMainThread:@selector(setText:) withObject:[temp objectForKey:@"name"] waitUntilDone:NO];
-        NSMutableArray *tempList = [NSMutableArray array];
-        for (NSDictionary *mvData in [temp objectForKey:@"data"]) {
-            //过滤掉 无值的情况
-            if ([mvData objectForKey:@"attributes"]) {
-                MusicVideo *mv = [MusicVideo instanceWithDict:[mvData objectForKey:@"attributes"]];
-                [tempList addObject:mv];
-            }
-        }
-        //添加到当前 列表
-        if (!_mvList) {
-            self.mvList = tempList;
-        }else{
-            self.mvList = [self.mvList arrayByAddingObjectsFromArray:tempList];
-        }
-        NSMutableArray *queueList = [NSMutableArray array];
-        for (MusicVideo *mv in self.mvList) {
-            NSDictionary *dict = mv.playParams;
-            MPMusicPlayerPlayParameters *parm = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:dict];
-            [queueList addObject:parm];
-        }
-        self.parametersList = queueList;
-        self.queueDesc = [[MPMusicPlayerPlayParametersQueueDescriptor alloc]  initWithPlayParametersQueue:queueList];
-    }
-}
-
 /**加载下一页数据*/
 -(void) loadNextPage{
-    Log(@"nextPage!!!");
     if (self.next) {
         NSURLRequest *request = [[RequestFactory requestFactory] createRequestWithHerf:self.next];
         [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -159,7 +142,6 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
                 NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];
                 if (json) {
                     [self serializationDict:json];
-                    [self.collectionView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                 }
             }
         }];
@@ -175,12 +157,45 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             if (json) {
                 [self serializationDict:json];
-                [self.collectionView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }
         }
     }];
 }
 
+/**解析返回的JSON 到对象模型中*/
+- (void)serializationDict:(NSDictionary*) json{
+    json = [json objectForKey:@"results"];
+    for (NSDictionary *temp in [json objectForKey:@"music-videos"] ) {
+
+        NSMutableArray *tempList = [NSMutableArray array];
+        for (NSDictionary *mvData in [temp objectForKey:@"data"]) {
+            //过滤掉 无值的情况
+            if ([mvData objectForKey:@"attributes"]) {
+                MusicVideo *mv = [MusicVideo instanceWithDict:[mvData objectForKey:@"attributes"]];
+                [tempList addObject:mv];
+            }
+        }
+        NSString *page = [temp objectForKey:@"next"];
+        self.next = page ? page : nil;
+        self.mvList = self.mvList==NULL ? tempList : [self.mvList arrayByAddingObjectsFromArray:tempList];
+
+        //刷新UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.cardView.titleLabel.text = [temp objectForKey:@"name"];
+            [self.collectionView reloadData];
+            [self.collectionView.mj_footer endRefreshing];
+        });
+
+        NSMutableArray *queueList = [NSMutableArray array];
+        for (MusicVideo *mv in self.mvList) {
+            NSDictionary *dict = mv.playParams;
+            MPMusicPlayerPlayParameters *parm = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:dict];
+            [queueList addObject:parm];
+        }
+        self.parametersList = queueList;
+        self.queueDesc = [[MPMusicPlayerPlayParametersQueueDescriptor alloc]  initWithPlayParametersQueue:queueList];
+    }
+}
 #pragma mark <UICollectionViewDataSource>
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.mvList.count;
@@ -204,15 +219,11 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
 #pragma mark <UICollectionViewDelegate>
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-//    NSDictionary *dict =  [self.mvList objectAtIndex:indexPath.row].playParams;
-//    MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:dict];
-//    MPMusicPlayerPlayParametersQueueDescriptor *des = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[parameters,]];
     [self.queueDesc setStartItemPlayParameters:[self.parametersList objectAtIndex:indexPath.row]];
     [self openToPlayQueueDescriptor:self.queueDesc];
 }
-
+/**跳转到应用播放*/
 - (void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor{
-
     UIApplication *app = [UIApplication sharedApplication];
    // NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString]; //自己的应用设置
     NSURL *url = [NSURL URLWithString:@"Music:prefs:root=MUSIC"];

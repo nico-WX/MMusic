@@ -30,7 +30,6 @@
 		3B4B866D207385140053BF18 /* NewCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B866B207385130053BF18 /* NewCardView.m */; };
 		3B5371E51FD148B6009AFE47 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E41FD148B6009AFE47 /* Genre.m */; };
 		3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E71FD2BC60009AFE47 /* MMObject.m */; };
-		3B5371EB1FD3F500009AFE47 /* MMPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371EA1FD3F500009AFE47 /* MMPlayerController.m */; };
 		3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */; };
 		3B7862B42063D23B00E9A26A /* more-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B7862B22063D23A00E9A26A /* more-gray.png */; };
 		3B7862B52063D23B00E9A26A /* more-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B7862B32063D23A00E9A26A /* more-blue.png */; };
@@ -123,8 +122,6 @@
 		3B5371E41FD148B6009AFE47 /* Genre.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Genre.m; sourceTree = "<group>"; };
 		3B5371E61FD2BC60009AFE47 /* MMObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMObject.h; sourceTree = "<group>"; };
 		3B5371E71FD2BC60009AFE47 /* MMObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMObject.m; sourceTree = "<group>"; };
-		3B5371E91FD3F500009AFE47 /* MMPlayerController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMPlayerController.h; sourceTree = "<group>"; };
-		3B5371EA1FD3F500009AFE47 /* MMPlayerController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMPlayerController.m; sourceTree = "<group>"; };
 		3B5371FC1FDBF50B009AFE47 /* NSObject+Tool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+Tool.h"; sourceTree = "<group>"; };
 		3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Tool.m"; sourceTree = "<group>"; };
 		3B7862B22063D23A00E9A26A /* more-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "more-gray.png"; sourceTree = "<group>"; };
@@ -398,8 +395,6 @@
 				3B9AA9151FB588AF00720085 /* AuthorizationManager.m */,
 				3B5371FC1FDBF50B009AFE47 /* NSObject+Tool.h */,
 				3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */,
-				3B5371E91FD3F500009AFE47 /* MMPlayerController.h */,
-				3B5371EA1FD3F500009AFE47 /* MMPlayerController.m */,
 				3BDFCBD1208634CD00D85021 /* UIButton+BlockButton.h */,
 				3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */,
 			);
@@ -690,7 +685,6 @@
 				3B9AA90A1FB47D6B00720085 /* Station.m in Sources */,
 				3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */,
 				3B9AA9041FB47A6C00720085 /* Recommendation.m in Sources */,
-				3B5371EB1FD3F500009AFE47 /* MMPlayerController.m in Sources */,
 				3B9AA8EF1FB46F9300720085 /* Chart.m in Sources */,
 				3B9AA8FB1FB4769500720085 /* Playlist.m in Sources */,
 				3BDFCB5F207CF68C00D85021 /* SearchSectionWaitingFooter.m in Sources */,

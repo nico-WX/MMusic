@@ -143,8 +143,6 @@
 }
 
 -(NSURLRequest*) createManageRatingsRequestWithType:(RatingsType) type resourceIds:(NSArray<NSString*> *) ids{
-    //PUT https://api.music.apple.com/v1/me/ratings/songs/{id}
-    //    https://api.music.apple.com/v1/me/ratings/songs/1354918487
     NSString *requestType = [self resolveRatingManagerRequestType:type];
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"ratings"];
     path = [path stringByAppendingPathComponent:requestType];

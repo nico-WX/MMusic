@@ -13,13 +13,9 @@
 #import "SongChartsViewController.h"
 #import "NewCardView.h"
 
-
 @interface ChartsViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource>
-
 //分页控制器
 @property(nonatomic, strong) UIPageViewController *pageViewController;
-//PageController
-@property(nonatomic, strong) UIPageControl *pageController;
 
 //子控制器数组
 @property(nonatomic, strong) NSArray<UIViewController*> *pageList;
@@ -28,7 +24,6 @@
 @property(nonatomic, strong) AlbumChartsViewController      *albumVC;
 @property(nonatomic, strong) MusicVideoChartsViewController *mvVC;
 @property(nonatomic, strong) SongChartsViewController       *songVC;
-
 @end
 
 //排行榜视图
@@ -38,12 +33,13 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
+    //由于可能的类型只有:  albums, songs, and music-videos.  所以这里生成3个对应的视图控制器
     _albumVC= [[AlbumChartsViewController alloc] init];
     _mvVC   = [[MusicVideoChartsViewController alloc] init];
     _songVC = [[SongChartsViewController alloc] init];
     _pageList = @[_albumVC,_mvVC,_songVC];
 
-    //添加到当前导航控制器 子控制器中,   子控制器方便访问导航控制器
+    //添加到当前导航控制器子控制器中, 子控制器方便访问导航控制器
     [self addChildViewController:_albumVC];
     [self addChildViewController:_mvVC];
     [self addChildViewController:_songVC];
@@ -59,7 +55,7 @@
                                        animated:YES
                                      completion:nil];
 
-
+    //属性设置
     self.pageViewController.view.frame = self.view.frame;
     self.pageViewController.view.backgroundColor = UIColor.whiteColor;
     [self.pageViewController didMoveToParentViewController:self];
@@ -70,18 +66,13 @@
     // Dispose of any resources that can be recreated.
 }
 - (void)viewDidAppear:(BOOL)animated{
+
+    //获取分页指示视图 设置属性
     for (UIView *view in self.pageViewController.view.subviews) {
         if ([view isKindOfClass:[UIPageControl class]]) {
-            self.pageController = (UIPageControl*) view;
-            //self.pageController.backgroundColor = UIColor.grayColor;
-            self.pageController.currentPageIndicatorTintColor = UIColor.greenColor;
-            self.pageController.pageIndicatorTintColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.9];
-
-            //下列无效???
-            CGRect rect = self.pageController.frame;
-            rect.size.height = 20.0f;
-            [self.pageController setFrame:rect];
-
+            UIPageControl *pageCtr = (UIPageControl*)view;
+            pageCtr.currentPageIndicatorTintColor = UIColor.greenColor;
+            pageCtr.pageIndicatorTintColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.9];
         }
     }
 }
@@ -94,34 +85,36 @@
                                                                             options:nil];
         _pageViewController.delegate = self;
         _pageViewController.dataSource = self;
-        _pageViewController.view.backgroundColor = UIColor.grayColor ;
-
     }
     return _pageViewController;
 }
 
-
 #pragma  mark UIPageViewController DataSource
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
+    //当前控制器 的上一个控制器
     NSUInteger index = [self.pageList indexOfObject:viewController];
     if (index==0 ||index==NSNotFound) return nil;
     index--;
     return [self.pageList objectAtIndex:index];
 }
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
+    //当前控制器的下一个控制器
     NSUInteger index = [self.pageList indexOfObject:viewController];
     if (index==NSNotFound) return nil;
 
     index++;
-    if (index==self.pageList.count) return nil;
+    if (index >= self.pageList.count) return nil;
 
     return [self.pageList objectAtIndex:index];
 }
 
+//总页数
 -(NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController{
     return self.pageList.count;
 }
+//默认显示那一页
 -(NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController{
     return 0;
 }
+
 @end

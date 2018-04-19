@@ -10,8 +10,7 @@
 #import <VBFPopFlatButton.h>
 
 @interface SongCell : UITableViewCell
-@property(nonatomic, strong) UILabel *sortLabel;
+@property(nonatomic, strong) UIImageView *artworkView;
 @property(nonatomic, strong) UILabel *songNameLabel;
 @property(nonatomic, strong) UILabel *artistLabel;
-
 @end

@@ -37,15 +37,13 @@
 
 - (void)drawRect:(CGRect)rect {
     // Drawing code
-
     __weak typeof(self) weakSelf = self;
     UIEdgeInsets padding = UIEdgeInsetsMake(5, 5, 5, 5);
-    //UIView *superview = self;
     [self.artworkView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.mas_top).with.offset(padding.top);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
         make.bottom.mas_equalTo(weakSelf.mas_bottom).with.offset(-padding.bottom);
-        make.width.equalTo(weakSelf.mas_height).with.offset(padding.top*2);
+        make.width.equalTo(weakSelf.mas_height).with.offset(-padding.top*2);
     }];
 
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -60,10 +58,7 @@
         make.left.mas_equalTo(weakSelf.artworkView.mas_right).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
         make.bottom.mas_equalTo(weakSelf.mas_bottom).with.offset(-padding.bottom);
-
     }];
-
-
 }
 
 

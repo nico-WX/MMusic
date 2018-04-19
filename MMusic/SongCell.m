@@ -6,20 +6,16 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
+#import <Masonry.h>
 #import "SongCell.h"
 
 @implementation SongCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        self.sortLabel = ({
-            UILabel *sort = [[UILabel alloc] init];
-            [sort setTextAlignment:NSTextAlignmentCenter];
-            [sort setFont:[UIFont systemFontOfSize:28]];
-            [sort setTextColor:[UIColor grayColor]];
-            [self.contentView addSubview:sort];
-            sort;
-        });
+
+        self.artworkView = UIImageView.new;
+        [self.contentView addSubview:self.artworkView];
 
         self.songNameLabel = ({
             UILabel *label = [[UILabel alloc] init];
@@ -34,80 +30,39 @@
             [self.contentView addSubview:label];
             label;
         });
-
-
-//        self.moreButton = ({
-//            UIButton *button = [[UIButton alloc] init];
-//            [button setImage:[UIImage imageNamed:@"more-gray"] forState:UIControlStateNormal];
-//            [button setImage:[UIImage imageNamed:@"more-blue"] forState:UIControlStateHighlighted];
-//            [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-//            [self.contentView addSubview:button];
-//            button;
-//        });
     }
     return self;
 }
 
+- (void)drawRect:(CGRect)rect{
+    UIEdgeInsets padding = UIEdgeInsetsMake(2, 2, 2, 2);
 
+    __weak typeof(self) weakSelf = self;
+    UIView *superview = self.contentView;
+    [self.artworkView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(superview.mas_top).with.offset(padding.top);
+        make.left.mas_equalTo(superview.mas_left).with.offset(padding.left);
+        make.bottom.mas_equalTo(superview.mas_bottom).with.offset(-padding.bottom);
+        CGFloat w = CGRectGetHeight(superview.bounds)-padding.top-padding.bottom;
+        make.width.mas_equalTo(w);
+    }];
 
-- (void)layoutSubviews{
-    CGFloat spacing = 4.0f;
-    CGRect rect = self.contentView.bounds;
+    [self.songNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(superview.mas_top).with.offset(padding.top);
+        make.left.mas_equalTo(weakSelf.artworkView.mas_right).with.offset(padding.left);
+        make.right.mas_equalTo(superview.mas_right).with.offset(-padding.right);
+        CGFloat h = CGRectGetHeight(superview.bounds)-padding.top-padding.bottom;
+        make.height.mas_equalTo(h*0.6);
+    }];
 
-    //sort label
-    self.sortLabel.frame =({
-        CGFloat sortX = CGRectGetMinX(rect)+spacing;
-        CGFloat sortY = CGRectGetMinY(rect)+spacing;
-        CGFloat sortH = CGRectGetHeight(rect)-spacing*2;
-        CGFloat sortW = sortH;
-        CGRect sortRect = CGRectMake(sortX, sortY, sortW, sortH);
-        sortRect;
-    });
-
-    //song name
-    self.songNameLabel.frame = ({
-        CGFloat x = CGRectGetMaxX(self.sortLabel.frame) + spacing;
-        CGFloat y = CGRectGetMinY(self.sortLabel.frame);
-        CGFloat h = CGRectGetHeight(rect)/2;
-        CGFloat w = CGRectGetWidth(rect)*0.8f; //
-        CGRect labelRect = CGRectMake(x,y, w, h);
-        labelRect;
-    });
-
-    //artist
-    self.artistLabel.frame = ({
-        CGFloat x = CGRectGetMinX(self.songNameLabel.frame);
-        CGFloat y = CGRectGetMaxY(self.songNameLabel.frame);
-        CGFloat w = CGRectGetWidth(self.songNameLabel.frame);
-        CGFloat h = CGRectGetHeight(rect)/2 - spacing;
-        CGRect labelRect = CGRectMake(x, y, w, h);
-
-        labelRect;
-    });
-
-//    //more button
-//    self.moreButton.frame = ({
-//        CGFloat h = CGRectGetHeight(rect) -4;
-//        CGFloat w = h;
-//        CGFloat x = CGRectGetMaxX(rect) - w -2;
-//        CGFloat y = CGRectGetMinY(rect) - 2;
-//        CGRect buttonRect = CGRectMake(x, y, w, h);
-//        buttonRect;
-//    });
-
+    [self.artistLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.songNameLabel.mas_bottom);
+        make.left.mas_equalTo(weakSelf.artworkView.mas_right).with.offset(padding.left);
+        make.right.mas_equalTo(superview.mas_right).with.offset(-padding.right);
+        make.bottom.mas_equalTo(superview.mas_bottom).with.offset(-padding.bottom);
+    }];
 
 }
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    // Initialization code
-
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
 
 @end

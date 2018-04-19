@@ -26,6 +26,8 @@
 #import "PersonalizedRequestFactory.h"
 
 @interface DetailViewController ()<UITableViewDelegate,UITableViewDataSource>
+@property(nonatomic, strong) Album *album;
+@property(nonatomic, strong) Playlist *playlist;
 /**顶部视图*/
 @property(nonatomic, strong) HeaderView *header;
 @property(nonatomic, strong) UITableView *tableView;
@@ -81,7 +83,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     });
 
     //表头视图(不是节头)
-    self.header = [[HeaderView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 200)];
+    self.header = [[HeaderView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 150)];
     self.header.backgroundColor = UIColor.whiteColor;
 
     self.tableView.tableHeaderView = self.header;
@@ -117,10 +119,9 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
     //song info
     Song *song = [self.songs objectAtIndex:indexPath.row];
-    cell.sortLabel.text = [NSString stringWithFormat:@"%ld",indexPath.row+1];
     cell.songNameLabel.text = song.name;
     cell.artistLabel.text = song.artistName;
-
+    [self showImageToView:cell.artworkView withImageURL:song.artwork.url cacheToMemory:NO];
 
     //判断 当前cell显示的 与正在播放的item 是否为同一个,
     NSString *nowPlaySongID = self.playerVC.playerController.nowPlayingItem.playbackStoreID;
@@ -128,11 +129,9 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
     //不相同,把原来改色的cell恢复颜色,<重用遗留>
     if (![nowPlaySongID isEqualToString:cellSongID]) {
-        [cell.sortLabel setTextColor:[UIColor grayColor]];
         [cell.songNameLabel setTextColor:[UIColor blackColor]];
         [cell.artistLabel setTextColor:[UIColor grayColor]];
     }else{
-        [cell.sortLabel setTextColor:[UIColor blueColor]];
         [cell.songNameLabel setTextColor:[UIColor blueColor]];
         [cell.artistLabel setTextColor:[UIColor blueColor]];
     }
@@ -157,6 +156,9 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     [self presentViewController:self.playerVC animated:YES completion:nil];
 
 }
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 44.0f;
+}
 
 #pragma mark Layz
 -(PlayerViewController *)playerVC{
@@ -178,13 +180,12 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
                 //修改在正在播放的song cell 颜色
                 if ([songID isEqualToString:nowPlaySongID]) {
-                    [cell.sortLabel setTextColor:blue];
+
                     [cell.songNameLabel setTextColor:blue];
                     [cell.artistLabel setTextColor:blue];
                 }else{
                     //上一次播放的cell 改回原来的颜色  通过比对颜色,
                     if (CGColorEqualToColor(blue.CGColor, cell.songNameLabel.textColor.CGColor)) {
-                        [cell.sortLabel setTextColor:[UIColor grayColor]];
                         [cell.songNameLabel setTextColor:[UIColor blackColor]];
                         [cell.artistLabel setTextColor:[UIColor grayColor]];
                     }

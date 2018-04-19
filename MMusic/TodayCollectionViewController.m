@@ -15,8 +15,8 @@
 #import "HeadCell.h"
 #import "DetailViewController.h"
 
-
 #import "PersonalizedRequestFactory.h"
+#import "Resource.h"
 #import "Artwork.h"
 #import "Playlist.h"
 #import "Album.h"
@@ -65,7 +65,7 @@ static NSString *const cellIdentifier = @"todayCell";
     [self.view addSubview:self.collectionView];
 
     //布局 集合视图
-    UIEdgeInsets padding = UIEdgeInsetsMake(5, 5, 5, 5);
+    UIEdgeInsets padding = UIEdgeInsetsMake(4, 4, 4, 4);
     UIView *superview = self.view;
     __weak typeof(self) weakSelf = self;
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -97,9 +97,7 @@ static NSString *const cellIdentifier = @"todayCell";
         Log(@"刷新");
         [self requestData];
     }];
-//    [self.collectionView.mj_header endRefreshingWithCompletionBlock:^{
-//        Log(@"完成刷新!");
-//    }];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -114,53 +112,50 @@ static NSString *const cellIdentifier = @"todayCell";
     NSURLRequest *request = [fac createRequestWithType:PersonalizedDefaultRecommendationsType resourceIds:@[]];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary * json= [self serializationDataWithResponse:response data:data error:error];
+        if (json) {
+            NSMutableArray *tempList = NSMutableArray.new;  //所有数据临时集合
+            NSMutableArray *titleList = NSMutableArray.new; //临时节title 集合
 
-        NSMutableArray *tempList = [NSMutableArray array];  //所有数据临时集合
-        NSMutableArray *titleList = [NSMutableArray array]; //临时节title 集合
+            for (NSDictionary *tempDict in [json objectForKey:@"data"]) {
+                //title
+                NSString *title = [tempDict valueForKeyPath:@"attributes.title.stringForDisplay"];
+                if (!title) {
+                    NSArray *tempList = [tempDict valueForKeyPath:@"relationships.contents.data"];
+                    title = [tempList.firstObject valueForKeyPath:@"attributes.curatorName"];
+                }
+                [titleList addObject:title];
+                [tempList addObject:[self serializationJSON:tempDict]];
+            }
 
-        //遍历出每一节
-        for (NSDictionary *sectonDict in [json objectForKey:@"data"]) {
-            //section title
-            NSString *title = [[[sectonDict objectForKey:@"attributes"] objectForKey:@"title"] objectForKey:@"stringForDisplay"];
-            if (!title) title = @"Apple为你推荐";
-            [titleList addObject:title];
-
-            //每一节数据解析后, 添加入临时集合
-            [tempList addObject:[self serializationJSON:sectonDict]];
+            //所有数据解析完成, 设置数据
+            self.allDatas = tempList;
+            self.titles = titleList;
+            //刷新UI
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.activityView stopAnimating];
+                [self.collectionView reloadData];
+            });
         }
-        //所有数据解析完成, 设置数据
-        self.allDatas = tempList;
-        self.titles = titleList;
-
-        //刷新UI
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.activityView stopAnimating];
-            [self.collectionView reloadData];
-        });
     }];
 }
 /**解析JSON 数据*/
 -(NSArray*) serializationJSON:(NSDictionary*) json{
+    NSMutableArray *sectionList = [NSMutableArray array];  //节数据临时集合
+    json = [json objectForKey:@"relationships"];
 
-    NSMutableArray *sectionList = [NSMutableArray array];               //节数据临时集合
-    NSDictionary *relationships = [json objectForKey:@"relationships"];
-    NSDictionary *contents = [relationships objectForKey:@"contents"];  //如果这里有内容, 则不是组推荐, 没有值就是组推荐
-
+    NSDictionary *contents = [json objectForKey:@"contents"];  //如果这里有内容, 则不是组推荐, 没有值就是组推荐
     if (contents) {
         //非组推荐
         for (NSDictionary *source in [contents objectForKey:@"data"]) {
             //具体资源类型
             NSString *type = [source objectForKey:@"type"];
-            if ([type isEqualToString:@"playlists"]) {
-                [sectionList addObject:[Playlist instanceWithDict:[source objectForKey:@"attributes"]]];
-            }
-            if ([type isEqualToString:@"albums"]) {
-                [sectionList addObject:[Album instanceWithDict:[source objectForKey:@"attributes"]]];
-            }
+            Class cls = [self classForResourceType:type];
+            id obj = [cls instanceWithDict:[source objectForKey:@"attributes"]];
+            [sectionList addObject:obj];
         }
     }else{
         //组推荐
-        NSDictionary *recommendations = [relationships objectForKey:@"recommendations"];
+        NSDictionary *recommendations = [json objectForKey:@"recommendations"];
         if (recommendations) {
             for (NSDictionary *subJSON  in [recommendations objectForKey:@"data"]) {
                 //递归
@@ -186,20 +181,11 @@ static NSString *const cellIdentifier = @"todayCell";
     NSArray *temp = [self.allDatas objectAtIndex:indexPath.section];
     id resource = [temp objectAtIndex:indexPath.row];
 
-    //识别取出的数据类型
-    Album *album ;
-    Playlist *playlist;
-
-    if ([resource isKindOfClass:[Album class]]) {
-        album = (Album*)resource;
+    //设置封面
+    if ([resource respondsToSelector:@selector(artwork)]) {
+        Artwork *artwork = [resource valueForKey:@"artwork"];
+        [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
     }
-    if ([resource isKindOfClass:[Playlist class]]) {
-        playlist = (Playlist*)resource;
-    }
-
-    Artwork *artwork = album ? album.artwork : playlist.artwork;
-    [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
-
     return cell;
 }
 
@@ -212,7 +198,7 @@ static NSString *const cellIdentifier = @"todayCell";
                                                             withReuseIdentifier:sectionIdentifier
                                                                 forIndexPath:indexPath];
         [header.titleLabel setText:title];
-        header.backgroundColor = UIColor.whiteColor;
+        header.backgroundColor = collectionView.backgroundColor;
         return header;
     }
     return nil;
@@ -221,13 +207,7 @@ static NSString *const cellIdentifier = @"todayCell";
 #pragma mark <UICollectionViewDelegate>
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     id obj = [[self.allDatas objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    DetailViewController *detailVC ;
-    if ([obj isKindOfClass:[Album class]]) {
-        detailVC = [[DetailViewController alloc] initWithAlbum:(Album*)obj];
-    }
-    if([obj isKindOfClass:[Playlist class]]) {
-        detailVC = [[DetailViewController alloc] initWithPlaylist:(Playlist*)obj];
-    }
+    DetailViewController *detailVC = [[DetailViewController alloc] initWithObject:obj];
     [self.navigationController pushViewController:detailVC animated:YES];
 }
 

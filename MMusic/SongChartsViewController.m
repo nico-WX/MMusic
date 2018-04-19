@@ -68,7 +68,7 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
         CGFloat navH = CGRectGetHeight(self.navigationController.navigationBar.frame);
         CGFloat tabH = 0.0f; // CGRectGetHeight(self.tabBarController.tabBar.frame);
                              //边距
-        UIEdgeInsets padding = UIEdgeInsetsMake((statusH+navH+10), 5, (tabH+0), 5);
+        UIEdgeInsets padding = UIEdgeInsetsMake((statusH+navH+4), 4, (tabH+0), 4);
         //layout cardView
         UIView *superview = self.view;
         [self.cardView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -80,7 +80,7 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
 
         superview = self.cardView.contentView;
         [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-            UIEdgeInsets padding = UIEdgeInsetsMake(0, 5, 5, 5);
+            UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 4, 4);
             make.edges.mas_equalTo(superview).with.insets(padding);
         }];
     });
@@ -172,7 +172,8 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
     Artwork *art = song.artwork;
     [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:YES];
 
-    cell.contentView.backgroundColor = [UIColor colorWithRed:0.96 green:0.96 blue:0.96 alpha:0.95];
+    cell.backgroundColor = self.cardView.contentView.backgroundColor;
+
     return cell;
 }
 

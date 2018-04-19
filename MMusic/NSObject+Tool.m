@@ -143,6 +143,8 @@ extern NSString *userTokenIssueNotification;
         [MBProgressHUD showHUDAddedTo:imageView animated:YES];
         CGFloat h = CGRectGetHeight(imageView.bounds);
         CGFloat w = CGRectGetWidth(imageView.bounds);
+        if (w==0 || h == 0) return; //截留宽高异常
+
         NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
         NSURL *url = [NSURL URLWithString:urlStr];
         [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {

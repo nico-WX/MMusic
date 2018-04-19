@@ -95,7 +95,6 @@ static PlayerViewController *_instance;
 /**更新当前播放的音乐信息到视图上*/
 - (void) updateNowPlayItemToView{
 
-
     [self.playerView.closeButton animateToType:buttonCloseType];
     //歌曲封面
     [self showImageToView:self.playerView.artworkView withImageURL:self.nowPlaySong.artwork.url cacheToMemory:YES];
@@ -116,7 +115,6 @@ static PlayerViewController *_instance;
 
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data ) {
-
             NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
             if (json && res.statusCode==200) {
@@ -184,7 +182,7 @@ static PlayerViewController *_instance;
 /**关闭 播放器视图控制器*/
 - (void)closeViewController:(VBFPopFlatButton*) button{
     [button animateToType:buttonDownBasicType];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self dismissViewControllerAnimated:YES completion:nil];
         [button animateToType:buttonUpBasicType];
     });
@@ -208,10 +206,13 @@ static PlayerViewController *_instance;
     switch (self.playerController.playbackState) {
         case MPMusicPlaybackStatePlaying:
             [self.playerController pause];
+            [self.timer invalidate];    //无效, 移除运行循环
+            self.timer = nil;           //下一启动新的
             [button setCurrentButtonType:buttonRightTriangleType];
             break;
         case MPMusicPlaybackStatePaused:
-        //case MPMusicPlaybackStateStopped:
+        case MPMusicPlaybackStateStopped:
+            [self.timer fire];
             [self.playerController play];
             [button setCurrentButtonType:buttonPausedType];
             break;
@@ -245,7 +246,6 @@ static PlayerViewController *_instance;
                 NSURLRequest *request = [factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
                 [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                     NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-                    Log(@"delete =%ld",res.statusCode);
                     if (!error && res.statusCode/10 == 20) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self.playerView.like setImage:[UIImage imageNamed:@"love-gray"] forState:UIControlStateNormal];
@@ -260,7 +260,6 @@ static PlayerViewController *_instance;
                 NSURLRequest *request = [factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
                 [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                     NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-                    Log(@"PUT add =%ld",res.statusCode);
                     if (!error && res.statusCode/10==20) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self.playerView.like setImage:[UIImage imageNamed:@"love-red"] forState:UIControlStateNormal];

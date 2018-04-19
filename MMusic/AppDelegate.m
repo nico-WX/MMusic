@@ -71,7 +71,7 @@
     //[barCtr addChildViewController:browseNavCtr];
     [barCtr addChildViewController:mmusicNavCtr];
 
-    [barCtr setSelectedIndex:2];
+    [barCtr setSelectedIndex:0];
 
 
     [self.window setRootViewController:barCtr];

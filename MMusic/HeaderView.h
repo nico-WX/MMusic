@@ -13,5 +13,4 @@
 @property(nonatomic, strong) UIImageView *artworkView;
 @property(nonatomic, strong) UITextView *desc;
 @property(nonatomic, strong) UILabel *nameLabel;
-//@property(nonatomic, strong) UILabel *curatorNameLabel;
 @end

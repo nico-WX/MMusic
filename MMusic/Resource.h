@@ -8,7 +8,7 @@
 
 #import "MMObject.h"
 
-/**大体的资源对象,详细对象在attributes中*/
+
 @interface Resource : MMObject
 /**资源id*/
 @property(nonatomic, copy) NSString *identifier;  // id
@@ -22,7 +22,7 @@
 /**(可选)关于请求或者响应的后台参数*/
 @property(nonatomic, strong) NSDictionary *meta;
 
-/**有关系的资源*/
+/**有关系的资源(个人推荐数据)*/
 @property(nonatomic, strong) NSDictionary *relationships;
 
 @end
