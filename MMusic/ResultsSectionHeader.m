@@ -32,7 +32,6 @@
         make.bottom.mas_equalTo(weakSelf.contentView.mas_bottom).with.offset(-padding.bottom);
         make.width.mas_equalTo(CGRectGetHeight(weakSelf.contentView.bounds)-padding.top-padding.bottom);
     }];
-
 }
 
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier{

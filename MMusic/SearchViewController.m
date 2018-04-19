@@ -206,19 +206,6 @@ static NSString *const headerId = @"haderSectionReuseId";
     });
 }
 
--(Class) classForResourceType:(NSString*)type{
-    Class cls;
-    if ([type isEqualToString:@"activities"])       cls = Activity.class;
-    if ([type isEqualToString:@"artists"])          cls = Artist.class;
-    if ([type isEqualToString:@"apple-curators"])   cls = AppleCurator.class;
-    if ([type isEqualToString:@"albums"])           cls = Album.class;
-    if ([type isEqualToString:@"curators"])         cls = Curator.class;
-    if ([type isEqualToString:@"songs"])            cls = Song.class;
-    if ([type isEqualToString:@"playlists"])        cls = Playlist.class;
-    if ([type isEqualToString:@"music-videos"])     cls = MusicVideo.class;
-    if ([type isEqualToString:@"stations"])         cls = Station.class;
-    return cls;
-}
 
 -(void) loadNextPageFromPagePath:(NSString*) nextPage{
     NSURLRequest *request = [[RequestFactory requestFactory] createRequestWithHerf:nextPage];
@@ -294,6 +281,9 @@ static NSString *const headerId = @"haderSectionReuseId";
 
     [self.serachBar resignFirstResponder];
     id obj = [[self.allSearchDatas objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+
+    //activities, -artists, apple-curators, albums, curators, -songs, -playlists, music-videos, and stations.
+
     //歌曲直接播放
     if ([obj isKindOfClass:Song.class]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

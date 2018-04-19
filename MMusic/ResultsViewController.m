@@ -10,6 +10,10 @@
 #import "ResultsViewController.h"
 #import "ResultsSectionHeader.h"
 #import "WaitingCell.h"
+#import "HeaderView.h"
+#import "DetailViewController.h"
+
+#import "NSObject+Tool.h"
 
 #import "Resource.h"
 #import "RequestFactory.h"
@@ -18,15 +22,17 @@
 #import "Activity.h"
 #import "Artwork.h"
 
+#import "Album.h"
+#import "Playlist.h"
 
 
 @interface ResultsViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property(nonatomic, strong) Artist *artist;
 @property(nonatomic, strong) UITableView *tableView;
 
+
 // 数据
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,ResponseRoot*> *> *results;
-
 @end
 
 @implementation ResultsViewController
@@ -101,8 +107,12 @@ static NSString *const headerIdentifier = @"headerReuseID";
     }];
 }
 
-
 #pragma mark UITableViewDelegate
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    id object = [self objectWithIndexPath:indexPath];
+    DetailViewController *detailVC = [[DetailViewController alloc] initWithObject:object];
+    [self.navigationController pushViewController:detailVC animated:YES];
+}
 
 #pragma mark UITableViewDataSource
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -124,30 +134,35 @@ static NSString *const headerIdentifier = @"headerReuseID";
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     WaitingCell *cell = (WaitingCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 
+    id object = [self objectWithIndexPath:indexPath];
+    cell.name.text = [object valueForKey:@"name"];
+    //有艺人名称
+    if ([object respondsToSelector:@selector(artistName)]) {
+        cell.artistName.text = [object valueForKey:@"artistName"];
+    }else{
+        cell.artistName.text = nil;
+    }
+
+    // 有海报
+    if ([object respondsToSelector:@selector(artwork)]) {
+        Artwork *art = [object valueForKey:@"artwork"];
+        [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:NO];
+    }else{
+        cell.artworkView.image = nil;
+    }
+    return cell;
+}
+
+-(id) objectWithIndexPath:(NSIndexPath*) indexPath {
+    __block id object;
     [[self.results objectAtIndex:indexPath.section] enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, ResponseRoot * _Nonnull obj, BOOL * _Nonnull stop) {
         Resource *resource =  [obj.data objectAtIndex:indexPath.row];
         Class cls = [self classForResourceType:resource.type];
-        id object = [cls instanceWithDict:resource.attributes];
-        cell.name.text = [object valueForKey:@"name"];
-
-        //有艺人名称
-        if ([object respondsToSelector:@selector(artistName)]) {
-             cell.artistName.text = [object valueForKey:@"artistName"];
-        }else{
-            cell.artistName.text = nil;
-        }
-
-        // 有海报
-        if ([object respondsToSelector:@selector(artwork)]) {
-            Artwork *art = [object valueForKey:@"artwork"];
-            [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:NO];
-        }else{
-            cell.artworkView.image = nil;
-        }
+        object = [cls instanceWithDict:resource.attributes];
     }];
-
-    return cell;
+    return object;
 }
+
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     ResultsSectionHeader *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:headerIdentifier];
     //艺人数据, 返回空, 不展示艺人section
@@ -178,9 +193,9 @@ static NSString *const headerIdentifier = @"headerReuseID";
 
         }
     }];
-
     return header;
 }
+
 -(void) loadNextPageWithHref:(NSString*) href withSection:(NSInteger) section{
     NSURLRequest *request = [[RequestFactory requestFactory] createRequestWithHerf:href];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {

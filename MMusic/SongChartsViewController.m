@@ -85,8 +85,13 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
         }];
     });
 
+    __weak typeof(self) weakSelf = self;
     self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        [self loadNextPage];
+        if (weakSelf.next) {
+            [weakSelf loadNextPage];
+        }else{
+            [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
+        }
     }];
 }
 
@@ -102,42 +107,9 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             if (json) {
                 [self serializationDict:json];
-                [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }
         }
     }];
-}
-
-/**解析返回的JSON 到对象模型中*/
-- (void)serializationDict:(NSDictionary*) json{
-    json = [json objectForKey:@"results"];
-    for (NSDictionary *temp in [json objectForKey:@"songs"] ) {
-        NSString *page = [temp objectForKey:@"next"];
-        self.next = page ? page : nil;
-        //卡片标题
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.cardView.titleLabel setText:[temp objectForKey:@"name"]];
-        });
-        NSMutableArray *tempList = [NSMutableArray array];
-        for (NSDictionary *mvData in [temp objectForKey:@"data"]) {
-            Song *song = [Song instanceWithDict:[mvData objectForKey:@"attributes"]];
-            [tempList addObject:song];
-        }
-        //添加到当前 列表
-        if (!_songList) {
-            self.songList = tempList;
-        }else{
-            self.songList = [self.songList arrayByAddingObjectsFromArray:tempList];
-        }
-        NSMutableArray *queueList = [NSMutableArray array];
-        for (Song *song in self.songList) {
-            NSDictionary *dict = song.playParams;
-            MPMusicPlayerPlayParameters *parm = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:dict];
-            [queueList addObject:parm];
-        }
-        self.playParametersList = queueList;
-        self.queueDesc = [[MPMusicPlayerPlayParametersQueueDescriptor alloc]  initWithPlayParametersQueue:queueList];
-    }
 }
 
 /**加载下一页数据*/
@@ -149,10 +121,42 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
                 NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];
                 if (json) {
                     [self serializationDict:json];
-                    [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                 }
             }
         }];
+    }
+}
+
+/**解析返回的JSON 到对象模型中*/
+- (void)serializationDict:(NSDictionary*) json{
+    json = [json objectForKey:@"results"];
+    for (NSDictionary *temp in [json objectForKey:@"songs"] ) {
+
+        NSMutableArray *tempList = [NSMutableArray array];
+        for (NSDictionary *mvData in [temp objectForKey:@"data"]) {
+            Song *song = [Song instanceWithDict:[mvData objectForKey:@"attributes"]];
+            [tempList addObject:song];
+        }
+
+        //添加到当前 列表
+        NSString *page = [temp objectForKey:@"next"];
+        self.next = page ? page : nil;
+        self.songList = self.songList==NULL ? tempList : [self.songList arrayByAddingObjectsFromArray:tempList];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.cardView.titleLabel.text = [temp objectForKey:@"name"];
+            [self.tableView reloadData];
+            [self.tableView.mj_footer endRefreshing];
+        });
+
+        NSMutableArray *queueList = [NSMutableArray array];
+        for (Song *song in self.songList) {
+            NSDictionary *dict = song.playParams;
+            MPMusicPlayerPlayParameters *parm = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:dict];
+            [queueList addObject:parm];
+        }
+        self.playParametersList = queueList;
+        self.queueDesc = [[MPMusicPlayerPlayParametersQueueDescriptor alloc]  initWithPlayParametersQueue:queueList];
     }
 }
 
@@ -173,7 +177,6 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
     [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:YES];
 
     cell.backgroundColor = self.cardView.contentView.backgroundColor;
-
     return cell;
 }
 
