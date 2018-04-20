@@ -23,5 +23,6 @@
 @property(nonatomic, strong) void(^nowPlayingItem)(MPMediaItem *item);
 
 + (instancetype) sharePlayerViewController;
+-(void) showFromViewController:(UIViewController *)vc withSongList:(NSArray<Song*>*) songList andStarItem:(Song*) startSong;
 
 @end

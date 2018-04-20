@@ -52,6 +52,12 @@ static PlayerViewController *_instance;
     return _instance;
 }
 
+- (void)showFromViewController:(UIViewController *)vc withSongList:(NSArray<Song *> *)songList andStarItem:(Song *)startSong{
+    self.songs = songList;
+    self.nowPlaySong = startSong;
+    [vc presentViewController:self animated:YES completion:nil];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -129,7 +135,6 @@ static PlayerViewController *_instance;
         }
     }];
 }
-
 
 #pragma mark layz 音乐播放控制器
 -(MPMusicPlayerController *)playerController{

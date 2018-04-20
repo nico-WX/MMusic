@@ -17,16 +17,15 @@
 #import "RequestFactory.h"
 #import "MusicVideo.h"
 #import "Artwork.h"
+#import "Resource.h"
 
 @interface MusicVideoChartsViewController()<UICollectionViewDataSource,
 UICollectionViewDelegate,MPSystemMusicPlayerController,UICollectionViewDelegateFlowLayout>
 /**卡片视图*/
 @property(nonatomic, strong) NewCardView *cardView;
-
-/**MV 列表*/
-@property(nonatomic, strong) NSArray<MusicVideo*> *mvList;
-
-/**下一页*/
+//资源列表
+@property(nonatomic,strong) NSArray<Resource*> *resources;
+/**分页地址*/
 @property(nonatomic, strong) NSString *next;
 
 @property(nonatomic, strong) NSArray<MPMusicPlayerPlayParameters*> * parametersList;
@@ -37,7 +36,6 @@ UICollectionViewDelegate,MPSystemMusicPlayerController,UICollectionViewDelegateF
 @implementation MusicVideoChartsViewController
 
 static NSString * const reuseIdentifier = @"MVChartsCell";
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -98,9 +96,8 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
     __weak typeof(self) weakSelf = self;
     //刷新
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        weakSelf.mvList = nil;
+        weakSelf.resources = nil;
         [weakSelf requestData];
-        [weakSelf.collectionView.mj_header endRefreshing];
     }];
 
     //上拉加载更多
@@ -118,6 +115,7 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark 数据请求  和解析
 /**请求数据*/
 -(void)requestData{
     NSURLRequest *urlRequest = [[RequestFactory requestFactory] createChartWithChartType:ChartMusicVideosType];
@@ -125,7 +123,11 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
         if (!error) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             if (json) {
-                [self serializationDict:json];
+                self.resources = [self serializationDict:json];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.collectionView reloadData];
+                    [self.collectionView.mj_header endRefreshing];
+                });
             }else{
                 [self requestHongKongMVData];
             }
@@ -141,7 +143,11 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
             if (!error) {
                 NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];
                 if (json) {
-                    [self serializationDict:json];
+                    self.resources = [self.resources arrayByAddingObjectsFromArray:[self serializationDict:json]];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.collectionView reloadData];
+                        [self.collectionView.mj_footer endRefreshing];
+                    });
                 }
             }
         }];
@@ -156,68 +162,67 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
         if (!error) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             if (json) {
-                [self serializationDict:json];
+                self.resources = [self serializationDict:json];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.collectionView reloadData];
+                    [self.collectionView.mj_header endRefreshing];
+                });
             }
         }
     }];
 }
 
 /**解析返回的JSON 到对象模型中*/
-- (void)serializationDict:(NSDictionary*) json{
+- (NSArray<Resource*>*)serializationDict:(NSDictionary*) json{
     json = [json objectForKey:@"results"];
-    for (NSDictionary *temp in [json objectForKey:@"music-videos"] ) {
-
-        NSMutableArray *tempList = [NSMutableArray array];
-        for (NSDictionary *mvData in [temp objectForKey:@"data"]) {
+    NSMutableArray<Resource*> *resourceList = NSMutableArray.new;
+    NSMutableArray<MPMusicPlayerPlayParameters*> *parametersList = NSMutableArray.new;
+    for (NSDictionary *subJSON in [json objectForKey:@"music-videos"] ) {
+        for (NSDictionary *mvDict in [subJSON objectForKey:@"data"]) {
             //过滤掉 无值的情况
-            if ([mvData objectForKey:@"attributes"]) {
-                MusicVideo *mv = [MusicVideo instanceWithDict:[mvData objectForKey:@"attributes"]];
-                [tempList addObject:mv];
+            if ([mvDict objectForKey:@"attributes"]) {
+                [resourceList addObject:[Resource instanceWithDict:mvDict]];
+                NSDictionary *parameterDict = [mvDict valueForKeyPath:@"attributes.playParams"];
+                MPMusicPlayerPlayParameters *parameter = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:parameterDict];
+                [parametersList addObject:parameter];
             }
         }
-        NSString *page = [temp objectForKey:@"next"];
+
+        //记录分页
+        NSString *page = [subJSON objectForKey:@"next"];
         self.next = page ? page : nil;
-        self.mvList = self.mvList==NULL ? tempList : [self.mvList arrayByAddingObjectsFromArray:tempList];
-
-        //刷新UI
+        //设置标题
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.cardView.titleLabel.text = [temp objectForKey:@"name"];
-            [self.collectionView reloadData];
-            [self.collectionView.mj_footer endRefreshing];
+            self.cardView.titleLabel.text = [subJSON objectForKey:@"name"];
         });
-
-        NSMutableArray *queueList = [NSMutableArray array];
-        for (MusicVideo *mv in self.mvList) {
-            NSDictionary *dict = mv.playParams;
-            MPMusicPlayerPlayParameters *parm = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:dict];
-            [queueList addObject:parm];
-        }
-        self.parametersList = queueList;
-        self.queueDesc = [[MPMusicPlayerPlayParametersQueueDescriptor alloc]  initWithPlayParametersQueue:queueList];
     }
+    self.parametersList = self.parametersList==NULL ? parametersList : [self.parametersList arrayByAddingObjectsFromArray:parametersList];
+    self.queueDesc = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:self.parametersList];
+    return resourceList;
 }
+
 #pragma mark <UICollectionViewDataSource>
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.mvList.count;
+    return self.resources.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ChartsMusicVideoCell *cell = (ChartsMusicVideoCell*)[collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
 
     // Configure the cell
-    MusicVideo *mv = [self.mvList objectAtIndex:indexPath.row];
-    cell.titleLabel.text = mv.name;
-    cell.artistLabel.text = mv.artistName;
-
-    Artwork *art = mv.artwork;
-    [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:YES];
-
+    Resource *resource = [self.resources objectAtIndex:indexPath.row];
+    if ([resource.type isEqualToString:@"music-videos"]) {
+        MusicVideo *mv = [MusicVideo instanceWithDict:resource.attributes];
+        cell.titleLabel.text = mv.name;
+        cell.artistLabel.text = mv.artistName;
+        Artwork *art = mv.artwork;
+        [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:YES];
+    }
     cell.backgroundColor = UIColor.whiteColor;
     return cell;
 }
 
 #pragma mark <UICollectionViewDelegate>
-
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     [self.queueDesc setStartItemPlayParameters:[self.parametersList objectAtIndex:indexPath.row]];
     [self openToPlayQueueDescriptor:self.queueDesc];
@@ -227,7 +232,6 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
     UIApplication *app = [UIApplication sharedApplication];
    // NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString]; //自己的应用设置
     NSURL *url = [NSURL URLWithString:@"Music:prefs:root=MUSIC"];
-
     if ([app canOpenURL:url]) {
         [app openURL:url options:@{} completionHandler:^(BOOL success) {
             [[MPMusicPlayerController systemMusicPlayer] setQueueWithDescriptor:queueDescriptor];

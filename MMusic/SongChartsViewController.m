@@ -7,13 +7,12 @@
 //
 #import <MediaPlayer/MediaPlayer.h>
 #import <Masonry.h>
-#import <UIImageView+WebCache.h>
 #import <MJRefresh.h>
 
 #import "SongChartsViewController.h"
 #import "ChartsSongCell.h"
-#import "SongCell.h"
 #import "NewCardView.h"
+#import "PlayerViewController.h"
 
 #import "RequestFactory.h"
 #import "Artwork.h"
@@ -21,10 +20,11 @@
 
 @interface SongChartsViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property(nonatomic, strong) NewCardView *cardView;
-@property(nonatomic, strong) NSArray *songList;
+@property(nonatomic, strong) NSArray<Song*> *songList;
 @property(nonatomic, strong) NSString *next;
 @property(nonatomic, strong) UITableView *tableView;
 
+@property(nonatomic, strong) PlayerViewController *playerVC;
 //播放参数列表
 @property(nonatomic, strong) NSArray<MPMusicPlayerPlayParameters*> *playParametersList;
 //播放参数队列
@@ -93,20 +93,28 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
             [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
         }
     }];
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        weakSelf.songList = nil;
+        [weakSelf requeData];
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+#pragma mark 请求数据 及解析JSON  加载分页数据
 -(void) requeData{
     NSURLRequest *request = [[RequestFactory requestFactory] createChartWithChartType:ChartSongsType];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             if (json) {
-                [self serializationDict:json];
+                self.songList = [self serializationDict:json];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView reloadData];
+                    [self.tableView.mj_header endRefreshing];
+                });
             }
         }
     }];
@@ -120,7 +128,11 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
             if (!error && data) {
                 NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];
                 if (json) {
-                    [self serializationDict:json];
+                    self.songList= [self.songList arrayByAddingObjectsFromArray:[self serializationDict:json]];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tableView reloadData];
+                        [self.tableView.mj_footer endRefreshing];
+                    });
                 }
             }
         }];
@@ -128,43 +140,36 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
 }
 
 /**解析返回的JSON 到对象模型中*/
-- (void)serializationDict:(NSDictionary*) json{
+- (NSArray<Song*> *)serializationDict:(NSDictionary*) json{
     json = [json objectForKey:@"results"];
-    for (NSDictionary *temp in [json objectForKey:@"songs"] ) {
 
-        NSMutableArray *tempList = [NSMutableArray array];
-        for (NSDictionary *mvData in [temp objectForKey:@"data"]) {
-            Song *song = [Song instanceWithDict:[mvData objectForKey:@"attributes"]];
-            [tempList addObject:song];
+    NSMutableArray<Song*> *songArray = NSMutableArray.new;
+    NSMutableArray<MPMusicPlayerPlayParameters*> *parArray = NSMutableArray.new;
+    for (NSDictionary *subJSON in [json objectForKey:@"songs"] ) {
+        for (NSDictionary *songDict in [subJSON objectForKey:@"data"]) {
+            Song *song = [Song instanceWithDict:[songDict objectForKey:@"attributes"]];
+            [songArray addObject:song];
+            [parArray addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams]];
         }
-
-        //添加到当前 列表
-        NSString *page = [temp objectForKey:@"next"];
+        //记录分页
+        NSString *page = [subJSON objectForKey:@"next"];
         self.next = page ? page : nil;
-        self.songList = self.songList==NULL ? tempList : [self.songList arrayByAddingObjectsFromArray:tempList];
 
+        //设置title
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.cardView.titleLabel.text = [temp objectForKey:@"name"];
-            [self.tableView reloadData];
-            [self.tableView.mj_footer endRefreshing];
+            self.cardView.titleLabel.text = [subJSON objectForKey:@"name"];
         });
 
-        NSMutableArray *queueList = [NSMutableArray array];
-        for (Song *song in self.songList) {
-            NSDictionary *dict = song.playParams;
-            MPMusicPlayerPlayParameters *parm = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:dict];
-            [queueList addObject:parm];
-        }
-        self.playParametersList = queueList;
-        self.queueDesc = [[MPMusicPlayerPlayParametersQueueDescriptor alloc]  initWithPlayParametersQueue:queueList];
+        self.playParametersList = self.playParametersList == NULL ? parArray : [self.playParametersList arrayByAddingObjectsFromArray:parArray];
+        self.queueDesc = [[MPMusicPlayerPlayParametersQueueDescriptor alloc]  initWithPlayParametersQueue:self.playParametersList];
     }
+    return songArray;
 }
 
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.songList.count;
 }
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ChartsSongCell *cell = (ChartsSongCell*)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
 
@@ -186,12 +191,18 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
 
 #pragma mark UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [weakSelf.queueDesc setStartItemPlayParameters:[weakSelf.playParametersList objectAtIndex:indexPath.row]];
-        [[MPMusicPlayerController systemMusicPlayer] setQueueWithDescriptor:weakSelf.queueDesc];
-        [[MPMusicPlayerController systemMusicPlayer] play];
-    });
+    self.playerVC = [PlayerViewController sharePlayerViewController];
+
+    Song *selectSong = [self.songList objectAtIndex:indexPath.row];
+    NSString *nowPlayItemId = self.playerVC.playerController.nowPlayingItem.playbackStoreID;
+    NSString *selectSongId = [selectSong.playParams objectForKey:@"id"];
+    if (![nowPlayItemId isEqualToString:selectSongId]) {
+        [self.queueDesc setStartItemPlayParameters:[self.playParametersList objectAtIndex:indexPath.row]];
+        [self.playerVC.playerController setQueueWithDescriptor:self.queueDesc];
+        [self.playerVC.playerController prepareToPlay];
+    }
+
+    [self.playerVC showFromViewController:self withSongList:self.songList andStarItem:[self.songList objectAtIndex:indexPath.row]];
 }
 
 @end

@@ -128,8 +128,21 @@ extern NSString *userTokenIssueNotification;
 }
 
 -(void)showImageToView:(UIImageView *)imageView withImageURL:(NSString *)url cacheToMemory:(BOOL)cache{
+    //获取视图宽高, 设置请求图片大小
+    CGFloat h = CGRectGetHeight(imageView.bounds);
+    CGFloat w = CGRectGetWidth(imageView.bounds);
+    if (w==0 || h == 0) return; //拦截高度, 宽度为 0 的情况,
+
+    //image
     NSString *path = IMAGEPATH_FOR_URL(url);
     UIImage *image = [UIImage imageWithContentsOfFile:path];
+
+    //照片太小, 删除
+    if (image.size.width < w || image.size.height < h) {
+        [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+        image = nil;
+    }
+
     if (image) {
         [imageView setImage:image];
         //重用(如果是重用)遗留
@@ -138,13 +151,10 @@ extern NSString *userTokenIssueNotification;
                 [view removeFromSuperview];
             }
         }
+    //内存中无图片
     }else{
         //在块中移除
         [MBProgressHUD showHUDAddedTo:imageView animated:YES];
-        CGFloat h = CGRectGetHeight(imageView.bounds);
-        CGFloat w = CGRectGetWidth(imageView.bounds);
-        if (w==0 || h == 0) return; //截留宽高异常
-
         NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
         NSURL *url = [NSURL URLWithString:urlStr];
         [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {

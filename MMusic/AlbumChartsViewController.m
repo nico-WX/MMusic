@@ -22,12 +22,10 @@
 #import "ResponseRoot.h"
 
 @interface AlbumChartsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
-/**专辑列表*/
-@property(nonatomic, strong) NSArray<Album*> *albums;
+/**资源列表*/
+@property(nonatomic, strong) NSArray<Resource*> *resources;
 /**下一页*/
 @property(nonatomic, strong) NSString *next;
-/**上次刷新数据时间*/
-@property(nonatomic, strong) NSDate *date;
 
 @property(nonatomic, strong) UICollectionView *collectionView;
 /**卡片视图*/
@@ -107,9 +105,8 @@ static CGFloat const spacing = 2.0f;
 
     //下拉刷新
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        weakSelf.albums = nil;
+        self.resources = nil;
         [weakSelf requestData];
-        [weakSelf.collectionView.mj_header endRefreshing];
     }];
 }
 - (void)didReceiveMemoryWarning {
@@ -123,36 +120,39 @@ static CGFloat const spacing = 2.0f;
         if (!error) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             if (json) {
-                [self serializationDict:json];
+                NSArray *list = [self serializationDict:json];
+                self.resources = self.resources==NULL ? list : [self.resources arrayByAddingObjectsFromArray:list];
+                //刷新
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.collectionView reloadData];
+                    [self.collectionView.mj_header endRefreshing];
+                });
             }
         }
     }];
 }
 
 /**解析返回的JSON 到对象模型中*/
-- (void)serializationDict:(NSDictionary*) json{
+- (NSArray<Resource*>*)serializationDict:(NSDictionary*) json{
     json = [json objectForKey:@"results"];
-    for (NSDictionary *temp in [json objectForKey:@"albums"] ) {
+
+    NSMutableArray<Resource*> *resouceList = NSMutableArray.new;
+    for (NSDictionary *subJSON in [json objectForKey:@"albums"] ) {
         //解析json 到数组
-        NSMutableArray *tempList = [NSMutableArray array];
-        for (NSDictionary *albumData in [temp objectForKey:@"data"]) {
-            Album *album = [Album instanceWithDict:[albumData objectForKey:@"attributes"]];
-            [tempList addObject:album];
+        for (NSDictionary *albumDict in [subJSON objectForKey:@"data"]) {
+            Resource *resource = [Resource instanceWithDict:albumDict];
+            [resouceList addObject:resource];
         }
 
-        //设置结果
-        NSString *page = [temp objectForKey:@"next"];
+        //记录分页地址
+        NSString *page = [subJSON objectForKey:@"next"];
         self.next = page ? page : nil;
-        //添加到当前 列表
-        self.albums = self.albums==NULL ? tempList : [self.albums arrayByAddingObjectsFromArray:tempList];
-        //设置了新数据  刷新
         dispatch_async(dispatch_get_main_queue(), ^{
             //设置title
-            self.cardView.titleLabel.text = [temp objectForKey:@"name"];
-            [self.collectionView reloadData];
-            [self.collectionView.mj_footer endRefreshing];
+            self.cardView.titleLabel.text = [subJSON objectForKey:@"name"];
         });
     }
+    return resouceList;
 }
 
 /**加载下一页数据*/
@@ -162,7 +162,12 @@ static CGFloat const spacing = 2.0f;
         [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];
             if (json) {
-                [self serializationDict:json];
+                NSArray *list = [self serializationDict:json];
+                self.resources = [self.resources arrayByAddingObjectsFromArray:list];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.collectionView reloadData];
+                    [self.collectionView.mj_footer endRefreshing];
+                });
             }
         }];
     }
@@ -170,22 +175,21 @@ static CGFloat const spacing = 2.0f;
 
 #pragma mark <UICollectionViewDataSource>
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.albums.count;
+    return self.resources.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ChartsAlbumCell *cell = (ChartsAlbumCell*)[collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
     // Configure the cell
-    Album *album = [self.albums objectAtIndex:indexPath.row];
+    Resource *resouce = [self.resources objectAtIndex:indexPath.row];
 
-    //title
-    [cell.titleLabel setText:album.name];
+    if ([resouce.type isEqualToString:@"albums"]) {
+        Album *album = [Album instanceWithDict:resouce.attributes];
+        cell.titleLabel.text = album.name;
+        [self showImageToView:cell.artworkView withImageURL:album.artwork.url cacheToMemory:YES];
+    }
     cell.contentView.backgroundColor = self.cardView.contentView.backgroundColor;
-    //专辑封面
-    Artwork *artwork = album.artwork;
-    [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
-
     cell.backgroundColor = UIColor.whiteColor;
     return cell;
 }
@@ -199,8 +203,7 @@ static CGFloat const spacing = 2.0f;
 }
 // selected cell
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    Album *album = [self.albums objectAtIndex:indexPath.row];
-    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:album];
+    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:[self.resources objectAtIndex:indexPath.row]];
     [self.navigationController pushViewController:detailVC animated:YES];
 }
 

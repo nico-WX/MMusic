@@ -213,7 +213,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     }];
 }
 /**解析返回的JSON 数据*/
-- (NSArray*) serializationJSON:(NSDictionary*)json{
+- (NSArray<Song*>*) serializationJSON:(NSDictionary*)json{
     NSMutableArray<Song*> *songList = [NSMutableArray array];
     //播放参数
     NSMutableArray<MPMusicPlayerPlayParameters*> *playParameters = [NSMutableArray array];
