@@ -7,15 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class Album;
-@class Playlist;
+@class Resource;
 
 @interface DetailViewController : UIViewController
-
--(instancetype)initWithAlbum:(Album*)album;
--(instancetype)initWithPlaylist:(Playlist*) playlist;
 /**直接通过专辑,或者播放列表初始化*/
--(instancetype)initWithObject:(id) object;
+- (instancetype) initWithResource:(Resource*) resource;
 
 @end

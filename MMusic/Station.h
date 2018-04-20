@@ -19,6 +19,7 @@
 
 @property(nonatomic, strong) NSNumber *durationInMillis;
 @property(nonatomic, strong) NSNumber *episodeNumber;
+@property(nonatomic, strong) NSDictionary *playParams;
 
 @property(nonatomic, assign) Boolean isLive;
 

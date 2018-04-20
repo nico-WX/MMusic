@@ -110,7 +110,7 @@ static NSString *const headerIdentifier = @"headerReuseID";
 #pragma mark UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     id object = [self objectWithIndexPath:indexPath];
-    DetailViewController *detailVC = [[DetailViewController alloc] initWithObject:object];
+    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:object];
     [self.navigationController pushViewController:detailVC animated:YES];
 }
 

@@ -20,7 +20,7 @@
 @property(nonatomic, copy) NSString *name;
 
 @property(nonatomic, strong) Artwork *artwork;
-@property(nonatomic, strong) EditorialNotes *desc; //description
+@property(nonatomic, strong) EditorialNotes *editorialNotes; //description
 @property(nonatomic, strong) NSDictionary *playParams;
 
 @end

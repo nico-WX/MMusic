@@ -305,7 +305,7 @@ static NSString *const headerId = @"haderSectionReuseId";
     }
     //播放列表/专辑 显细节
     if ([obj isKindOfClass:Album.class] || [obj isKindOfClass:Playlist.class]) {
-        DetailViewController *detail = [[DetailViewController alloc] initWithObject:obj];
+        DetailViewController *detail = [[DetailViewController alloc] initWithResource:obj];
         [self.navigationController pushViewController:detail animated:YES];
     }
 

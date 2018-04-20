@@ -24,10 +24,10 @@
 #import "EditorialNotes.h"
 #import "RequestFactory.h"
 #import "PersonalizedRequestFactory.h"
+#import "Resource.h"
 
 @interface DetailViewController ()<UITableViewDelegate,UITableViewDataSource>
-@property(nonatomic, strong) Album *album;
-@property(nonatomic, strong) Playlist *playlist;
+@property(nonatomic, strong) Resource *resource;
 /**顶部视图*/
 @property(nonatomic, strong) HeaderView *header;
 @property(nonatomic, strong) UITableView *tableView;
@@ -43,26 +43,9 @@
 
 static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
-- (instancetype)initWithAlbum:(Album *)album{
+-(instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
-        self.album = album;
-    }
-    return self;
-}
-- (instancetype)initWithPlaylist:(Playlist *)playlist{
-    if (self = [super init]) {
-        self.playlist = playlist;
-    }
-    return self;
-}
-- (instancetype)initWithObject:(id)object{
-    if (self = [super init]) {
-        if ([object isKindOfClass:Album.class]) {
-            self.album = (Album*) object;
-        }
-        if ([object isKindOfClass:Playlist.class]) {
-            self.playlist = (Playlist*) object;
-        }
+        _resource = resource;
     }
     return self;
 }
@@ -72,6 +55,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
     //数据请求(专辑/列表)
     [self requestData];
+
     //表视图
     self.tableView = ({
         UITableView *view = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
@@ -82,7 +66,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         view;
     });
 
-    //表头视图(不是节头)
+    //表头视图
     self.header = [[HeaderView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 150)];
     self.header.backgroundColor = UIColor.whiteColor;
 
@@ -93,12 +77,30 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     //封面海报
-    Artwork *artowrk = self.album ? self.album.artwork : self.playlist.artwork;
-    [self showImageToView:self.header.artworkView withImageURL:artowrk.url cacheToMemory:YES];
+    if ([self.resource.attributes valueForKeyPath:@"artwork"]) {
+        Artwork *art = [Artwork instanceWithDict:[self.resource.attributes valueForKeyPath:@"artwork"]];
+        [self showImageToView:self.header.artworkView withImageURL:art.url cacheToMemory:YES];
+    }
 
-    // 专辑或播放列表信息
-    self.header.nameLabel.text = _album ? _album.name : _playlist.name;
-    self.header.desc.text      = _album ? _album.artistName : _playlist.desc.standard;
+    //name
+    if ([self.resource.attributes valueForKeyPath:@"name"]) {
+        self.header.nameLabel.text = [self.resource.attributes valueForKeyPath:@"name"];
+    }
+
+    //des
+    if ([self.resource.attributes valueForKeyPath:@"editorialNotes"]) {
+        EditorialNotes *notes = [EditorialNotes instanceWithDict:[self.resource.attributes valueForKeyPath:@"editorialNotes"]];
+        NSString *text = notes.standard ? notes.standard : notes.shortNotes;
+        self.header.desc.text = text;
+    } else if ([self.resource.attributes valueForKeyPath:@"artistName"]){   //部分没有editorialNotes  使用artist
+        self.header.desc.text = [self.resource.attributes valueForKeyPath:@"artistName"];
+    }
+    // 歌单中的 editorialNotes 键名为:description
+    if ([self.resource.attributes valueForKeyPath:@"description"]) {
+        EditorialNotes *notes = [EditorialNotes instanceWithDict:[self.resource.attributes valueForKeyPath:@"description"]];
+        NSString *text = notes.standard ? notes.standard : notes.shortNotes;
+        self.header.desc.text = text;
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -156,6 +158,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     [self presentViewController:self.playerVC animated:YES completion:nil];
 
 }
+//定行高
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 44.0f;
 }
@@ -198,15 +201,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
 /**请求数据*/
 - (void) requestData{
-    RequestFactory *factory = [RequestFactory requestFactory];
-    NSURLRequest *request ;
-    NSString *identitier = self.album ? [self.album.playParams objectForKey:@"id"] : [self.playlist.playParams objectForKey:@"id"];
-    if (self.album) {
-        request = [factory createRequestWithType:RequestAlbumType resourceIds:@[identitier,]];
-    }else if (self.playlist){
-        request = [factory createRequestWithType:RequestPlaylistType resourceIds:@[identitier,]];
-    }
-
+    NSURLRequest *request = [[RequestFactory requestFactory] createRequestWithHerf:self.resource.href];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
@@ -223,9 +218,8 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     //播放参数
     NSMutableArray<MPMusicPlayerPlayParameters*> *playParameters = [NSMutableArray array];
     for (NSDictionary *temp in [json objectForKey:@"data"]) {
-        NSDictionary *relationships = [temp objectForKey:@"relationships"];
-        relationships = [relationships objectForKey:@"tracks"];
-        for (NSDictionary *songDict in [relationships objectForKey:@"data"]) {
+        NSArray *tracks = [temp valueForKeyPath:@"relationships.tracks.data"];
+        for (NSDictionary *songDict in tracks) {
             Song *song = [Song instanceWithDict:[songDict objectForKey:@"attributes"]];
             [songList addObject:song];
 

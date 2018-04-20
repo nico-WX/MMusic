@@ -23,8 +23,9 @@
 
 @interface TodayCollectionViewController()<UICollectionViewDelegate, UICollectionViewDataSource>
 @property(nonatomic, strong) UIActivityIndicatorView *activityView; //加载指示器
-@property(nonatomic, strong) NSArray<NSArray*> *allDatas;           //所有数据, 内部每个数组即为每一节的数据
+//@property(nonatomic, strong) NSArray<NSArray*> *allDatas;           //所有数据, 内部每个数组即为每一节的数据
 @property(nonatomic, strong) NSArray<NSString*> *titles;            //节title
+@property(nonatomic, strong) NSArray<NSArray<Resource*>*> *resources; //所有资源对象
 @property(nonatomic, strong) UICollectionView *collectionView;
 @end
 
@@ -113,22 +114,24 @@ static NSString *const cellIdentifier = @"todayCell";
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary * json= [self serializationDataWithResponse:response data:data error:error];
         if (json) {
+
             NSMutableArray *tempList = NSMutableArray.new;  //所有数据临时集合
             NSMutableArray *titleList = NSMutableArray.new; //临时节title 集合
 
-            for (NSDictionary *tempDict in [json objectForKey:@"data"]) {
-                //title
-                NSString *title = [tempDict valueForKeyPath:@"attributes.title.stringForDisplay"];
+            for (NSDictionary *subJSON in [json objectForKey:@"data"]) {
+                NSString *title = [subJSON valueForKeyPath:@"attributes.title.stringForDisplay"];
                 if (!title) {
-                    NSArray *tempList = [tempDict valueForKeyPath:@"relationships.contents.data"];
-                    title = [tempList.firstObject valueForKeyPath:@"attributes.curatorName"];
+                    NSArray *list = [subJSON valueForKeyPath:@"relationships.contents.data"];
+                    title = [list.firstObject valueForKeyPath:@"attributes.curatorName"];
                 }
                 [titleList addObject:title];
-                [tempList addObject:[self serializationJSON:tempDict]];
+
+                //解析
+                [tempList addObject:[self serializationJSON:subJSON]];
             }
 
             //所有数据解析完成, 设置数据
-            self.allDatas = tempList;
+            self.resources = tempList;
             self.titles = titleList;
             //刷新UI
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -139,19 +142,16 @@ static NSString *const cellIdentifier = @"todayCell";
     }];
 }
 /**解析JSON 数据*/
--(NSArray*) serializationJSON:(NSDictionary*) json{
-    NSMutableArray *sectionList = [NSMutableArray array];  //节数据临时集合
-    json = [json objectForKey:@"relationships"];
+-(NSArray<Resource*>*) serializationJSON:(NSDictionary*) json{
+    NSMutableArray<Resource*> *sectionList = [NSMutableArray array];  //节数据临时集合
 
+    json = [json objectForKey:@"relationships"];
     NSDictionary *contents = [json objectForKey:@"contents"];  //如果这里有内容, 则不是组推荐, 没有值就是组推荐
     if (contents) {
         //非组推荐
-        for (NSDictionary *source in [contents objectForKey:@"data"]) {
-            //具体资源类型
-            NSString *type = [source objectForKey:@"type"];
-            Class cls = [self classForResourceType:type];
-            id obj = [cls instanceWithDict:[source objectForKey:@"attributes"]];
-            [sectionList addObject:obj];
+        for (NSDictionary *sourceDict in [contents objectForKey:@"data"]) {
+            Resource *resouce = [Resource instanceWithDict:sourceDict];
+            [sectionList addObject:resouce];
         }
     }else{
         //组推荐
@@ -159,7 +159,9 @@ static NSString *const cellIdentifier = @"todayCell";
         if (recommendations) {
             for (NSDictionary *subJSON  in [recommendations objectForKey:@"data"]) {
                 //递归
-                sectionList = (NSMutableArray*)[self serializationJSON: subJSON];
+                NSArray *temp =[self serializationJSON: subJSON];
+                //注意数据添加, 不要覆盖
+                sectionList = (NSMutableArray*)(sectionList==NULL ? temp : [sectionList arrayByAddingObjectsFromArray:temp]);
             }
         }
     }
@@ -168,22 +170,22 @@ static NSString *const cellIdentifier = @"todayCell";
 
 #pragma mark <UICollectionViewDataSource>
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    return self.allDatas.count;
+    return self.resources.count;
 }
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self.allDatas objectAtIndex:section].count;
+    return [self.resources objectAtIndex:section].count;
 }
 
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     TodayCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     // Configure the cell
-    NSArray *temp = [self.allDatas objectAtIndex:indexPath.section];
-    id resource = [temp objectAtIndex:indexPath.row];
+
+    Resource* resource = [[self.resources objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
 
     //设置封面
-    if ([resource respondsToSelector:@selector(artwork)]) {
-        Artwork *artwork = [resource valueForKey:@"artwork"];
+    if ([resource respondsToSelector:@selector(attributes)]) {
+        Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
         [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
     }
     return cell;
@@ -206,8 +208,8 @@ static NSString *const cellIdentifier = @"todayCell";
 
 #pragma mark <UICollectionViewDelegate>
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    id obj = [[self.allDatas objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    DetailViewController *detailVC = [[DetailViewController alloc] initWithObject:obj];
+    Resource *obj = [[self.resources objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:obj];
     [self.navigationController pushViewController:detailVC animated:YES];
 }
 

@@ -200,7 +200,7 @@ static CGFloat const spacing = 2.0f;
 // selected cell
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     Album *album = [self.albums objectAtIndex:indexPath.row];
-    DetailViewController *detailVC = [[DetailViewController alloc] initWithAlbum:album];
+    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:album];
     [self.navigationController pushViewController:detailVC animated:YES];
 }
 
