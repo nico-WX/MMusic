@@ -11,7 +11,6 @@
 @interface NewCardView : UIView
 /**卡片标题*/
 @property(nonatomic, strong) UILabel *titleLabel;
-
 /**视图容器*/
 @property(nonatomic, strong) UIView *contentView;
 @end

@@ -7,10 +7,9 @@
 //
 
 #import "NewCardView.h"
-#import "Masonry.h"
+#import <Masonry.h>
 
 @interface NewCardView()
-
 @property(nonatomic, strong) UIView *midView;
 @end
 
@@ -18,6 +17,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
+        //底层透明色
         self.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.0f];
 
         //实例 视图
@@ -30,48 +30,49 @@
         [self addSubview:self.titleLabel];
         [self.midView addSubview:self.contentView];
 
-        self.midView.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
+        UIColor *color =  [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
+        self.midView.backgroundColor = self.contentView.backgroundColor = color;
 
-        __weak typeof(self) weakSelf = self;
-        //约束
-
-        //顶部标签
+        //顶部标签设置
         self.titleLabel.backgroundColor = UIColor.greenColor;
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
+
+
+        __weak typeof(self) weakSelf = self;
+        //title Label
+        CGFloat titleH = 30;
         [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             //位置
             make.left.equalTo(weakSelf.mas_left).offset(20);
             make.top.equalTo(weakSelf.mas_top);
-
             //计算标签大小
-            CGFloat w = CGRectGetWidth(frame)*0.4;
-            CGFloat h = 30;
-            CGSize size = CGSizeMake(w, h);
+            CGFloat w = CGRectGetWidth(weakSelf.bounds)*0.4;
+            CGSize size = CGSizeMake(w, titleH);
             make.size.mas_equalTo(size);
 
             //圆角
-            self.titleLabel.layer.cornerRadius = h/2;
+            self.titleLabel.layer.cornerRadius = titleH/2;
             self.titleLabel.layer.masksToBounds = YES;
         }];
 
-        //中间层覆盖在底层上, 并在顶部留距离
-        self.midView.layer.cornerRadius = 8.0f;
+        //中间层
+        CGFloat corner = 8.0f;
+        self.midView.layer.cornerRadius = corner;
         self.midView.layer.masksToBounds = YES;
         [self.midView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self).insets(UIEdgeInsetsMake(10, 0, 0, 0));
+            make.edges.equalTo(weakSelf).insets(UIEdgeInsetsMake(titleH/2, 0, 0, 0));
         }];
 
-        UIEdgeInsets padding = UIEdgeInsetsMake(10, 0, 0, 0);
         //内容容器视图
+        UIEdgeInsets padding = UIEdgeInsetsMake(10, 0, 0, 0);
         [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.titleLabel.mas_bottom).offset(padding.top);
-            make.left.equalTo(self.midView.mas_left);
-
-            make.right.equalTo(self.midView.mas_right);
-            make.bottom.equalTo(self.midView.mas_bottom);
+            make.top.equalTo(weakSelf.titleLabel.mas_bottom).offset(padding.top);
+            make.left.equalTo(weakSelf.midView.mas_left);
+            make.right.equalTo(weakSelf.midView.mas_right);
+            make.bottom.equalTo(weakSelf.midView.mas_bottom);
         }];
 
-        self.contentView.layer.cornerRadius =8.0f;
+        self.contentView.layer.cornerRadius =corner;
         self.contentView.layer.masksToBounds = YES;
         //最后再添加一次, 移动到最上层
         [self addSubview:self.titleLabel];

@@ -61,7 +61,6 @@
         make.right.mas_equalTo(superview.mas_right).with.offset(-padding.right);
         make.bottom.mas_equalTo(superview.mas_bottom).with.offset(-padding.bottom);
     }];
-
 }
 
 

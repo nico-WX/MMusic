@@ -187,4 +187,9 @@ extern NSString *userTokenIssueNotification;
 }
 
 
++(UIColor *)colorWithHexString:(NSString *)hexString{
+
+    return UIColor.blueColor;
+}
+
 @end

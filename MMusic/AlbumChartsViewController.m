@@ -37,19 +37,22 @@
 static NSString * const reuseIdentifier = @"AlbumChartsCell";
 /**cell 间隔*/
 static CGFloat const spacing = 2.0f;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     [self requestData];
-    //将集合视图添加到Card View 上
-    self.cardView = [[NewCardView alloc] initWithFrame:self.view.bounds];
-    [self.view addSubview:self.cardView];
 
+    //卡片视图
+    self.cardView = [[NewCardView alloc] initWithFrame:self.view.bounds];
+
+    //集合视图
     self.collectionView = ({
          UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout.minimumInteritemSpacing = spacing;
         layout.minimumLineSpacing = spacing;
+
 
         UICollectionView *view = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         [view registerClass:[ChartsAlbumCell class] forCellWithReuseIdentifier:reuseIdentifier];
@@ -61,40 +64,13 @@ static CGFloat const spacing = 2.0f;
         view.layer.masksToBounds = YES;
         view;
     });
+
+    //添加
+    [self.view addSubview:self.cardView];
     [self.cardView.contentView addSubview:self.collectionView];
 
-    //layout
-    ({
-        //导航栏状态栏 tabBar 高度
-        CGFloat statusH = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);
-        CGFloat navH = CGRectGetHeight(self.navigationController.navigationBar.frame);
-        //添加了UIPageController,   不用计数Tabbar高度
-        CGFloat tabH = 0.0f;//CGRectGetHeight(self.tabBarController.tabBar.frame);
-
-        //边距
-        UIEdgeInsets padding = UIEdgeInsetsMake((statusH+navH+4), 4, (tabH+0), 4);
-
-        //Layout cardView
-        UIView *superview = self.view;
-        [self.cardView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(superview.mas_top).offset(padding.top);
-            make.left.mas_equalTo(superview.mas_left).offset(padding.left);
-            make.right.mas_equalTo(superview.mas_right).offset(-padding.right);
-            make.bottom.mas_equalTo(superview.mas_bottom).offset(-padding.bottom);
-        }];
-
-        //Layout collectionView
-        superview = self.cardView.contentView;
-        [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(superview.mas_top);
-            make.left.mas_equalTo(superview.mas_left).with.offset(spacing*2);
-            make.right.mas_equalTo(superview.mas_right).with.offset(-spacing*2);
-            make.bottom.mas_equalTo(superview.mas_bottom).with.offset(-spacing*2);
-        }];
-    });
-
+     __weak typeof(self) weakSelf = self;
     //上拉加载更多
-    __weak typeof(self) weakSelf = self;
     self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         if (weakSelf.next) {
             [weakSelf loadNextPage];
@@ -109,6 +85,28 @@ static CGFloat const spacing = 2.0f;
         [weakSelf requestData];
     }];
 }
+//布局
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    //布局
+    CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);   //使用Frame  不是bouns
+    //边距
+    UIEdgeInsets padding = UIEdgeInsetsMake(y+4, 4, 0, 4);
+    UIView *superview = self.view;
+    [self.cardView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(superview).with.insets(padding);
+    }];
+
+    //Layout collectionView
+    superview = self.cardView.contentView;
+    [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(superview.mas_top);
+        make.left.mas_equalTo(superview.mas_left).with.offset(spacing*2);
+        make.right.mas_equalTo(superview.mas_right).with.offset(-spacing*2);
+        make.bottom.mas_equalTo(superview.mas_bottom).with.offset(-spacing*2);
+    }];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
@@ -189,8 +187,7 @@ static CGFloat const spacing = 2.0f;
         cell.titleLabel.text = album.name;
         [self showImageToView:cell.artworkView withImageURL:album.artwork.url cacheToMemory:YES];
     }
-    cell.contentView.backgroundColor = self.cardView.contentView.backgroundColor;
-    cell.backgroundColor = UIColor.whiteColor;
+    cell.contentView.backgroundColor = UIColor.whiteColor;
     return cell;
 }
 

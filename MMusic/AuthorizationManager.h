@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-
+/**授权处理*/
 @interface AuthorizationManager : NSObject<NSCopying,NSMutableCopying>
 /**地区代码*/
 @property(nonatomic, copy) NSString *storefront;

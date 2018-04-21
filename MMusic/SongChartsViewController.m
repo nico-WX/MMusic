@@ -10,7 +10,7 @@
 #import <MJRefresh.h>
 
 #import "SongChartsViewController.h"
-#import "ChartsSongCell.h"
+#import "SongCell.h"
 #import "NewCardView.h"
 #import "PlayerViewController.h"
 
@@ -48,13 +48,12 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
 
     self.tableView = ({
         UITableView *tableview = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        [tableview registerClass:[ChartsSongCell class] forCellReuseIdentifier:reuseIdentifier];
+        [tableview registerClass:[SongCell class] forCellReuseIdentifier:reuseIdentifier];
         tableview.layer.cornerRadius = 8.0f;
         tableview.layer.masksToBounds = YES;
         tableview.delegate = self;
         tableview.dataSource = self;
         tableview.separatorColor = UIColor.whiteColor;
-        tableview.backgroundColor = self.cardView.contentView.backgroundColor;
         tableview;
     });
 
@@ -171,17 +170,17 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
     return self.songList.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ChartsSongCell *cell = (ChartsSongCell*)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
+    SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
 
      //Configure the cell...
     Song *song = [self.songList objectAtIndex:indexPath.row];
-    cell.nameLabel.text = song.name;
+    cell.songNameLabel.text = song.name;
     cell.artistLabel.text = song.artistName;
 
     Artwork *art = song.artwork;
     [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:YES];
 
-    cell.backgroundColor = self.cardView.contentView.backgroundColor;
+    cell.contentView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.9];
     return cell;
 }
 
@@ -191,7 +190,9 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
 
 #pragma mark UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    self.playerVC = [PlayerViewController sharePlayerViewController];
+    if (!self.playerVC) {
+        self.playerVC = [PlayerViewController sharePlayerViewController];
+    }
 
     Song *selectSong = [self.songList objectAtIndex:indexPath.row];
     NSString *nowPlayItemId = self.playerVC.playerController.nowPlayingItem.playbackStoreID;
@@ -201,8 +202,32 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
         [self.playerVC.playerController setQueueWithDescriptor:self.queueDesc];
         [self.playerVC.playerController prepareToPlay];
     }
-
     [self.playerVC showFromViewController:self withSongList:self.songList andStarItem:[self.songList objectAtIndex:indexPath.row]];
+
+    //更新 正在播放项目指示
+    __weak typeof(self) weakSelf = self;
+    self.playerVC.nowPlayingItem = ^(MPMediaItem *item) {
+        NSString *nowPlaySongID = item.playbackStoreID;
+        //遍历当前songs 列表, 找到id相匹配的 song和song所在的cell
+        for (Song *song in weakSelf.songList) {
+            NSString *songID = [song.playParams objectForKey:@"id"];
+            NSIndexPath *path= [NSIndexPath indexPathForRow:[weakSelf.songList indexOfObject:song] inSection:0];
+            SongCell *cell = [weakSelf.tableView cellForRowAtIndexPath:path];
+            UIColor *blue = [UIColor blueColor];
+
+            //修改在正在播放的song cell 颜色
+            if ([songID isEqualToString:nowPlaySongID]) {
+                [cell.songNameLabel setTextColor:blue];
+                [cell.artistLabel setTextColor:blue];
+            }else{
+                //上一次播放的cell 改回原来的颜色  通过比对颜色,
+                if (CGColorEqualToColor(blue.CGColor, cell.songNameLabel.textColor.CGColor)) {
+                    [cell.songNameLabel setTextColor:[UIColor blackColor]];
+                    [cell.artistLabel setTextColor:[UIColor grayColor]];
+                }
+            }
+        }
+    };
 }
 
 @end

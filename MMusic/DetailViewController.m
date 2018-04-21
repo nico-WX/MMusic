@@ -144,19 +144,15 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     //现在播放的项目 和现在选择的项目是同一个, 弹出视图, 不从头播放
+    Song *selectSong = [self.songs objectAtIndex:indexPath.row];
     NSString *nowId = self.playerVC.playerController.nowPlayingItem.playbackStoreID;
-    NSString *selectorID = [[self.songs objectAtIndex:indexPath.row].playParams objectForKey:@"id"];
-    if (![nowId isEqualToString:selectorID]) {
+    NSString *selectID = [selectSong.playParams objectForKey:@"id"];
+    if (![nowId isEqualToString:selectID]) {
         [self.prametersQueue setStartItemPlayParameters:[self.prameters objectAtIndex:indexPath.row]];
         [self.playerVC.playerController setQueueWithDescriptor:self.prametersQueue];
         [self.playerVC.playerController prepareToPlay];
     }
-
-    [self.playerVC setNowPlaySong:[self.songs objectAtIndex:indexPath.row]];
-    [self.playerVC setSongs:self.songs];
-    //显示视图
-    [self presentViewController:self.playerVC animated:YES completion:nil];
-
+    [self.playerVC showFromViewController:self withSongList:self.songs andStarItem:selectSong];
 }
 //定行高
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{

@@ -32,4 +32,6 @@
 /**通过Path 显示图片到ImageView 上, URL(未替换大小参数url)*/
 -(void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL) cache;
 
+/**16进制颜色转换*/
++(UIColor*)colorWithHexString:(NSString*) hexString;
 @end
