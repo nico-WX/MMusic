@@ -55,7 +55,7 @@ static NSString *const headerId = @"haderSectionReuseId";
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.view.backgroundColor = UIColor.whiteColor;
+    self.view.backgroundColor = [UIColor colorWithHexString:@"1d3332" alpha:1.0f];
 
     self.navigationH = CGRectGetHeight(self.navigationController.navigationBar.bounds);
     self.statusH = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);

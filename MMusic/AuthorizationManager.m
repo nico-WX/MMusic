@@ -96,6 +96,7 @@ static AuthorizationManager *_instance;
 }
 #endif
 
+
 #pragma mark layz
 -(NSString *)developerToken{
     if (!_developerToken) {
@@ -134,28 +135,23 @@ static AuthorizationManager *_instance;
 #pragma mark 从网络请求token 地区代码等
 /**请求开发者Token 并缓存在默认设置*/
 - (void)requestDeveloperToken{
-    __block NSString *token ;//= [[NSUserDefaults standardUserDefaults] objectForKey:developerTokenDefaultsKey];
-    //if (!token) {
 #warning DeveloperTokenURL no set!
         NSURL *url = [NSURL URLWithString:@""];
         [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-
             NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
             if (res.statusCode == 200) {
-                token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                NSString *token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 if (token) {
-                    Log(@"dev Token: %@",token);
+                    Log(@"request DeveloperToken: %@",token);
                     _developerToken = token;
                     [[NSUserDefaults standardUserDefaults] setObject:token forKey:developerTokenDefaultsKey];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenUpdatedNotification object:nil];
                 }
             }else{
-                Log(@"Error: %@, %s",error,__FILE__);
+                Log(@"request Developer Token Error: %@, %s",error,__FILE__);
             }
         }] resume];
-    //}
-
 }
 
 /**请求用户Token*/

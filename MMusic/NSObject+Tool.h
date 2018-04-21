@@ -33,5 +33,7 @@
 -(void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL) cache;
 
 /**16进制颜色转换*/
-+(UIColor*)colorWithHexString:(NSString*) hexString;
++(UIColor*)colorWithHexString:(NSString*) hexString alpha:(CGFloat) alpha;
+/**补色*/
++ (UIColor *)oppositeColorOf:(UIColor *)mainColor;
 @end

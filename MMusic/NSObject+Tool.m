@@ -131,14 +131,15 @@ extern NSString *userTokenIssueNotification;
     //获取视图宽高, 设置请求图片大小
     CGFloat h = CGRectGetHeight(imageView.bounds);
     CGFloat w = CGRectGetWidth(imageView.bounds);
-    if (w==0 || h == 0) return; //拦截高度, 宽度为 0 的情况,
+    if (w==0 || h == 0) w=h=44; //拦截高度, 宽度为 0 的情况, 设置默认值,
 
     //image
     NSString *path = IMAGEPATH_FOR_URL(url);
     UIImage *image = [UIImage imageWithContentsOfFile:path];
 
     //照片太小, 删除
-    if (image.size.width < w || image.size.height < h) {
+    CGFloat scale = [UIScreen mainScreen].scale;
+    if (image.size.width < w*scale || image.size.height < h*scale) {
         [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
         image = nil;
     }
@@ -187,9 +188,60 @@ extern NSString *userTokenIssueNotification;
 }
 
 
-+(UIColor *)colorWithHexString:(NSString *)hexString{
++(UIColor *)colorWithHexString:(NSString *)hexString alpha:(CGFloat) alpha{
+    //检查长度
+    if (hexString.length < 6 || hexString.length > 8) {
+        return UIColor.blackColor;
+    }
 
-    return UIColor.blueColor;
+    //解析前缀
+    hexString = [hexString uppercaseString];
+    if ([hexString hasPrefix:@"0X"]) {
+        hexString = [hexString substringFromIndex:2];
+    }
+    if ([hexString hasPrefix:@"#"]) {
+        hexString = [hexString substringFromIndex:1];
+    }
+    if (hexString.length != 6) {
+        return UIColor.blackColor;
+    }
+
+    NSString *rStr = [hexString substringWithRange:NSMakeRange(0, 2)];
+    NSString *gStr = [hexString substringWithRange:NSMakeRange(2, 2)];
+    NSString *bStr = [hexString substringWithRange:NSMakeRange(4, 2)];
+
+    unsigned int r, g, b;
+    [[NSScanner scannerWithString:rStr] scanHexInt:&r];
+    [[NSScanner scannerWithString:gStr] scanHexInt:&g];
+    [[NSScanner scannerWithString:bStr] scanHexInt:&b];
+    
+    return [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:alpha];
+}
+
++(UIColor *)oppositeColorOf:(UIColor *)mainColor{
+    if ([mainColor isEqual:[UIColor blackColor]]) {
+        mainColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1];
+    }
+    else if ([mainColor isEqual:[UIColor darkGrayColor]]) {
+        mainColor = [UIColor colorWithRed:84.915/255.f green:84.915/255.f blue:84.915/255.f alpha:1];
+    }
+    else if ([mainColor isEqual:[UIColor lightGrayColor]]) {
+        mainColor = [UIColor colorWithRed:170.085/255.f green:170.085/255.f blue:170.085/255.f alpha:1];
+    }
+    else if ([mainColor isEqual:[UIColor whiteColor]]) {
+        mainColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
+    }
+    else if ([mainColor isEqual:[UIColor grayColor]]) {
+        mainColor = [UIColor colorWithRed:127.5/255.f green:127.5/255.f blue:127.5/255.f alpha:1];
+    }
+
+    const CGFloat *componentColors = CGColorGetComponents(mainColor.CGColor);
+
+    UIColor *convertedColor = [[UIColor alloc] initWithRed:(1.0 - componentColors[0])
+                                                     green:(1.0 - componentColors[1])
+                                                      blue:(1.0 - componentColors[2])
+                                                     alpha:componentColors[3]];
+    return convertedColor;
 }
 
 @end

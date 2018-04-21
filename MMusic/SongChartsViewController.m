@@ -42,7 +42,6 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
     self.cardView = ({
         NewCardView *view = [[NewCardView alloc] initWithFrame:self.view.bounds];
         [self.view addSubview:view];
-
         view;
     });
 
@@ -54,6 +53,8 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
         tableview.delegate = self;
         tableview.dataSource = self;
         tableview.separatorColor = UIColor.whiteColor;
+        tableview.backgroundColor = self.cardView.contentView.backgroundColor;
+
         tableview;
     });
 
@@ -65,8 +66,7 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
         //导航栏状态栏 tabBar 高度
         CGFloat statusH = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);
         CGFloat navH = CGRectGetHeight(self.navigationController.navigationBar.frame);
-        CGFloat tabH = 0.0f; // CGRectGetHeight(self.tabBarController.tabBar.frame);
-                             //边距
+        CGFloat tabH = 0.0f;
         UIEdgeInsets padding = UIEdgeInsetsMake((statusH+navH+4), 4, (tabH+0), 4);
         //layout cardView
         UIView *superview = self.view;
@@ -102,6 +102,42 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+#pragma mark Layz
+-(PlayerViewController *)playerVC{
+    if (!_playerVC) {
+        _playerVC = PlayerViewController.new;
+        //设置 播放队列
+        [_playerVC.playerController setQueueWithDescriptor:self.queueDesc];
+
+        //更新 正在播放项目指示
+        __weak typeof(self) weakSelf = self;
+        _playerVC.nowPlayingItem = ^(MPMediaItem *item) {
+            NSString *nowPlaySongID = item.playbackStoreID;
+            //遍历当前songs 列表, 找到id相匹配的 song和song所在的cell
+            for (Song *song in weakSelf.songList) {
+                NSString *songID = [song.playParams objectForKey:@"id"];
+                NSIndexPath *path= [NSIndexPath indexPathForRow:[weakSelf.songList indexOfObject:song] inSection:0];
+                SongCell *cell = [weakSelf.tableView cellForRowAtIndexPath:path];
+                UIColor *blue = [UIColor blueColor];
+
+                //修改在正在播放的song cell 颜色
+                if ([songID isEqualToString:nowPlaySongID]) {
+
+                    [cell.songNameLabel setTextColor:blue];
+                    [cell.artistLabel setTextColor:blue];
+                }else{
+                    //上一次播放的cell 改回原来的颜色  通过比对颜色,
+                    if (CGColorEqualToColor(blue.CGColor, cell.songNameLabel.textColor.CGColor)) {
+                        [cell.songNameLabel setTextColor:[UIColor blackColor]];
+                        [cell.artistLabel setTextColor:[UIColor grayColor]];
+                    }
+                }
+            }
+        };
+    }
+    return _playerVC;
+}
+
 #pragma mark 请求数据 及解析JSON  加载分页数据
 -(void) requeData{
     NSURLRequest *request = [[RequestFactory requestFactory] createChartWithChartType:ChartSongsType];
@@ -180,7 +216,21 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
     Artwork *art = song.artwork;
     [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:YES];
 
-    cell.contentView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.9];
+    cell.contentView.backgroundColor = self.cardView.contentView.backgroundColor;//[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.9];
+
+    //正在播放指示//判断 当前cell显示的 与正在播放的item 是否为同一个,
+    NSString *nowPlaySongID = self.playerVC.playerController.nowPlayingItem.playbackStoreID;
+    NSString *cellSongID = [song.playParams objectForKey:@"id"];
+
+    //不相同,把原来改色的cell恢复颜色,<重用遗留>
+    if (![nowPlaySongID isEqualToString:cellSongID]) {
+        [cell.songNameLabel setTextColor:[UIColor blackColor]];
+        [cell.artistLabel setTextColor:[UIColor grayColor]];
+    }else{
+        [cell.songNameLabel setTextColor:[UIColor blueColor]];
+        [cell.artistLabel setTextColor:[UIColor blueColor]];
+    }
+
     return cell;
 }
 
@@ -190,10 +240,6 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
 
 #pragma mark UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (!self.playerVC) {
-        self.playerVC = [PlayerViewController sharePlayerViewController];
-    }
-
     Song *selectSong = [self.songList objectAtIndex:indexPath.row];
     NSString *nowPlayItemId = self.playerVC.playerController.nowPlayingItem.playbackStoreID;
     NSString *selectSongId = [selectSong.playParams objectForKey:@"id"];
@@ -203,31 +249,6 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
         [self.playerVC.playerController prepareToPlay];
     }
     [self.playerVC showFromViewController:self withSongList:self.songList andStarItem:[self.songList objectAtIndex:indexPath.row]];
-
-    //更新 正在播放项目指示
-    __weak typeof(self) weakSelf = self;
-    self.playerVC.nowPlayingItem = ^(MPMediaItem *item) {
-        NSString *nowPlaySongID = item.playbackStoreID;
-        //遍历当前songs 列表, 找到id相匹配的 song和song所在的cell
-        for (Song *song in weakSelf.songList) {
-            NSString *songID = [song.playParams objectForKey:@"id"];
-            NSIndexPath *path= [NSIndexPath indexPathForRow:[weakSelf.songList indexOfObject:song] inSection:0];
-            SongCell *cell = [weakSelf.tableView cellForRowAtIndexPath:path];
-            UIColor *blue = [UIColor blueColor];
-
-            //修改在正在播放的song cell 颜色
-            if ([songID isEqualToString:nowPlaySongID]) {
-                [cell.songNameLabel setTextColor:blue];
-                [cell.artistLabel setTextColor:blue];
-            }else{
-                //上一次播放的cell 改回原来的颜色  通过比对颜色,
-                if (CGColorEqualToColor(blue.CGColor, cell.songNameLabel.textColor.CGColor)) {
-                    [cell.songNameLabel setTextColor:[UIColor blackColor]];
-                    [cell.artistLabel setTextColor:[UIColor grayColor]];
-                }
-            }
-        }
-    };
 }
 
 @end

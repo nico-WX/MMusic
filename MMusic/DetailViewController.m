@@ -28,9 +28,6 @@
 
 @interface DetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic, strong) Resource *resource;
-/**顶部视图*/
-@property(nonatomic, strong) HeaderView *header;
-@property(nonatomic, strong) UITableView *tableView;
 //播放器视图控制器
 @property(nonatomic, strong) PlayerViewController *playerVC;
 //data 数据在请求数据方法中 初始化

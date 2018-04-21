@@ -14,6 +14,7 @@
 #import "PlayProgressView.h"
 #import "PlayControllerView.h"
 
+#import "NSObject+Tool.h"
 #import "Artwork.h"
 #import "Song.h"
 #import "PersonalizedRequestFactory.h"
@@ -100,10 +101,15 @@ static PlayerViewController *_instance;
 
 /**更新当前播放的音乐信息到视图上*/
 - (void) updateNowPlayItemToView{
+    Artwork *artwork = self.nowPlaySong.artwork;
 
+    UIColor *mainColor = [UIColor colorWithHexString:artwork.bgColor alpha:1];
+    self.playerView.closeButton.tintColor = [UIColor oppositeColorOf:mainColor];    //按钮补色
     [self.playerView.closeButton animateToType:buttonCloseType];
+
+
     //歌曲封面
-    [self showImageToView:self.playerView.artworkView withImageURL:self.nowPlaySong.artwork.url cacheToMemory:YES];
+    [self showImageToView:self.playerView.artworkView withImageURL:artwork.url cacheToMemory:YES];
 
     //歌曲  歌手信息
     self.playerView.songNameLabel.text = self.nowPlaySong.name;
