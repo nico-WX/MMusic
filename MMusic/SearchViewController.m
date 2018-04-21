@@ -10,6 +10,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <Masonry.h>
 
+#import "HintsViewController.h"
 
 #import "SearchViewController.h"
 #import "ResultsViewController.h"
@@ -38,6 +39,8 @@
 @property(nonatomic, strong) NSArray<NSArray*> *allSearchDatas;
 @property(nonatomic, strong) NSArray<NSString*> *titles;
 @property(nonatomic, strong) UITableView *tableView;
+/**搜索暗示*/
+@property(nonatomic, strong) NSArray<NSString*> *hints;
 
 @property(nonatomic, assign) CGFloat navigationH;
 @property(nonatomic, assign) CGFloat statusH;
@@ -156,6 +159,19 @@ static NSString *const headerId = @"haderSectionReuseId";
     rect.size.height = 0;
     [UIView animateWithDuration:0.7 animations:^{
         self.tableView.frame = rect;
+    }];
+}
+
+-(void) requestHints:(NSString*) term{
+    NSURLRequest *request = [[RequestFactory requestFactory] createSearchHintsWithTerm:term];
+    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (data && !error) {
+            NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
+            self.hints = [json valueForKeyPath:@"results.terms"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
+        }
     }];
 }
 

@@ -13,8 +13,6 @@
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]){
-        //self.backgroundColor = UIColor.whiteColor;
-        //self.contentView.backgroundColor = UIColor.whiteColor;
         CGFloat corner = 8.0f;
         self.layer.cornerRadius = corner;
         self.layer.masksToBounds = YES;
@@ -25,8 +23,6 @@
         self.titleLabel.layer.masksToBounds = YES;
 
         self.artworkView = UIImageView.new;
-//        self.artworkView.layer.cornerRadius = corner;
-//        self.artworkView.layer.masksToBounds = YES;
 
         [self.contentView addSubview:self.titleLabel];
         [self.contentView addSubview:self.artworkView];

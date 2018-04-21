@@ -79,7 +79,7 @@ typedef NS_OPTIONS(NSUInteger, ChartType){
 -(NSURLRequest*) createChartWithChartType:(ChartType) type;
 /**搜索请求*/
 -(NSURLRequest*) createSearchWithText:(NSString*) searchText;
-/**通过文本获取搜索历史*/
+/**通过文本获取搜索暗示*/
 -(NSURLRequest*) createSearchHintsWithTerm:(NSString*) term;
 /**通过(子路径)Herf 请求资源*/
 - (NSURLRequest*)createRequestWithHerf:(NSString*) herf;
