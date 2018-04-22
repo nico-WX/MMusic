@@ -10,4 +10,5 @@
 
 @interface HintsCell : UITableViewCell
 
+
 @end

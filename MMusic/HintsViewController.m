@@ -43,6 +43,8 @@ static NSString *const cellID = @"cellReuseIdentifier";
     return cell;
 }
 
+#pragma mark - Table view delegate
+
 - (void)showHintsFromTerms:(NSString *)term{
     NSURLRequest *request = [[RequestFactory requestFactory] createSearchHintsWithTerm:term];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {

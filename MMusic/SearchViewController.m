@@ -34,21 +34,15 @@
 
 @interface SearchViewController ()<UISearchBarDelegate,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic, strong) UISearchBar *serachBar;
-
 //搜索栏候选数据
 @property(nonatomic, strong) NSArray<NSArray*> *allSearchDatas;
 @property(nonatomic, strong) NSArray<NSString*> *titles;
-@property(nonatomic, strong) UITableView *tableView;
-/**搜索暗示*/
-@property(nonatomic, strong) NSArray<NSString*> *hints;
 
-@property(nonatomic, assign) CGFloat navigationH;
-@property(nonatomic, assign) CGFloat statusH;
-@property(nonatomic, assign) CGFloat searchBarH;
-
+/**搜索提示*/
+@property(nonatomic, strong) HintsViewController *hintsVC;
+/**播放视图控制器*/
 @property(nonatomic, strong) PlayerViewController *playerVC;
 
-@property(nonatomic, strong) NSString *previousSearchText;
 @end
 
 static NSString *const cellId = @"SearchViewCell";
@@ -60,49 +54,35 @@ static NSString *const headerId = @"haderSectionReuseId";
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor colorWithHexString:@"1d3332" alpha:1.0f];
 
-    self.navigationH = CGRectGetHeight(self.navigationController.navigationBar.bounds);
-    self.statusH = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);
-
-
     self.serachBar = ({
+        UISearchBar *bar = UISearchBar.new;
+        bar.delegate = self;
+        bar.barTintColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1.0];
+        [self.navigationController.navigationBar addSubview:bar];
+
+        UIView *superview = self.navigationController.navigationBar;
+        [self.navigationController.navigationBar addSubview:bar];
+        [bar mas_makeConstraints:^(MASConstraintMaker *make) {
+            UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 0, 4);
+            make.edges.mas_equalTo(superview).with.insets(padding);
+        }];
+
+        bar;
+    });
+
+    self.hintsVC = ({
+        HintsViewController *hVC = [[HintsViewController alloc] initWithStyle:UITableViewStylePlain];
+        //高度0  搜索框获得焦点时显示
         CGFloat x = 0;
         CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);
         CGFloat w = CGRectGetWidth(self.view.frame);
-        CGFloat h = 44.0f;
-        CGRect rect = CGRectMake(x, y, w, h);
-
-        UISearchBar *bar = [[UISearchBar alloc] initWithFrame:rect];
-        bar.delegate = self;
-        bar.barTintColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1.0];
-
-        [self.view addSubview:bar];
-        bar;
-    });
-    self.searchBarH = CGRectGetHeight(self.serachBar.bounds);
-
-    //搜索候选栏
-    //点击搜索栏时, 从搜索栏下部向下拉伸显示
-    self.tableView = ({
-        CGFloat x = 0;
-        CGFloat y = CGRectGetMaxY(self.serachBar.frame);
-        CGFloat w = CGRectGetWidth(self.view.frame);
         CGFloat h = 0;
         CGRect rect = CGRectMake(x, y, w, h);
+        hVC.tableView.frame = rect;
+        [self.view addSubview:hVC.tableView];
 
-        UITableView *view = [[UITableView alloc] initWithFrame:rect style:UITableViewStylePlain];
-        //注册重用
-        [view registerClass:[WaitingCell class] forCellReuseIdentifier:cellId];
-        [view registerClass:[SearchSectionWaitingHeader class] forHeaderFooterViewReuseIdentifier:headerId];
-
-        view.dataSource = self;
-        view.delegate = self;
-        view.backgroundColor = [UIColor colorWithWhite:0.7 alpha:0];;
-
-
-        [self.view addSubview:view];
-        view;
+        hVC;
     });
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -118,7 +98,7 @@ static NSString *const headerId = @"haderSectionReuseId";
 -(void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
     searchBar.showsCancelButton = YES;
 
-    //监听键盘弹出, 获取键盘高度,修改TableView Frame
+    //监听键盘弹出, 获取键盘高度,修改Hints view Frame
     __weak typeof(self) weakSelf = self;
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     //键盘Frame改变, 同时更改TableViewFrame
@@ -126,61 +106,42 @@ static NSString *const headerId = @"haderSectionReuseId";
         NSDictionary *info = note.userInfo;
         NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
         CGFloat keyboardH = CGRectGetHeight(value.CGRectValue);
-        CGRect rect = weakSelf.tableView.frame;
+        CGRect rect = weakSelf.hintsVC.view.frame;
         rect.size.height = CGRectGetHeight(weakSelf.view.frame) - CGRectGetMinY(rect) - keyboardH;
         [UIView animateWithDuration:0.7 animations:^{
-            weakSelf.tableView.frame = rect;
+            weakSelf.hintsVC.view.frame = rect;
         }];
     }];
 }
 
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-    [self searchText:searchText];
-    self.previousSearchText = searchText;
-
+    [self.hintsVC showHintsFromTerms:searchText];
 }
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
     [searchBar resignFirstResponder];
     [self searchText:searchBar.text];
-    self.previousSearchText = searchBar.text;
 
     CGFloat tabBarH = CGRectGetHeight(self.tabBarController.tabBar.frame);
-    CGRect rect = self.tableView.frame;
+    CGRect rect = self.hintsVC.view.frame;
     rect.size.height = CGRectGetHeight(self.view.frame) - CGRectGetMinY(rect) - tabBarH;
     [UIView animateWithDuration:0.5 animations:^{
-        self.tableView.frame = rect;
+        self.hintsVC.view.frame = rect;
     }];
 }
 -(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [searchBar resignFirstResponder];
     searchBar.showsCancelButton = NO;
     searchBar.text = @"";
-    CGRect rect = self.tableView.frame;
+    CGRect rect = self.hintsVC.view.frame;
     rect.size.height = 0;
     [UIView animateWithDuration:0.7 animations:^{
-        self.tableView.frame = rect;
+        self.hintsVC.view.frame = rect;
     }];
 }
 
--(void) requestHints:(NSString*) term{
-    NSURLRequest *request = [[RequestFactory requestFactory] createSearchHintsWithTerm:term];
-    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (data && !error) {
-            NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
-            self.hints = [json valueForKeyPath:@"results.terms"];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
-            });
-        }
-    }];
-}
 
 #pragma mark  tool method
 - (void) searchText:(NSString*) text{
-    if ([text isEqualToString:self.previousSearchText]) {
-        return;
-    }
-
     NSURLRequest *request = [[RequestFactory requestFactory] createSearchWithText:text];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data) {
@@ -191,6 +152,7 @@ static NSString *const headerId = @"haderSectionReuseId";
         }
     }];
 }
+
 
 -(void) serializatonJSON:(NSDictionary*) json{
     json = [json objectForKey:@"results"];
@@ -218,7 +180,7 @@ static NSString *const headerId = @"haderSectionReuseId";
 
     //刷新
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
+        [self.hintsVC.tableView reloadData];
     });
 }
 
