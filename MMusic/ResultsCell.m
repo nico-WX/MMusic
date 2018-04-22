@@ -6,10 +6,10 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "WaitingCell.h"
+#import "ResultsCell.h"
 #import <Masonry.h>
 
-@implementation WaitingCell
+@implementation ResultsCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         _name = UILabel.new;

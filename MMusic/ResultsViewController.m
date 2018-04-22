@@ -9,7 +9,7 @@
 #import <Masonry.h>
 #import "ResultsViewController.h"
 #import "ResultsSectionHeader.h"
-#import "WaitingCell.h"
+#import "ResultsCell.h"
 #import "HeaderView.h"
 #import "DetailViewController.h"
 
@@ -27,11 +27,10 @@
 
 
 @interface ResultsViewController ()<UITableViewDelegate, UITableViewDataSource>
-@property(nonatomic, strong) Artist *artist;
 @property(nonatomic, strong) UITableView *tableView;
+@property(nonatomic, strong) NSString *searchText;
 
-
-// 数据
+//数据
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,ResponseRoot*> *> *results;
 @end
 
@@ -39,24 +38,23 @@
 
 static NSString *const cellIdentifier = @"cellReuseIdentifier";
 static NSString *const headerIdentifier = @"headerReuseID";
-- (instancetype)initWithArtist:(Artist *)artist{
+- (instancetype)initWithSearchText:(NSString *)searchText{
     if (self = [super init]) {
-        self.artist = artist;
-        self.title = artist.name;
+        _searchText = searchText;
     }
     return self;
 }
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
-    self.title = self.artist.name;
-    [self requestDataWithArtistName:self.artist.name];
+    [self requestDataFromSearchTest:self.searchText];
 
     self.tableView = ({
         UITableView *view = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        [view registerClass:[WaitingCell class] forCellReuseIdentifier:cellIdentifier];
+        [view registerClass:[ResultsCell class] forCellReuseIdentifier:cellIdentifier];
         [view registerClass:ResultsSectionHeader.class forHeaderFooterViewReuseIdentifier:headerIdentifier];
         view.delegate = self;
         view.dataSource = self;
@@ -84,11 +82,12 @@ static NSString *const headerIdentifier = @"headerReuseID";
     // Dispose of any resources that can be recreated.
 }
 
--(void) requestDataWithArtistName:(NSString *) name{
-    NSURLRequest *request = [[RequestFactory requestFactory] createSearchWithText:name];
+-(void) requestDataFromSearchTest:(NSString *) searchText{
+    NSURLRequest *request = [[RequestFactory requestFactory] createSearchWithText:searchText];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+
             if (json) {
                 json = [json objectForKey:@"results"];
                 NSMutableArray *resultsList = [NSMutableArray array];
@@ -107,34 +106,26 @@ static NSString *const headerIdentifier = @"headerReuseID";
     }];
 }
 
-#pragma mark UITableViewDelegate
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    id object = [self objectWithIndexPath:indexPath];
-    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:object];
-    [self.navigationController pushViewController:detailVC animated:YES];
-}
+
 
 #pragma mark UITableViewDataSource
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.results.count;
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    NSDictionary *dict = [self.results objectAtIndex:section];
-    if ([dict objectForKey:@"artists"]) {
-        return 0;
-    }
-
-    NSUInteger count = 0;
-    for (NSString* key in [dict keyEnumerator]) {
-        ResponseRoot *root = [dict objectForKey:key];
-        count = root.data.count;
-    }
-    return count;
+    ResponseRoot *root = [[self.results objectAtIndex:section] allValues].firstObject;
+    return root.data.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    WaitingCell *cell = (WaitingCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    ResultsCell *cell = (ResultsCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 
-    id object = [self objectWithIndexPath:indexPath];
+    ResponseRoot *root = [[self.results objectAtIndex:indexPath.section] allValues].firstObject;
+    Resource *resource = [root.data objectAtIndex:indexPath.row];
+
+    //具体模型
+    Class cls = [self classForResourceType:resource.type];
+    id object = [cls instanceWithDict:resource.attributes];
+
     cell.name.text = [object valueForKey:@"name"];
     //有艺人名称
     if ([object respondsToSelector:@selector(artistName)]) {
@@ -145,7 +136,8 @@ static NSString *const headerIdentifier = @"headerReuseID";
 
     // 有海报
     if ([object respondsToSelector:@selector(artwork)]) {
-        Artwork *art = [object valueForKey:@"artwork"];
+        NSDictionary *artDict = [resource.attributes valueForKey:@"artwork"];
+        Artwork *art = [Artwork instanceWithDict:artDict];
         [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:NO];
     }else{
         cell.artworkView.image = nil;
@@ -153,22 +145,8 @@ static NSString *const headerIdentifier = @"headerReuseID";
     return cell;
 }
 
--(id) objectWithIndexPath:(NSIndexPath*) indexPath {
-    __block id object;
-    [[self.results objectAtIndex:indexPath.section] enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, ResponseRoot * _Nonnull obj, BOOL * _Nonnull stop) {
-        Resource *resource =  [obj.data objectAtIndex:indexPath.row];
-        Class cls = [self classForResourceType:resource.type];
-        object = [cls instanceWithDict:resource.attributes];
-    }];
-    return object;
-}
-
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     ResultsSectionHeader *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:headerIdentifier];
-    //艺人数据, 返回空, 不展示艺人section
-    if ([[self.results objectAtIndex:section] objectForKey:@"artists"]) {
-        return nil;
-    }
 
     [[self.results objectAtIndex:section] enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, ResponseRoot * _Nonnull obj, BOOL * _Nonnull stop) {
         header.title.text = (NSString*)key;
@@ -178,15 +156,17 @@ static NSString *const headerIdentifier = @"headerReuseID";
         }else{
             header.more.hidden = NO;
 
-            //点击事件
             [header.more handleControlEvent:UIControlEventTouchUpInside withBlock:^{
                 //按钮动画交互提示
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [header.more animateToType:buttonDownBasicType];
+                    [header.more animateToType:buttonUpBasicType];
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [header.more animateToType:buttonMinusType];
-                        //加载 下一页
-                        [self loadNextPageWithHref:[obj valueForKey:@"next"] withSection:section];
+                        [header.more animateToType:buttonDownBasicType];
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            //加载 下一页
+                            [header.more animateToType:buttonMinusType];
+                            [self loadNextPageWithHref:[obj valueForKey:@"next"] withSection:section];
+                        });
                     });
                 });
             }];
@@ -196,6 +176,18 @@ static NSString *const headerIdentifier = @"headerReuseID";
     return header;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 44.0f;
+}
+
+#pragma mark UITableViewDelegate
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    ResponseRoot *root = [[self.results objectAtIndex:indexPath.section] allValues].firstObject;
+    Resource *resource = [root.data objectAtIndex:indexPath.row];
+    DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
+    [self.navigationController pushViewController:detail animated:YES];
+}
+//加载某一节 的下一页数据
 -(void) loadNextPageWithHref:(NSString*) href withSection:(NSInteger) section{
     NSURLRequest *request = [[RequestFactory requestFactory] createRequestWithHerf:href];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -228,12 +220,7 @@ static NSString *const headerIdentifier = @"headerReuseID";
     }];
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    if ([[self.results objectAtIndex:section] objectForKey:@"artists"]) {
-        return 0.0f;
-    }
-    return 44.0f;
-}
+
 
 
 @end

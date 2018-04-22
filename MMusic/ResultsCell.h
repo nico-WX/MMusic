@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-/**候选 内容Cell*/
-@interface WaitingCell : UITableViewCell
+/**结果视图cell*/
+@interface ResultsCell : UITableViewCell
 @property(nonatomic, strong) UILabel *name;
 @property(nonatomic, strong) UILabel *artistName;
 @property(nonatomic, strong) UIImageView *artworkView;

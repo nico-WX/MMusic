@@ -8,9 +8,8 @@
 
 
 #import <UIKit/UIKit.h>
-@class Artist;
 
-/**选中的某个艺人 搜索结果, 其他类型搜索直接可以在候选菜单操作*/
+/**选中的某个艺人 搜索Label Text*/
 @interface ResultsViewController : UIViewController
--(instancetype)initWithArtist:(Artist*) artist;
+-(instancetype)initWithSearchText:(NSString*) searchText;
 @end

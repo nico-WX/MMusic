@@ -8,9 +8,9 @@
 
 #import "HintsViewController.h"
 #import "RequestFactory.h"
+#import "ResultsViewController.h"
 
 @interface HintsViewController ()
-@property(nonatomic, strong) NSArray<NSString*> *terms;
 @end
 
 @implementation HintsViewController
@@ -43,15 +43,13 @@ static NSString *const cellID = @"cellReuseIdentifier";
     return cell;
 }
 
-#pragma mark - Table view delegate
-
 - (void)showHintsFromTerms:(NSString *)term{
     NSURLRequest *request = [[RequestFactory requestFactory] createSearchHintsWithTerm:term];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (data && !error) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
             if ([json valueForKeyPath: @"results.terms"]) {
-                self.terms = [json valueForKeyPath:@"results.terms"];
+                _terms = [json valueForKeyPath:@"results.terms"];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.tableView reloadData];
                 });
@@ -59,5 +57,6 @@ static NSString *const cellID = @"cellReuseIdentifier";
         }
     }];
 }
+
 
 @end

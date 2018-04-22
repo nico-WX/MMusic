@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+@class ResultsViewController;
 
 @interface HintsViewController : UITableViewController
+@property(nonatomic, strong,readonly) NSArray<NSString*> *terms;
 -(void)showHintsFromTerms:(NSString*) term;
+
 @end

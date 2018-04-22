@@ -40,7 +40,7 @@
         CGRect rect = CGRectMake(0, 0, 30, 30);
         self.more = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonMinusType buttonStyle:buttonPlainStyle animateToInitialState:YES];
 
-        self.more.tintColor = UIColor.grayColor;
+        self.more.tintColor = UIColor.blueColor;
         [self.contentView addSubview:self.title];
         [self.contentView addSubview:self.more];
     }

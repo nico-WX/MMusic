@@ -9,6 +9,16 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+@class Album;
+@class Artist;
+@class Activity;
+@class AppleCurator;
+@class Curator;
+@class Song;
+@class Station;
+@class Playlist;
+@class MusicVideo;
+
 @interface NSObject (Tool)
 
 /**通过完整的URL路径 生成请求体 并设置请求头*/
