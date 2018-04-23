@@ -33,16 +33,11 @@ static NSString *const cellID = @"cellReuseIdentifier";
     return self.terms.count;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
-    
-    // Configure the cell...
     cell.textLabel.text = [self.terms objectAtIndex:indexPath.row];
-    
     return cell;
 }
-
 - (void)showHintsFromTerms:(NSString *)term{
     NSURLRequest *request = [[RequestFactory requestFactory] createSearchHintsWithTerm:term];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {

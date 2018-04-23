@@ -18,16 +18,17 @@
 @property(nonatomic, strong) HintsViewController *hintsVC;
 /**搜索结果*/
 @property(nonatomic, strong) ResultsViewController *resultsVC;
-
 @end
 
 @implementation SearchViewController
 
+#pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.brownColor;
 
+    //实例搜索栏  并添加到导航栏中
     self.serachBar = ({
         UISearchBar *bar = UISearchBar.new;
         bar.delegate = self;
@@ -44,6 +45,7 @@
         bar;
     });
 
+    //实例提示栏,添加 初始高度0  隐藏
     self.hintsVC = ({
         HintsViewController *hVC = [[HintsViewController alloc] initWithStyle:UITableViewStylePlain];
         //高度0  搜索框获得焦点时显示
@@ -58,7 +60,10 @@
 
         hVC;
     });
-
+}
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.serachBar setHidden:NO];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -69,7 +74,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
-#pragma mark UISearchBarDelegate
+#pragma mark - UISearchBarDelegate
 //获得焦点
 -(void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
     searchBar.showsCancelButton = YES;
@@ -87,7 +92,7 @@
 
         CGRect rect = weakSelf.hintsVC.view.frame;
         CGFloat navH = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
-        rect.size.height = CGRectGetMinY(value.CGRectValue)- navH;
+        rect.size.height = CGRectGetMinY(value.CGRectValue) - navH;
         [UIView animateWithDuration:0.7 animations:^{
             weakSelf.hintsVC.view.frame = rect;
         }];
@@ -122,18 +127,24 @@
     }];
 }
 
-#pragma mark -UITableView Delegate (提示表视图代理)
+#pragma mark - UITableView Delegate (提示表视图代理)
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [self.serachBar resignFirstResponder];
-    NSString *text = [self.hintsVC.terms objectAtIndex:indexPath.row];
-    self.serachBar.text = text;
-    [self showSearchResultsFromText:text];
+    if (tableView == self.hintsVC.tableView) {
+        [self.serachBar resignFirstResponder];
+        NSString *text = [self.hintsVC.terms objectAtIndex:indexPath.row];
+        self.serachBar.text = text;
+        [self showSearchResultsFromText:text];
+    }
+
 }
 
 #pragma mark - 显示搜索结果
--(void)showSearchResultsFromText:(NSString*) searchTest{
-    self.resultsVC = [[ResultsViewController alloc] initWithSearchText:searchTest];
+-(void)showSearchResultsFromText:(NSString*) searchText{
+    [self.serachBar setHidden:YES];
+    self.resultsVC = [[ResultsViewController alloc] initWithSearchText:searchText];
+    self.resultsVC.title = searchText;
     [self.navigationController pushViewController:self.resultsVC animated:YES];
 }
+
 
 @end
