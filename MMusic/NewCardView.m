@@ -15,6 +15,16 @@
 
 @implementation NewCardView
 
+
+- (instancetype)init{
+    if (self = [super init]) {
+        //底层透明色
+        //self.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.0f];
+
+    }
+    return self ;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         //底层透明色
@@ -79,5 +89,7 @@
     }
     return self;
 }
+
+
 
 @end

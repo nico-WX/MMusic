@@ -23,7 +23,6 @@
 
 @interface TodayCollectionViewController()<UICollectionViewDelegate, UICollectionViewDataSource>
 @property(nonatomic, strong) UIActivityIndicatorView *activityView; //加载指示器
-//@property(nonatomic, strong) NSArray<NSArray*> *allDatas;           //所有数据, 内部每个数组即为每一节的数据
 @property(nonatomic, strong) NSArray<NSString*> *titles;            //节title
 @property(nonatomic, strong) NSArray<NSArray<Resource*>*> *resources; //所有资源对象
 @property(nonatomic, strong) UICollectionView *collectionView;
@@ -33,6 +32,8 @@
 //
 static NSString *const sectionIdentifier = @"sectionView";
 static NSString *const cellIdentifier = @"todayCell";
+
+#pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -40,12 +41,12 @@ static NSString *const cellIdentifier = @"todayCell";
     [self requestData];
 
     self.collectionView = ({
-        //collection layout
-        CGFloat w = CGRectGetWidth(self.view.bounds) /2-10;
-        CGFloat h = w;
+
         UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
         layout.scrollDirection =  UICollectionViewScrollDirectionVertical;
         //cell size
+        CGFloat w = CGRectGetWidth(self.view.bounds) /2-10;
+        CGFloat h = w;
         layout.itemSize = CGSizeMake(w, h);
         //section size
         layout.headerReferenceSize = CGSizeMake(w, 44.0f);
@@ -55,7 +56,8 @@ static NSString *const cellIdentifier = @"todayCell";
         //注册重用
         [view registerClass:[TodayCell class] forCellWithReuseIdentifier:cellIdentifier];
         [view registerClass:[HeadCell class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionIdentifier];
-        view.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.9];
+        //view.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.9];
+        view.backgroundColor = UIColor.whiteColor;
         view.dataSource = self;
         view.delegate  = self;
 
@@ -71,14 +73,14 @@ static NSString *const cellIdentifier = @"todayCell";
     __weak typeof(self) weakSelf = self;
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         //减去导航栏/状态栏 及tabbar 高度
-        CGFloat statusH = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);
-        CGFloat navigaH = CGRectGetHeight(weakSelf.navigationController.navigationBar.bounds);
-        CGFloat tabBatH = CGRectGetHeight(weakSelf.tabBarController.tabBar.bounds);
-        CGFloat y =statusH+navigaH;
-        make.top.mas_equalTo(superview.mas_top).with.offset((padding.top+y));
-        make.left.mas_equalTo(superview.mas_left).with.offset(padding.left);
-        make.right.mas_equalTo(superview.mas_right).with.offset(-padding.right);
-        make.bottom.mas_equalTo(superview.mas_bottom).with.offset(-(padding.bottom+tabBatH));
+        CGFloat tabBatH = CGRectGetHeight(weakSelf.tabBarController.tabBar.frame);
+        CGFloat y = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
+        UIEdgeInsets insets = UIEdgeInsetsMake(padding.top+y, padding.left, padding.bottom+tabBatH, padding.right);
+        make.edges.mas_equalTo(superview).with.insets(insets);
+//        make.top.mas_equalTo(superview.mas_top).with.offset((padding.top+y));
+//        make.left.mas_equalTo(superview.mas_left).with.offset(padding.left);
+//        make.right.mas_equalTo(superview.mas_right).with.offset(-padding.right);
+//        make.bottom.mas_equalTo(superview.mas_bottom).with.offset(-(padding.bottom+tabBatH));
     }];
 
 
@@ -106,7 +108,7 @@ static NSString *const cellIdentifier = @"todayCell";
     // Dispose of any resources that can be recreated.
 }
 
-#pragma  mark 请求数据
+#pragma  mark - 请求数据
 - (void)requestData {
     //个人数据请求
     PersonalizedRequestFactory *fac = [PersonalizedRequestFactory personalizedRequestFactory];
@@ -137,6 +139,7 @@ static NSString *const cellIdentifier = @"todayCell";
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.activityView stopAnimating];
                 [self.collectionView reloadData];
+                [self.collectionView.mj_header endRefreshing];
             });
         }
     }];
@@ -161,14 +164,15 @@ static NSString *const cellIdentifier = @"todayCell";
                 //递归
                 NSArray *temp =[self serializationJSON: subJSON];
                 //注意数据添加, 不要覆盖
-                sectionList = (NSMutableArray*)(sectionList==NULL ? temp : [sectionList arrayByAddingObjectsFromArray:temp]);
+                [sectionList addObjectsFromArray:temp];
+                //(NSMutableArray*)(sectionList==NULL ? temp : [sectionList arrayByAddingObjectsFromArray:temp]);
             }
         }
     }
     return sectionList;
 }
 
-#pragma mark <UICollectionViewDataSource>
+#pragma mark - <UICollectionViewDataSource>
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return self.resources.count;
 }
@@ -206,7 +210,7 @@ static NSString *const cellIdentifier = @"todayCell";
     return nil;
 }
 
-#pragma mark <UICollectionViewDelegate>
+#pragma mark - <UICollectionViewDelegate>
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Resource *obj = [[self.resources objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:obj];

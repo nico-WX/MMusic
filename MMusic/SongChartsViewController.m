@@ -140,7 +140,7 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
 
 #pragma mark 请求数据 及解析JSON  加载分页数据
 -(void) requeData{
-    NSURLRequest *request = [[RequestFactory requestFactory] createChartWithChartType:ChartSongsType];
+    NSURLRequest *request = [[RequestFactory new] createChartWithChartType:ChartsSongsType];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
@@ -158,7 +158,7 @@ static NSString *const reuseIdentifier = @"ChartsSongCell";
 /**加载下一页数据*/
 -(void) loadNextPage{
     if (self.next) {
-        NSURLRequest *request = [[RequestFactory requestFactory] createRequestWithHerf:self.next];
+        NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:self.next];
         [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             if (!error && data) {
                 NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];

@@ -7,9 +7,11 @@
 //
 #import <MBProgressHUD.h>
 #import <UIImageView+WebCache.h>
+#import <UIKit/UIKit.h>
+#import <MediaPlayer/MediaPlayer.h>
+
 #import "NSObject+Tool.h"
 #import "AuthorizationManager.h"
-#import <UIKit/UIKit.h>
 
 #import "Album.h"
 #import "Artist.h"
@@ -242,6 +244,17 @@ extern NSString *userTokenIssueNotification;
                                                       blue:(1.0 - componentColors[2])
                                                      alpha:componentColors[3]];
     return convertedColor;
+}
+
+
+/**播放参数字典数组 转换为播放描叙队列*/
+-(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueDescriptorWithPlayParams:(NSArray<NSDictionary*>*) playParamsList{
+    NSMutableArray *list = NSMutableArray.new;
+    for (NSDictionary * playParams in playParamsList ) {
+        MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:playParams];
+        [list addObject:parameters];
+    }
+    return [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:list];
 }
 
 @end

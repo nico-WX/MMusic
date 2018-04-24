@@ -115,10 +115,10 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark 数据请求  和解析
+#pragma mark - 数据请求  和解析
 /**请求数据*/
 -(void)requestData{
-    NSURLRequest *urlRequest = [[RequestFactory requestFactory] createChartWithChartType:ChartMusicVideosType];
+    NSURLRequest *urlRequest = [[RequestFactory new] createChartWithChartType:ChartsMusicVideosType];
     [self dataTaskWithdRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
@@ -138,7 +138,7 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
 /**加载下一页数据*/
 -(void) loadNextPage{
     if (self.next) {
-        NSURLRequest *request = [[RequestFactory requestFactory] createRequestWithHerf:self.next];
+        NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:self.next];
         [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             if (!error) {
                 NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];
@@ -201,7 +201,7 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
     return resourceList;
 }
 
-#pragma mark <UICollectionViewDataSource>
+#pragma mark - UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.resources.count;
 }
@@ -222,15 +222,16 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
     return cell;
 }
 
-#pragma mark <UICollectionViewDelegate>
+#pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     [self.queueDesc setStartItemPlayParameters:[self.parametersList objectAtIndex:indexPath.row]];
     [self openToPlayQueueDescriptor:self.queueDesc];
 }
+
+#pragma mark - MPSystemMusicPlayerController
 /**跳转到应用播放*/
 - (void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor{
     UIApplication *app = [UIApplication sharedApplication];
-   // NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString]; //自己的应用设置
     NSURL *url = [NSURL URLWithString:@"Music:prefs:root=MUSIC"];
     if ([app canOpenURL:url]) {
         [app openURL:url options:@{} completionHandler:^(BOOL success) {
@@ -240,7 +241,7 @@ static NSString * const reuseIdentifier = @"MVChartsCell";
     }
 }
 
-#pragma mark <UICollectionViewDelegateFlowLayout>
+#pragma mark - UICollectionViewDelegateFlowLayout
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat w = CGRectGetWidth(collectionView.bounds);
     CGFloat h = w*0.75;

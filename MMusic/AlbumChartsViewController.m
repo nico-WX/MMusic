@@ -113,7 +113,7 @@ static CGFloat const spacing = 2.0f;
 
 /**请求数据*/
 -(void)requestData{
-    NSURLRequest *urlRequest = [[RequestFactory requestFactory] createChartWithChartType:ChartAlbumsType];
+    NSURLRequest *urlRequest = [[RequestFactory new] createChartWithChartType:ChartsAlbumsType];
     [self dataTaskWithdRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
@@ -156,7 +156,7 @@ static CGFloat const spacing = 2.0f;
 /**加载下一页数据*/
 -(void) loadNextPage{
     if (self.next) {
-        NSURLRequest *request = [[RequestFactory requestFactory] createRequestWithHerf:self.next];
+        NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:self.next];
         [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];
             if (json) {

@@ -11,6 +11,8 @@
 #import "HintsViewController.h"
 #import "ResultsViewController.h"
 
+#import "ChartsViewController.h"
+
 @interface SearchViewController ()<UISearchBarDelegate,UITableViewDelegate>
 /**搜索栏*/
 @property(nonatomic, strong) UISearchBar *serachBar;
@@ -18,6 +20,8 @@
 @property(nonatomic, strong) HintsViewController *hintsVC;
 /**搜索结果*/
 @property(nonatomic, strong) ResultsViewController *resultsVC;
+/**歌单/专辑/语种/风格/场景 等*/
+@property(nonatomic, strong) UICollectionView *collectionView;
 @end
 
 @implementation SearchViewController
@@ -45,7 +49,7 @@
         bar;
     });
 
-    //实例提示栏,添加 初始高度0  隐藏
+    //实例搜索提示表视图,添加 初始高度0  隐藏
     self.hintsVC = ({
         HintsViewController *hVC = [[HintsViewController alloc] initWithStyle:UITableViewStylePlain];
         //高度0  搜索框获得焦点时显示
@@ -60,6 +64,12 @@
 
         hVC;
     });
+
+
+    ChartsViewController *cVC = [[ChartsViewController alloc] init];
+    //cVC.view.frame = CGRectMake(0, 64, 414, 716);
+    [self.navigationController addChildViewController:cVC];
+    [self.view addSubview:cVC.view];
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];

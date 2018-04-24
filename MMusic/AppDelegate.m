@@ -12,7 +12,7 @@
 //Controller
 #import "MyMusicViewController.h"
 #import "TodayCollectionViewController.h"
-#import "ChartsViewController.h"
+#import "ChartsPageViewController.h"
 #import "SearchViewController.h"
 
 #import "AuthorizationManager.h"
@@ -55,7 +55,7 @@
     UINavigationController *todayNavCtr = [[UINavigationController alloc] initWithRootViewController:todayCVC];
 
     //排行榜
-    ChartsViewController *chartVC = [[ChartsViewController alloc] init];
+    ChartsPageViewController *chartVC = [[ChartsPageViewController alloc] init];
     [chartVC setTitle:@"排行榜"];
     UINavigationController *chartNav = [[UINavigationController alloc] initWithRootViewController:chartVC];
 

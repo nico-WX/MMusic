@@ -194,7 +194,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
 /**请求数据*/
 - (void) requestData{
-    NSURLRequest *request = [[RequestFactory requestFactory] createRequestWithHerf:self.resource.href];
+    NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:self.resource.href];
     [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];

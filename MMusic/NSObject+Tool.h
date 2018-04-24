@@ -18,6 +18,7 @@
 @class Station;
 @class Playlist;
 @class MusicVideo;
+@class MPMusicPlayerPlayParametersQueueDescriptor;
 
 @interface NSObject (Tool)
 
@@ -46,4 +47,7 @@
 +(UIColor*)colorWithHexString:(NSString*) hexString alpha:(CGFloat) alpha;
 /**补色*/
 + (UIColor *)oppositeColorOf:(UIColor *)mainColor;
+
+/**播放参数字典数组 转换为播放描叙队列*/
+-(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueDescriptorWithPlayParams:(NSArray<NSDictionary*>*) playParamsList;
 @end

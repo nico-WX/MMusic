@@ -15,9 +15,9 @@ extern NSString *developerTokenDefaultsKey;
 extern NSString *storefrontDefaultsKey;
 
 @implementation RequestFactory
-+(instancetype)requestFactory{
-    return [[self alloc] init];
-}
+//+(instancetype)new{
+//    return [[self alloc] init];
+//}
 /**一般请求*/
 -(instancetype)init{
     if (self = [super init]) {
@@ -120,19 +120,22 @@ extern NSString *storefrontDefaultsKey;
 }
 
 /**解析排行榜类型参数*/
--(NSString*) resolveStringWithChartType:(ChartType) type{
+-(NSString*) resolveStringWithChartType:(ChartsType) type{
     switch (type) {
-        case ChartSongsType:
+        case ChartsSongsType:
             return @"songs";
             break;
-        case ChartAlbumsType:
+        case ChartsAlbumsType:
             return @"albums";
             break;
-        case ChartMusicVideosType:
+        case ChartsMusicVideosType:
             return @"music-videos";
             break;
-//        default:
-//            break;
+        case ChartsPlaylistsType:
+            return @"playlists";
+            break;
+
+
     }
 }
 
@@ -153,7 +156,7 @@ extern NSString *storefrontDefaultsKey;
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
 
--(NSURLRequest *)createChartWithChartType:(ChartType)type{
+-(NSURLRequest *)createChartWithChartType:(ChartsType)type{
     //URL Map https://api.music.apple.com/v1/catalog/{storefront}/charts?types={types}
 
     NSString *typeStr = [self resolveStringWithChartType:type];

@@ -56,13 +56,15 @@ typedef NS_OPTIONS(NSUInteger, RequestType){
 };
 
 /**排行榜类型*/
-typedef NS_OPTIONS(NSUInteger, ChartType){
+typedef NS_OPTIONS(NSUInteger, ChartsType){
     /**歌曲排行榜*/
-    ChartSongsType,
+    ChartsSongsType,
     /**专辑排行榜*/
-    ChartAlbumsType,
+    ChartsAlbumsType,
     /**音乐视频排行榜*/
-    ChartMusicVideosType
+    ChartsMusicVideosType,
+    /**歌曲列表*/
+    ChartsPlaylistsType
 };
 
 
@@ -76,7 +78,7 @@ typedef NS_OPTIONS(NSUInteger, ChartType){
 /**(一般请求)请求*/
 -(NSURLRequest*) createRequestWithType:(RequestType)type resourceIds:(NSArray<NSString*>*) ids;
 /**排行榜请求*/
--(NSURLRequest*) createChartWithChartType:(ChartType) type;
+-(NSURLRequest*) createChartWithChartType:(ChartsType) type;
 /**搜索请求*/
 -(NSURLRequest*) createSearchWithText:(NSString*) searchText;
 /**通过文本获取搜索暗示*/
@@ -84,6 +86,6 @@ typedef NS_OPTIONS(NSUInteger, ChartType){
 /**通过(子路径)Herf 请求资源*/
 - (NSURLRequest*)createRequestWithHerf:(NSString*) herf;
 
-/**快捷方法*/
-+(instancetype) requestFactory;
+///**快捷方法*/
+//+(instancetype) new;
  @end
