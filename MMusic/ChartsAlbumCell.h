@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ChartsCell.h"
 
 /**排行榜 cell*/
-@interface ChartsAlbumCell : UICollectionViewCell
-@property(nonatomic, strong) UIImageView *artworkView;
-@property(nonatomic, strong) UILabel     *titleLabel;
+@interface ChartsAlbumCell : ChartsCell
+
 @end

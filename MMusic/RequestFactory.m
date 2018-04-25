@@ -134,8 +134,6 @@ extern NSString *storefrontDefaultsKey;
         case ChartsPlaylistsType:
             return @"playlists";
             break;
-
-
     }
 }
 

@@ -178,7 +178,7 @@ static NSString *const headerIdentifier = @"headerReuseID";
     //mv
     if ([type isEqualToString:@"music-videos"]) {
         MusicVideo *mv = [MusicVideo instanceWithDict:resource.attributes];
-        [self openToPlayQueueDescriptor:[self playParametersQueueDescriptorWithPlayParams:@[mv.playParams,]]];
+        //[self openToPlayQueueDescriptor:[self playParametersQueueDescriptorWithPlayParams:@[mv.playParams,]]];
     }
 
     //song / station
@@ -186,7 +186,7 @@ static NSString *const headerIdentifier = @"headerReuseID";
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSDictionary *dict = [resource.attributes valueForKeyPath:@"playParams"];
             MPMusicPlayerController *playCtr =[MPMusicPlayerController systemMusicPlayer];
-            [playCtr setQueueWithDescriptor:[self playParametersQueueDescriptorWithPlayParams:@[dict,]]];
+            //[playCtr setQueueWithDescriptor:[self playParametersQueueDescriptorWithPlayParams:@[dict,]]];
             [playCtr play];
          });
     }

@@ -247,14 +247,15 @@ extern NSString *userTokenIssueNotification;
 }
 
 
-/**播放参数字典数组 转换为播放描叙队列*/
--(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueDescriptorWithPlayParams:(NSArray<NSDictionary*>*) playParamsList{
+- (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueDescriptorFromParams:(NSArray<NSDictionary *> *)playParamses startAtIndexPath:(NSIndexPath *)indexPath{
     NSMutableArray *list = NSMutableArray.new;
-    for (NSDictionary * playParams in playParamsList ) {
+    for (NSDictionary * playParams in playParamses ) {
         MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:playParams];
         [list addObject:parameters];
     }
-    return [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:list];
+    MPMusicPlayerPlayParametersQueueDescriptor *queue =[[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:list];
+    [queue setStartItemPlayParameters:[list objectAtIndex:indexPath.row]];
+    return queue;
 }
 
 @end

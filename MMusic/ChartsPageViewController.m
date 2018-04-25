@@ -6,43 +6,48 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 #import <Masonry.h>
+#import <objc/runtime.h>
 
 #import "ChartsPageViewController.h"
-#import "AlbumChartsViewController.h"
-#import "MusicVideoChartsViewController.h"
-#import "SongChartsViewController.h"
+#import "ChartsViewController.h"
 #import "NewCardView.h"
 
 @interface ChartsPageViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource>
 //分页视图控制器
 @property(nonatomic, strong) UIPageViewController *pageViewController;
+//
+@property(nonatomic, strong) UIPageControl *pageCtr;
 
 //子控制器数组
 @property(nonatomic, strong) NSArray<UIViewController*> *pageList;
 
 //子控制器
-@property(nonatomic, strong) AlbumChartsViewController      *albumVC;
-@property(nonatomic, strong) MusicVideoChartsViewController *mvVC;
-@property(nonatomic, strong) SongChartsViewController       *songVC;
+@property(nonatomic, strong) ChartsViewController *albumsVC;
+@property(nonatomic, strong) ChartsViewController *playlistsVC;
+@property(nonatomic, strong) ChartsViewController *musicVideosVC;
+@property(nonatomic, strong) ChartsViewController *songsVC;
 @end
 
 //排行榜视图
 @implementation ChartsPageViewController
 
+#pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-    //由于可能的类型只有:  albums, songs, and music-videos.  所以这里生成3个对应的视图控制器
-    _albumVC= [[AlbumChartsViewController alloc] init];
-    _mvVC   = [[MusicVideoChartsViewController alloc] init];
-    _songVC = [[SongChartsViewController alloc] init];
-    _pageList = @[_albumVC,_mvVC,_songVC];
+    //由于可能的类型只有: playlists, albums, songs, and music-videos.  所以这里生成3个对应的视图控制器
+    _albumsVC       = [[ChartsViewController alloc] initWithChartsType:ChartsAlbumsType];
+    _playlistsVC    = [[ChartsViewController alloc] initWithChartsType:ChartsPlaylistsType];
+    _musicVideosVC  = [[ChartsViewController alloc] initWithChartsType:ChartsMusicVideosType];
+    _songsVC        = [[ChartsViewController alloc] initWithChartsType:ChartsSongsType];
+    //分页列表
+    _pageList = @[_albumsVC,_playlistsVC,_musicVideosVC,_songsVC];
 
     //添加到当前导航控制器子控制器中, 子控制器方便访问导航控制器
-    [self addChildViewController:_albumVC];
-    [self addChildViewController:_mvVC];
-    [self addChildViewController:_songVC];
+    for (UIViewController *vc in _pageList) {
+        [self addChildViewController:vc];
+    }
 
     //显示PageView
     [self addChildViewController:self.pageViewController];
@@ -59,29 +64,34 @@
     self.pageViewController.view.frame = self.view.frame;
     self.pageViewController.view.backgroundColor = UIColor.whiteColor;
     [self.pageViewController didMoveToParentViewController:self];
+
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (void)viewDidAppear:(BOOL)animated{
-
+-(void)viewDidLayoutSubviews{
     //获取分页指示视图 设置属性
-    for (UIView *view in self.pageViewController.view.subviews) {
+    __block UIView *view;
+    for (view in self.pageViewController.view.subviews) {
         if ([view isKindOfClass:[UIPageControl class]]) {
-            UIPageControl *pageCtr = (UIPageControl*)view;
-            pageCtr.currentPageIndicatorTintColor = UIColor.greenColor;
-            pageCtr.pageIndicatorTintColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.9];
+            self.pageCtr = [[UIPageControl alloc] initWithFrame:view.frame];
+            self.pageCtr = (UIPageControl*)view;
+            CGRect rect = view.frame;
+            rect.size.height = 22.0f;
+            self.pageCtr.frame = rect;
+            [view setFrame:rect];
+            self.pageCtr.currentPageIndicatorTintColor = UIColor.darkGrayColor;
+            self.pageCtr.pageIndicatorTintColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
         }
     }
 }
 
-#pragma mark Layz
+#pragma mark - Layz
 -(UIPageViewController *)pageViewController{
     if (!_pageViewController) {
-        _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
-                                                              navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+        _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll                                                              navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                             options:nil];
         _pageViewController.delegate = self;
         _pageViewController.dataSource = self;
@@ -89,7 +99,7 @@
     return _pageViewController;
 }
 
-#pragma  mark UIPageViewController DataSource
+#pragma  mark - UIPageViewController DataSource
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
     //当前控制器 的上一个控制器
     NSUInteger index = [self.pageList indexOfObject:viewController];
@@ -108,6 +118,7 @@
     return [self.pageList objectAtIndex:index];
 }
 
+#pragma mark - UIPageViewController Delegate
 //总页数
 -(NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController{
     return self.pageList.count;

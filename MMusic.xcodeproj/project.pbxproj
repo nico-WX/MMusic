@@ -24,9 +24,6 @@
 		3B3D9A05205EE689000F2E9E /* list-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B3D9A02205EE689000F2E9E /* list-128.png */; };
 		3B469ADE1FF2464D0035E138 /* TodayCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B469ADD1FF2464D0035E138 /* TodayCell.m */; };
 		3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */; };
-		3B4B865E20725D980053BF18 /* AlbumChartsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B865D20725D980053BF18 /* AlbumChartsViewController.m */; };
-		3B4B866120725DB70053BF18 /* MusicVideoChartsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B866020725DB70053BF18 /* MusicVideoChartsViewController.m */; };
-		3B4B866420725DD20053BF18 /* SongChartsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B866320725DD20053BF18 /* SongChartsViewController.m */; };
 		3B4B866D207385140053BF18 /* NewCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B866B207385130053BF18 /* NewCardView.m */; };
 		3B4E3ACA208B8F280042498C /* HintsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AC9208B8F280042498C /* HintsViewController.m */; };
 		3B4E3ACD208B91510042498C /* HintsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3ACC208B91510042498C /* HintsCell.m */; };
@@ -112,12 +109,6 @@
 		3B469ADD1FF2464D0035E138 /* TodayCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayCell.m; sourceTree = "<group>"; };
 		3B4806741FC96585009035CD /* PersonalizedRequestFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersonalizedRequestFactory.h; sourceTree = "<group>"; };
 		3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PersonalizedRequestFactory.m; sourceTree = "<group>"; };
-		3B4B865C20725D980053BF18 /* AlbumChartsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AlbumChartsViewController.h; sourceTree = "<group>"; };
-		3B4B865D20725D980053BF18 /* AlbumChartsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AlbumChartsViewController.m; sourceTree = "<group>"; };
-		3B4B865F20725DB70053BF18 /* MusicVideoChartsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicVideoChartsViewController.h; sourceTree = "<group>"; };
-		3B4B866020725DB70053BF18 /* MusicVideoChartsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicVideoChartsViewController.m; sourceTree = "<group>"; };
-		3B4B866220725DD20053BF18 /* SongChartsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SongChartsViewController.h; sourceTree = "<group>"; };
-		3B4B866320725DD20053BF18 /* SongChartsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SongChartsViewController.m; sourceTree = "<group>"; };
 		3B4B866B207385130053BF18 /* NewCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewCardView.m; sourceTree = "<group>"; };
 		3B4B866C207385130053BF18 /* NewCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewCardView.h; sourceTree = "<group>"; };
 		3B4E3AC8208B8F280042498C /* HintsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HintsViewController.h; sourceTree = "<group>"; };
@@ -342,12 +333,6 @@
 				3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */,
 				3B4E3AD4208F46B90042498C /* ChartsViewController.h */,
 				3B4E3AD5208F46B90042498C /* ChartsViewController.m */,
-				3B4B865C20725D980053BF18 /* AlbumChartsViewController.h */,
-				3B4B865D20725D980053BF18 /* AlbumChartsViewController.m */,
-				3B4B865F20725DB70053BF18 /* MusicVideoChartsViewController.h */,
-				3B4B866020725DB70053BF18 /* MusicVideoChartsViewController.m */,
-				3B4B866220725DD20053BF18 /* SongChartsViewController.h */,
-				3B4B866320725DD20053BF18 /* SongChartsViewController.m */,
 				3B7862A12060F8F700E9A26A /* Cell */,
 			);
 			name = Charts;
@@ -716,7 +701,6 @@
 				3B9AA90D1FB47E0700720085 /* Storefront.m in Sources */,
 				3B5371E51FD148B6009AFE47 /* Genre.m in Sources */,
 				3B8799592052BBC300EE9D2A /* DetailViewController.m in Sources */,
-				3B4B866420725DD20053BF18 /* SongChartsViewController.m in Sources */,
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
 				3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */,
 				3B9AA9101FB4817F00720085 /* RequestFactory.m in Sources */,
@@ -737,13 +721,11 @@
 				3B9AA8891FB2E06C00720085 /* MyMusicViewController.m in Sources */,
 				3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */,
 				3B9AA8851FB053C200720085 /* LocalMusicViewCell.m in Sources */,
-				3B4B866120725DB70053BF18 /* MusicVideoChartsViewController.m in Sources */,
 				3B9AA8821FB04BC400720085 /* LocalMusicViewController.m in Sources */,
 				3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */,
 				3B4E3AD6208F46B90042498C /* ChartsViewController.m in Sources */,
 				3B9AA9161FB588AF00720085 /* AuthorizationManager.m in Sources */,
 				3B8799612053DC4600EE9D2A /* HeaderView.m in Sources */,
-				3B4B865E20725D980053BF18 /* AlbumChartsViewController.m in Sources */,
 				3B3D9981205512FA000F2E9E /* SongCell.m in Sources */,
 				3B9AA8E61FB46C7700720085 /* AppleCurator.m in Sources */,
 				3B9AA8F21FB4708E00720085 /* Curator.m in Sources */,

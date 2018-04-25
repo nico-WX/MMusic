@@ -14,4 +14,5 @@
 /**名称*/
 @property(nonatomic, strong) UILabel     *titleLabel;
 /**艺人 或主题*/
+@property(nonatomic, strong) UILabel     *artistLabel;
 @end

@@ -11,27 +11,18 @@
 
 @implementation ChartsAlbumCell
 
-- (instancetype)initWithFrame:(CGRect)frame{
-    if (self = [super initWithFrame:frame]){
-        CGFloat corner = 8.0f;
-        self.layer.cornerRadius = corner;
-        self.layer.masksToBounds = YES;
+-(void)drawRect:(CGRect)rect{
+    CGFloat corner = 8.0f;
+    self.layer.cornerRadius = corner;
+    self.layer.masksToBounds = YES;
 
-        self.titleLabel = UILabel.new;
-        self.titleLabel.textAlignment = NSTextAlignmentCenter;
-        self.titleLabel.layer.cornerRadius = corner;
-        self.titleLabel.layer.masksToBounds = YES;
-
-        self.artworkView = UIImageView.new;
-
-        [self.contentView addSubview:self.titleLabel];
-        [self.contentView addSubview:self.artworkView];
-    }
-    return self;
+    //设置title
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.titleLabel.layer.cornerRadius = corner;
+    self.titleLabel.layer.masksToBounds = YES;
 }
 
 - (void)layoutSubviews{
-
     //图片高度  等于宽度,  形成正方形
     CGFloat artworkH = CGRectGetWidth(self.bounds);
     //layout

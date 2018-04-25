@@ -64,12 +64,6 @@
 
         hVC;
     });
-
-
-    ChartsViewController *cVC = [[ChartsViewController alloc] init];
-    //cVC.view.frame = CGRectMake(0, 64, 414, 716);
-    [self.navigationController addChildViewController:cVC];
-    [self.view addSubview:cVC.view];
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];

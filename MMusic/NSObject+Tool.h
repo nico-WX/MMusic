@@ -49,5 +49,5 @@
 + (UIColor *)oppositeColorOf:(UIColor *)mainColor;
 
 /**播放参数字典数组 转换为播放描叙队列*/
--(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueDescriptorWithPlayParams:(NSArray<NSDictionary*>*) playParamsList;
+-(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueDescriptorFromParams:(NSArray<NSDictionary*>*) playParamses startAtIndexPath:(NSIndexPath*) indexPath;
 @end

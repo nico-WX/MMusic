@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ChartsCell.h"
 
-@interface ChartsSongCell : UICollectionViewCell
+@interface ChartsSongCell : ChartsCell
 
 @end
