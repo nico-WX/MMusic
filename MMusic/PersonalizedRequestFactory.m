@@ -11,9 +11,6 @@
 
 @implementation PersonalizedRequestFactory
 
-+(instancetype)personalizedRequestFactory{
-    return [[self alloc] init];
-}
 -(instancetype)init{
     if (self = [super init]) {
         _rootPath = @"https://api.music.apple.com";
@@ -23,8 +20,7 @@
     return self;
 }
 
-#pragma mark Tool
-
+#pragma mark - 映射不同的请求类型到 具体路径
 /**解析字符串数组参数 并拼接返回*/
 -(NSString *) resolveStringArrayWithArray:(NSArray<NSString*> *) ids{
     NSString *string = [NSString string];
@@ -63,10 +59,6 @@
         case PersonalizedMultipleRecommendationType:
             string = @"recommendations?ids=";
             break;
-
-            //穷举
-//        default:
-//            break;
     }
     return string;
 }
@@ -105,7 +97,7 @@
             string = @"playlists?ids=";
             break;
 
-            //管理歌曲评价
+        //管理歌曲评价
         case GetSongRatingsType:
         case AddSongRatingsType:
         case DeleteSongRatingsType:
@@ -115,7 +107,7 @@
             string = @"songs?ids=";
             break;
 
-            //管理电台评价
+        //管理电台评价
         case GetStationRatingsType:
         case AddStationRatingsType:
         case DeleteStationRatingsType:
@@ -128,10 +120,14 @@
     return string;
 }
 
-#pragma mark implementation create request
+#pragma mark - 创建请求对象
 -(NSURLRequest *)createRequestWithType:(PersonalizedType)type resourceIds:(NSArray<NSString *> *)ids{
-    NSString *requestType = [self resolveRequestType:type];
+    NSString *requestType = @"";
+    if (ids != NULL) {
+         requestType = [self resolveRequestType:type];
+    }
     NSString *path = [self.rootPath stringByAppendingPathComponent:requestType];
+
     //这两个请求类型需要使用资源identifier 对应不同的拼接方式
     NSString *identifier = [self resolveStringArrayWithArray:ids];
     if (type == PersonalizedRecommendationType) {
@@ -143,8 +139,11 @@
 }
 
 -(NSURLRequest*) createManageRatingsRequestWithType:(RatingsType) type resourceIds:(NSArray<NSString*> *) ids{
-    NSString *requestType = [self resolveRatingManagerRequestType:type];
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"ratings"];
+    NSString *requestType = @"";
+    if (ids != NULL) {
+        requestType = [self resolveRatingManagerRequestType:type];
+    }
     path = [path stringByAppendingPathComponent:requestType];
 
     //区分参数拼接方式
@@ -156,8 +155,10 @@
     }
     NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
 
-    //设置add and delete 请求方法
+    //设置请求方法  和请求体
     switch (type) {
+
+        //删除评级
         case DeleteMusicVideoRatingsType:
         case DeleteAlbumRatingsType:
         case DeleteStationRatingsType:
@@ -166,7 +167,7 @@
             [request setHTTPMethod:@"DELETE"];
             break;
 
-            //增加评价
+        //增加评级
         case AddStationRatingsType:
         case AddSongRatingsType:
         case AddAlbumRatingsType:
@@ -178,9 +179,8 @@
             [request setHTTPBody:data];
             break;
         }
-        //其他不处理
+        //其他默认
         default:
-
             break;
     }
     return request;

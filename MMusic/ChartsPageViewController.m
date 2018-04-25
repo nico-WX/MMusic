@@ -64,7 +64,6 @@
     self.pageViewController.view.frame = self.view.frame;
     self.pageViewController.view.backgroundColor = UIColor.whiteColor;
     [self.pageViewController didMoveToParentViewController:self];
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -76,19 +75,17 @@
     __block UIView *view;
     for (view in self.pageViewController.view.subviews) {
         if ([view isKindOfClass:[UIPageControl class]]) {
-            self.pageCtr = [[UIPageControl alloc] initWithFrame:view.frame];
             self.pageCtr = (UIPageControl*)view;
             CGRect rect = view.frame;
             rect.size.height = 22.0f;
             self.pageCtr.frame = rect;
-            [view setFrame:rect];
             self.pageCtr.currentPageIndicatorTintColor = UIColor.darkGrayColor;
             self.pageCtr.pageIndicatorTintColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
         }
     }
 }
 
-#pragma mark - Layz
+#pragma mark - getter
 -(UIPageViewController *)pageViewController{
     if (!_pageViewController) {
         _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll                                                              navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal

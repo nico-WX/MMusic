@@ -31,19 +31,6 @@ extern NSString *storefrontDefaultsKey;
     return self;
 }
 
-#pragma mark Tool Method
-
-/**解析字符串数组参数 并拼接返回*/
--(NSString *) resolveStringArrayWithArray:(NSArray<NSString*> *) ids{
-    NSString *string = [NSString string];
-    if (ids.count == 1) {
-        string = ids.lastObject;
-    }else{
-        for (NSString *str in ids) string = [string stringByAppendingFormat:@"%@,",str];
-    }
-    return string;
-}
-
 /**解析类型 并返回subPath*/
 -(NSString *) resolveRequestType:(RequestType) type{
     NSString *string;
@@ -111,10 +98,6 @@ extern NSString *storefrontDefaultsKey;
         case RequestMultipleGenresType:
             string = @"genres?ids=";
             break;
-
-            //穷举
-//        default:
-//            break;
     }
     return string;
 }
@@ -137,7 +120,19 @@ extern NSString *storefrontDefaultsKey;
     }
 }
 
-#pragma mark Implementation Create Request
+
+/**解析字符串数组参数 并拼接返回*/
+-(NSString *) resolveStringArrayWithArray:(NSArray<NSString*> *) ids{
+    NSString *string = [NSString string];
+    if (ids.count == 1) {
+        string = ids.lastObject;
+    }else{
+        for (NSString *str in ids) string = [string stringByAppendingFormat:@"%@,",str];
+    }
+    return string;
+}
+
+
 -(NSURLRequest *)createRequestWithType:(RequestType)type resourceIds:(NSArray<NSString *> *)ids{
     //解析参数
     NSString *resourceType = [self resolveRequestType:type];
@@ -156,7 +151,6 @@ extern NSString *storefrontDefaultsKey;
 
 -(NSURLRequest *)createChartWithChartType:(ChartsType)type{
     //URL Map https://api.music.apple.com/v1/catalog/{storefront}/charts?types={types}
-
     NSString *typeStr = [self resolveStringWithChartType:type];
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"charts?types="];
     //参数直接拼接 

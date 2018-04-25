@@ -195,7 +195,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 /**请求数据*/
 - (void) requestData{
     NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:self.resource.href];
-    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             self.songs = [self serializationJSON:json];
@@ -253,11 +253,11 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
             [hud hideAnimated:YES afterDelay:1.5];
         }];
 
-        PersonalizedRequestFactory *factort = [PersonalizedRequestFactory personalizedRequestFactory];
+        PersonalizedRequestFactory *factort = [PersonalizedRequestFactory new];
         UIAlertAction *notLove = [UIAlertAction actionWithTitle:@"不喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             //DELETE
             NSURLRequest *request = [factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
-            [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                 [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*)response];
             }];
         }];
@@ -265,7 +265,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         UIAlertAction *love = [UIAlertAction actionWithTitle:@"喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             //PUT
             NSURLRequest *request = [factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
-            [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                 [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*) response];
             }];
         }];

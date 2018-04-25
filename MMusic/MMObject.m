@@ -10,13 +10,4 @@
 
 @implementation MMObject
 
-//-(instancetype)initWithDict:(NSDictionary *)dict{
-//    if (self = [super init]) {
-//
-//    }
-//    return self;
-//}
-//+(instancetype)instanceWithDict:(NSDictionary *)dict{
-//    return [[self alloc]initWithDict:dict];
-//}
 @end

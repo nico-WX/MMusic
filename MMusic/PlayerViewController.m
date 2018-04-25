@@ -123,9 +123,9 @@ static PlayerViewController *_instance;
 
     //是否是喜爱的歌曲
     NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
-    NSURLRequest *request = [[PersonalizedRequestFactory personalizedRequestFactory] createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[songID,]];
+    NSURLRequest *request = [[PersonalizedRequestFactory new] createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[songID,]];
 
-    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data ) {
             NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
@@ -242,11 +242,11 @@ static PlayerViewController *_instance;
 }
 /**点击喜爱按钮*/
 - (void)changeLove:(UIButton*) button{
-    PersonalizedRequestFactory *factort = [PersonalizedRequestFactory personalizedRequestFactory];
+    PersonalizedRequestFactory *factort = [PersonalizedRequestFactory new];
     NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
 
     NSURLRequest *getRating = [factort createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[songID,]];
-    [self dataTaskWithdRequest:getRating completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:getRating completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data ) {
             NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
@@ -255,7 +255,7 @@ static PlayerViewController *_instance;
                 //取消喜欢
                 //DELETE
                 NSURLRequest *request = [factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
-                [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                     NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
                     if (!error && res.statusCode/10 == 20) {
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -269,7 +269,7 @@ static PlayerViewController *_instance;
                 //PUT
                 NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
                 NSURLRequest *request = [factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
-                [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                     NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
                     if (!error && res.statusCode/10==20) {
                         dispatch_async(dispatch_get_main_queue(), ^{

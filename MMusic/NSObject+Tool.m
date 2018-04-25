@@ -23,12 +23,11 @@
 #import "Playlist.h"
 #import "MusicVideo.h"
 
-
 extern NSString *developerTokenExpireNotification;
 extern NSString *userTokenIssueNotification;
 @implementation NSObject (Tool)
 
-//解析响应  如果有返回, 解析Json 数据到字典
+//解析响应体
 -(NSDictionary *)serializationDataWithResponse:(NSURLResponse *)response data:(NSData *)data error:(NSError *)error{
 
     if (error) Log(@"Location Error:%@",error);
@@ -59,15 +58,15 @@ extern NSString *userTokenIssueNotification;
 }
 
 //封装发起任务请求操作
--(void)dataTaskWithdRequest:(NSURLRequest*) request completionHandler:(void(^)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler{
+-(void)dataTaskWithRequest:(NSURLRequest*) request completionHandler:(void(^)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler{
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
-        handler(data,response,error);
+        if (handler) handler(data,response,error);
     }] resume];
 }
 
-//替换海报URL中的占位字符串,
+//替换封面URL中的占位字符串,
 -(NSString *)stringReplacingOfString:(NSString *)target height:(int)height width:(int)width{
-    //图片大小倍数
+    //像素倍数
     CGFloat times = [UIScreen mainScreen].scale;
     NSString *w = [NSString stringWithFormat:@"%d",(int)((CGFloat)width * times)];
     NSString *h = [NSString stringWithFormat:@"%d",(int)((CGFloat)height * times)]; //注意占位不能是浮点数, 只能是整数, 不然报CFNetwork 385错误
@@ -78,13 +77,13 @@ extern NSString *userTokenIssueNotification;
 
 /**设置请求头*/
 -(void)setupAuthorizationWithRequest:(NSMutableURLRequest *)request setupMusicUserToken:(BOOL)needSetupUserToken{
-
     //设置开发者Token 请求头
     NSString *developerToken = [AuthorizationManager shareAuthorizationManager].developerToken;
     if (developerToken) {
         developerToken = [NSString stringWithFormat:@"Bearer %@",developerToken];
         [request setValue:developerToken forHTTPHeaderField:@"Authorization"];
     }else{
+        [UIApplication sharedApplication] ;
         Log(@"无法获得开发者Token!");
     }
 

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 /**个性化请求类型*/
-typedef NS_OPTIONS(NSUInteger, PersonalizedType){
+typedef NS_ENUM(NSUInteger, PersonalizedType){
     /**高度重复播放*/
     PersonalizedRotationContentType,
     /**最近播放资源*/
@@ -29,7 +29,7 @@ typedef NS_OPTIONS(NSUInteger, PersonalizedType){
 };
 
 /**管理评价请求类型*/
-typedef NS_OPTIONS(NSUInteger, RatingsType){
+typedef NS_ENUM(NSUInteger, RatingsType){
     /**获取单张专辑评价*/
     GetAlbumRatingType,
     /**获取多张专辑评价*/
@@ -81,15 +81,28 @@ typedef NS_OPTIONS(NSUInteger, RatingsType){
 /**根路径*/
 @property(nonatomic,copy) NSString *rootPath;
 
-//便捷方法
-+(instancetype) personalizedRequestFactory;
 
-#pragma mark instance method
 /**创建个性化请求, 注意:(单张推荐和多张推荐需要在ids中提供Identifier,其他请求设置空数组)*/
--(NSURLRequest*) createRequestWithType:(PersonalizedType) type resourceIds:(NSArray<NSString*>*) ids;
+
+/**
+ 创建个性化请求对象 注意:(单张推荐和多张推荐需要在ids中提供Identifier,其他请求设置空数组)
+
+ @param type 请求资源的类型
+ @param ids 资源identifier 列表
+ @return 请求体
+ */
+-(NSURLRequest*) createRequestWithType:(PersonalizedType) type resourceIds:( NSArray<NSString*>* _Nullable ) ids;
 
 /**评价管理请求(增加评价需要另外设置请求体 (yes)1为喜欢 (no)-1为不喜欢)*/
--(NSURLRequest*) createManageRatingsRequestWithType:(RatingsType) type resourceIds:(NSArray<NSString*> *) ids;
+
+/**
+ 评级管理请求
+
+ @param type 请求类型
+ @param ids 资源identifier 列表
+ @return 请求体
+ */
+-(NSURLRequest*) createManageRatingsRequestWithType:(RatingsType) type resourceIds:( NSArray<NSString*> * _Nullable ) ids;
 
 
 @end

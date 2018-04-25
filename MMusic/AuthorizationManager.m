@@ -42,6 +42,7 @@ static AuthorizationManager *_instance;
 
         //userToken 异常, 可能修改设置或者未订阅服务等
         [[NSNotificationCenter defaultCenter] addObserverForName:userTokenIssueNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:userTokenUserDefaultsKey];
             [self requestUserToken];
         }];
@@ -115,8 +116,8 @@ static AuthorizationManager *_instance;
         _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:userTokenUserDefaultsKey];
         if (!_userToken) {
             //本地无Token,  网络请求
-            // [self requestUserToken];
-            //[[NSNotificationCenter defaultCenter] postNotificationName:userTokenIssueNotification object:nil];
+            [self requestUserToken];
+            [[NSNotificationCenter defaultCenter] postNotificationName:userTokenIssueNotification object:nil];
         }
     }
     return _userToken;
@@ -132,7 +133,8 @@ static AuthorizationManager *_instance;
     return _storefront;
 }
 
-#pragma mark 从网络请求token 地区代码等
+#pragma mark - 从网络请求token 地区代码
+
 /**请求开发者Token 并缓存在默认设置*/
 - (void)requestDeveloperToken{
 #warning DeveloperTokenURL no set!
@@ -142,14 +144,14 @@ static AuthorizationManager *_instance;
             if (res.statusCode == 200) {
                 NSString *token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 if (token) {
-                    Log(@"request DeveloperToken: %@",token);
+                    Log(@"request new DeveloperToken: %@",token);
                     _developerToken = token;
                     [[NSUserDefaults standardUserDefaults] setObject:token forKey:developerTokenDefaultsKey];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenUpdatedNotification object:nil];
                 }
             }else{
-                Log(@"request Developer Token Error: %@, %s",error,__FILE__);
+                Log(@"request Developer Token Error: %@",error);
             }
         }] resume];
 }
@@ -157,9 +159,11 @@ static AuthorizationManager *_instance;
 /**请求用户Token*/
 - (void)requestUserToken{
     [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
-        SKCloudServiceController *controller = [[SKCloudServiceController  alloc] init];
+        //用户授权获取 云服内容
         if (status == SKCloudServiceAuthorizationStatusAuthorized) {
+            Log(@"授权云服务内容");
             //请求userToken 并缓存到默认设置
+            SKCloudServiceController *controller = [SKCloudServiceController new];
             [controller requestUserTokenForDeveloperToken:self.developerToken completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
                 if (userToken) {
                     Log(@"userToken: %@",userToken);
@@ -190,4 +194,7 @@ static AuthorizationManager *_instance;
         }
     }];
 }
+
+
+
 @end

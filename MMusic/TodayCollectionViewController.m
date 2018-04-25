@@ -111,9 +111,9 @@ static NSString *const cellIdentifier = @"todayCell";
 #pragma  mark - 请求数据
 - (void)requestData {
     //个人数据请求
-    PersonalizedRequestFactory *fac = [PersonalizedRequestFactory personalizedRequestFactory];
+    PersonalizedRequestFactory *fac = [PersonalizedRequestFactory new];
     NSURLRequest *request = [fac createRequestWithType:PersonalizedDefaultRecommendationsType resourceIds:@[]];
-    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary * json= [self serializationDataWithResponse:response data:data error:error];
         if (json) {
 

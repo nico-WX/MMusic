@@ -209,7 +209,7 @@ static NSString *const headerIdentifier = @"headerReuseID";
 #pragma mark - Tool Method
 -(void) requestDataFromSearchTest:(NSString *) searchText{
     NSURLRequest *request = [[RequestFactory new] createSearchWithText:searchText];
-    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
 
@@ -234,7 +234,7 @@ static NSString *const headerIdentifier = @"headerReuseID";
 /**加载某一节 的下一页数据*/
 -(void) loadNextPageWithHref:(NSString*) href withSection:(NSInteger) section{
     NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:href];
-    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
         if (json) {
             json = [json objectForKey:@"results"];

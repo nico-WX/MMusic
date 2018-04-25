@@ -32,12 +32,12 @@
 - (NSDictionary*_Nullable) serializationDataWithResponse:(NSURLResponse* _Nullable ) response data:(NSData*_Nullable) data error:(NSError*_Nullable) error;
 
 /**封装了发起任务操作*/
--(void)dataTaskWithdRequest:(NSURLRequest*_Nonnull) request completionHandler:(void(^_Nonnull)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler;
+-(void)dataTaskWithRequest:(NSURLRequest*_Nonnull) request completionHandler:(void(^_Nonnull)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler;
 
 /**替换ImageURL 中的Image大小参数 默认屏幕的缩放大小*/
 -(NSString*_Nonnull) stringReplacingOfString:(NSString*_Nonnull) target height:(int) height width:(int) width;
 
-/**模型中的类型 映射*/
+/**模型中的类型 映射到具体的模型类型*/
 -(Class) classForResourceType:(NSString*)type;
 
 /**通过Path 显示图片到ImageView 上, URL(未替换大小参数url)*/

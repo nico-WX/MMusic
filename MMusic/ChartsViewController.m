@@ -2,9 +2,8 @@
 //  ChartsViewController.m
 //  MMusic
 //
-//  Created by Magician on 2018/4/24.
 //  Copyright © 2018年 com.😈. All rights reserved.
-//pod and system
+//  pod and system
 #import <Masonry.h>
 #import <MJRefresh.h>
 #import <MediaPlayer/MediaPlayer.h>
@@ -225,7 +224,7 @@ static NSString *const cellId = @"cellReuseIdentifier";
 
 #pragma mark - 数据请求 和解析
 -(void)requestDataFromRequest:(NSURLRequest*) request{
-    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             if (json) {
@@ -247,7 +246,7 @@ static NSString *const cellId = @"cellReuseIdentifier";
 - (void) requestHongKongMVData{
     NSString *path = @"https://api.music.apple.com/v1/catalog/hk/charts?types=music-videos";
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             if (json) {
@@ -265,7 +264,7 @@ static NSString *const cellId = @"cellReuseIdentifier";
 -(void) loadNextPage:(NSString*) nextHref{
     if (nextHref != NULL) {
         NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:nextHref];
-        [self dataTaskWithdRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];
             NSArray<Chart*> *temp = [self serializationJSON:json];
 

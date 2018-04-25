@@ -21,16 +21,32 @@
 @property(nonatomic, strong) AuthorizationManager *auth;
 @end
 
-
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
 
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+
     [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
         if (status == SKCloudServiceAuthorizationStatusAuthorized) {
             self.auth = [AuthorizationManager shareAuthorizationManager];
         }
+
+        SKCloudServiceController *csStr = [SKCloudServiceController new];
+        [csStr requestCapabilitiesWithCompletionHandler:^(SKCloudServiceCapability capabilities, NSError * _Nullable error) {
+            switch (capabilities) {
+                case SKCloudServiceCapabilityNone:
+                    break;
+                case SKCloudServiceCapabilityMusicCatalogPlayback:
+                    break;
+                case SKCloudServiceCapabilityAddToCloudMusicLibrary:
+                    break;
+                case SKCloudServiceCapabilityMusicCatalogSubscriptionEligible:
+                    break;
+            }
+        }];
+
     }];
 
     //实例化主窗口
@@ -44,11 +60,6 @@
     UINavigationController *mmusicNavCtr = [[UINavigationController alloc] initWithRootViewController:mmusicVC];
     [mmusicVC setTitle:@"我的音乐"];
 
-    //浏览
-//    BrowseViewController *browseVC = [[BrowseViewController alloc] init];
-//    UINavigationController *browseNavCtr = [[UINavigationController alloc] initWithRootViewController:browseVC];
-//    [browseVC setTitle:@"浏览"];
-
     //今日推荐
     TodayCollectionViewController *todayCVC = [[TodayCollectionViewController alloc] init];
     [todayCVC setTitle:@"今日推荐"];
@@ -59,7 +70,7 @@
     [chartVC setTitle:@"排行榜"];
     UINavigationController *chartNav = [[UINavigationController alloc] initWithRootViewController:chartVC];
 
-    //搜索目录
+    //搜索
     SearchViewController *searchVC = [[SearchViewController alloc] init];
     searchVC.title = @"搜索";
     UINavigationController *searchNav = [[UINavigationController alloc] initWithRootViewController:searchVC];
@@ -68,7 +79,6 @@
     [barCtr addChildViewController:todayNavCtr];
     [barCtr addChildViewController:chartNav];
     [barCtr addChildViewController:searchNav];
-    //[barCtr addChildViewController:browseNavCtr];
     [barCtr addChildViewController:mmusicNavCtr];
 
     [barCtr setSelectedIndex:0];

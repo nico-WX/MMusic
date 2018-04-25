@@ -11,7 +11,6 @@
 @implementation NSObject (MMObject)
 -(instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [self init]) {
-        
     }
     return self;
 }

@@ -8,8 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-/**请求类型*/
-typedef NS_OPTIONS(NSUInteger, RequestType){
+
+/**
+ 请求目录资源类型
+ */
+typedef NS_ENUM(NSUInteger, RequestType){
     /**单张专辑*/
     RequestAlbumType ,
     /**多张专辑*/
@@ -55,8 +58,10 @@ typedef NS_OPTIONS(NSUInteger, RequestType){
 
 };
 
-/**排行榜类型*/
-typedef NS_OPTIONS(NSUInteger, ChartsType){
+/**
+ 排行榜请求类型
+ */
+typedef NS_ENUM(NSUInteger, ChartsType){
     /**歌曲排行榜*/
     ChartsSongsType,
     /**专辑排行榜*/
@@ -68,24 +73,49 @@ typedef NS_OPTIONS(NSUInteger, ChartsType){
 };
 
 
-/**普通请求工厂类*/
+/**
+ 普通请求工厂
+ */
 @interface RequestFactory : NSObject
 /**根路径*/
 @property(nonatomic, copy) NSString *rootPath;
-/**当前用户商店代码*/
+/**当前用户地区商店代码*/
 @property(nonatomic, copy) NSString *storefront;
 
-/**(一般请求)请求*/
+/**
+ 创建一般请求对象
+ @param type 请求类型
+ @param ids identifier字符串 数组
+ @return 请求对象
+ */
 -(NSURLRequest*) createRequestWithType:(RequestType)type resourceIds:(NSArray<NSString*>*) ids;
-/**排行榜请求*/
+
+/**
+ 创建排行榜请求对象
+ @param type 排行榜类型
+ @return 请求对象
+ */
 -(NSURLRequest*) createChartWithChartType:(ChartsType) type;
-/**搜索请求*/
+
+/**
+ 创建搜索请求对象
+ @param searchText 搜索的文本
+ @return 请求对象
+ */
 -(NSURLRequest*) createSearchWithText:(NSString*) searchText;
-/**通过文本获取搜索暗示*/
+
+/**
+ 创建搜索提示请求对象
+ @param term 提示相关的文本
+ @return 请求对象
+ */
 -(NSURLRequest*) createSearchHintsWithTerm:(NSString*) term;
-/**通过(子路径)Herf 请求资源*/
+
+/**
+ 通过子路径创建请求体
+ @param herf 子路径
+ @return 请求体
+ */
 - (NSURLRequest*)createRequestWithHerf:(NSString*) herf;
 
-///**快捷方法*/
-//+(instancetype) new;
  @end
