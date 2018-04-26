@@ -8,7 +8,7 @@
 
 
 #import "MMObject.h"
-
+@class Resource;
 @interface Chart : MMObject
 /**排行榜名称*/
 @property(nonatomic, copy) NSString *name;
@@ -19,6 +19,6 @@
 /**(Optional) 排行榜下一页URL*/
 @property(nonatomic, copy) NSString *next;
 /**请求的类型 内容*/
-@property(nonatomic, strong) NSArray *data;;
+@property(nonatomic, strong) NSArray<Resource*> *data;;
 
 @end

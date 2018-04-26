@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		305158303AC8F4D3DF4C5210 /* libPods-MMusic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B50B155B334DAF7591C6EA42 /* libPods-MMusic.a */; };
 		3B23AC751FF236A800F0A9CA /* TodayCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B23AC741FF236A800F0A9CA /* TodayCollectionViewController.m */; };
+		3B2D6EFB2091F69200E1B22C /* ScreeningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFA2091F69200E1B22C /* ScreeningViewController.m */; };
+		3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFC2091F6D400E1B22C /* screening.plist */; };
 		3B3D9981205512FA000F2E9E /* SongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9980205512FA000F2E9E /* SongCell.m */; };
 		3B3D998420553CD4000F2E9E /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D998320553CD4000F2E9E /* PlayerViewController.m */; };
 		3B3D9989205540A0000F2E9E /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9988205540A0000F2E9E /* PlayerView.m */; };
@@ -25,7 +27,6 @@
 		3B469ADE1FF2464D0035E138 /* TodayCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B469ADD1FF2464D0035E138 /* TodayCell.m */; };
 		3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */; };
 		3B4B866D207385140053BF18 /* NewCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B866B207385130053BF18 /* NewCardView.m */; };
-		3B4E3ACA208B8F280042498C /* HintsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AC9208B8F280042498C /* HintsViewController.m */; };
 		3B4E3ACD208B91510042498C /* HintsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3ACC208B91510042498C /* HintsCell.m */; };
 		3B4E3AD6208F46B90042498C /* ChartsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD5208F46B90042498C /* ChartsViewController.m */; };
 		3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD8208F61E70042498C /* ChartsSongCell.m */; };
@@ -74,6 +75,7 @@
 		3BB731DB207B743D00DC629B /* ResultsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731DA207B743D00DC629B /* ResultsCell.m */; };
 		3BB731DE207B9BD800DC629B /* NSObject+MMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731DD207B9BD800DC629B /* NSObject+MMObject.m */; };
 		3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731E0207BAF7E00DC629B /* ResultsViewController.m */; };
+		3BB8793C2091D521004677B6 /* BorseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB8793B2091D521004677B6 /* BorseViewController.m */; };
 		3BC4732A1FF23B380084016F /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3BC473291FF23B380084016F /* Info.plist */; };
 		3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */; };
 		3BDBBB2F2073D84600680CCB /* ChartsAlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBBB2E2073D84600680CCB /* ChartsAlbumCell.m */; };
@@ -88,6 +90,9 @@
 		3A8F449D3A1F4F346C21DEC4 /* Pods-MMusic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MMusic.release.xcconfig"; path = "Pods/Target Support Files/Pods-MMusic/Pods-MMusic.release.xcconfig"; sourceTree = "<group>"; };
 		3B23AC731FF236A800F0A9CA /* TodayCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayCollectionViewController.h; sourceTree = "<group>"; };
 		3B23AC741FF236A800F0A9CA /* TodayCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayCollectionViewController.m; sourceTree = "<group>"; };
+		3B2D6EF92091F69200E1B22C /* ScreeningViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreeningViewController.h; sourceTree = "<group>"; };
+		3B2D6EFA2091F69200E1B22C /* ScreeningViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreeningViewController.m; sourceTree = "<group>"; };
+		3B2D6EFC2091F6D400E1B22C /* screening.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = screening.plist; sourceTree = "<group>"; };
 		3B3D997F205512FA000F2E9E /* SongCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SongCell.h; sourceTree = "<group>"; };
 		3B3D9980205512FA000F2E9E /* SongCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SongCell.m; sourceTree = "<group>"; };
 		3B3D998220553CD4000F2E9E /* PlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
@@ -111,8 +116,6 @@
 		3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PersonalizedRequestFactory.m; sourceTree = "<group>"; };
 		3B4B866B207385130053BF18 /* NewCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewCardView.m; sourceTree = "<group>"; };
 		3B4B866C207385130053BF18 /* NewCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewCardView.h; sourceTree = "<group>"; };
-		3B4E3AC8208B8F280042498C /* HintsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HintsViewController.h; sourceTree = "<group>"; };
-		3B4E3AC9208B8F280042498C /* HintsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HintsViewController.m; sourceTree = "<group>"; };
 		3B4E3ACB208B91510042498C /* HintsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HintsCell.h; sourceTree = "<group>"; };
 		3B4E3ACC208B91510042498C /* HintsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HintsCell.m; sourceTree = "<group>"; };
 		3B4E3AD4208F46B90042498C /* ChartsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsViewController.h; sourceTree = "<group>"; };
@@ -204,6 +207,8 @@
 		3BB731DD207B9BD800DC629B /* NSObject+MMObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MMObject.m"; sourceTree = "<group>"; };
 		3BB731DF207BAF7D00DC629B /* ResultsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsViewController.h; sourceTree = "<group>"; };
 		3BB731E0207BAF7E00DC629B /* ResultsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsViewController.m; sourceTree = "<group>"; };
+		3BB8793A2091D521004677B6 /* BorseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BorseViewController.h; sourceTree = "<group>"; };
+		3BB8793B2091D521004677B6 /* BorseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BorseViewController.m; sourceTree = "<group>"; };
 		3BC473291FF23B380084016F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3BC4DF59206E761100CDE7C1 /* ChartsPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsPageViewController.h; sourceTree = "<group>"; };
 		3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsPageViewController.m; sourceTree = "<group>"; };
@@ -446,6 +451,7 @@
 				3B9AA86B1FB04B5700720085 /* AppDelegate.m */,
 				3B9AA8791FB04B5700720085 /* main.m */,
 				3BC473291FF23B380084016F /* Info.plist */,
+				3B2D6EFC2091F6D400E1B22C /* screening.plist */,
 				3B9AA8701FB04B5700720085 /* Main.storyboard */,
 				3B9AA8731FB04B5700720085 /* Assets.xcassets */,
 				3B9AA8751FB04B5700720085 /* LaunchScreen.storyboard */,
@@ -526,10 +532,12 @@
 		3BE5B157207A412D00A4A9DC /* Serach */ = {
 			isa = PBXGroup;
 			children = (
+				3BB8793A2091D521004677B6 /* BorseViewController.h */,
+				3BB8793B2091D521004677B6 /* BorseViewController.m */,
+				3B2D6EF92091F69200E1B22C /* ScreeningViewController.h */,
+				3B2D6EFA2091F69200E1B22C /* ScreeningViewController.m */,
 				3BAAB7C7207A45B6007A74EA /* SearchViewController.h */,
 				3BAAB7C8207A45B6007A74EA /* SearchViewController.m */,
-				3B4E3AC8208B8F280042498C /* HintsViewController.h */,
-				3B4E3AC9208B8F280042498C /* HintsViewController.m */,
 				3BB731DF207BAF7D00DC629B /* ResultsViewController.h */,
 				3BB731E0207BAF7E00DC629B /* ResultsViewController.m */,
 				3B4E3AD0208CAB600042498C /* view */,
@@ -605,6 +613,7 @@
 				3B9AA8771FB04B5700720085 /* LaunchScreen.storyboard in Resources */,
 				3B3D99FE205EE242000F2E9E /* stop.png in Resources */,
 				3B3D99FA205EE0A0000F2E9E /* love-red.png in Resources */,
+				3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */,
 				3B3D9A04205EE689000F2E9E /* list-32.png in Resources */,
 				3B7862B52063D23B00E9A26A /* more-blue.png in Resources */,
 				3B7862EA20691E2300E9A26A /* player.png in Resources */,
@@ -702,6 +711,7 @@
 				3B5371E51FD148B6009AFE47 /* Genre.m in Sources */,
 				3B8799592052BBC300EE9D2A /* DetailViewController.m in Sources */,
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
+				3BB8793C2091D521004677B6 /* BorseViewController.m in Sources */,
 				3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */,
 				3B9AA9101FB4817F00720085 /* RequestFactory.m in Sources */,
 				3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */,
@@ -716,13 +726,13 @@
 				3BB731DB207B743D00DC629B /* ResultsCell.m in Sources */,
 				3B9AA8FE1FB478C700720085 /* PlayParameters.m in Sources */,
 				3BDBBBAA2077645700680CCB /* ChartsMusicVideoCell.m in Sources */,
-				3B4E3ACA208B8F280042498C /* HintsViewController.m in Sources */,
 				3B3D998420553CD4000F2E9E /* PlayerViewController.m in Sources */,
 				3B9AA8891FB2E06C00720085 /* MyMusicViewController.m in Sources */,
 				3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */,
 				3B9AA8851FB053C200720085 /* LocalMusicViewCell.m in Sources */,
 				3B9AA8821FB04BC400720085 /* LocalMusicViewController.m in Sources */,
 				3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */,
+				3B2D6EFB2091F69200E1B22C /* ScreeningViewController.m in Sources */,
 				3B4E3AD6208F46B90042498C /* ChartsViewController.m in Sources */,
 				3B9AA9161FB588AF00720085 /* AuthorizationManager.m in Sources */,
 				3B8799612053DC4600EE9D2A /* HeaderView.m in Sources */,

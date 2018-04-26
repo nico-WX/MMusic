@@ -32,7 +32,6 @@
 @interface ResultsViewController ()<UITableViewDelegate, UITableViewDataSource,MPSystemMusicPlayerController>
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) NSString *searchText;
-
 //数据
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,ResponseRoot*> *> *results;
 @end
@@ -178,7 +177,7 @@ static NSString *const headerIdentifier = @"headerReuseID";
     //mv
     if ([type isEqualToString:@"music-videos"]) {
         MusicVideo *mv = [MusicVideo instanceWithDict:resource.attributes];
-        //[self openToPlayQueueDescriptor:[self playParametersQueueDescriptorWithPlayParams:@[mv.playParams,]]];
+        [self openToPlayQueueDescriptor:[self playParametersQueueDescriptorFromParams:@[mv.playParams,] startAtIndexPath:indexPath]];
     }
 
     //song / station
@@ -186,12 +185,10 @@ static NSString *const headerIdentifier = @"headerReuseID";
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSDictionary *dict = [resource.attributes valueForKeyPath:@"playParams"];
             MPMusicPlayerController *playCtr =[MPMusicPlayerController systemMusicPlayer];
-            //[playCtr setQueueWithDescriptor:[self playParametersQueueDescriptorWithPlayParams:@[dict,]]];
+            [playCtr setQueueWithDescriptor:[self playParametersQueueDescriptorFromParams:@[dict,] startAtIndexPath:indexPath]];
             [playCtr play];
          });
     }
-
-
 }
 
 #pragma mark - MPSystemMusicPlayerController

@@ -12,17 +12,15 @@
 @class Song;
 
 @interface PlayerViewController : UIViewController
-
+/**播放器*/
 @property(nonatomic, strong) MPMusicPlayerController *playerController;
-
-/**正在播放的歌曲(MPMdiaItem 无法获得专辑)*/
+/**正在播放的歌曲*/
 @property(nonatomic, strong) Song *nowPlaySong;
-@property(nonatomic, strong) NSArray<Song*> *songs;
-
-/**方向传递正在播放的项目*/
+/**向外传递正在播放的Item*/
 @property(nonatomic, strong) void(^nowPlayingItem)(MPMediaItem *item);
-
-+ (instancetype) sharePlayerViewController;
--(void) showFromViewController:(UIViewController *)vc withSongList:(NSArray<Song*>*) songList andStarItem:(Song*) startSong;
+/**单例*/
++(instancetype)sharePlayerViewController;
+/**显示播放控制器*/
+-(void)showFromViewController:(UIViewController *)vc withSongs:(NSArray<Song*>*) songs startItem:(Song*)startSong;
 
 @end

@@ -15,7 +15,7 @@
         _artistLabel = UILabel.new;
         _artworkView = UIImageView.new;
 
-        self.contentView.backgroundColor = UIColor.whiteColor;
+        self.backgroundColor = UIColor.whiteColor;
         [self.contentView addSubview:_titleLabel];
         [self.contentView addSubview:_artistLabel];
         [self.contentView addSubview:_artworkView];

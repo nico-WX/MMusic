@@ -11,18 +11,26 @@
 
 @implementation ChartsMusicVideoCell
 
--(instancetype)initWithFrame:(CGRect)frame{
-    if (self = [super initWithFrame:frame]) {
-        self.contentView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
-        CGFloat corner = 8.0f;
-        self.layer.cornerRadius = corner;
-        self.layer.masksToBounds = YES;
+//-(instancetype)initWithFrame:(CGRect)frame{
+//    if (self = [super initWithFrame:frame]) {
+//        self.contentView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
+//        CGFloat corner = 8.0f;
+//        self.layer.cornerRadius = corner;
+//        self.layer.masksToBounds = YES;
+//
+//        self.titleLabel.font = [UIFont systemFontOfSize:22];
+//        self.artistLabel.textColor = UIColor.darkGrayColor;
+//    }
+//
+//    return self;
+//}
+-(void)drawRect:(CGRect)rect{
+    CGFloat corner = 8.0f;
+    self.layer.cornerRadius = corner;
+    self.layer.masksToBounds = YES;
 
-        self.titleLabel.font = [UIFont systemFontOfSize:22];
-        self.artistLabel.textColor = UIColor.darkGrayColor;
-    }
-    
-    return self;
+    self.titleLabel.font = [UIFont systemFontOfSize:22];
+    self.artistLabel.textColor = UIColor.darkGrayColor;
 }
 
 -(void)layoutSubviews{

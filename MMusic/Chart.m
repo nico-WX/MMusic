@@ -8,6 +8,7 @@
 
 #import "Chart.h"
 #import <MJExtension.h>
+#import "Resource.h"
 
 @implementation Chart
 -(instancetype)initWithDict:(NSDictionary *)dict{
@@ -18,5 +19,8 @@
 }
 +(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];
+}
++(NSDictionary *)mj_objectClassInArray{
+    return @{@"data":@"Resource"};
 }
 @end

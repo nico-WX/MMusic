@@ -149,7 +149,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         [self.playerVC.playerController setQueueWithDescriptor:self.prametersQueue];
         [self.playerVC.playerController prepareToPlay];
     }
-    [self.playerVC showFromViewController:self withSongList:self.songs andStarItem:selectSong];
+    [self.playerVC showFromViewController:self withSongs:self.songs startItem:selectSong];
 }
 //定行高
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{

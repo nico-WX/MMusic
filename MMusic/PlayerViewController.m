@@ -22,13 +22,21 @@
 #import "NSObject+Tool.h"
 
 @interface PlayerViewController ()
+
+/**播放器UI*/
 @property(nonatomic, strong) PlayerView *playerView;
 /**定时获取播放时间,更新UI*/
 @property(nonatomic, strong) NSTimer *timer;
+
+/**歌曲列表*/
+@property(nonatomic, strong) NSArray<Song*> *songs;
 @end
+
 
 static PlayerViewController *_instance;
 @implementation PlayerViewController
+
+#pragma mark - 初始化 / 单例
 
 + (instancetype)sharePlayerViewController{
     if (!_instance) {
@@ -53,12 +61,7 @@ static PlayerViewController *_instance;
     return _instance;
 }
 
-- (void)showFromViewController:(UIViewController *)vc withSongList:(NSArray<Song *> *)songList andStarItem:(Song *)startSong{
-    self.songs = songList;
-    self.nowPlaySong = startSong;
-    [vc presentViewController:self animated:YES completion:nil];
-}
-
+#pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -99,6 +102,14 @@ static PlayerViewController *_instance;
     [self.playerController endGeneratingPlaybackNotifications];
 }
 
+#pragma mark - 显示视图控制器
+-(void)showFromViewController:(UIViewController *)vc withSongs:(NSArray<Song *> *)songs startItem:(Song *)startSong{
+    self.songs = songs;
+    self.nowPlaySong = startSong;
+    [vc presentViewController:self animated:YES completion:nil];
+}
+
+#pragma mark - 更新UI信息
 /**更新当前播放的音乐信息到视图上*/
 - (void) updateNowPlayItemToView{
     Artwork *artwork = self.nowPlaySong.artwork;
@@ -106,7 +117,6 @@ static PlayerViewController *_instance;
     UIColor *mainColor = [UIColor colorWithHexString:artwork.bgColor alpha:1];
     self.playerView.closeButton.tintColor = [UIColor oppositeColorOf:mainColor];    //按钮补色
     [self.playerView.closeButton animateToType:buttonCloseType];
-
 
     //歌曲封面
     [self showImageToView:self.playerView.artworkView withImageURL:artwork.url cacheToMemory:YES];
@@ -142,7 +152,7 @@ static PlayerViewController *_instance;
     }];
 }
 
-#pragma mark layz 音乐播放控制器
+#pragma mark - getter
 -(MPMusicPlayerController *)playerController{
     if (!_playerController) {
         _playerController = [MPMusicPlayerController systemMusicPlayer];
@@ -151,7 +161,6 @@ static PlayerViewController *_instance;
     return _playerController;
 }
 
-#pragma mark layz 音乐播放器界面
 -(PlayerView *)playerView{
     if (!_playerView) {
         _playerView = [[PlayerView alloc] initWithFrame:self.view.bounds];
@@ -190,6 +199,7 @@ static PlayerViewController *_instance;
     return _timer;
 }
 
+#pragma mark - Button Action
 /**关闭 播放器视图控制器*/
 - (void)closeViewController:(VBFPopFlatButton*) button{
     [button animateToType:buttonDownBasicType];
@@ -198,7 +208,8 @@ static PlayerViewController *_instance;
         [button animateToType:buttonUpBasicType];
     });
 }
-#pragma mark 播放器 按钮事件
+
+//播放控制 Action
 - (void)sliderChange:(UISlider*) slider{
     NSTimeInterval duration = self.playerController.nowPlayingItem.playbackDuration; //秒
     NSTimeInterval current = duration * slider.value;
@@ -245,6 +256,7 @@ static PlayerViewController *_instance;
     PersonalizedRequestFactory *factort = [PersonalizedRequestFactory new];
     NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
 
+    // 查询当前rating状态  --> 操作
     NSURLRequest *getRating = [factort createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[songID,]];
     [self dataTaskWithRequest:getRating completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (!error && data ) {
@@ -277,7 +289,6 @@ static PlayerViewController *_instance;
                         });
                     }
                 }];
-
             }
         }
     }];

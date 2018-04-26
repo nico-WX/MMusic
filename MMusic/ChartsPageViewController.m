@@ -26,6 +26,7 @@
 @property(nonatomic, strong) ChartsViewController *playlistsVC;
 @property(nonatomic, strong) ChartsViewController *musicVideosVC;
 @property(nonatomic, strong) ChartsViewController *songsVC;
+
 @end
 
 //排行榜视图
@@ -70,16 +71,13 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
--(void)viewDidLayoutSubviews{
-    //获取分页指示视图 设置属性
-    __block UIView *view;
-    for (view in self.pageViewController.view.subviews) {
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    for (UIView * view in self.pageViewController.view.subviews) {
         if ([view isKindOfClass:[UIPageControl class]]) {
             self.pageCtr = (UIPageControl*)view;
-            CGRect rect = view.frame;
-            rect.size.height = 22.0f;
-            self.pageCtr.frame = rect;
-            self.pageCtr.currentPageIndicatorTintColor = UIColor.darkGrayColor;
+            self.pageCtr.currentPageIndicatorTintColor = UIColor.greenColor;
             self.pageCtr.pageIndicatorTintColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
         }
     }
@@ -88,7 +86,7 @@
 #pragma mark - getter
 -(UIPageViewController *)pageViewController{
     if (!_pageViewController) {
-        _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll                                                              navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+        _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll                                                            navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                             options:nil];
         _pageViewController.delegate = self;
         _pageViewController.dataSource = self;
@@ -100,23 +98,26 @@
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
     //当前控制器 的上一个控制器
     NSUInteger index = [self.pageList indexOfObject:viewController];
+
+    //边界
     if (index==0 ||index==NSNotFound) return nil;
     index--;
+
     return [self.pageList objectAtIndex:index];
 }
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
-    //当前控制器的下一个控制器
+    //当前控制器下标
     NSUInteger index = [self.pageList indexOfObject:viewController];
+    //边界
     if (index==NSNotFound) return nil;
-
     index++;
     if (index >= self.pageList.count) return nil;
 
     return [self.pageList objectAtIndex:index];
 }
 
-#pragma mark - UIPageViewController Delegate
-//总页数
+////实现  并显示 分页指示
+////总页数
 -(NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController{
     return self.pageList.count;
 }
@@ -124,5 +125,16 @@
 -(NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController{
     return 0;
 }
+
+#pragma mark - UIPageViewController Delegate
+
+//-(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers{
+//    Log(@"to %@",self.pageList);
+//    Log(@"TO %@",pendingViewControllers);
+//}
+//-(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed{
+//
+//
+//}
 
 @end

@@ -77,10 +77,6 @@ static NSString *const cellIdentifier = @"todayCell";
         CGFloat y = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
         UIEdgeInsets insets = UIEdgeInsetsMake(padding.top+y, padding.left, padding.bottom+tabBatH, padding.right);
         make.edges.mas_equalTo(superview).with.insets(insets);
-//        make.top.mas_equalTo(superview.mas_top).with.offset((padding.top+y));
-//        make.left.mas_equalTo(superview.mas_left).with.offset(padding.left);
-//        make.right.mas_equalTo(superview.mas_right).with.offset(-padding.right);
-//        make.bottom.mas_equalTo(superview.mas_bottom).with.offset(-(padding.bottom+tabBatH));
     }];
 
 

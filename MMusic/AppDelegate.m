@@ -13,6 +13,7 @@
 #import "MyMusicViewController.h"
 #import "TodayCollectionViewController.h"
 #import "ChartsPageViewController.h"
+#import "BorseViewController.h"
 #import "SearchViewController.h"
 
 #import "AuthorizationManager.h"
@@ -52,6 +53,7 @@
     //实例化主窗口
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 
+
     //tabBar
     UITabBarController *barCtr = [[UITabBarController alloc] init];
 
@@ -71,9 +73,11 @@
     UINavigationController *chartNav = [[UINavigationController alloc] initWithRootViewController:chartVC];
 
     //搜索
-    SearchViewController *searchVC = [[SearchViewController alloc] init];
-    searchVC.title = @"搜索";
-    UINavigationController *searchNav = [[UINavigationController alloc] initWithRootViewController:searchVC];
+    //SearchViewController *searchVC = [[SearchViewController alloc] init];
+    //searchVC.title = @"搜索";
+    BorseViewController *borseVC = BorseViewController.new;
+    borseVC.title = @"浏览";
+    UINavigationController *searchNav = [[UINavigationController alloc] initWithRootViewController:borseVC];
 
 
     [barCtr addChildViewController:todayNavCtr];
@@ -81,8 +85,7 @@
     [barCtr addChildViewController:searchNav];
     [barCtr addChildViewController:mmusicNavCtr];
 
-    [barCtr setSelectedIndex:0];
-
+    [barCtr setSelectedIndex:2];
 
     [self.window setRootViewController:barCtr];
     [self.window makeKeyAndVisible];    //显示

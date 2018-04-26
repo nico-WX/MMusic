@@ -11,12 +11,6 @@
 
 
 @implementation ChartsSongCell
--(instancetype)initWithFrame:(CGRect)frame{
-    if (self = [super initWithFrame:frame]) {
-
-    }
-    return self;
-}
 
 -(void)drawRect:(CGRect)rect{
     self.artistLabel.font = [UIFont systemFontOfSize:12];

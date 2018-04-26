@@ -12,6 +12,7 @@
 //Controller
 #import "ChartsViewController.h"
 #import "DetailViewController.h"
+#import "PlayerViewController.h"
 
 //view  and cell
 #import "NewCardView.h"
@@ -33,10 +34,15 @@
 @interface ChartsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,MPSystemMusicPlayerController>
 @property(nonatomic, assign) ChartsType type;
 @property(nonatomic, strong) NSURLRequest *request;
-//viwe
+//容器 viwe
 @property(nonatomic, strong) NewCardView *cardView;
-//
+//集合视图
 @property(nonatomic, strong) UICollectionView *collectionView;
+//播放视图控制
+@property(nonatomic, strong) PlayerViewController *playerVC;
+//songs  歌曲排行榜 音乐列表
+@property(nonatomic, strong) NSArray<Song*> *songs;
+
 //data
 @property(nonatomic) NSArray<Chart*> *results;
 @end
@@ -61,7 +67,6 @@ static NSString *const cellId = @"cellReuseIdentifier";
     self.view.backgroundColor = UIColor.whiteColor;
 
     [self.view addSubview:self.cardView];
-    self.collectionView = [self collectionViewWithChartsType:self.type];
     [self.cardView.contentView addSubview:self.collectionView];
     
     [self requestDataFromRequest:self.request];
@@ -118,10 +123,10 @@ static NSString *const cellId = @"cellReuseIdentifier";
 
     ChartsCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
     Chart *chart = [self.results objectAtIndex:indexPath.section];
-    NSDictionary *dict = [chart.data objectAtIndex:indexPath.row];
-    Resource *resource = [Resource instanceWithDict:dict];
+    Resource *resource = [chart.data objectAtIndex:indexPath.row];
 
     cell.titleLabel.text = [resource.attributes valueForKey:@"name"];
+    self.title = chart.name;
 
     NSDictionary *artDict = [resource.attributes valueForKey:@"artwork"];
     Artwork *art = [Artwork instanceWithDict:artDict];
@@ -135,6 +140,11 @@ static NSString *const cellId = @"cellReuseIdentifier";
         }
         cell.artistLabel.text = artist;
     }
+
+    //选中背景色
+    UIView *selectedView = [[UIView alloc] initWithFrame:cell.bounds];
+    selectedView.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:0.88];
+    cell.selectedBackgroundView = selectedView;
     return cell;
 }
 #pragma mark - UICollectionView Delegate
@@ -150,15 +160,16 @@ static NSString *const cellId = @"cellReuseIdentifier";
             [self openToPlayQueueDescriptor:[self openToPlayMusicVideosAtIndexPath:indexPath]];
             break;
         case ChartsSongsType:
-            [self playSongQueue:[self openToPlayMusicVideosAtIndexPath:indexPath]];
+            [self playSongQueue:[self openToPlayMusicVideosAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
     }
 }
-# pragma mark - 选中cell/ 辅助方法
+
+# pragma mark - 选中cell 辅助操作方法
 /**显示专辑/歌单详细*/
 -(void)showAlbumsOrPlaylistsChartsDetailFromIndexPath:(NSIndexPath*) indexPath{
-    NSDictionary *dict = [[self.results objectAtIndex:indexPath.section].data objectAtIndex:indexPath.row];
-    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:[Resource instanceWithDict:dict]];
+    Resource *resource = [[self.results objectAtIndex:indexPath.section].data objectAtIndex:indexPath.row];
+    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:resource];
     [self.navigationController pushViewController:detailVC animated:YES];
 }
 
@@ -173,15 +184,18 @@ static NSString *const cellId = @"cellReuseIdentifier";
     }
     return [self playParametersQueueDescriptorFromParams:playParamsList startAtIndexPath:indexPath];
 }
--(void)playSongQueue:(MPMusicPlayerQueueDescriptor*) queue{
+/**播放歌曲*/
+-(void)playSongQueue:(MPMusicPlayerQueueDescriptor*) queue atIndexPath:(NSIndexPath*) indexPath{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        MPMusicPlayerController *player = [MPMusicPlayerController systemMusicPlayer];
-        [player setQueueWithDescriptor:queue];
-        [player play];
+        [self.playerVC.playerController setQueueWithDescriptor:queue];
+        [self.playerVC.playerController prepareToPlay];
     });
+    Song *startSong = [self.songs objectAtIndex:indexPath.row];
+    [self.playerVC showFromViewController:self withSongs:self.songs startItem:startSong];
 }
 
 #pragma mark - MPSystemMusicPlayerController
+/**跳转到Music APP 播放MV*/
 - (void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor{
     UIApplication *app = [UIApplication sharedApplication];
     NSURL *url = [NSURL URLWithString:@"Music:prefs:root=MUSIC"];
@@ -299,40 +313,41 @@ static NSString *const cellId = @"cellReuseIdentifier";
     return tempResults;
 }
 
-#pragma mark - tool method
-/**配置不同类型的cell 等*/
--(UICollectionView*) collectionViewWithChartsType:(ChartsType) type{
-    UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
-    layout.minimumInteritemSpacing = spacing;   //列距
-    layout.minimumLineSpacing = spacing;        //行距
-    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
-
-    UICollectionView *colletionView = [[UICollectionView alloc] initWithFrame:self.cardView.contentView.bounds collectionViewLayout:layout];
-    colletionView.delegate = self;
-    colletionView.dataSource = self;
-    //圆角 背色
-    colletionView.backgroundColor = self.cardView.contentView.backgroundColor;
-    colletionView.layer.cornerRadius = 8.0f;
-    colletionView.layer.masksToBounds = YES;
-    //注册不同类型的cell
-    switch (type) {
-        case ChartsAlbumsType:
-            [colletionView registerClass:ChartsAlbumCell.class forCellWithReuseIdentifier:cellId];
-            break;
-        case ChartsPlaylistsType:
-            [colletionView registerClass:ChartsPlaylistsCell.class forCellWithReuseIdentifier:cellId];
-            break;
-        case ChartsMusicVideosType:
-            [colletionView registerClass:ChartsMusicVideoCell.class forCellWithReuseIdentifier:cellId];
-            break;
-        case ChartsSongsType:
-            [colletionView registerClass:ChartsSongCell.class forCellWithReuseIdentifier:cellId];
-            break;
-    }
-    return colletionView;
-}
-
 #pragma mark - getter
+-(UICollectionView *)collectionView{
+    if (!_collectionView) {
+        UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
+        layout.minimumInteritemSpacing = spacing;   //列距
+        layout.minimumLineSpacing = spacing*2;        //行距
+        layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+
+        //实例 代理 数据源
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.cardView.contentView.bounds collectionViewLayout:layout];
+        _collectionView.delegate = self;
+        _collectionView.dataSource = self;
+
+        //圆角 背色
+        _collectionView.backgroundColor = self.cardView.contentView.backgroundColor;
+        _collectionView.layer.cornerRadius = 8.0f;
+        _collectionView.layer.masksToBounds = YES;
+        //注册不同类型的cell
+        switch (self.type) {
+            case ChartsAlbumsType:
+                [_collectionView registerClass:ChartsAlbumCell.class forCellWithReuseIdentifier:cellId];
+                break;
+            case ChartsPlaylistsType:
+                [_collectionView registerClass:ChartsPlaylistsCell.class forCellWithReuseIdentifier:cellId];
+                break;
+            case ChartsMusicVideosType:
+                [_collectionView registerClass:ChartsMusicVideoCell.class forCellWithReuseIdentifier:cellId];
+                break;
+            case ChartsSongsType:
+                [_collectionView registerClass:ChartsSongCell.class forCellWithReuseIdentifier:cellId];
+                break;
+        }
+    }
+    return _collectionView;
+}
 -(NewCardView *)cardView{
     if (!_cardView) {
         CGFloat x = 0;
@@ -342,6 +357,28 @@ static NSString *const cellId = @"cellReuseIdentifier";
         _cardView = [[NewCardView alloc] initWithFrame:CGRectMake(x, y, w, h)];
     }
     return _cardView;
+}
+-(PlayerViewController *)playerVC{
+    if (!_playerVC) {
+        _playerVC = [PlayerViewController sharePlayerViewController];
+        _playerVC.nowPlayingItem = ^(MPMediaItem *item) {
+
+        };
+    }
+    return _playerVC;
+}
+-(NSArray<Song *> *)songs{
+    if (!_songs) {
+        NSMutableArray<Song*> *temp = NSMutableArray.new;
+        for (Chart *chart in _results) {
+            for (Resource *resource in chart.data) {
+                Song *song = [Song instanceWithDict:resource.attributes];
+                [temp addObject:song];
+            }
+        }
+        _songs = temp;
+    }
+    return _songs;
 }
 
 #pragma mark - setter
