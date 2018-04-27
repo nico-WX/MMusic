@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface ScreeningViewController : UIViewController
-
+@property(nonatomic, strong) UICollectionView *collectionView;
 @end

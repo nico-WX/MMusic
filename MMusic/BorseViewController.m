@@ -9,13 +9,13 @@
 #import <Masonry.h>
 
 #import "BorseViewController.h"
+#import "ScreeningViewController.h"
 #import "SearchViewController.h"
 
 @interface BorseViewController ()
 @property(nonatomic, strong) SearchViewController *searchVC;
-
-/**歌单/专辑/语种/风格/场景 等*/
-@property(nonatomic, strong) UICollectionView *collectionView;
+//
+@property(nonatomic, strong) ScreeningViewController *screeningVC;
 @end
 
 @implementation BorseViewController
@@ -25,11 +25,14 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
 
+    //将搜索栏 添加到导航栏中, 搜索栏的提示视图添加到视图中
     [self addChildViewController:self.searchVC];
     [self.navigationController.navigationBar addSubview:self.searchVC.serachBar];
     [self.view addSubview:self.searchVC.view];
 
-
+    //插入 搜索视图下层
+    [self addChildViewController:self.screeningVC];
+    [self.view insertSubview:_screeningVC.view belowSubview:_searchVC.view];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -45,14 +48,21 @@
         UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 0, 4);
         make.edges.mas_equalTo(superview).with.insets(padding);
     }];
-
 }
 
+#pragma mark - getter
 - (SearchViewController *)searchVC{
     if (!_searchVC) {
         _searchVC = SearchViewController.new;
     }
     return _searchVC;
+}
+
+- (ScreeningViewController *)screeningVC{
+    if (!_screeningVC) {
+        _screeningVC = ScreeningViewController.new;
+    }
+    return _screeningVC;
 }
 
 @end
