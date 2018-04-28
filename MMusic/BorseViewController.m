@@ -16,6 +16,10 @@
 @property(nonatomic, strong) SearchViewController *searchVC;
 //
 @property(nonatomic, strong) ScreeningViewController *screeningVC;
+//
+@property(nonatomic, strong) UIView *screeningView;
+//
+@property(nonatomic, strong) UICollectionView *collectionView;
 @end
 
 @implementation BorseViewController
@@ -30,9 +34,11 @@
     [self.navigationController.navigationBar addSubview:self.searchVC.serachBar];
     [self.view addSubview:self.searchVC.view];
 
-    //插入 搜索视图下层
-    [self addChildViewController:self.screeningVC];
-    [self.view insertSubview:_screeningVC.view belowSubview:_searchVC.view];
+
+    [self.view insertSubview:self.screeningView belowSubview:self.searchVC.view];
+//    //插入 搜索视图下层
+//    [self addChildViewController:self.screeningVC];
+//    [self.view insertSubview:_screeningVC.view belowSubview:_searchVC.view];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -48,6 +54,7 @@
         UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 0, 4);
         make.edges.mas_equalTo(superview).with.insets(padding);
     }];
+
 }
 
 #pragma mark - getter
@@ -64,5 +71,18 @@
     }
     return _screeningVC;
 }
-
+-(UIView *)screeningView{
+    if (!_screeningView) {
+        CGRect frame = CGRectMake(0, 64, CGRectGetWidth(self.view.frame), 44.0f);
+        _screeningView = [[UIView alloc] initWithFrame:frame];
+        _screeningView.backgroundColor = UIColor.redColor;
+    }
+    return _screeningView;
+}
+-(UICollectionView *)collectionView{
+    if {
+        <#statements#>
+    }
+    return _collectionView;
+}
 @end
