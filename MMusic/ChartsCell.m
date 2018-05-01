@@ -14,6 +14,8 @@
         _titleLabel = UILabel.new;
         _artistLabel = UILabel.new;
         _artworkView = UIImageView.new;
+        [_titleLabel sizeToFit];
+        [_titleLabel setAdjustsFontSizeToFitWidth:YES];
 
         self.backgroundColor = UIColor.whiteColor;
         [self.contentView addSubview:_titleLabel];

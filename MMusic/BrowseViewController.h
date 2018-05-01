@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BorseViewController : UIViewController
+@interface BrowseViewController : UIViewController
 
 @end

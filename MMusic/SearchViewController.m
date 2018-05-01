@@ -139,7 +139,7 @@ static NSString *const cellID = @"cellReuseIdentifier";
     if (!_serachBar) {
         _serachBar = UISearchBar.new;
         _serachBar.delegate = self;
-        _serachBar.barTintColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1.0];
+        _serachBar.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1.0];
     }
     return _serachBar;
 }

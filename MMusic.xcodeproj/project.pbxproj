@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		305158303AC8F4D3DF4C5210 /* libPods-MMusic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B50B155B334DAF7591C6EA42 /* libPods-MMusic.a */; };
+		3B09CB912097453A00294851 /* BrowseSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B09CB902097453A00294851 /* BrowseSectionHeaderView.m */; };
 		3B23AC751FF236A800F0A9CA /* TodayCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B23AC741FF236A800F0A9CA /* TodayCollectionViewController.m */; };
 		3B2D6EFB2091F69200E1B22C /* ScreeningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFA2091F69200E1B22C /* ScreeningViewController.m */; };
 		3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFC2091F6D400E1B22C /* screening.plist */; };
@@ -75,7 +76,7 @@
 		3BB731DB207B743D00DC629B /* ResultsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731DA207B743D00DC629B /* ResultsCell.m */; };
 		3BB731DE207B9BD800DC629B /* NSObject+MMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731DD207B9BD800DC629B /* NSObject+MMObject.m */; };
 		3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731E0207BAF7E00DC629B /* ResultsViewController.m */; };
-		3BB8793C2091D521004677B6 /* BorseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB8793B2091D521004677B6 /* BorseViewController.m */; };
+		3BB8793C2091D521004677B6 /* BrowseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB8793B2091D521004677B6 /* BrowseViewController.m */; };
 		3BC4732A1FF23B380084016F /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3BC473291FF23B380084016F /* Info.plist */; };
 		3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */; };
 		3BDBBB2F2073D84600680CCB /* ChartsAlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBBB2E2073D84600680CCB /* ChartsAlbumCell.m */; };
@@ -88,6 +89,8 @@
 
 /* Begin PBXFileReference section */
 		3A8F449D3A1F4F346C21DEC4 /* Pods-MMusic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MMusic.release.xcconfig"; path = "Pods/Target Support Files/Pods-MMusic/Pods-MMusic.release.xcconfig"; sourceTree = "<group>"; };
+		3B09CB8F2097453A00294851 /* BrowseSectionHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BrowseSectionHeaderView.h; sourceTree = "<group>"; };
+		3B09CB902097453A00294851 /* BrowseSectionHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BrowseSectionHeaderView.m; sourceTree = "<group>"; };
 		3B23AC731FF236A800F0A9CA /* TodayCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayCollectionViewController.h; sourceTree = "<group>"; };
 		3B23AC741FF236A800F0A9CA /* TodayCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayCollectionViewController.m; sourceTree = "<group>"; };
 		3B2D6EF92091F69200E1B22C /* ScreeningViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreeningViewController.h; sourceTree = "<group>"; };
@@ -207,8 +210,8 @@
 		3BB731DD207B9BD800DC629B /* NSObject+MMObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MMObject.m"; sourceTree = "<group>"; };
 		3BB731DF207BAF7D00DC629B /* ResultsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsViewController.h; sourceTree = "<group>"; };
 		3BB731E0207BAF7E00DC629B /* ResultsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsViewController.m; sourceTree = "<group>"; };
-		3BB8793A2091D521004677B6 /* BorseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BorseViewController.h; sourceTree = "<group>"; };
-		3BB8793B2091D521004677B6 /* BorseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BorseViewController.m; sourceTree = "<group>"; };
+		3BB8793A2091D521004677B6 /* BrowseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BrowseViewController.h; sourceTree = "<group>"; };
+		3BB8793B2091D521004677B6 /* BrowseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BrowseViewController.m; sourceTree = "<group>"; };
 		3BC473291FF23B380084016F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3BC4DF59206E761100CDE7C1 /* ChartsPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsPageViewController.h; sourceTree = "<group>"; };
 		3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsPageViewController.m; sourceTree = "<group>"; };
@@ -327,6 +330,8 @@
 				3BB731DA207B743D00DC629B /* ResultsCell.m */,
 				3B4E3ACB208B91510042498C /* HintsCell.h */,
 				3B4E3ACC208B91510042498C /* HintsCell.m */,
+				3B09CB8F2097453A00294851 /* BrowseSectionHeaderView.h */,
+				3B09CB902097453A00294851 /* BrowseSectionHeaderView.m */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -532,8 +537,8 @@
 		3BE5B157207A412D00A4A9DC /* Serach */ = {
 			isa = PBXGroup;
 			children = (
-				3BB8793A2091D521004677B6 /* BorseViewController.h */,
-				3BB8793B2091D521004677B6 /* BorseViewController.m */,
+				3BB8793A2091D521004677B6 /* BrowseViewController.h */,
+				3BB8793B2091D521004677B6 /* BrowseViewController.m */,
 				3B2D6EF92091F69200E1B22C /* ScreeningViewController.h */,
 				3B2D6EFA2091F69200E1B22C /* ScreeningViewController.m */,
 				3BAAB7C7207A45B6007A74EA /* SearchViewController.h */,
@@ -683,6 +688,7 @@
 				3B9AA9071FB47C1200720085 /* Song.m in Sources */,
 				3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */,
 				3B4E3ADC208F620E0042498C /* ChartsPlaylistsCell.m in Sources */,
+				3B09CB912097453A00294851 /* BrowseSectionHeaderView.m in Sources */,
 				3B9AA8DB1FB4535400720085 /* Error.m in Sources */,
 				3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */,
 				3B9AA8D81FB452FF00720085 /* ResponseRoot.m in Sources */,
@@ -711,7 +717,7 @@
 				3B5371E51FD148B6009AFE47 /* Genre.m in Sources */,
 				3B8799592052BBC300EE9D2A /* DetailViewController.m in Sources */,
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
-				3BB8793C2091D521004677B6 /* BorseViewController.m in Sources */,
+				3BB8793C2091D521004677B6 /* BrowseViewController.m in Sources */,
 				3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */,
 				3B9AA9101FB4817F00720085 /* RequestFactory.m in Sources */,
 				3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */,

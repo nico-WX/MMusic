@@ -13,7 +13,7 @@
 #import "MyMusicViewController.h"
 #import "TodayCollectionViewController.h"
 #import "ChartsPageViewController.h"
-#import "BorseViewController.h"
+#import "BrowseViewController.h"
 #import "SearchViewController.h"
 
 #import "AuthorizationManager.h"
@@ -75,7 +75,7 @@
     //搜索
     //SearchViewController *searchVC = [[SearchViewController alloc] init];
     //searchVC.title = @"搜索";
-    BorseViewController *borseVC = BorseViewController.new;
+    BrowseViewController *borseVC = BrowseViewController.new;
     borseVC.title = @"浏览";
     UINavigationController *searchNav = [[UINavigationController alloc] initWithRootViewController:borseVC];
 

@@ -73,6 +73,21 @@ typedef NS_ENUM(NSUInteger, ChartsType){
 };
 
 
+typedef NS_OPTIONS(NSUInteger, SearchType){
+    SearchDefaultsType =    0,
+    SearchAlbumsType =      1 << 0,
+    SearchPlaylistsType =   1 << 1,
+    SearchSongsType =       1 << 2,
+    SearchMusicVideosType=  1 << 3,
+    SearchStationsType=     1 << 4,
+    SearchCuratorsType=     1 << 5,
+    SearchAppleCuratorsType=1 << 6,
+    SearchArtisrsType=      1 << 7,
+    SearchActivitiesType=   1 << 8,
+};
+
+
+
 /**
  普通请求工厂
  */
@@ -117,5 +132,15 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @return 请求体
  */
 - (NSURLRequest*)createRequestWithHerf:(NSString*) herf;
+
+
+/**
+ 创建搜索文本请求
+
+ @param searchText 搜索文本
+ @param types 指定手术类型
+ @return 搜索请求体
+ */
+-(NSURLRequest*)createSearchWithText:(NSString *)searchText types:(SearchType)types;
 
  @end

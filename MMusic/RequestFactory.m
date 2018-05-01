@@ -15,9 +15,7 @@ extern NSString *developerTokenDefaultsKey;
 extern NSString *storefrontDefaultsKey;
 
 @implementation RequestFactory
-//+(instancetype)new{
-//    return [[self alloc] init];
-//}
+
 /**一般请求*/
 -(instancetype)init{
     if (self = [super init]) {
@@ -120,6 +118,22 @@ extern NSString *storefrontDefaultsKey;
     }
 }
 
+/**解析搜索类型*/
+-(NSString*)resolveSearchType:(SearchType) types{
+    if (types == SearchDefaultsType) return nil;
+
+    NSString *str = [NSString string];
+    if (types & SearchAlbumsType)       str = [str stringByAppendingString:@"albums,"];
+    if (types & SearchPlaylistsType)    str = [str stringByAppendingString:@"playlists,"];
+    if (types & SearchSongsType)        str = [str stringByAppendingString:@"songs,"];
+    if (types & SearchMusicVideosType)  str = [str stringByAppendingString:@"music-videos,"];
+    if (types & SearchStationsType)     str = [str stringByAppendingString:@"stations,"];
+    if (types & SearchCuratorsType)     str = [str stringByAppendingString:@"curators,"];
+    if (types & SearchAppleCuratorsType)str = [str stringByAppendingString:@"apple-curators,"];
+    if (types & SearchArtisrsType)      str = [str stringByAppendingString:@"artists,"];
+    if (types & SearchActivitiesType)   str = [str stringByAppendingString:@"activities,"];
+    return str;
+}
 
 /**解析字符串数组参数 并拼接返回*/
 -(NSString *) resolveStringArrayWithArray:(NSArray<NSString*> *) ids{
@@ -178,4 +192,13 @@ extern NSString *storefrontDefaultsKey;
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
 
+-(NSURLRequest *)createSearchWithText:(NSString *)searchText types:(SearchType)types{
+    NSString *resourceTypes = [self resolveSearchType:types];
+    NSString *path = [self.rootPath stringByAppendingPathComponent:@"search?term="];
+    path = [path stringByAppendingString:searchText];
+    path = [path stringByAppendingString:@"&limit=10"];
+    path = [path stringByAppendingString:@"&types="];
+    path = [path stringByAppendingString:resourceTypes];
+    return [self createRequestWithURLString:path setupUserToken:NO];
+}
 @end
