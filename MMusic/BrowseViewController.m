@@ -7,6 +7,7 @@
 //
 
 #import <Masonry.h>
+#import <MJRefresh.h>
 
 #import "BrowseViewController.h"
 #import "ChartsPlaylistsCell.h"
@@ -22,8 +23,7 @@
 //搜索栏添加到导航栏, 搜索提示视图插入视图最上层.
 @property(nonatomic, strong) SearchViewController *searchVC;
 
-@property(nonatomic, strong) ScreeningViewController *screeningVC;
-//
+//刷选视图
 @property(nonatomic, strong) UIView *screeningView;
 
 //浏览内容
@@ -31,9 +31,9 @@
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,ResponseRoot*>*> *results;
 @end
 
-static const CGFloat row = 2.0f;    //cell 列数
-static const CGFloat miniSpacing = 2.0f;    //cell 最小间距
-static const CGFloat cellTitleHeight = 20.0f;
+static const CGFloat row = 2.0f;                //cell 列数
+static const CGFloat miniSpacing = 2.0f;        //cell 最小间距
+static const CGFloat cellTitleHeight = 30.0f;   //cell title高度
 
 //重用ID
 static NSString *const cellID = @"cellReuseIdentifier";
@@ -50,14 +50,16 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
     [self.navigationController.navigationBar addSubview:self.searchVC.serachBar];
     [self.view addSubview:self.searchVC.view];
 
-    NSString *str = @"学习";
-    [self requestDataWithTerms:str];
+    //刷选视图插入 搜索视图下层
+    [self.view addSubview:self.screeningView];
+    [self.view insertSubview:self.screeningView belowSubview:self.searchVC.view];
 
+    //集合视图插入搜索视图下层
     [self.view insertSubview:self.collectionView belowSubview:self.searchVC.view];
 
-//    //插入 搜索视图下层
-//    [self addChildViewController:self.screeningVC];
-//    [self.view insertSubview:_screeningVC.view belowSubview:_searchVC.view];
+
+    NSString *str = @"粤语";
+    [self requestDataWithTerms:str];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -70,6 +72,7 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
     [self.searchVC.serachBar setHidden:NO];
 
     //layout
+    __weak typeof(self) weakSelf = self;
     UIView *superview = self.navigationController.navigationBar;
     [self.searchVC.serachBar mas_makeConstraints:^(MASConstraintMaker *make) {
         UIEdgeInsets padding = UIEdgeInsetsMake(0, 0, 0, 0);
@@ -77,9 +80,23 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
     }];
 
     superview = self.view;
+    //对齐导航栏下方
+    [self.screeningView mas_makeConstraints:^(MASConstraintMaker *make) {
+        CGFloat w = CGRectGetWidth(superview.bounds);
+        CGFloat h= 44.0f;
+        CGFloat navMaxY = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
+        make.top.mas_equalTo(superview.mas_top).offset(navMaxY);
+        make.left.mas_equalTo(superview.mas_left);
+        make.size.mas_equalTo(CGSizeMake(w, h));
+    }];
+
+    //对齐刷选视图下方
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        UIEdgeInsets padding = UIEdgeInsetsMake(0, miniSpacing, 0, miniSpacing);
-        make.edges.mas_equalTo(superview).insets(padding);
+        make.top.mas_equalTo(weakSelf.screeningView.mas_bottom);
+        make.left.mas_equalTo(superview.mas_left).offset(miniSpacing);
+        make.right.mas_equalTo(superview.mas_right).offset(-miniSpacing);
+        CGFloat tabBarMinY = CGRectGetMinY(weakSelf.tabBarController.tabBar.frame);
+        make.bottom.mas_equalTo(tabBarMinY).offset(-miniSpacing);
     }];
 }
 
@@ -102,19 +119,22 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
     return cell;
 }
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-    BrowseSectionHeaderView *header = (BrowseSectionHeaderView*)[collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionHeaderID forIndexPath:indexPath];
+    BrowseSectionHeaderView *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                         withReuseIdentifier:sectionHeaderID
+                                                                                forIndexPath:indexPath];
     if (header) {
         header.backgroundColor = UIColor.whiteColor;
         NSDictionary *dict = [self.results objectAtIndex:indexPath.section];
+
+        //节头title
         NSString *text = dict.allKeys.firstObject;
         header.titleLable.text = text;
 
+        //有下一页,显示按钮, 无下一页隐藏
         ResponseRoot *root = [dict allValues].firstObject;
         if (!root.next) {
-            //无下一页  隐藏
             [header.moreButton setHidden:YES];
         }else{
-            //有下一页  显示按钮 响应事件
             [header.moreButton setHidden:NO];
             [header.moreButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
                 [self loadNextPageWithHref:root.next];
@@ -141,12 +161,10 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
     return CGSizeMake(w, h);
 }
 
-
 #pragma mark - 数据请求 和解析
--(void)requestDataWithTerms:(NSString*) terms{
-    NSURLRequest *request = [RequestFactory.new createSearchWithText:terms types:SearchPlaylistsType|SearchAlbumsType];
-    Log(@"url=%@",request.URL);
 
+-(void)requestDataWithTerms:(NSString*) terms{
+    NSURLRequest *request = [RequestFactory.new createSearchWithText:terms types:SearchPlaylistsType];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         self.results = [self serializationJSON:json];
@@ -166,12 +184,14 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
     return tempArray;
 }
 -(void) loadNextPageWithHref:(NSString*) href{
+    Log(@"href=%@",href);
     NSURLRequest *request = [RequestFactory.new createRequestWithHerf:(NSString *)href];
-    Log(@"URL=%@",request.URL);
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         if (json != NULL) {
             NSArray<NSDictionary<NSString*,ResponseRoot*>*> *temp = [self serializationJSON:json];
+            Log(@"temp=%@",json);
+            //返回的数据  查找对应的对象(通过Key), 添加到对象中
             [temp enumerateObjectsUsingBlock:^(NSDictionary<NSString *,ResponseRoot *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 [obj enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, ResponseRoot * _Nonnull obj, BOOL * _Nonnull stop) {
                     //查找对应的数据
@@ -215,7 +235,21 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
         _collectionView.backgroundColor = UIColor.whiteColor;
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
+
+        //上拉加载更多
+        _collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+
+        }];
     }
     return _collectionView;
 }
+
+-(UIView *)screeningView{
+    if (!_screeningView) {
+        _screeningView = UIView.new;
+        _screeningView.backgroundColor = UIColor.redColor;
+    }
+    return _screeningView;
+}
+
 @end

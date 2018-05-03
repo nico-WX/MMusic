@@ -8,5 +8,6 @@ pod 'SDWebImage'
 pod 'MBProgressHUD'
 pod 'Masonry'
 pod 'VBFPopFlatButton'
+pod 'lottie-ios'
 
 end

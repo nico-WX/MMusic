@@ -44,25 +44,6 @@ static NSString *const cellID = @"cellReuseIdentifier";
 //获得焦点
 -(void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
     searchBar.showsCancelButton = YES;
-
-    //显示提示视图
-    //[self.navigationController popToViewController:self animated:YES];
-
-    //监听键盘弹出, 获取键盘高度,修改Hints view Frame
-    __weak typeof(self) weakSelf = self;
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    //键盘Frame改变, 同时更改TableViewFrame
-    [center addObserverForName:UIKeyboardWillChangeFrameNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-        NSDictionary *info = note.userInfo;
-        NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
-
-        CGRect rect = weakSelf.hintsView.frame;
-        CGFloat navH = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
-        rect.size.height = CGRectGetMinY(value.CGRectValue) - navH;
-        [UIView animateWithDuration:0.7 animations:^{
-            weakSelf.hintsView.frame = rect;
-        }];
-    }];
 }
 //文本输入
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
@@ -71,17 +52,9 @@ static NSString *const cellID = @"cellReuseIdentifier";
 //搜索点击
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
     [searchBar resignFirstResponder];
-
-    CGFloat tabBarH = CGRectGetHeight(self.tabBarController.tabBar.frame);
-    CGRect rect = self.hintsView.frame;
-    rect.size.height = CGRectGetHeight(self.view.frame) - CGRectGetMinY(rect) - tabBarH;
-    [UIView animateWithDuration:0.5 animations:^{
-        self.hintsView.frame = rect;
-        [self showSearchResultsFromText:searchBar.text];
-    }];
-
+    [self showSearchResultsFromText:searchBar.text];
 }
-//搜索栏取消按钮
+//搜索栏取消按钮 隐藏提示栏
 -(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [searchBar resignFirstResponder];
     searchBar.showsCancelButton = NO;
@@ -106,24 +79,23 @@ static NSString *const cellID = @"cellReuseIdentifier";
 - (void)showHintsFromTerms:(NSString *)term{
     NSURLRequest *request = [[RequestFactory new] createSearchHintsWithTerm:term];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (data && !error) {
-            NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
-            if ([json valueForKeyPath: @"results.terms"]) {
-                _terms = [json valueForKeyPath:@"results.terms"];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.hintsView reloadData];
-                });
-            }
+        NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
+        if ([json valueForKeyPath: @"results.terms"]) {
+            _terms = [json valueForKeyPath:@"results.terms"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.hintsView reloadData];
+            });
         }
     }];
 }
 
 #pragma mark - UITableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-        [self.serachBar resignFirstResponder];
-        NSString *text = [self.terms objectAtIndex:indexPath.row];
-        self.serachBar.text = text;
-        [self showSearchResultsFromText:text];
+    [self.serachBar resignFirstResponder];
+    NSString *text = [self.terms objectAtIndex:indexPath.row];
+    //选中的文本填入搜索框
+    self.serachBar.text = text;
+    [self showSearchResultsFromText:text];
 }
 
 #pragma mark - 显示搜索结果
@@ -139,7 +111,23 @@ static NSString *const cellID = @"cellReuseIdentifier";
     if (!_serachBar) {
         _serachBar = UISearchBar.new;
         _serachBar.delegate = self;
-        _serachBar.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1.0];
+        _serachBar.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:0.6];
+
+        //监听键盘弹出, 获取键盘高度,修改Hints view Frame
+        __weak typeof(self) weakSelf = self;
+        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        //键盘Frame改变, 同时更改TableViewFrame
+        [center addObserverForName:UIKeyboardWillChangeFrameNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+            NSDictionary *info = note.userInfo;
+            NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
+
+            CGRect rect = weakSelf.hintsView.frame;
+            CGFloat navH = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
+            rect.size.height = CGRectGetMinY(value.CGRectValue) - navH;
+            [UIView animateWithDuration:0.7 animations:^{
+                weakSelf.hintsView.frame = rect;
+            }];
+        }];
     }
     return _serachBar;
 }

@@ -164,7 +164,6 @@ extern NSString *storefrontDefaultsKey;
 }
 
 -(NSURLRequest *)createChartWithChartType:(ChartsType)type{
-    //URL Map https://api.music.apple.com/v1/catalog/{storefront}/charts?types={types}
     NSString *typeStr = [self resolveStringWithChartType:type];
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"charts?types="];
     //参数直接拼接 

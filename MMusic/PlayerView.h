@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <VBFPopFlatButton.h>
+#import <Lottie/Lottie.h>
 @class PlayProgressView;
 @class PlayControllerView;
 
@@ -28,7 +29,7 @@
 @property(nonatomic ,strong) PlayControllerView *playCtrView;
 
 /**喜爱按钮*/
-@property(nonatomic, strong) UIButton *like;
+@property(nonatomic, strong) LOTAnimatedSwitch *heartIcon;
 /**循环模式*/
 @property(nonatomic, strong) UIButton *repeat;
 @end

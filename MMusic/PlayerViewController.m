@@ -141,11 +141,11 @@ static PlayerViewController *_instance;
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
             if (json && res.statusCode==200) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.playerView.like setImage:[UIImage imageNamed:@"love-red"] forState:UIControlStateNormal];
+                    [self.playerView.heartIcon setOn:YES animated:YES];
                 });
             }else{
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.playerView.like setImage:[UIImage imageNamed:@"love-gray"] forState:UIControlStateNormal];
+                    [self.playerView.heartIcon setOn:NO animated:YES];
                 });
             }
         }
@@ -168,10 +168,14 @@ static PlayerViewController *_instance;
         //事件绑定
         [_playerView.progressView.progressSlider addTarget:self action:@selector(sliderChange:) forControlEvents:UIControlEventValueChanged];
         [_playerView.closeButton addTarget:self action:@selector(closeViewController:) forControlEvents:UIControlEventTouchUpInside];
-        [_playerView.like addTarget:self action:@selector(changeLove:) forControlEvents:UIControlEventTouchUpInside];
+        [_playerView.heartIcon addTarget:self action:@selector(changeLove:) forControlEvents:UIControlEventTouchUpInside];
         [_playerView.playCtrView.previous addTarget:self action:@selector(previous:) forControlEvents:UIControlEventTouchUpInside];
         [_playerView.playCtrView.play addTarget:self action:@selector(playOrPause:) forControlEvents:UIControlEventTouchUpInside];
         [_playerView.playCtrView.next addTarget:self action:@selector(next:) forControlEvents:UIControlEventTouchUpInside];
+
+        UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(closeViewController)];
+        [gesture setDirection:UISwipeGestureRecognizerDirectionDown];
+        [_playerView addGestureRecognizer:gesture];
     }
     return _playerView;
 }
@@ -200,6 +204,12 @@ static PlayerViewController *_instance;
 }
 
 #pragma mark - Button Action
+/**下滑手势*/
+-(void) closeViewController{
+
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 /**关闭 播放器视图控制器*/
 - (void)closeViewController:(VBFPopFlatButton*) button{
     [button animateToType:buttonDownBasicType];
@@ -252,7 +262,7 @@ static PlayerViewController *_instance;
     });
 }
 /**点击喜爱按钮*/
-- (void)changeLove:(UIButton*) button{
+- (void)changeLove:(LOTAnimatedSwitch*) heart{
     PersonalizedRequestFactory *factort = [PersonalizedRequestFactory new];
     NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
 
@@ -264,35 +274,32 @@ static PlayerViewController *_instance;
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
             //喜欢
             if (json && res.statusCode==200) {
-                //取消喜欢
-                //DELETE
+                //取消喜欢 <DELETE>
                 NSURLRequest *request = [factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
                 [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                     NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
                     if (!error && res.statusCode/10 == 20) {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.playerView.like setImage:[UIImage imageNamed:@"love-gray"] forState:UIControlStateNormal];
+                            [heart setOn:NO animated:YES];
                         });
                     }
                 }];
             //不喜欢
             }else{
-                //添加喜欢
-                //PUT
+                //添加喜欢 <PUT>
                 NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
                 NSURLRequest *request = [factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
                 [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                     NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
                     if (!error && res.statusCode/10==20) {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.playerView.like setImage:[UIImage imageNamed:@"love-red"] forState:UIControlStateNormal];
+                            [heart setOn:YES animated:YES];
                         });
                     }
                 }];
             }
         }
     }];
-
 }
 
 

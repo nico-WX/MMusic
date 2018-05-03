@@ -103,10 +103,12 @@ extern NSString *userTokenIssueNotification;
     //urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
     //转码方法2
-    NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:urlString];
-    NSString *encodedString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:set];
 
-    NSURL *url = [NSURL URLWithString:encodedString];
+    //移除 '%' 防止将%编码成25
+    urlString = [urlString stringByRemovingPercentEncoding];
+    urlString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSURL *url = [NSURL URLWithString:urlString];
+    //Log(@"url=%@",url);
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     //设置请求头
     [self setupAuthorizationWithRequest:request setupMusicUserToken:setupUserToken];

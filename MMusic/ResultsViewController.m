@@ -55,32 +55,24 @@ static NSString *const headerIdentifier = @"headerReuseID";
     self.view.backgroundColor = UIColor.whiteColor;
     [self requestDataFromSearchTest:self.searchText];
 
-    self.tableView = ({
-        UITableView *view = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        [view registerClass:[ResultsCell class] forCellReuseIdentifier:cellIdentifier];
-        [view registerClass:ResultsSectionHeader.class forHeaderFooterViewReuseIdentifier:headerIdentifier];
-        view.delegate = self;
-        view.dataSource = self;
-        [self.view addSubview:view];
-
-        view;
-    });
-
-    UIView *superview = self.view;
-    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        CGFloat navH = CGRectGetMaxY(self.navigationController.navigationBar.frame);
-        CGFloat tabH = CGRectGetHeight(self.tabBarController.tabBar.frame);
-        UIEdgeInsets padding = UIEdgeInsetsMake(navH, 0, tabH, 0);
-
-        make.edges.mas_equalTo(superview).with.insets(padding);
-    }];
+    [self.view addSubview:self.tableView];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 
+    UIView *superview = self.view;
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        CGFloat navH = CGRectGetMaxY(self.navigationController.navigationBar.frame);
+        CGFloat tabH = CGRectGetHeight(self.tabBarController.tabBar.frame);
+        UIEdgeInsets padding = UIEdgeInsetsMake(navH, 0, tabH, 0);
+        make.edges.mas_equalTo(superview).with.insets(padding);
+    }];
+}
 
 #pragma mark - UITableViewDataSource
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -131,26 +123,29 @@ static NSString *const headerIdentifier = @"headerReuseID";
         return nil;
     }
 
-    [[self.results objectAtIndex:section] enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, ResponseRoot * _Nonnull obj, BOOL * _Nonnull stop) {
-        header.title.text = key;
-        if (![obj valueForKey:@"next"]) {
-            //无下一页
-            header.more.hidden = YES;
-        }else{
-            header.more.hidden = NO;
+    NSDictionary<NSString*,ResponseRoot*> *dict = [self.results objectAtIndex:section];
+    ResponseRoot *root = [dict allValues].firstObject;
+
+    header.title.text = [dict allKeys].firstObject;
+
+    if (!root.next) {
+        header.more.hidden = YES;
+    }else{
+        header.more.hidden = NO;
 
             //按钮点击事件
-            [header.more handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-                //按钮动画交互提示
-                [header.more animateToType:buttonDownBasicType];
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    //加载 下一页
-                    [header.more animateToType:buttonMinusType];
-                    [self loadNextPageWithHref:[obj valueForKey:@"next"] withSection:section];
-                });
-            }];
-        }
-    }];
+        [header.more handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+            //按钮动画交互提示
+            [header.more animateToType:buttonDownBasicType];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                //加载 下一页
+                [header.more animateToType:buttonMinusType];
+                Log(@"next=%@",root.next);
+                [self loadNextPageWithHref:root.next];
+            });
+        }];
+    }
+
     return header;
 }
 
@@ -229,38 +224,46 @@ static NSString *const headerIdentifier = @"headerReuseID";
 }
 
 /**加载某一节 的下一页数据*/
--(void) loadNextPageWithHref:(NSString*) href withSection:(NSInteger) section{
+-(void) loadNextPageWithHref:(NSString*) href{
     NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:href];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
+        Log(@"json=%@",json);
         if (json) {
             json = [json objectForKey:@"results"];
             //枚举当前的 josn
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-                ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
-
-                //枚举上一次加载的旧数据, 查找对应的Key  将返回的数据添加到data 数组中, 并覆盖next值, 指向下一页
+                ResponseRoot *newRoot = [ResponseRoot instanceWithDict:obj];
+                Log(@"new=%@",newRoot);
+                //添加 到原有的数据列表中
                 [self.results enumerateObjectsUsingBlock:^(NSDictionary<NSString *,ResponseRoot *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-
-                    //用新的JSON key 在旧的数据中取出数组, 将新数据添加到数组中
                     if ([obj valueForKey:key]) {
-                        //取出模型, 添加数据,并更新值
-                        ResponseRoot * oldRoot = [obj valueForKey:key];;
-                        oldRoot.next = root.next;
-                        oldRoot.data = [oldRoot.data arrayByAddingObjectsFromArray:root.data];
-                        oldRoot.href = root.href;
-                        //停止
+                        [obj valueForKey:key].next = newRoot.next;
+                        [obj valueForKey:key].data = [[obj valueForKey:key].data arrayByAddingObjectsFromArray:newRoot.data];
+                        Log(@"data=%@",[obj valueForKey:key].data);
                         *stop = YES;
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.tableView reloadData];
+                        });
                     }
                 }];
             }];
         }
-        //刷新UI
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSIndexSet *set = [NSIndexSet indexSetWithIndex:section];
-            [self.tableView reloadSections:set withRowAnimation:UITableViewRowAnimationLeft];
-        });
     }];
 }
+
+#pragma mark -getter
+-(UITableView *)tableView{
+    if (!_tableView) {
+        _tableView =  [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        [_tableView registerClass:[ResultsCell class] forCellReuseIdentifier:cellIdentifier];
+        [_tableView registerClass:ResultsSectionHeader.class forHeaderFooterViewReuseIdentifier:headerIdentifier];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+
+    }
+    return _tableView;
+}
+
 
 @end

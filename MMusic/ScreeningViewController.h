@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ScreeningViewControllerDelegate
+
+@required
+
+@end
+
 @interface ScreeningViewController : UIViewController
 @property(nonatomic, strong) UICollectionView *collectionView;
 @end
