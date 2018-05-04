@@ -8,12 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol ScreeningViewControllerDelegate
-
-@required
-
-@end
+//@protocol ScreeningViewControllerDelegate
+//
+//@required
+//-(void)screeningSelectedItemString:(NSString*) text;
+//
+//@end
 
 @interface ScreeningViewController : UIViewController
+@property(nonatomic, strong) void(^selectedItem)(NSString* text);
 @property(nonatomic, strong) UICollectionView *collectionView;
+//@property(nonatomic, weak) id<ScreeningViewControllerDelegate> delegate;
 @end

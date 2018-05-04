@@ -73,11 +73,9 @@
     UINavigationController *chartNav = [[UINavigationController alloc] initWithRootViewController:chartVC];
 
     //搜索
-    //SearchViewController *searchVC = [[SearchViewController alloc] init];
-    //searchVC.title = @"搜索";
-    BrowseViewController *borseVC = BrowseViewController.new;
-    borseVC.title = @"浏览";
-    UINavigationController *searchNav = [[UINavigationController alloc] initWithRootViewController:borseVC];
+    BrowseViewController *browseVC = BrowseViewController.new;
+    browseVC.title = @"浏览";
+    UINavigationController *searchNav = [[UINavigationController alloc] initWithRootViewController:browseVC];
 
 
     [barCtr addChildViewController:todayNavCtr];

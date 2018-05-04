@@ -53,16 +53,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     //数据请求(专辑/列表)
     [self requestData];
 
-    //表视图
-    self.tableView = ({
-        UITableView *view = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        [view registerClass:[SongCell class] forCellReuseIdentifier:cellReuseIdentifier];
-        view.dataSource = self;
-        view.delegate = self;
-        view.separatorColor = UIColor.whiteColor;
-        view;
-    });
-
     //表头视图
     self.header = [[HeaderView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 150)];
     self.header.backgroundColor = UIColor.whiteColor;
@@ -104,7 +94,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     [super didReceiveMemoryWarning];
 }
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.songs.count;
 }
@@ -136,10 +126,13 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     }
     return cell;
 }
+//定行高
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 44.0f;
+}
 
 #pragma mark - tableView delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
     //现在播放的项目 和现在选择的项目是同一个, 弹出视图, 不从头播放
     Song *selectSong = [self.songs objectAtIndex:indexPath.row];
     NSString *nowId = self.playerVC.playerController.nowPlayingItem.playbackStoreID;
@@ -151,10 +144,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     }
     [self.playerVC showFromViewController:self withSongs:self.songs startItem:selectSong];
 }
-//定行高
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 44.0f;
-}
+
 
 #pragma mark Layz
 -(PlayerViewController *)playerVC{
@@ -289,6 +279,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 -(void) showHUDToView:(UIView*) view withResponse:(NSHTTPURLResponse*) response{
     dispatch_async(dispatch_get_main_queue(), ^{
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+        
         UIImage *image;
         //200 段
         if (response.statusCode/10 == 20) {
@@ -306,6 +297,16 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     });
 }
 
+#pragma mark - getter
+-(UITableView *)tableView{
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        [_tableView registerClass:[SongCell class] forCellReuseIdentifier:cellReuseIdentifier];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+    }
+    return _tableView;
+}
 
 
 

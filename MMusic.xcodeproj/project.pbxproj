@@ -78,6 +78,8 @@
 		3BB731DE207B9BD800DC629B /* NSObject+MMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731DD207B9BD800DC629B /* NSObject+MMObject.m */; };
 		3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731E0207BAF7E00DC629B /* ResultsViewController.m */; };
 		3BB8793C2091D521004677B6 /* BrowseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB8793B2091D521004677B6 /* BrowseViewController.m */; };
+		3BC33211209CA3220080D1B9 /* ScreeningCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC33210209CA3220080D1B9 /* ScreeningCell.m */; };
+		3BC33214209CA5ED0080D1B9 /* ScreeningSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC33213209CA5ED0080D1B9 /* ScreeningSection.m */; };
 		3BC4732A1FF23B380084016F /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3BC473291FF23B380084016F /* Info.plist */; };
 		3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */; };
 		3BDBBB2F2073D84600680CCB /* ChartsAlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBBB2E2073D84600680CCB /* ChartsAlbumCell.m */; };
@@ -214,6 +216,10 @@
 		3BB731E0207BAF7E00DC629B /* ResultsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsViewController.m; sourceTree = "<group>"; };
 		3BB8793A2091D521004677B6 /* BrowseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BrowseViewController.h; sourceTree = "<group>"; };
 		3BB8793B2091D521004677B6 /* BrowseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BrowseViewController.m; sourceTree = "<group>"; };
+		3BC3320F209CA3220080D1B9 /* ScreeningCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreeningCell.h; sourceTree = "<group>"; };
+		3BC33210209CA3220080D1B9 /* ScreeningCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreeningCell.m; sourceTree = "<group>"; };
+		3BC33212209CA5ED0080D1B9 /* ScreeningSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreeningSection.h; sourceTree = "<group>"; };
+		3BC33213209CA5ED0080D1B9 /* ScreeningSection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreeningSection.m; sourceTree = "<group>"; };
 		3BC473291FF23B380084016F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3BC4DF59206E761100CDE7C1 /* ChartsPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsPageViewController.h; sourceTree = "<group>"; };
 		3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsPageViewController.m; sourceTree = "<group>"; };
@@ -334,6 +340,10 @@
 				3B4E3ACC208B91510042498C /* HintsCell.m */,
 				3B09CB8F2097453A00294851 /* BrowseSectionHeaderView.h */,
 				3B09CB902097453A00294851 /* BrowseSectionHeaderView.m */,
+				3BC33212209CA5ED0080D1B9 /* ScreeningSection.h */,
+				3BC33213209CA5ED0080D1B9 /* ScreeningSection.m */,
+				3BC3320F209CA3220080D1B9 /* ScreeningCell.h */,
+				3BC33210209CA3220080D1B9 /* ScreeningCell.m */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -725,12 +735,14 @@
 				3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */,
 				3B9AA9101FB4817F00720085 /* RequestFactory.m in Sources */,
 				3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */,
+				3BC33211209CA3220080D1B9 /* ScreeningCell.m in Sources */,
 				3B3D9989205540A0000F2E9E /* PlayerView.m in Sources */,
 				3BDFCB59207CE3DE00D85021 /* ResultsSectionHeader.m in Sources */,
 				3B4E3ADF208F6E870042498C /* ChartsCell.m in Sources */,
 				3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */,
 				3B4E3ACD208B91510042498C /* HintsCell.m in Sources */,
 				3B9AA8F51FB4719A00720085 /* MusicVideo.m in Sources */,
+				3BC33214209CA5ED0080D1B9 /* ScreeningSection.m in Sources */,
 				3B9AA8EC1FB46E7B00720085 /* Artwork.m in Sources */,
 				3B9AA8E91FB46D6100720085 /* Artist.m in Sources */,
 				3BB731DB207B743D00DC629B /* ResultsCell.m in Sources */,

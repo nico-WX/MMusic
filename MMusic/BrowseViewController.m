@@ -9,26 +9,32 @@
 #import <Masonry.h>
 #import <MJRefresh.h>
 
+//controller
 #import "BrowseViewController.h"
-#import "ChartsPlaylistsCell.h"
 #import "ScreeningViewController.h"
-#import "SearchViewController.h"
+
+//view
+#import "ChartsPlaylistsCell.h"
 #import "BrowseSectionHeaderView.h"
+
+//tool model
 #import "RequestFactory.h"
 #import "ResponseRoot.h"
 #import "Resource.h"
 #import "Artwork.h"
 
 @interface BrowseViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
-//搜索栏添加到导航栏, 搜索提示视图插入视图最上层.
-@property(nonatomic, strong) SearchViewController *searchVC;
-
-//刷选视图
+//刷选视图显示/隐藏按钮
+@property(nonatomic, strong) UIButton *screeningButton;
+//刷选视图控制器
+@property(nonatomic, strong) ScreeningViewController *screeningVC;
+//类型视图
 @property(nonatomic, strong) UIView *screeningView;
-
-//浏览内容
+//展示内容
 @property(nonatomic, strong) UICollectionView *collectionView;
-@property(nonatomic, strong) NSArray<NSDictionary<NSString*,ResponseRoot*>*> *results;
+//data
+@property(nonatomic, strong) NSDictionary<NSString*,ResponseRoot*> *currentData;        //当前显示的数据
+@property(nonatomic, strong) NSArray<NSDictionary<NSString*,ResponseRoot*>*> *results;  //刷选搜索到的所有数据
 @end
 
 static const CGFloat row = 2.0f;                //cell 列数
@@ -40,44 +46,42 @@ static NSString *const cellID = @"cellReuseIdentifier";
 static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
 @implementation BrowseViewController
 
+#pragma mark - cycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
 
-    //将搜索栏 添加到导航栏中, 搜索栏的提示视图添加到视图中
-    [self addChildViewController:self.searchVC];
-    [self.navigationController.navigationBar addSubview:self.searchVC.serachBar];
-    [self.view addSubview:self.searchVC.view];
 
-    //刷选视图插入 搜索视图下层
-    [self.view addSubview:self.screeningView];
-    [self.view insertSubview:self.screeningView belowSubview:self.searchVC.view];
+    self.navigationItem.titleView = self.screeningButton;
+    [self.view addSubview:self.screeningVC.view];
 
-    //集合视图插入搜索视图下层
-    [self.view insertSubview:self.collectionView belowSubview:self.searchVC.view];
-
+    [self.view insertSubview:self.screeningView belowSubview:self.screeningVC.view];
+    [self.view insertSubview:self.collectionView belowSubview:self.screeningVC.view];
 
     NSString *str = @"粤语";
     [self requestDataWithTerms:str];
+
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+
+    //失去焦点 隐藏刷选视图
+    [self.screeningButton setSelected:YES];     //选中
+    [self showScreening:self.screeningButton];  //隐藏视图
+}
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-
-    //不隐藏(搜索时, 会隐藏搜索框)
-    [self.searchVC.serachBar setHidden:NO];
 
     //layout
     __weak typeof(self) weakSelf = self;
     UIView *superview = self.navigationController.navigationBar;
-    [self.searchVC.serachBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        UIEdgeInsets padding = UIEdgeInsetsMake(0, 0, 0, 0);
-        make.edges.mas_equalTo(superview).with.insets(padding);
-    }];
 
     superview = self.view;
     //对齐导航栏下方
@@ -163,8 +167,12 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
 
 #pragma mark - 数据请求 和解析
 
+/**
+ 请求对应的数据
+ @param terms 搜索文本
+ */
 -(void)requestDataWithTerms:(NSString*) terms{
-    NSURLRequest *request = [RequestFactory.new createSearchWithText:terms types:SearchPlaylistsType];
+    NSURLRequest *request = [RequestFactory.new createSearchWithText:terms];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         self.results = [self serializationJSON:json];
@@ -173,9 +181,14 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
         });
     }];
 }
+
+/**
+ 解析JSON数据
+ @param json JSON字典
+ @return 解析完成的模型数据
+ */
 -(NSArray<NSDictionary<NSString*,ResponseRoot*>*> *)serializationJSON:(NSDictionary*) json{
     json = [json objectForKey:@"results"];
-
     NSMutableArray *tempArray = NSMutableArray.new;
     [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
@@ -183,25 +196,25 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
     }];
     return tempArray;
 }
+
+/**
+ 加载下一页数据
+ @param href 数据子路径
+ */
 -(void) loadNextPageWithHref:(NSString*) href{
-    Log(@"href=%@",href);
     NSURLRequest *request = [RequestFactory.new createRequestWithHerf:(NSString *)href];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         if (json != NULL) {
             NSArray<NSDictionary<NSString*,ResponseRoot*>*> *temp = [self serializationJSON:json];
-            Log(@"temp=%@",json);
             //返回的数据  查找对应的对象(通过Key), 添加到对象中
             [temp enumerateObjectsUsingBlock:^(NSDictionary<NSString *,ResponseRoot *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 [obj enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, ResponseRoot * _Nonnull obj, BOOL * _Nonnull stop) {
                     //查找对应的数据
                     for ( NSDictionary<NSString*,ResponseRoot*> *dict in self.results) {
                         if ([dict valueForKey:key]) {
-                            ResponseRoot *root = [dict objectForKey:key];
-                            //f覆盖下一页
-                            root.next = obj.next ? obj.next : NULL;
-                            //添加数据
-                            root.data = [root.data arrayByAddingObjectsFromArray:obj.data];
+                            [dict objectForKey:key].next = obj.next;
+                            [dict objectForKey:key].data = [[dict objectForKey:key].data arrayByAddingObjectsFromArray:obj.data];
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [self.collectionView reloadData];
                             });
@@ -213,12 +226,62 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
     }];
 }
 
-#pragma mark - getter
-- (SearchViewController *)searchVC{
-    if (!_searchVC) {
-        _searchVC = SearchViewController.new;
+/**
+ 显示分类视图
+ @param button 按钮对象
+ */
+-(void) showScreening:(UIButton*) button{
+    NSTimeInterval durarion = 0.7;
+    if (button.isSelected) {
+        button.selected = NO;
+        [UIView animateWithDuration:durarion animations:^{
+            CGRect rect = self.screeningVC.view.frame;
+            rect.size.height = 0;
+            self.screeningVC.view.frame = rect;
+        }];
+
+    }else{
+        button.selected = YES;
+        [UIView animateWithDuration:durarion animations:^{
+            CGRect rect = self.screeningVC.view.frame;
+            rect.size.height = 400;
+            self.screeningVC.view.frame = rect;
+        }];
     }
-    return _searchVC;
+}
+#pragma mark - getter
+-(UIButton *)screeningButton{
+    if (!_screeningButton) {
+        _screeningButton = UIButton.new;
+        [_screeningButton setTitle:@"分类▼" forState:UIControlStateNormal];
+        [_screeningButton setTitle:@"分类▲" forState:UIControlStateSelected];
+        [_screeningButton setTitleColor:UIColor.blackColor forState:UIControlStateNormal];
+        [_screeningButton setTitleColor:UIColor.blueColor forState:UIControlStateSelected];
+        _screeningButton.frame = CGRectMake(0, 0, 100, CGRectGetHeight(self.navigationController.navigationBar.bounds));
+        [_screeningButton addTarget:self action:@selector(showScreening:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _screeningButton;
+}
+
+-(ScreeningViewController *)screeningVC{
+    if (!_screeningVC) {
+        _screeningVC = [[ScreeningViewController alloc] init];
+        CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);
+        CGFloat w = CGRectGetWidth(self.view.bounds);
+        //其实高度0  隐藏
+        _screeningVC.view.frame = CGRectMake(0, y, w, 0);
+        _screeningVC.view.backgroundColor = UIColor.brownColor;
+
+        //选中取值
+        __weak typeof(self) weakSelf = self;
+        _screeningVC.selectedItem = ^(NSString *text) {
+            [weakSelf.screeningButton setSelected:YES];
+            [weakSelf showScreening:weakSelf.screeningButton];  //隐藏刷选视图
+            [weakSelf requestDataWithTerms:text];
+
+        };
+    }
+    return _screeningVC;
 }
 
 -(UICollectionView *)collectionView{
@@ -230,7 +293,6 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
 
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         [_collectionView registerClass:ChartsPlaylistsCell.class forCellWithReuseIdentifier:cellID];
-        //头
         [_collectionView registerClass:BrowseSectionHeaderView.class forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionHeaderID];
         _collectionView.backgroundColor = UIColor.whiteColor;
         _collectionView.delegate = self;
@@ -238,7 +300,7 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
 
         //上拉加载更多
         _collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-
+            
         }];
     }
     return _collectionView;

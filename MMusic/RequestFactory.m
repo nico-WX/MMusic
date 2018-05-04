@@ -120,7 +120,7 @@ extern NSString *storefrontDefaultsKey;
 
 /**解析搜索类型*/
 -(NSString*)resolveSearchType:(SearchType) types{
-    if (types == SearchDefaultsType) return nil;
+    if (types == SearchDefaultsType) return @" ";
 
     NSString *str = [NSString string];
     if (types & SearchAlbumsType)       str = [str stringByAppendingString:@"albums,"];

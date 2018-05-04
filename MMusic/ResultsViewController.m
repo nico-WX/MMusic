@@ -41,6 +41,8 @@
 static NSString *const cellIdentifier = @"cellReuseIdentifier";
 static NSString *const headerIdentifier = @"headerReuseID";
 
+#pragma mark - init
+
 - (instancetype)initWithSearchText:(NSString *)searchText{
     if (self = [super init]) {
         _searchText = searchText;
@@ -90,6 +92,7 @@ static NSString *const headerIdentifier = @"headerReuseID";
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     ResultsCell *cell = (ResultsCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 
+    //数据对象
     ResponseRoot *root = [[self.results objectAtIndex:indexPath.section] allValues].firstObject;
     Resource *resource = [root.data objectAtIndex:indexPath.row];
 
@@ -132,7 +135,6 @@ static NSString *const headerIdentifier = @"headerReuseID";
         header.more.hidden = YES;
     }else{
         header.more.hidden = NO;
-
             //按钮点击事件
         [header.more handleControlEvent:UIControlEventTouchUpInside withBlock:^{
             //按钮动画交互提示
@@ -140,12 +142,10 @@ static NSString *const headerIdentifier = @"headerReuseID";
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //加载 下一页
                 [header.more animateToType:buttonMinusType];
-                Log(@"next=%@",root.next);
                 [self loadNextPageWithHref:root.next];
             });
         }];
     }
-
     return header;
 }
 
@@ -163,6 +163,7 @@ static NSString *const headerIdentifier = @"headerReuseID";
 
     //确定操作 专辑和播放列表弹出详细视图  其他直接播放
     NSString *type = resource.type;
+
     // album  / playlist
     if ([type isEqualToString:@"albums"] || [type isEqualToString:@"playlists"]) {
         DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
@@ -228,19 +229,16 @@ static NSString *const headerIdentifier = @"headerReuseID";
     NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:href];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
-        Log(@"json=%@",json);
         if (json) {
             json = [json objectForKey:@"results"];
             //枚举当前的 josn
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                 ResponseRoot *newRoot = [ResponseRoot instanceWithDict:obj];
-                Log(@"new=%@",newRoot);
                 //添加 到原有的数据列表中
                 [self.results enumerateObjectsUsingBlock:^(NSDictionary<NSString *,ResponseRoot *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                     if ([obj valueForKey:key]) {
                         [obj valueForKey:key].next = newRoot.next;
                         [obj valueForKey:key].data = [[obj valueForKey:key].data arrayByAddingObjectsFromArray:newRoot.data];
-                        Log(@"data=%@",[obj valueForKey:key].data);
                         *stop = YES;
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self.tableView reloadData];
