@@ -134,7 +134,7 @@ extern NSString *userTokenIssueNotification;
     //获取视图宽高, 设置请求图片大小
     CGFloat h = CGRectGetHeight(imageView.bounds);
     CGFloat w = CGRectGetWidth(imageView.bounds);
-    if (w==0 || h == 0) w=h=44; //拦截高度, 宽度为 0 的情况, 设置默认值,
+    if (w==0 || h == 0) w=h=100; //拦截高度, 宽度为 0 的情况, 设置默认值,
 
     //image
     NSString *path = IMAGEPATH_FOR_URL(url);
@@ -160,7 +160,14 @@ extern NSString *userTokenIssueNotification;
         //在块中移除
         [MBProgressHUD showHUDAddedTo:imageView animated:YES];
         NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
+
+        NSRange range = [urlStr rangeOfString:@"{c}"];
+        if (range.length > 0) {
+            urlStr = [urlStr stringByReplacingOccurrencesOfString:@"{c}" withString:@"cc"];
+        }
+
         NSURL *url = [NSURL URLWithString:urlStr];
+
         [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             if (cache == YES) {
 

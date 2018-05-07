@@ -17,8 +17,8 @@
 //view  and cell
 #import "NewCardView.h"
 #import "ChartsCell.h"
-#import "ChartsAlbumCell.h"
-#import "ChartsPlaylistsCell.h"
+#import "AlbumCell.h"
+#import "PlaylistsCell.h"
 #import "MusicVideoCell.h"
 #import "ChartsSongCell.h"
 
@@ -333,13 +333,13 @@ static NSString *const cellId = @"cellReuseIdentifier";
         //注册不同类型的cell
         switch (self.type) {
             case ChartsAlbumsType:
-                [_collectionView registerClass:ChartsAlbumCell.class forCellWithReuseIdentifier:cellId];
+                [_collectionView registerClass:AlbumCell.class forCellWithReuseIdentifier:cellId];
                 break;
             case ChartsPlaylistsType:
-                [_collectionView registerClass:ChartsPlaylistsCell.class forCellWithReuseIdentifier:cellId];
+                [_collectionView registerClass:PlaylistsCell.class forCellWithReuseIdentifier:cellId];
                 break;
             case ChartsMusicVideosType:
-                [_collectionView registerClass:ChartsMusicVideoCell.class forCellWithReuseIdentifier:cellId];
+                [_collectionView registerClass:MusicVideoCell.class forCellWithReuseIdentifier:cellId];
                 break;
             case ChartsSongsType:
                 [_collectionView registerClass:ChartsSongCell.class forCellWithReuseIdentifier:cellId];

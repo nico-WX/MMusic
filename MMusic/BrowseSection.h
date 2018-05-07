@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <VBFPopFlatButton.h>
 
-@interface BrowseSectionHeaderView : UICollectionReusableView
+@interface BrowseSection : UICollectionReusableView
 @property(nonatomic, strong) UILabel *titleLable;
 @property(nonatomic, strong) VBFPopFlatButton *moreButton;
 @end

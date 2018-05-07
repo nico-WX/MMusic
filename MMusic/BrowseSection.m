@@ -8,9 +8,9 @@
 
 #import <Masonry.h>
 
-#import "BrowseSectionHeaderView.h"
+#import "BrowseSection.h"
 
-@implementation BrowseSectionHeaderView
+@implementation BrowseSection
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         _titleLable = UILabel.new;

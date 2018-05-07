@@ -7,12 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ChartsCell.h"
 
-@interface ChartsMusicVideoCell : UICollectionViewCell
-/**MV标签*/
-@property(nonatomic, strong) UILabel *titleLabel;
-/**艺人名称*/
-@property(nonatomic, strong) UILabel *artistLabel;
-/**海报*/
-@property(nonatomic, strong) UIImageView *artworkView;
+@interface MusicVideoCell : ChartsCell
+
 @end

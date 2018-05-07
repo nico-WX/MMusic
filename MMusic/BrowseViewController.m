@@ -12,38 +12,40 @@
 //controller
 #import "BrowseViewController.h"
 #import "ScreeningViewController.h"
+#import "ContentViewController.h"
+
 
 //view
-#import "ChartsPlaylistsCell.h"
-#import "BrowseSectionHeaderView.h"
+#import "ScreeningCell.h"
+#import "PlaylistsCell.h"
+#import "BrowseSection.h"
 
 //tool model
+#import "ModelController.h"
 #import "RequestFactory.h"
 #import "ResponseRoot.h"
 #import "Resource.h"
 #import "Artwork.h"
 
-@interface BrowseViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
-//刷选视图显示/隐藏按钮
+@interface BrowseViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UIScrollViewDelegate>
+//导航栏中间按钮
 @property(nonatomic, strong) UIButton *screeningButton;
-//刷选视图控制器
+//中间按钮  ("pop"视图)
 @property(nonatomic, strong) ScreeningViewController *screeningVC;
-//类型视图
-@property(nonatomic, strong) UIView *screeningView;
-//展示内容
-@property(nonatomic, strong) UICollectionView *collectionView;
-//data
-@property(nonatomic, strong) NSDictionary<NSString*,ResponseRoot*> *currentData;        //当前显示的数据
+//内容分类滚动视图(top)
+@property(nonatomic, strong) UICollectionView *typesView;
+//内容滚动视图
+@property(nonatomic, strong) UIScrollView *scrollView;
+@property(nonatomic, strong) ModelController *modelCtr;
+@property(nonatomic, strong) NSArray<UIViewController*> *contentVCs;
+
+//all data
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,ResponseRoot*>*> *results;  //刷选搜索到的所有数据
 @end
 
-static const CGFloat row = 2.0f;                //cell 列数
-static const CGFloat miniSpacing = 2.0f;        //cell 最小间距
-static const CGFloat cellTitleHeight = 30.0f;   //cell title高度
-
-//重用ID
-static NSString *const cellID = @"cellReuseIdentifier";
-static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
+static const CGFloat miniSpacing = 2.0f;
+static const CGFloat row =  4;
+static NSString *const typesCellID = @"typesCellReuseIdentifier";
 @implementation BrowseViewController
 
 #pragma mark - cycle
@@ -53,16 +55,16 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
 
-
+    //分类视图
     self.navigationItem.titleView = self.screeningButton;
     [self.view addSubview:self.screeningVC.view];
 
-    [self.view insertSubview:self.screeningView belowSubview:self.screeningVC.view];
-    [self.view insertSubview:self.collectionView belowSubview:self.screeningVC.view];
+    //资源类型  及内容视图
+    [self.view insertSubview:self.typesView belowSubview:self.screeningVC.view];
+    [self.view insertSubview:self.scrollView belowSubview:self.screeningVC.view];
 
-    NSString *str = @"粤语";
+    NSString *str = @"国语";
     [self requestDataWithTerms:str];
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -72,101 +74,34 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
 
-    //失去焦点 隐藏刷选视图
-    [self.screeningButton setSelected:YES];     //选中
-    [self showScreening:self.screeningButton];  //隐藏视图
+    //当前正在显示刷选视图 转到其他视图控制器
+    if (self.screeningButton.isSelected == YES) {
+        [self showScreening:self.screeningButton];  //隐藏视图
+    }
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
-    //layout
+    //布局
     __weak typeof(self) weakSelf = self;
-    UIView *superview = self.navigationController.navigationBar;
-
-    superview = self.view;
-    //对齐导航栏下方
-    [self.screeningView mas_makeConstraints:^(MASConstraintMaker *make) {
-        CGFloat w = CGRectGetWidth(superview.bounds);
-        CGFloat h= 44.0f;
-        CGFloat navMaxY = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
-        make.top.mas_equalTo(superview.mas_top).offset(navMaxY);
+    UIView *superview = self.view;
+    [self.typesView mas_makeConstraints:^(MASConstraintMaker *make) {
+        //top 对齐导航栏下方
+        make.top.mas_equalTo(superview.mas_top).offset(CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame));
         make.left.mas_equalTo(superview.mas_left);
-        make.size.mas_equalTo(CGSizeMake(w, h));
+        make.right.mas_equalTo(superview.mas_right);
+        make.height.mas_equalTo(44.0f);
     }];
 
-    //对齐刷选视图下方
-    [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.screeningView.mas_bottom);
-        make.left.mas_equalTo(superview.mas_left).offset(miniSpacing);
-        make.right.mas_equalTo(superview.mas_right).offset(-miniSpacing);
-        CGFloat tabBarMinY = CGRectGetMinY(weakSelf.tabBarController.tabBar.frame);
-        make.bottom.mas_equalTo(tabBarMinY).offset(-miniSpacing);
+    [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.typesView.mas_bottom);
+        make.left.mas_equalTo(superview.mas_left);
+        make.right.mas_equalTo(superview.mas_right);
+        make.bottom.mas_equalTo(superview.mas_bottom).offset(-(CGRectGetHeight(weakSelf.tabBarController.tabBar.bounds)));
     }];
-}
-
-#pragma mark - UICollectionView DataSource
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    return self.results.count;
-}
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return [self.results objectAtIndex:section].allValues.firstObject.data.count;
-}
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    ChartsPlaylistsCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
-    ResponseRoot *root = [self.results objectAtIndex:indexPath.section].allValues.firstObject;
-    Resource *resource = [root.data objectAtIndex:indexPath.row];
-    cell.titleLabel.text = [resource.attributes valueForKeyPath:@"name"];
-    Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKeyPath:@"artwork"]];
-    [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
-    cell.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.9];
-
-    return cell;
-}
--(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-    BrowseSectionHeaderView *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                         withReuseIdentifier:sectionHeaderID
-                                                                                forIndexPath:indexPath];
-    if (header) {
-        header.backgroundColor = UIColor.whiteColor;
-        NSDictionary *dict = [self.results objectAtIndex:indexPath.section];
-
-        //节头title
-        NSString *text = dict.allKeys.firstObject;
-        header.titleLable.text = text;
-
-        //有下一页,显示按钮, 无下一页隐藏
-        ResponseRoot *root = [dict allValues].firstObject;
-        if (!root.next) {
-            [header.moreButton setHidden:YES];
-        }else{
-            [header.moreButton setHidden:NO];
-            [header.moreButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-                [self loadNextPageWithHref:root.next];
-            }];
-        }
-        return header;
-    }
-    return nil;
-}
-
-#pragma mark - UICollectionView Delegate
-#pragma mark - UICollectionView DelegateFlowLayout
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
-    CGFloat w = CGRectGetWidth(collectionView.bounds);
-    CGFloat h = 44.0f;
-    return CGSizeMake(w, h);
-}
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    CGFloat w = CGRectGetWidth(collectionView.bounds);
-    w = w - (row+1)*miniSpacing;    //减去列的间距
-    w = w/row;  //cell 宽度
-
-    CGFloat h = w + cellTitleHeight; //增加高度  放Title
-    return CGSizeMake(w, h);
 }
 
 #pragma mark - 数据请求 和解析
-
 /**
  请求对应的数据
  @param terms 搜索文本
@@ -177,7 +112,12 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         self.results = [self serializationJSON:json];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.collectionView reloadData];
+            self.modelCtr = [[ModelController alloc] initWithData:self.results];
+            CGFloat w = CGRectGetWidth(self.view.bounds) * self.results.count;
+            CGFloat h = CGRectGetHeight(self.scrollView.bounds);
+            [self.scrollView setContentSize:CGSizeMake(w, h)];
+            [self.typesView reloadData];
+
         });
     }];
 }
@@ -216,7 +156,6 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
                             [dict objectForKey:key].next = obj.next;
                             [dict objectForKey:key].data = [[dict objectForKey:key].data arrayByAddingObjectsFromArray:obj.data];
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                [self.collectionView reloadData];
                             });
                         }
                     }
@@ -226,30 +165,77 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
     }];
 }
 
+#pragma mark - UICollectionViewDataSource
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return self.results.count;
+}
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    ScreeningCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:typesCellID forIndexPath:indexPath];
+    cell.nameLable.text = [self.results objectAtIndex:indexPath.row].allKeys.firstObject;
+    return cell;
+}
+#pragma mark - UICollectionViewDelegate
+#pragma mark - UICollectionViewDelegateFlowLayout
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+    CGFloat h = CGRectGetHeight(collectionView.bounds);
+    CGFloat w = CGRectGetWidth(collectionView.bounds);
+    w = w -(row+1)*miniSpacing;
+    w = w/row;
+    return CGSizeMake(w, h);
+}
+
+#pragma mark - UIScrollViewDelegate
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+}
+
+
+#pragma mark - Target Active
 /**
  显示分类视图
  @param button 按钮对象
  */
 -(void) showScreening:(UIButton*) button{
     NSTimeInterval durarion = 0.7;
+    CGRect rect = self.screeningVC.view.frame;
     if (button.isSelected) {
         button.selected = NO;
+        rect.size.height = 0;
         [UIView animateWithDuration:durarion animations:^{
-            CGRect rect = self.screeningVC.view.frame;
-            rect.size.height = 0;
             self.screeningVC.view.frame = rect;
         }];
-
     }else{
         button.selected = YES;
-        [UIView animateWithDuration:durarion animations:^{
-            CGRect rect = self.screeningVC.view.frame;
-            rect.size.height = 400;
+        rect.size.height = 400;
+        [UIView animateWithDuration:2 animations:^{
             self.screeningVC.view.frame = rect;
         }];
     }
 }
 #pragma mark - getter
+-(UICollectionView *)typesView{
+    if (!_typesView) {
+        UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
+        [layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
+        layout.minimumInteritemSpacing = miniSpacing;
+
+        _typesView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+        [_typesView registerClass:ScreeningCell.class forCellWithReuseIdentifier:typesCellID];
+        _typesView.delegate = self;
+        _typesView.dataSource = self;
+        _typesView.backgroundColor = UIColor.whiteColor;
+
+    }
+    return _typesView;
+}
+- (UIScrollView *)scrollView{
+    if (!_scrollView) {
+        _scrollView = UIScrollView.new;
+        [_scrollView setPagingEnabled:YES];
+        _scrollView.delegate = self;
+    }
+    return _scrollView;
+}
+
 -(UIButton *)screeningButton{
     if (!_screeningButton) {
         _screeningButton = UIButton.new;
@@ -270,7 +256,7 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
         CGFloat w = CGRectGetWidth(self.view.bounds);
         //其实高度0  隐藏
         _screeningVC.view.frame = CGRectMake(0, y, w, 0);
-        _screeningVC.view.backgroundColor = UIColor.brownColor;
+        _screeningVC.view.backgroundColor = UIColor.whiteColor;
 
         //选中取值
         __weak typeof(self) weakSelf = self;
@@ -278,40 +264,41 @@ static NSString *const sectionHeaderID = @"secionHeaderIdentifier";
             [weakSelf.screeningButton setSelected:YES];
             [weakSelf showScreening:weakSelf.screeningButton];  //隐藏刷选视图
             [weakSelf requestDataWithTerms:text];
-
         };
     }
     return _screeningVC;
 }
 
--(UICollectionView *)collectionView{
-    if(!_collectionView) {
-        UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
-        layout.scrollDirection = UICollectionViewScrollDirectionVertical;
-        layout.minimumInteritemSpacing = miniSpacing;
-        layout.minimumLineSpacing = miniSpacing;
 
-        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
-        [_collectionView registerClass:ChartsPlaylistsCell.class forCellWithReuseIdentifier:cellID];
-        [_collectionView registerClass:BrowseSectionHeaderView.class forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionHeaderID];
-        _collectionView.backgroundColor = UIColor.whiteColor;
-        _collectionView.delegate = self;
-        _collectionView.dataSource = self;
+#pragma mark - setter
+-(void)setModelCtr:(ModelController *)modelCtr{
+    if (_modelCtr != modelCtr) {
+        _modelCtr = modelCtr;
 
-        //上拉加载更多
-        _collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-            
+        //有值  上次添加有控制器 全删除
+        if (self.contentVCs) {
+            for (UIViewController *vc in self.contentVCs) {
+                [vc removeFromParentViewController];
+                [vc.view removeFromSuperview];
+            }
+        }
+
+        NSMutableArray *temp = NSMutableArray.new;
+        [self.results enumerateObjectsUsingBlock:^(NSDictionary<NSString *,ResponseRoot *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+
+            ContentViewController *cVC = [modelCtr viewControllerAtIndex:idx];
+            [self addChildViewController:cVC];
+            [self.scrollView addSubview:cVC.view];
+            CGRect frame = self.view.frame;
+            frame.origin.x = CGRectGetWidth(self.view.bounds)*idx;
+            frame.size.height = frame.size.height-4;
+            cVC.view.frame = frame;
+
+            [temp addObject:cVC];
         }];
+        //覆盖
+        self.contentVCs = temp;
     }
-    return _collectionView;
-}
-
--(UIView *)screeningView{
-    if (!_screeningView) {
-        _screeningView = UIView.new;
-        _screeningView.backgroundColor = UIColor.redColor;
-    }
-    return _screeningView;
 }
 
 @end

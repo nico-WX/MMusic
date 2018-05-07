@@ -11,8 +11,13 @@
 #import "ScreeningSection.h"
 
 @interface ScreeningViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
+//分类内容
+@property(nonatomic, strong) UICollectionView *collectionView;
+//分类数据
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray*>*> *screening;
 @end
+
+
 static const CGFloat row = 4.0f;        //列数
 static const CGFloat miniSpacing= 2.0f; //行距
 
@@ -39,6 +44,7 @@ static NSString *const headerID = @"screeningHeaderIdentitier";
     }];
 }
 
+
 #pragma mark - UICollectionViewDataSource
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return self.screening.count;
@@ -50,7 +56,7 @@ static NSString *const headerID = @"screeningHeaderIdentitier";
     ScreeningCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
     NSString *text = [[self.screening objectAtIndex:indexPath.section].allValues.firstObject objectAtIndex:indexPath.row];
     cell.nameLable.text = text;
-
+    cell.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     return cell;
 }
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
@@ -66,12 +72,12 @@ static NSString *const headerID = @"screeningHeaderIdentitier";
 
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-
     if (self.selectedItem) {
         NSString *text = [[self.screening objectAtIndex:indexPath.section].allValues.firstObject objectAtIndex:indexPath.row];
         self.selectedItem(text);
     }
 }
+
 #pragma mark - UICollectionViewDeleGateFlowLayout
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat h = 44.0f;

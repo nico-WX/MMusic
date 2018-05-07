@@ -6,10 +6,10 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "ChartsMusicVideoCell.h"
+#import "MusicVideoCell.h"
 #import <Masonry.h>
 
-@implementation ChartsMusicVideoCell
+@implementation MusicVideoCell
 
 //-(instancetype)initWithFrame:(CGRect)frame{
 //    if (self = [super initWithFrame:frame]) {

@@ -6,10 +6,10 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "ChartsAlbumCell.h"
+#import "AlbumCell.h"
 #import <Masonry.h>
 
-@implementation ChartsAlbumCell
+@implementation AlbumCell
 
 -(void)drawRect:(CGRect)rect{
     CGFloat corner = 8.0f;

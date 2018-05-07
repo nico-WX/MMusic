@@ -10,6 +10,6 @@
 #import "ChartsCell.h"
 
 /**排行榜 cell*/
-@interface ChartsAlbumCell : ChartsCell
+@interface AlbumCell : ChartsCell
 
 @end

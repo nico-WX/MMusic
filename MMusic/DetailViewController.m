@@ -145,7 +145,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     [self.playerVC showFromViewController:self withSongs:self.songs startItem:selectSong];
 }
 
-
 #pragma mark Layz
 -(PlayerViewController *)playerVC{
     if (!_playerVC) {

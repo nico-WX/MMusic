@@ -95,6 +95,7 @@
 }
 
 #pragma  mark - UIPageViewController DataSource
+//向前翻页
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
     //当前控制器 的上一个控制器
     NSUInteger index = [self.pageList indexOfObject:viewController];
@@ -105,6 +106,7 @@
 
     return [self.pageList objectAtIndex:index];
 }
+//向后翻页
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
     //当前控制器下标
     NSUInteger index = [self.pageList indexOfObject:viewController];
@@ -116,7 +118,6 @@
     return [self.pageList objectAtIndex:index];
 }
 
-////实现  并显示 分页指示
 ////总页数
 -(NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController{
     return self.pageList.count;
@@ -126,15 +127,5 @@
     return 0;
 }
 
-#pragma mark - UIPageViewController Delegate
-
-//-(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers{
-//    Log(@"to %@",self.pageList);
-//    Log(@"TO %@",pendingViewControllers);
-//}
-//-(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed{
-//
-//
-//}
 
 @end
