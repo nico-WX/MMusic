@@ -175,7 +175,7 @@ extern NSString *storefrontDefaultsKey;
 -(NSURLRequest *)createSearchWithText:(NSString *)searchText{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search?term="];
     path = [path stringByAppendingString:searchText];
-    path = [path stringByAppendingString:@"&limit=10"];
+    path = [path stringByAppendingString:@"&limit=20"];
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
 
@@ -185,9 +185,9 @@ extern NSString *storefrontDefaultsKey;
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
 
--(NSURLRequest *)createRequestWithHerf:(NSString *)herf{
+-(NSURLRequest *)createRequestWithHref:(NSString *)href{
     NSString *path = @"https://api.music.apple.com";
-    path = [path stringByAppendingPathComponent:herf];
+    path = [path stringByAppendingPathComponent:href];
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
 
@@ -195,7 +195,7 @@ extern NSString *storefrontDefaultsKey;
     NSString *resourceTypes = [self resolveSearchType:types];
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search?term="];
     path = [path stringByAppendingString:searchText];
-    path = [path stringByAppendingString:@"&limit=10"];
+    path = [path stringByAppendingString:@"&limit=20"];
     path = [path stringByAppendingString:@"&types="];
     path = [path stringByAppendingString:resourceTypes];
     return [self createRequestWithURLString:path setupUserToken:NO];

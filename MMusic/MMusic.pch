@@ -14,7 +14,7 @@
         #ifdef DEBUG        //Debug 模式导入
             #define Log(...) NSLog(__VA_ARGS__)
         #else
-            #define
+            //#define
             #define Log(...)    //发布模式取消Log
         #endif
 

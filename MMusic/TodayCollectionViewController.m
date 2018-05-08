@@ -35,7 +35,7 @@ static const CGFloat row = 2.0f;
 static const CGFloat miniSpacing = 2.0f;
 
 @implementation TodayCollectionViewController
-//
+//reuse  identifier
 static NSString *const sectionIdentifier = @"sectionView";
 static NSString *const cellIdentifier = @"todayCell";
 
@@ -109,7 +109,6 @@ static NSString *const cellIdentifier = @"todayCell";
                     title = [list.firstObject valueForKeyPath:@"attributes.curatorName"];
                 }
                 [titleList addObject:title];
-
                 //解析
                 [tempList addObject:[self serializationJSON:subJSON]];
             }
@@ -120,7 +119,6 @@ static NSString *const cellIdentifier = @"todayCell";
             //刷新UI
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.activityView stopAnimating];
-                [self.activityView removeFromSuperview];
 
                 [self.collectionView reloadData];
                 [self.collectionView.mj_header endRefreshing];

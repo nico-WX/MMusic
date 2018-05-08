@@ -14,11 +14,9 @@
 #import "ScreeningViewController.h"
 #import "ContentViewController.h"
 
-
 //view
 #import "ScreeningCell.h"
 #import "PlaylistsCell.h"
-#import "BrowseSection.h"
 
 //tool model
 #import "ModelController.h"
@@ -65,6 +63,8 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
 
     NSString *str = @"国语";
     [self requestDataWithTerms:str];
+
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -83,21 +83,23 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
     [super viewWillAppear:animated];
 
     //布局
+
     __weak typeof(self) weakSelf = self;
     UIView *superview = self.view;
+    UIEdgeInsets padding = UIEdgeInsetsMake(2, 2, 2, 2);
     [self.typesView mas_makeConstraints:^(MASConstraintMaker *make) {
         //top 对齐导航栏下方
         make.top.mas_equalTo(superview.mas_top).offset(CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame));
-        make.left.mas_equalTo(superview.mas_left);
-        make.right.mas_equalTo(superview.mas_right);
+        make.left.mas_equalTo(superview.mas_left).offset(padding.left);
+        make.right.mas_equalTo(superview.mas_right).offset(-padding.right);
         make.height.mas_equalTo(44.0f);
     }];
 
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.typesView.mas_bottom);
+        make.top.mas_equalTo(weakSelf.typesView.mas_bottom).offset(padding.top);
         make.left.mas_equalTo(superview.mas_left);
         make.right.mas_equalTo(superview.mas_right);
-        make.bottom.mas_equalTo(superview.mas_bottom).offset(-(CGRectGetHeight(weakSelf.tabBarController.tabBar.bounds)));
+        make.bottom.mas_equalTo(superview.mas_bottom);
     }];
 }
 
@@ -111,13 +113,17 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         self.results = [self serializationJSON:json];
+
+        //更新UI 滚动内容大小 等
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.modelCtr = [[ModelController alloc] initWithData:self.results];
+            self.modelCtr = [[ModelController alloc] initWithData:self.results];    //覆盖模型控制器
             CGFloat w = CGRectGetWidth(self.view.bounds) * self.results.count;
             CGFloat h = CGRectGetHeight(self.scrollView.bounds);
             [self.scrollView setContentSize:CGSizeMake(w, h)];
             [self.typesView reloadData];
-
+            //选中第一个 回滚到初始位置
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            [self.typesView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
         });
     }];
 }
@@ -131,8 +137,11 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
     json = [json objectForKey:@"results"];
     NSMutableArray *tempArray = NSMutableArray.new;
     [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-        ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
-        [tempArray addObject:@{(NSString*)key:root}];
+        //不要artists
+        if (![(NSString*)key isEqualToString:@"artists"]) {
+            ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
+            [tempArray addObject:@{(NSString*)key:root}];
+        }
     }];
     return tempArray;
 }
@@ -142,7 +151,7 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
  @param href 数据子路径
  */
 -(void) loadNextPageWithHref:(NSString*) href{
-    NSURLRequest *request = [RequestFactory.new createRequestWithHerf:(NSString *)href];
+    NSURLRequest *request = [RequestFactory.new createRequestWithHref:(NSString *)href];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         if (json != NULL) {
@@ -175,6 +184,19 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
     return cell;
 }
 #pragma mark - UICollectionViewDelegate
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    if (collectionView == self.typesView) {
+        [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+
+        //计算滚动偏移量 X轴
+        CGRect rect = self.view.bounds;
+        CGFloat x = CGRectGetWidth(rect)*indexPath.row;
+        CGFloat w = CGRectGetWidth(rect);
+        CGFloat h = CGRectGetHeight(rect);
+        CGRect visibleRect = CGRectMake(x, 0, w, h);
+        [self.scrollView scrollRectToVisible:visibleRect animated:YES];
+    }
+}
 #pragma mark - UICollectionViewDelegateFlowLayout
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat h = CGRectGetHeight(collectionView.bounds);
@@ -186,6 +208,16 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
 
 #pragma mark - UIScrollViewDelegate
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    if (scrollView == self.scrollView) {
+
+        CGFloat x = scrollView.contentOffset.x;
+        CGFloat w = CGRectGetWidth(self.view.bounds);
+        NSUInteger index = x/w;
+
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        [self.typesView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+
+    }
 }
 
 
@@ -284,15 +316,18 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
         }
 
         NSMutableArray *temp = NSMutableArray.new;
+
+        __weak typeof(self) weakSelf = self;
         [self.results enumerateObjectsUsingBlock:^(NSDictionary<NSString *,ResponseRoot *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
 
             ContentViewController *cVC = [modelCtr viewControllerAtIndex:idx];
-            [self addChildViewController:cVC];
-            [self.scrollView addSubview:cVC.view];
-            CGRect frame = self.view.frame;
-            frame.origin.x = CGRectGetWidth(self.view.bounds)*idx;
+            CGRect frame = weakSelf.scrollView.bounds;
+            frame.origin.x = CGRectGetWidth(weakSelf.view.bounds)*idx;
             frame.size.height = frame.size.height-4;
             cVC.view.frame = frame;
+
+            [self addChildViewController:cVC];
+            [self.scrollView addSubview:cVC.view];
 
             [temp addObject:cVC];
         }];
@@ -300,5 +335,7 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
         self.contentVCs = temp;
     }
 }
+
+
 
 @end

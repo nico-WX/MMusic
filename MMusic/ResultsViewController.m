@@ -226,7 +226,7 @@ static NSString *const headerIdentifier = @"headerReuseID";
 
 /**加载某一节 的下一页数据*/
 -(void) loadNextPageWithHref:(NSString*) href{
-    NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:href];
+    NSURLRequest *request = [[RequestFactory new] createRequestWithHref:href];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
         if (json) {

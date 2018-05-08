@@ -134,7 +134,7 @@ extern NSString *userTokenIssueNotification;
     //获取视图宽高, 设置请求图片大小
     CGFloat h = CGRectGetHeight(imageView.bounds);
     CGFloat w = CGRectGetWidth(imageView.bounds);
-    if (w==0 || h == 0) w=h=100; //拦截高度, 宽度为 0 的情况, 设置默认值,
+    if (w <= 10 || h <= 10) w=h=40; //拦截高度, 宽度为 0 的情况, 设置默认值,
 
     //image
     NSString *path = IMAGEPATH_FOR_URL(url);
@@ -149,28 +149,25 @@ extern NSString *userTokenIssueNotification;
 
     if (image) {
         [imageView setImage:image];
-        //重用(如果是重用)遗留
-        for (UIView *view in imageView.subviews) {
-            if ([view isKindOfClass:MBProgressHUD.class]) {
-                [view removeFromSuperview];
-            }
-        }
     //内存中无图片
     }else{
-        //在块中移除
-        [MBProgressHUD showHUDAddedTo:imageView animated:YES];
-        NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
+        UIActivityIndicatorView *hud = [[UIActivityIndicatorView alloc] init];
+        [hud setHidesWhenStopped:YES];
+        hud.center = imageView.center;
+        [hud startAnimating];
+        hud.color = UIColor.grayColor;
 
+        [imageView performSelectorOnMainThread:@selector(addSubview:) withObject:hud waitUntilDone:NO];
+
+        NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
         NSRange range = [urlStr rangeOfString:@"{c}"];
         if (range.length > 0) {
             urlStr = [urlStr stringByReplacingOccurrencesOfString:@"{c}" withString:@"cc"];
         }
 
         NSURL *url = [NSURL URLWithString:urlStr];
-
         [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             if (cache == YES) {
-
                 //判断目标文件夹是否存在
                 NSFileManager *fm = [NSFileManager defaultManager];
                 BOOL isDir = NO;
@@ -179,20 +176,11 @@ extern NSString *userTokenIssueNotification;
                 if (!(isDir && exist)){
                     [fm createDirectoryAtPath:ARTWORKIMAGEPATH withIntermediateDirectories:YES attributes:nil error:nil];
                 }
-
                 //存储文件
                 BOOL sucess = [fm createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
                 if (sucess == NO) [fm removeItemAtPath:path error:nil];
+                [hud stopAnimating];
             }
-            //删除HUD
-            dispatch_async(dispatch_get_main_queue(), ^{
-                //多次添加
-                for (UIView *view in imageView.subviews) {
-                    if ([view isKindOfClass:MBProgressHUD.class]) {
-                        [view removeFromSuperview];
-                    }
-                }
-            });
         }];
     }
 }

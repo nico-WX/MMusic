@@ -128,10 +128,10 @@ typedef NS_OPTIONS(NSUInteger, SearchType){
 
 /**
  通过子路径创建请求体
- @param herf 子路径
+ @param href 子路径
  @return 请求体
  */
-- (NSURLRequest*)createRequestWithHerf:(NSString*) herf;
+- (NSURLRequest*)createRequestWithHref:(NSString*) href;
 
 
 /**

@@ -277,7 +277,7 @@ static NSString *const cellId = @"cellReuseIdentifier";
 /**加载下一页数据*/
 -(void) loadNextPage:(NSString*) nextHref{
     if (nextHref != NULL) {
-        NSURLRequest *request = [[RequestFactory new] createRequestWithHerf:nextHref];
+        NSURLRequest *request = [[RequestFactory new] createRequestWithHref:nextHref];
         [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];
             NSArray<Chart*> *temp = [self serializationJSON:json];

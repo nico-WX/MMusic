@@ -34,19 +34,19 @@
             self.auth = [AuthorizationManager shareAuthorizationManager];
         }
 
-        SKCloudServiceController *csStr = [SKCloudServiceController new];
-        [csStr requestCapabilitiesWithCompletionHandler:^(SKCloudServiceCapability capabilities, NSError * _Nullable error) {
-            switch (capabilities) {
-                case SKCloudServiceCapabilityNone:
-                    break;
-                case SKCloudServiceCapabilityMusicCatalogPlayback:
-                    break;
-                case SKCloudServiceCapabilityAddToCloudMusicLibrary:
-                    break;
-                case SKCloudServiceCapabilityMusicCatalogSubscriptionEligible:
-                    break;
-            }
-        }];
+//        SKCloudServiceController *csStr = [SKCloudServiceController new];
+//        [csStr requestCapabilitiesWithCompletionHandler:^(SKCloudServiceCapability capabilities, NSError * _Nullable error) {
+//            switch (capabilities) {
+//                case SKCloudServiceCapabilityNone:
+//                    break;
+//                case SKCloudServiceCapabilityMusicCatalogPlayback:
+//                    break;
+//                case SKCloudServiceCapabilityAddToCloudMusicLibrary:
+//                    break;
+//                case SKCloudServiceCapabilityMusicCatalogSubscriptionEligible:
+//                    break;
+//            }
+//        }];
 
     }];
 
