@@ -5,12 +5,14 @@
 //  Created by Magician on 2017/12/26.
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
-
+#import <MediaPlayer/MediaPlayer.h>
+#import <NAKPlaybackIndicatorView.h>
 #import <UIImageView+WebCache.h>
 #import <MJRefresh.h>
 #import <Masonry.h>
 
 #import "TodayCollectionViewController.h"
+#import "PlayerViewController.h"
 #import "TodayCell.h"
 #import "HeadCell.h"
 #import "DetailViewController.h"
@@ -23,11 +25,14 @@
 #import "Album.h"
 
 @interface TodayCollectionViewController()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
-@property(nonatomic, strong) UIActivityIndicatorView *activityView; //加载指示器
-@property(nonatomic, strong) NSArray<NSString*> *titles;            //节title
-@property(nonatomic, strong) NSArray<NSArray<Resource*>*> *resources; //所有资源对象
-@property(nonatomic, strong) UICollectionView *collectionView;
-@property(nonatomic, strong) SearchViewController *searchVC;
+@property(nonatomic, strong) UIButton *playbackViewButton;
+@property(nonatomic, strong) NAKPlaybackIndicatorView *playbackIndicatorView; //播放器视图(添加到上面的按钮中)
+@property(nonatomic, strong) UIActivityIndicatorView *activityView;     //加载指示器
+@property(nonatomic, strong) NSArray<NSString*> *titles;                //节title
+@property(nonatomic, strong) NSArray<NSArray<Resource*>*> *resources;   //所有资源
+@property(nonatomic, strong) UICollectionView *collectionView;          //推荐内容
+@property(nonatomic, strong) SearchViewController *searchVC;            //搜索控制器
+
 @end
 
 
@@ -46,16 +51,23 @@ static NSString *const cellIdentifier = @"todayCell";
     self.view.backgroundColor = UIColor.whiteColor;
     [self requestData];
 
-    //将搜索栏 添加到导航栏中, 搜索栏的提示视图添加到视图中
+    //添加控制器
     [self addChildViewController:self.searchVC];
+    //添加搜栏
     [self.navigationController.navigationBar addSubview:self.searchVC.serachBar];
+    //添加搜索提示和结果视图
     [self.view addSubview:self.searchVC.view];
 
-    //添加 到父视图  并约束
+    //显示播放器按钮
+    [self.playbackViewButton addSubview:self.playbackIndicatorView];
+    [self.navigationController.navigationBar addSubview:self.playbackViewButton];
+
+
+    //推荐内容
     [self.view insertSubview:self.collectionView belowSubview:self.searchVC.view];
 
     //添加加载指示器
-    [self.view addSubview:self.activityView];
+    [self.collectionView addSubview:self.activityView];
 
     //设置刷新
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
@@ -70,22 +82,35 @@ static NSString *const cellIdentifier = @"todayCell";
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
-    //不隐藏(搜索/显示详细时, 会隐藏搜索框)
+    [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
+
+    //显示搜搜框(搜索/显示详细时, 会隐藏搜索框)
     [self.searchVC.serachBar setHidden:NO];
 
     //layout
     __weak typeof(self) weakSelf = self;
     UIView *superview = self.navigationController.navigationBar;
     [self.searchVC.serachBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        UIEdgeInsets padding = UIEdgeInsetsMake(0, 0, 0, 0);
+        UIEdgeInsets padding = UIEdgeInsetsMake(0, 0, 0, 60);
         make.edges.mas_equalTo(superview).with.insets(padding);
+    }];
+
+    [self.playbackViewButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(superview.mas_top);
+        make.right.mas_equalTo(superview.mas_right).offset(-8);
+        make.bottom.mas_equalTo(superview.mas_bottom);
+        make.width.mas_equalTo(CGRectGetHeight(weakSelf.navigationController.navigationBar.frame));
+    }];
+    superview = self.playbackViewButton;
+    [self.playbackIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(superview).insets(UIEdgeInsetsZero);
     }];
 
     superview = self.view;
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        //减去导航栏/状态栏 及tabbar 高度
-        CGFloat tabBatH = CGRectGetHeight(weakSelf.tabBarController.tabBar.frame);
+        //计算 导航栏  及 tabBar 高度
         CGFloat y = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
+        CGFloat tabBatH = CGRectGetHeight(weakSelf.tabBarController.tabBar.frame);
         UIEdgeInsets insets = UIEdgeInsetsMake(miniSpacing+y, miniSpacing, miniSpacing+tabBatH, miniSpacing);
         make.edges.mas_equalTo(superview).with.insets(insets);
     }];
@@ -224,7 +249,10 @@ static NSString *const cellIdentifier = @"todayCell";
 
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         [_collectionView registerClass:[TodayCell class] forCellWithReuseIdentifier:cellIdentifier];
-        [_collectionView registerClass:[HeadCell class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionIdentifier];
+        [_collectionView registerClass:[HeadCell class]
+            forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                   withReuseIdentifier:sectionIdentifier];
+
         _collectionView.backgroundColor = UIColor.whiteColor;
         _collectionView.dataSource = self;
         _collectionView.delegate  = self;
@@ -248,4 +276,34 @@ static NSString *const cellIdentifier = @"todayCell";
     }
     return _searchVC;
 }
+
+-(NAKPlaybackIndicatorView *)playbackIndicatorView{
+    if (!_playbackIndicatorView) {
+        NAKPlaybackIndicatorViewStyle *style = [NAKPlaybackIndicatorViewStyle iOS10Style];
+        _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
+        //不接收事件
+        [_playbackIndicatorView setUserInteractionEnabled:NO];
+
+        MPMusicPlayerController *player = [MPMusicPlayerController systemMusicPlayer];
+        if (player.playbackState == MPMusicPlaybackStatePlaying) {
+            [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
+        }else{
+            [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
+        }
+
+    }
+    return _playbackIndicatorView;
+}
+-(UIButton *)playbackViewButton{
+    if (!_playbackViewButton) {
+        _playbackViewButton = [[UIButton alloc] init];
+
+        //事件处理(显示控制器)
+        [_playbackViewButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+            [self presentViewController:[PlayerViewController sharePlayerViewController] animated:YES completion:nil];
+        }];
+    }
+    return _playbackViewButton;
+}
+
 @end

@@ -131,11 +131,18 @@ extern NSString *userTokenIssueNotification;
 }
 
 -(void)showImageToView:(UIImageView *)imageView withImageURL:(NSString *)url cacheToMemory:(BOOL)cache{
+    //cell 重用时,上次没加载完成的hud 未能隐藏, 遍历隐藏
+    for (UIView *view in imageView.subviews) {
+        if ([view isKindOfClass:UIActivityIndicatorView.class]) {
+            UIActivityIndicatorView *hud = (UIActivityIndicatorView*) view;
+            [hud stopAnimating];
+        }
+    }
+
     //获取视图宽高, 设置请求图片大小
     CGFloat h = CGRectGetHeight(imageView.bounds);
     CGFloat w = CGRectGetWidth(imageView.bounds);
     if (w <= 10 || h <= 10) w=h=40; //拦截高度, 宽度为 0 的情况, 设置默认值,
-
     //image
     NSString *path = IMAGEPATH_FOR_URL(url);
     UIImage *image = [UIImage imageWithContentsOfFile:path];
@@ -151,9 +158,8 @@ extern NSString *userTokenIssueNotification;
         [imageView setImage:image];
     //内存中无图片
     }else{
-        UIActivityIndicatorView *hud = [[UIActivityIndicatorView alloc] init];
+        UIActivityIndicatorView *hud = [[UIActivityIndicatorView alloc] initWithFrame:imageView.frame];
         [hud setHidesWhenStopped:YES];
-        hud.center = imageView.center;
         [hud startAnimating];
         hud.color = UIColor.grayColor;
 

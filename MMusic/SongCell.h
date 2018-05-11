@@ -7,10 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <VBFPopFlatButton.h>
+#import <NAKPlaybackIndicatorView.h>
+@class Song;
 
 @interface SongCell : UITableViewCell
-@property(nonatomic, strong) UIImageView *artworkView;
-@property(nonatomic, strong) UILabel *songNameLabel;
-@property(nonatomic, strong) UILabel *artistLabel;
+/**歌曲编号*/
+@property(nonatomic, strong) UILabel *numberLabel;
+@property(nonatomic, strong) Song *song;
+/**歌曲当前播放状态*/
+@property(nonatomic, assign) NAKPlaybackIndicatorViewState state;
+
 @end

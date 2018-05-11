@@ -43,6 +43,8 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 -(instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
         _resource = resource;
+
+
     }
     return self;
 }
@@ -59,10 +61,8 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
     self.tableView.tableHeaderView = self.header;
     [self.view addSubview:self.tableView];
-}
 
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
+    //设置UI
     //封面海报
     if ([self.resource.attributes valueForKeyPath:@"artwork"]) {
         Artwork *art = [Artwork instanceWithDict:[self.resource.attributes valueForKeyPath:@"artwork"]];
@@ -90,6 +90,19 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     }
 }
 
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+
+    for (SongCell *cell in [self.tableView visibleCells]) {
+        if (cell.state == NAKPlaybackIndicatorViewStatePlaying) {
+            //从播放器界面返回时, 播放指示器会停留在暂停的状态, (未知BUG)
+            [cell setState:NAKPlaybackIndicatorViewStatePlaying];
+            [cell setSelected:YES animated:YES];
+        }
+    }
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
@@ -100,30 +113,27 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier forIndexPath:indexPath];
-    // Configure the cell...
 
     //安装长按手势识别器, 弹出操作菜单
     UILongPressGestureRecognizer *longGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureActive:)];
     [cell addGestureRecognizer:longGR];
 
     //song info
-    Song *song = [self.songs objectAtIndex:indexPath.row];
-    cell.songNameLabel.text = song.name;
-    cell.artistLabel.text = song.artistName;
-    [self showImageToView:cell.artworkView withImageURL:song.artwork.url cacheToMemory:NO];
+    cell.song = [self.songs objectAtIndex:indexPath.row];
+    cell.numberLabel.text = [NSString stringWithFormat:@"%02ld",indexPath.row+1];
+    MPMediaItem *nowItem = self.playerVC.playerController.nowPlayingItem;
 
-    //判断 当前cell显示的 与正在播放的item 是否为同一个,
-    NSString *nowPlaySongID = self.playerVC.playerController.nowPlayingItem.playbackStoreID;
-    NSString *cellSongID = [song.playParams objectForKey:@"id"];
-
-    //不相同,把原来改色的cell恢复颜色,<重用遗留>
-    if (![nowPlaySongID isEqualToString:cellSongID]) {
-        [cell.songNameLabel setTextColor:[UIColor blackColor]];
-        [cell.artistLabel setTextColor:[UIColor grayColor]];
+    //歌曲播放状态
+    if ([cell.song isEqualToNowPlayItem:nowItem]) {
+        if (self.playerVC.playerController.playbackState == MPMusicPlaybackStatePlaying) {
+            [cell setState:NAKPlaybackIndicatorViewStatePlaying];
+        }else{
+            [cell setState:NAKPlaybackIndicatorViewStatePaused];
+        }
     }else{
-        [cell.songNameLabel setTextColor:[UIColor blueColor]];
-        [cell.artistLabel setTextColor:[UIColor blueColor]];
+        [cell setState:NAKPlaybackIndicatorViewStateStopped];
     }
+
     return cell;
 }
 //定行高
@@ -134,10 +144,10 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 #pragma mark - tableView delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //现在播放的项目 和现在选择的项目是同一个, 弹出视图, 不从头播放
+    MPMediaItem *nowItem = self.playerVC.playerController.nowPlayingItem;
     Song *selectSong = [self.songs objectAtIndex:indexPath.row];
-    NSString *nowId = self.playerVC.playerController.nowPlayingItem.playbackStoreID;
-    NSString *selectID = [selectSong.playParams objectForKey:@"id"];
-    if (![nowId isEqualToString:selectID]) {
+
+    if (![selectSong isEqualToNowPlayItem:nowItem]) {
         [self.prametersQueue setStartItemPlayParameters:[self.prameters objectAtIndex:indexPath.row]];
         [self.playerVC.playerController setQueueWithDescriptor:self.prametersQueue];
         [self.playerVC.playerController prepareToPlay];
@@ -145,7 +155,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     [self.playerVC showFromViewController:self withSongs:self.songs startItem:selectSong];
 }
 
-#pragma mark Layz
+#pragma mark getter
 -(PlayerViewController *)playerVC{
     if (!_playerVC) {
         _playerVC = PlayerViewController.new;
@@ -155,31 +165,38 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         //更新 正在播放项目指示
         __weak typeof(self) weakSelf = self;
         _playerVC.nowPlayingItem = ^(MPMediaItem *item) {
-            NSString *nowPlaySongID = item.playbackStoreID;
+
             //遍历当前songs 列表, 找到id相匹配的 song和song所在的cell
             for (Song *song in weakSelf.songs) {
-                NSString *songID = [song.playParams objectForKey:@"id"];
                 NSIndexPath *path= [NSIndexPath indexPathForRow:[weakSelf.songs indexOfObject:song] inSection:0];
                 SongCell *cell = [weakSelf.tableView cellForRowAtIndexPath:path];
-                UIColor *blue = [UIColor blueColor];
 
                 //修改在正在播放的song cell 颜色
-                if ([songID isEqualToString:nowPlaySongID]) {
-
-                    [cell.songNameLabel setTextColor:blue];
-                    [cell.artistLabel setTextColor:blue];
+                if ([song isEqualToNowPlayItem:item]) {
+                    Log(@"current =%@",[NSThread currentThread]);
+                    [cell setState:NAKPlaybackIndicatorViewStatePlaying];
+                    [cell setSelected:YES animated:YES];
                 }else{
-                    //上一次播放的cell 改回原来的颜色  通过比对颜色,
-                    if (CGColorEqualToColor(blue.CGColor, cell.songNameLabel.textColor.CGColor)) {
-                        [cell.songNameLabel setTextColor:[UIColor blackColor]];
-                        [cell.artistLabel setTextColor:[UIColor grayColor]];
-                    }
+                    [cell setState:NAKPlaybackIndicatorViewStateStopped];
+                    [cell setSelected:NO animated:YES];
                 }
             }
         };
     }
     return _playerVC;
 }
+
+-(UITableView *)tableView{
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        [_tableView registerClass:[SongCell class] forCellReuseIdentifier:cellReuseIdentifier];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+    }
+    return _tableView;
+}
+
+#pragma mark - Helper
 
 /**请求数据*/
 - (void) requestData{
@@ -294,17 +311,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         hud.mode = MBProgressHUDModeCustomView;
         [hud hideAnimated:YES afterDelay:1.5];
     });
-}
-
-#pragma mark - getter
--(UITableView *)tableView{
-    if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        [_tableView registerClass:[SongCell class] forCellReuseIdentifier:cellReuseIdentifier];
-        _tableView.dataSource = self;
-        _tableView.delegate = self;
-    }
-    return _tableView;
 }
 
 

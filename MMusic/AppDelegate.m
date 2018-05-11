@@ -66,6 +66,7 @@
     TodayCollectionViewController *todayCVC = [[TodayCollectionViewController alloc] init];
     [todayCVC setTitle:@"今日推荐"];
     UINavigationController *todayNavCtr = [[UINavigationController alloc] initWithRootViewController:todayCVC];
+   
 
     //排行榜
     ChartsPageViewController *chartVC = [[ChartsPageViewController alloc] init];
@@ -77,13 +78,12 @@
     browseVC.title = @"浏览";
     UINavigationController *searchNav = [[UINavigationController alloc] initWithRootViewController:browseVC];
 
-
     [barCtr addChildViewController:todayNavCtr];
     [barCtr addChildViewController:chartNav];
     [barCtr addChildViewController:searchNav];
     [barCtr addChildViewController:mmusicNavCtr];
 
-    [barCtr setSelectedIndex:2];
+    //[barCtr setSelectedIndex:2];
 
     [self.window setRootViewController:barCtr];
     [self.window makeKeyAndVisible];    //显示

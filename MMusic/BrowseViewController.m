@@ -61,10 +61,7 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
     [self.view insertSubview:self.typesView belowSubview:self.screeningVC.view];
     [self.view insertSubview:self.scrollView belowSubview:self.screeningVC.view];
 
-    NSString *str = @"国语";
-    [self requestDataWithTerms:str];
-
-
+    self.screeningVC.selectedItem(@"国语");
 }
 
 - (void)didReceiveMemoryWarning {
@@ -81,6 +78,7 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+
 
     //布局
 
@@ -111,20 +109,21 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
 -(void)requestDataWithTerms:(NSString*) terms{
     NSURLRequest *request = [RequestFactory.new createSearchWithText:terms];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
-        self.results = [self serializationJSON:json];
-
-        //更新UI 滚动内容大小 等
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.modelCtr = [[ModelController alloc] initWithData:self.results];    //覆盖模型控制器
-            CGFloat w = CGRectGetWidth(self.view.bounds) * self.results.count;
-            CGFloat h = CGRectGetHeight(self.scrollView.bounds);
-            [self.scrollView setContentSize:CGSizeMake(w, h)];
-            [self.typesView reloadData];
-            //选中第一个 回滚到初始位置
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-            [self.typesView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
-        });
+        if (!error) {
+            NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+            self.results = [self serializationJSON:json];
+            //更新UI 滚动内容大小 等
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.modelCtr = [[ModelController alloc] initWithData:self.results];    //覆盖模型控制器
+                CGFloat w = CGRectGetWidth(self.view.bounds) * self.results.count;
+                CGFloat h = CGRectGetHeight(self.scrollView.bounds);
+                [self.scrollView setContentSize:CGSizeMake(w, h)];
+                [self.typesView reloadData];
+                //选中第一个 回滚到初始位置
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+                [self.typesView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+            });
+        }
     }];
 }
 
@@ -216,8 +215,10 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
 
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
         [self.typesView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
-
     }
+}
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    Log(@"did scroll");
 }
 
 
@@ -296,11 +297,14 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
             [weakSelf.screeningButton setSelected:YES];
             [weakSelf showScreening:weakSelf.screeningButton];  //隐藏刷选视图
             [weakSelf requestDataWithTerms:text];
+
+            NSString *title = [NSString stringWithFormat:@"%@▼",text];
+            [weakSelf.screeningButton setTitle:title forState:UIControlStateNormal];
+            weakSelf.screeningButton.titleLabel.text = [NSString stringWithFormat:@"%@▼",text];
         };
     }
     return _screeningVC;
 }
-
 
 #pragma mark - setter
 -(void)setModelCtr:(ModelController *)modelCtr{
@@ -316,13 +320,12 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
         }
 
         NSMutableArray *temp = NSMutableArray.new;
-
         __weak typeof(self) weakSelf = self;
         [self.results enumerateObjectsUsingBlock:^(NSDictionary<NSString *,ResponseRoot *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
 
             ContentViewController *cVC = [modelCtr viewControllerAtIndex:idx];
             CGRect frame = weakSelf.scrollView.bounds;
-            frame.origin.x = CGRectGetWidth(weakSelf.view.bounds)*idx;
+            frame.origin.x = CGRectGetWidth(weakSelf.view.bounds)*idx;  // 沿x轴偏移 排列视图
             frame.size.height = frame.size.height-4;
             cVC.view.frame = frame;
 

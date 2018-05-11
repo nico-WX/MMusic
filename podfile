@@ -9,5 +9,6 @@ pod 'MBProgressHUD'
 pod 'Masonry'
 pod 'VBFPopFlatButton'
 pod 'lottie-ios'
+pod 'NAKPlaybackIndicatorView'
 
 end

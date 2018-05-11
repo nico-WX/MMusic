@@ -15,8 +15,6 @@
 /**播放器视图*/
 @interface PlayerView : UIView
 
-/**关闭视图按钮*/
-@property(nonatomic, strong) VBFPopFlatButton *closeButton;
 /**专辑封面*/
 @property(nonatomic, strong) UIImageView *artworkView;
 /**播放进度视图*/
@@ -26,6 +24,7 @@
 /**艺人名 或者 专辑信息*/
 @property(nonatomic, strong) UILabel *artistLabel;
 
+//
 @property(nonatomic ,strong) PlayControllerView *playCtrView;
 
 /**喜爱按钮*/

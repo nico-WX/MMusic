@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface ScreeningViewController : UIViewController
+//分类内容
+@property(nonatomic, strong,readonly) UICollectionView *collectionView;
 /**选中的分类*/
 @property(nonatomic, strong) void(^selectedItem)(NSString* text);
 

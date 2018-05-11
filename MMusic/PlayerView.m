@@ -33,20 +33,11 @@
 }
 -(void)drawRect:(CGRect)rect{
     self.backgroundColor = UIColor.whiteColor;
-    Log(@"draw>>>?");
+
 }
 //添加子控件
 - (void) setupSubview{
     [self setBackgroundColor:UIColor.whiteColor];
-    //close button
-    self.closeButton = ({
-        CGRect rect = CGRectMake(0, 0, 25, 25);
-        VBFPopFlatButton *button = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonCloseType buttonStyle:buttonPlainStyle animateToInitialState:YES];
-        button.tintColor = UIColor.blueColor;
-
-        [self addSubview:button];
-        button;
-    });
 
     //辅助层
     _midView = ({
@@ -66,8 +57,6 @@
         imageView.layer.cornerRadius = 8.0f;
         //imageView.layer.masksToBounds = YES;
         imageView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
-
-
 
         [_midView addSubview:imageView];
         imageView;
@@ -111,8 +100,6 @@
     _repeat = UIButton.new;
     [self addSubview:_repeat];
 
-    //关闭按钮 添加到最上层
-    [self addSubview:_closeButton];
 }
 
 - (void)layoutSubviews{
@@ -129,17 +116,10 @@
     _midView.layer.shadowOffset = CGSizeMake(100, 100);
     _midView.layer.shadowRadius = 5;
 
-
     [self.artworkView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(_midView).insets(UIEdgeInsetsMake(2, 2, 2, 2));
     }];
 
-    //关闭按钮
-    [self.closeButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.artworkView.mas_top);
-        make.right.mas_equalTo(weakSelf.artworkView.mas_right);
-        make.size.mas_equalTo(CGSizeMake(25, 25));
-    }];
 
     //进度
     [self.progressView mas_makeConstraints:^(MASConstraintMaker *make) {

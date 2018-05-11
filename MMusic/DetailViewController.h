@@ -16,7 +16,6 @@
 /**表视图*/
 @property(nonatomic, strong) UITableView *tableView;
 
-
 /**直接通过专辑,或者播放列表初始化*/
 - (instancetype) initWithResource:(Resource*) resource;
 

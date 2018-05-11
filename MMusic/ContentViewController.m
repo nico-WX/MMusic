@@ -92,7 +92,6 @@ static NSString * const cellID = @"cellReuseIdentifier";
     [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
 
     cell.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
-    Log(@"cell=%@",cell);
     return cell;
 }
 #pragma mark - UICollectionViewDelegate

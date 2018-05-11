@@ -111,7 +111,6 @@ static NSString *const cellID = @"cellReuseIdentifier";
     if (!_serachBar) {
         _serachBar = UISearchBar.new;
         _serachBar.delegate = self;
-        _serachBar.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:0.6];
 
         //监听键盘弹出, 获取键盘高度,修改Hints view Frame
         __weak typeof(self) weakSelf = self;

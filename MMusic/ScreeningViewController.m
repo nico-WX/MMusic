@@ -11,11 +11,11 @@
 #import "ScreeningSection.h"
 
 @interface ScreeningViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
-//分类内容
-@property(nonatomic, strong) UICollectionView *collectionView;
+
 //分类数据
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray*>*> *screening;
 @end
+
 
 
 static const CGFloat row = 4.0f;        //列数
@@ -24,6 +24,8 @@ static const CGFloat miniSpacing= 2.0f; //行距
 static NSString *const cellID = @"screeningCellIdentifier";
 static NSString *const headerID = @"screeningHeaderIdentitier";
 @implementation ScreeningViewController
+
+@synthesize collectionView = _collectionView;
 
 #pragma mark - cycle
 - (void)viewDidLoad {

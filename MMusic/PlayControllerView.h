@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 @class VBFPopFlatButton;
+
 /**播放器控制按钮*/
 @interface PlayControllerView : UIView
-//Player Controller
+
 /**上一首*/
 @property(nonatomic, strong) VBFPopFlatButton *previous;
 /**播放或暂停*/

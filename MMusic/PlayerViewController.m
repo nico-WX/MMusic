@@ -37,7 +37,6 @@ static PlayerViewController *_instance;
 @implementation PlayerViewController
 
 #pragma mark - 初始化 / 单例
-
 + (instancetype)sharePlayerViewController{
     if (!_instance) {
         _instance = [[self alloc] init];
@@ -60,6 +59,12 @@ static PlayerViewController *_instance;
 -(id)mutableCopyWithZone:(NSZone *)zone{
     return _instance;
 }
+- (instancetype)init{
+    if (self =[super init]) {
+        [self.view setBackgroundColor:UIColor.whiteColor];
+    }
+    return self;
+}
 
 #pragma mark - cycle
 - (void)viewDidLoad {
@@ -77,7 +82,7 @@ static PlayerViewController *_instance;
         weakSelf.nowPlaySong = [weakSelf.songs objectAtIndex:weakSelf.playerController.indexOfNowPlayingItem];
         [weakSelf updateNowPlayItemToView];
 
-        //块是否为空, 不为空,向外传递正在播放的项目
+        //向外传递正在播放的项目
         if (_nowPlayingItem) {
             _nowPlayingItem(weakSelf.playerController.nowPlayingItem);
         }
@@ -97,9 +102,8 @@ static PlayerViewController *_instance;
     // Dispose of any resources that can be recreated.
 }
 - (void)dealloc{
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center removeObserver:self name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil];
     [self.playerController endGeneratingPlaybackNotifications];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - 显示视图控制器
@@ -113,10 +117,6 @@ static PlayerViewController *_instance;
 /**更新当前播放的音乐信息到视图上*/
 - (void) updateNowPlayItemToView{
     Artwork *artwork = self.nowPlaySong.artwork;
-
-    UIColor *mainColor = [UIColor colorWithHexString:artwork.bgColor alpha:1];
-    self.playerView.closeButton.tintColor = [UIColor oppositeColorOf:mainColor];    //按钮补色
-    [self.playerView.closeButton animateToType:buttonCloseType];
 
     //歌曲封面
     [self showImageToView:self.playerView.artworkView withImageURL:artwork.url cacheToMemory:YES];
@@ -133,6 +133,10 @@ static PlayerViewController *_instance;
 
     //是否是喜爱的歌曲
     NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
+    if (!songID) {
+        songID = self.playerController.nowPlayingItem.playbackStoreID;
+    }
+
     NSURLRequest *request = [[PersonalizedRequestFactory new] createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[songID,]];
 
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -167,7 +171,6 @@ static PlayerViewController *_instance;
 
         //事件绑定
         [_playerView.progressView.progressSlider addTarget:self action:@selector(sliderChange:) forControlEvents:UIControlEventValueChanged];
-        [_playerView.closeButton addTarget:self action:@selector(closeViewController:) forControlEvents:UIControlEventTouchUpInside];
         [_playerView.heartIcon addTarget:self action:@selector(changeLove:) forControlEvents:UIControlEventTouchUpInside];
         [_playerView.playCtrView.previous addTarget:self action:@selector(previous:) forControlEvents:UIControlEventTouchUpInside];
         [_playerView.playCtrView.play addTarget:self action:@selector(playOrPause:) forControlEvents:UIControlEventTouchUpInside];
@@ -189,7 +192,7 @@ static PlayerViewController *_instance;
             //当前播放时间
             NSTimeInterval current = _playerController.currentPlaybackTime;//秒
             int min = (int)current/60;
-            int sec = (int)(current-min*60);
+            int sec = (int)current%60;
             weakSelf.playerView.progressView.currentTime.text = [NSString stringWithFormat:@"%.2d:%.2d",min,sec];
 
             //更新进度条
@@ -197,27 +200,26 @@ static PlayerViewController *_instance;
             CGFloat value = (current/duration);
             [weakSelf.playerView.progressView.progressSlider setValue:value animated:YES];
 
-            //Log(@"current =%lf",self.playerController.currentPlaybackTime);
+
         }];
     }
     return _timer;
 }
 
+#pragma mark - setter
+-(void)setNowPlaySong:(Song *)nowPlaySong{
+    _nowPlaySong = nowPlaySong;
+    [self updateNowPlayItemToView];
+}
+
+
+
 #pragma mark - Button Action
 /**下滑手势*/
 -(void) closeViewController{
-
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-/**关闭 播放器视图控制器*/
-- (void)closeViewController:(VBFPopFlatButton*) button{
-    [button animateToType:buttonDownBasicType];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self dismissViewControllerAnimated:YES completion:nil];
-        [button animateToType:buttonUpBasicType];
-    });
-}
 
 //播放控制 Action
 - (void)sliderChange:(UISlider*) slider{

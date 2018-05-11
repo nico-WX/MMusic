@@ -12,6 +12,7 @@
 @class EditorialNotes;
 @class PlayParameters;
 @class Preview;
+@class MPMediaItem;
 
 @interface Song : MMObject
 /**艺人名称*/
@@ -41,5 +42,12 @@
 @property(nonatomic, assign) int movementCount;
 @property(nonatomic, assign) int movementNumber;
 @property(nonatomic, assign) int trackNumber;
+
+/**
+ 比较两个对象的 playbackStoreID
+ @param mediaItem 媒体对象
+ @return 是否为相同的歌曲
+ */
+-(BOOL) isEqualToNowPlayItem:(MPMediaItem*) mediaItem;
 
 @end

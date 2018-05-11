@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '5D6F6CB5E809666DA0C9B051A1D5BF84'
-               BlueprintName = 'VBFPopFlatButton'
+               BlueprintIdentifier = 'C8A945B746D9C6D1A3A2075165E099A9'
+               BlueprintName = 'NAKPlaybackIndicatorView'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libVBFPopFlatButton.a'>
+               BuildableName = 'libNAKPlaybackIndicatorView.a'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

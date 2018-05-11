@@ -19,13 +19,51 @@
 
 @implementation PlayControllerView
 
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
+- (instancetype)initWithFrame:(CGRect)frame{
+    if (self = [super initWithFrame:frame]) {
+        self.backgroundColor = UIColor.whiteColor;
+        /**
+         1.辅助层直接添加到 self.view中, 平分布局;
+         2.按钮添加到辅助层中,居中布局
+         */
+        //辅助层
+        _preView = UIView.new;
+        _playView = UIView.new;
+        _nextView = UIView.new;
+
+        //按钮
+        FlatButtonStyle style = buttonRoundedStyle;
+        CGRect rect = CGRectMake(0, 0, 44.0f, 44.0f);
+        _previous = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonRewindType buttonStyle:style animateToInitialState:YES];
+        _play     = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonPausedType buttonStyle:style animateToInitialState:YES];
+        _next     = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonFastForwardType buttonStyle:style animateToInitialState:YES];
+
+        //按钮添加到辅层
+        [_preView addSubview:_previous];
+        [_playView addSubview:_play];
+        [_nextView addSubview:_next];
+
+        //添加辅助层带视图中
+        [self addSubview:_preView];
+        [self addSubview:_playView];
+        [self addSubview:_nextView];
+
+        //按钮颜色
+        UIColor *color = [UIColor colorWithHue:0.968 saturation:0.827 brightness:1.000 alpha:1.000] ;
+        _previous.tintColor = _play.tintColor = _next.tintColor = color;
+
+    }
+    return self;
+}
+
+
 - (void)drawRect:(CGRect)rect {
     // Drawing code
 
+    //平分宽度, 等高
     CGSize size = CGSizeMake(CGRectGetWidth(rect)/3,CGRectGetHeight(rect));
     __weak typeof(self) weakSelf = self;
+
     //布局中间层
     [self.preView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.mas_top);
@@ -60,40 +98,5 @@
         make.size.mas_equalTo(buttonSize);
     }];
 }
-
-- (instancetype)initWithFrame:(CGRect)frame{
-    if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = UIColor.whiteColor;
-
-        //辅助层
-        self.preView = UIView.new;
-        self.playView = UIView.new;
-        self.nextView = UIView.new;
-
-        //按钮
-        FlatButtonStyle style = buttonRoundedStyle;
-        CGRect rect = CGRectMake(0, 0, 44.0f, 44.0f);
-        self.previous = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonRewindType buttonStyle:style animateToInitialState:YES];
-        self.play     = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonPausedType buttonStyle:style animateToInitialState:YES];
-        self.next     = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonFastForwardType buttonStyle:style animateToInitialState:YES];
-
-        //按钮添加到辅层
-        [self.preView addSubview:self.previous];
-        [self.playView addSubview:self.play];
-        [self.nextView addSubview:self.next];
-
-        //添加到本身
-        [self addSubview:self.preView];
-        [self addSubview:self.playView];
-        [self addSubview:self.nextView];
-
-        //颜色
-        self.previous.tintColor = self.play.tintColor = self.next.tintColor = UIColor.blueColor;
-        //bg
-//        self.previous.roundBackgroundColor = self.play.roundBackgroundColor = self.next.roundBackgroundColor = UIColor.blueColor;
-    }
-    return self;
-}
-
 
 @end

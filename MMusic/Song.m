@@ -13,6 +13,7 @@
 #import "Preview.h"
 
 #import <MJExtension.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 @implementation Song
 
@@ -28,6 +29,13 @@
 }
 +(NSDictionary *)mj_objectClassInArray{
     return @{@"previews":@"Preview",@"genreNames":@"NSString"};
+}
+
+
+-(BOOL)isEqualToNowPlayItem:(MPMediaItem *)mediaItem{
+    NSString *nowPlaySongID = mediaItem.playbackStoreID;
+    NSString *cellSongID = [self.playParams objectForKey:@"id"];
+    return [nowPlaySongID isEqualToString:cellSongID];
 }
 
 @end

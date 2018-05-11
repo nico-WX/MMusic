@@ -16,13 +16,25 @@
         _artworkView = UIImageView.new;
         [_titleLabel sizeToFit];
         [_titleLabel setAdjustsFontSizeToFitWidth:YES];
+        [_artistLabel setAdjustsFontSizeToFitWidth:YES];
 
         self.backgroundColor = UIColor.whiteColor;
         [self.contentView addSubview:_titleLabel];
         [self.contentView addSubview:_artistLabel];
         [self.contentView addSubview:_artworkView];
+
+        [self prepareForReuse];
     }
     return self;
+}
+
+//消除重用存在的 旧资源(文本/图片 等)
+-(void)prepareForReuse{
+    [super prepareForReuse];
+    _artworkView.image = nil;
+    _titleLabel.text = nil;
+    _artistLabel.text = nil;
+
 }
 
 @end
