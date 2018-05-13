@@ -12,7 +12,7 @@
 #import "ChartsViewController.h"
 #import "NewCardView.h"
 
-@interface ChartsPageViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource>
+@interface ChartsPageViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>
 //分页视图控制器
 @property(nonatomic, strong) UIPageViewController *pageViewController;
 //
@@ -127,5 +127,12 @@
     return 0;
 }
 
+
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    Log(@"end decelerating");
+}
+-(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
+    Log(@"end Amination");
+}
 
 @end

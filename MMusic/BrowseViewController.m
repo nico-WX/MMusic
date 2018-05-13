@@ -217,10 +217,6 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
         [self.typesView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
     }
 }
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    Log(@"did scroll");
-}
-
 
 #pragma mark - Target Active
 /**

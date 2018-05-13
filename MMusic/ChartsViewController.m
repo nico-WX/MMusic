@@ -15,12 +15,12 @@
 #import "PlayerViewController.h"
 
 //view  and cell
-#import "NewCardView.h"
 #import "ChartsCell.h"
 #import "AlbumCell.h"
 #import "PlaylistsCell.h"
 #import "MusicVideoCell.h"
 #import "ChartsSongCell.h"
+#import "ChartsSectionView.h"
 
 //model and tool
 #import "Chart.h"
@@ -34,8 +34,7 @@
 @interface ChartsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,MPSystemMusicPlayerController>
 @property(nonatomic, assign) ChartsType type;
 @property(nonatomic, strong) NSURLRequest *request;
-//容器 viwe
-@property(nonatomic, strong) NewCardView *cardView;
+
 //集合视图
 @property(nonatomic, strong) UICollectionView *collectionView;
 //播放视图控制
@@ -49,6 +48,7 @@
 
 static CGFloat const spacing = 2.0f;
 static NSString *const cellId = @"cellReuseIdentifier";
+static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 @implementation ChartsViewController
 
 #pragma mark - init
@@ -66,27 +66,9 @@ static NSString *const cellId = @"cellReuseIdentifier";
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
 
-    [self.view addSubview:self.cardView];
-    [self.cardView.contentView addSubview:self.collectionView];
-    
+    [self.view addSubview:self.collectionView];
+
     [self requestDataFromRequest:self.request];
-
-    __weak typeof(self) weakSelf = self;
-    //上拉加载更多
-    self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        Chart *chart = [self.results firstObject];
-        if (chart.next) {
-            [weakSelf loadNextPage:chart.next];
-        }else{
-            [weakSelf.collectionView.mj_footer endRefreshingWithNoMoreData];
-        }
-    }];
-
-    //下拉刷新
-    self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        self.results = nil;
-        [weakSelf requestDataFromRequest:weakSelf.request];
-    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -97,18 +79,13 @@ static NSString *const cellId = @"cellReuseIdentifier";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
-    CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);
-    CGFloat tabH = 0.0f; // CGRectGetHeight(self.tabBarController.tabBar.frame);
-    UIEdgeInsets padding = UIEdgeInsetsMake(y+4, 4, tabH+4, 4);
     UIView *superview = self.view;
-    [self.cardView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superview).with.insets(padding);
-    }];
-
-    superview = self.cardView.contentView;
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        UIEdgeInsets insets = UIEdgeInsetsMake(0, 4, 4, 4);
-        make.edges.mas_equalTo(superview).with.insets(insets);
+        CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);
+        CGFloat tabH = 0.0f;
+        UIEdgeInsets padding = UIEdgeInsetsMake(y+4, 4, tabH, 4);
+
+        make.edges.mas_equalTo(superview).with.insets(padding);
     }];
 }
 
@@ -147,6 +124,17 @@ static NSString *const cellId = @"cellReuseIdentifier";
     cell.selectedBackgroundView = selectedView;
     return cell;
 }
+-(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        ChartsSectionView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:sectionId forIndexPath:indexPath];
+        Chart *chart = [self.results objectAtIndex:indexPath.section];
+        view.titleLabel.text = chart.name;
+        return view;
+    }else{
+        return nil;
+    }
+}
+
 #pragma mark - UICollectionView Delegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     switch (self.type) {
@@ -208,10 +196,11 @@ static NSString *const cellId = @"cellReuseIdentifier";
 }
 
 #pragma mark - UICollectionView Delegate FlowLayout
-
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat w;
     CGFloat h;
+
+    //不同的cell 返回不同的 size
     switch (self.type) {
         case ChartsAlbumsType:
              w = (CGRectGetWidth(collectionView.bounds) - spacing*2)/2;
@@ -234,6 +223,11 @@ static NSString *const cellId = @"cellReuseIdentifier";
             return CGSizeMake(w, h);
             break;
     }
+}
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
+    CGFloat h = 44.0f;
+    CGFloat w = CGRectGetWidth(collectionView.bounds);
+    return CGSizeMake(w, h);
 }
 
 #pragma mark - 数据请求 和解析
@@ -304,9 +298,6 @@ static NSString *const cellId = @"cellReuseIdentifier";
             [(NSArray*)charts enumerateObjectsUsingBlock:^(id  _Nonnull chartDict, NSUInteger idx, BOOL * _Nonnull stop) {
                 Chart *chart = [Chart instanceWithDict:chartDict];
                 [tempResults addObject:chart];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    _cardView.titleLabel.text = chart.name;
-                });
             }];
         }];
     }
@@ -322,14 +313,15 @@ static NSString *const cellId = @"cellReuseIdentifier";
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
 
         //实例 代理 数据源
-        _collectionView = [[UICollectionView alloc] initWithFrame:self.cardView.contentView.bounds collectionViewLayout:layout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
+        _collectionView.backgroundColor = UIColor.whiteColor;
 
-        //圆角 背色
-        _collectionView.backgroundColor = self.cardView.contentView.backgroundColor;
-        _collectionView.layer.cornerRadius = 8.0f;
-        _collectionView.layer.masksToBounds = YES;
+        //注册节头
+        [_collectionView registerClass:ChartsSectionView.class
+            forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                   withReuseIdentifier:sectionId];
         //注册不同类型的cell
         switch (self.type) {
             case ChartsAlbumsType:
@@ -345,19 +337,29 @@ static NSString *const cellId = @"cellReuseIdentifier";
                 [_collectionView registerClass:ChartsSongCell.class forCellWithReuseIdentifier:cellId];
                 break;
         }
+
+        //上拉加载更多
+        __weak typeof(self) weakSelf = self;
+        _collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+            Chart *chart = [self.results firstObject];
+            if (chart.next) {
+                [weakSelf loadNextPage:chart.next];
+            }else{
+                [weakSelf.collectionView.mj_footer endRefreshingWithNoMoreData];
+            }
+        }];
+
+        //下拉刷新
+        _collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+            self.results = nil;
+            [weakSelf requestDataFromRequest:weakSelf.request];
+        }];
+
     }
     return _collectionView;
 }
--(NewCardView *)cardView{
-    if (!_cardView) {
-        CGFloat x = 0;
-        CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);
-        CGFloat w = CGRectGetWidth(self.view.frame);
-        CGFloat h = CGRectGetHeight(self.view.frame)-(y+CGRectGetHeight(self.tabBarController.tabBar.frame));
-        _cardView = [[NewCardView alloc] initWithFrame:CGRectMake(x, y, w, h)];
-    }
-    return _cardView;
-}
+
+
 -(PlayerViewController *)playerVC{
     if (!_playerVC) {
         _playerVC = [PlayerViewController sharePlayerViewController];
@@ -380,8 +382,5 @@ static NSString *const cellId = @"cellReuseIdentifier";
     }
     return _songs;
 }
-
-#pragma mark - setter
-
 
 @end

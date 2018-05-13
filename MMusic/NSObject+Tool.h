@@ -37,11 +37,8 @@
 /**替换ImageURL 中的Image大小参数 默认屏幕的缩放大小*/
 -(NSString*_Nonnull) stringReplacingOfString:(NSString*_Nonnull) target height:(int) height width:(int) width;
 
-/**模型中的类型 映射到具体的模型类型*/
+/**模型中的类型 映射到具体的模型类*/
 -(Class) classForResourceType:(NSString*)type;
-
-/**通过Path 显示图片到ImageView 上, URL(未替换大小参数url)*/
--(void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL) cache;
 
 /**16进制颜色转换*/
 +(UIColor*)colorWithHexString:(NSString*) hexString alpha:(CGFloat) alpha;
@@ -50,4 +47,21 @@
 
 /**播放参数字典数组 转换为播放描叙队列*/
 -(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueDescriptorFromParams:(NSArray<NSDictionary*>*) playParamses startAtIndexPath:(NSIndexPath*) indexPath;
+
+/**通过Path 显示图片到ImageView 上, URL(未替换大小参数url)*/
+-(void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL) cache;
+
+-(void)showHUDToMainWindow;
+
+
+
+
+
+
+
+
+
+
+
+
 @end

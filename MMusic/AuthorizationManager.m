@@ -32,6 +32,7 @@ static AuthorizationManager *_instance;
 # pragma mark 初始化及单例实现
 -(instancetype)init{
     if (self = [super init]) {
+        Log(@"in init ------->");
         //开发者Token 过期消息 删除旧的developerToken  并请求一个新的
         [[NSNotificationCenter defaultCenter] addObserverForName:developerTokenExpireNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
             //移除过期DeveloperToken

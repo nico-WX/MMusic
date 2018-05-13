@@ -190,13 +190,18 @@ static NSString *const cellIdentifier = @"todayCell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     TodayCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     // Configure the cell
-
     Resource* resource = [[self.resources objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+
+//    if (indexPath.section==0) {
+//        Log(@"res  =%@",[resource.attributes valueForKey:@"artwork"]);
+//    }
 
     //设置封面
     if ([resource respondsToSelector:@selector(attributes)]) {
         Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
         [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
+
+
     }
     return cell;
 }
@@ -305,5 +310,7 @@ static NSString *const cellIdentifier = @"todayCell";
     }
     return _playbackViewButton;
 }
+
+
 
 @end

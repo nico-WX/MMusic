@@ -131,64 +131,66 @@ extern NSString *userTokenIssueNotification;
 }
 
 -(void)showImageToView:(UIImageView *)imageView withImageURL:(NSString *)url cacheToMemory:(BOOL)cache{
-    //cell 重用时,上次没加载完成的hud 未能隐藏, 遍历隐藏
-    for (UIView *view in imageView.subviews) {
-        if ([view isKindOfClass:UIActivityIndicatorView.class]) {
-            UIActivityIndicatorView *hud = (UIActivityIndicatorView*) view;
-            [hud stopAnimating];
-        }
-    }
-
-    //获取视图宽高, 设置请求图片大小
-    CGFloat h = CGRectGetHeight(imageView.bounds);
-    CGFloat w = CGRectGetWidth(imageView.bounds);
-    if (w <= 10 || h <= 10) w=h=40; //拦截高度, 宽度为 0 的情况, 设置默认值,
-    //image
-    NSString *path = IMAGEPATH_FOR_URL(url);
-    UIImage *image = [UIImage imageWithContentsOfFile:path];
-
-    //照片太小, 删除
-    CGFloat scale = [UIScreen mainScreen].scale;
-    if (image.size.width < w*scale || image.size.height < h*scale) {
-        [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
-        image = nil;
-    }
-
-    if (image) {
-        [imageView setImage:image];
-    //内存中无图片
-    }else{
-        UIActivityIndicatorView *hud = [[UIActivityIndicatorView alloc] initWithFrame:imageView.frame];
-        [hud setHidesWhenStopped:YES];
-        [hud startAnimating];
-        hud.color = UIColor.grayColor;
-
-        [imageView performSelectorOnMainThread:@selector(addSubview:) withObject:hud waitUntilDone:NO];
-
-        NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
-        NSRange range = [urlStr rangeOfString:@"{c}"];
-        if (range.length > 0) {
-            urlStr = [urlStr stringByReplacingOccurrencesOfString:@"{c}" withString:@"cc"];
-        }
-
-        NSURL *url = [NSURL URLWithString:urlStr];
-        [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            if (cache == YES) {
-                //判断目标文件夹是否存在
-                NSFileManager *fm = [NSFileManager defaultManager];
-                BOOL isDir = NO;
-                BOOL exist = [fm fileExistsAtPath:ARTWORKIMAGEPATH isDirectory:&isDir];
-                //目标文件夹不存在就创建
-                if (!(isDir && exist)){
-                    [fm createDirectoryAtPath:ARTWORKIMAGEPATH withIntermediateDirectories:YES attributes:nil error:nil];
-                }
-                //存储文件
-                BOOL sucess = [fm createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
-                if (sucess == NO) [fm removeItemAtPath:path error:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //cell 重用时,上次没加载完成的hud 未能隐藏, 遍历隐藏
+        for (UIView *view in imageView.subviews) {
+            if ([view isKindOfClass:UIActivityIndicatorView.class]) {
+                UIActivityIndicatorView *hud = (UIActivityIndicatorView*) view;
                 [hud stopAnimating];
             }
-        }];
-    }
+        }
+
+        //获取视图宽高, 设置请求图片大小
+        CGFloat h = CGRectGetHeight(imageView.bounds);
+        CGFloat w = CGRectGetWidth(imageView.bounds);
+        if (w <= 10 || h <= 10) w=h=40; //拦截高度, 宽度为 0 的情况, 设置默认值,
+                                        //image
+        NSString *path = IMAGEPATH_FOR_URL(url);
+        UIImage *image = [UIImage imageWithContentsOfFile:path];
+
+        //照片太小, 删除
+        CGFloat scale = [UIScreen mainScreen].scale;
+        if (image.size.width < w*scale || image.size.height < h*scale) {
+            [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+            image = nil;
+        }
+
+        if (image) {
+            [imageView setImage:image];
+            //内存中无图片
+        }else{
+            UIActivityIndicatorView *hud = [[UIActivityIndicatorView alloc] initWithFrame:imageView.frame];
+            [hud setHidesWhenStopped:YES];
+            [hud startAnimating];
+            hud.color = UIColor.grayColor;
+
+            [imageView performSelectorOnMainThread:@selector(addSubview:) withObject:hud waitUntilDone:NO];
+
+            NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
+            NSRange range = [urlStr rangeOfString:@"{c}"];
+            if (range.length > 0) {
+                urlStr = [urlStr stringByReplacingOccurrencesOfString:@"{c}" withString:@"cc"];
+            }
+
+            NSURL *url = [NSURL URLWithString:urlStr];
+            [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+                if (cache == YES) {
+                    //判断目标文件夹是否存在
+                    NSFileManager *fm = [NSFileManager defaultManager];
+                    BOOL isDir = NO;
+                    BOOL exist = [fm fileExistsAtPath:ARTWORKIMAGEPATH isDirectory:&isDir];
+                    //目标文件夹不存在就创建
+                    if (!(isDir && exist)){
+                        [fm createDirectoryAtPath:ARTWORKIMAGEPATH withIntermediateDirectories:YES attributes:nil error:nil];
+                    }
+                    //存储文件
+                    BOOL sucess = [fm createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
+                    if (sucess == NO) [fm removeItemAtPath:path error:nil];
+                    [hud stopAnimating];
+                }
+            }];
+        }
+    });
 }
 
 
@@ -259,5 +261,20 @@ extern NSString *userTokenIssueNotification;
     [queue setStartItemPlayParameters:[list objectAtIndex:indexPath.row]];
     return queue;
 }
+
+
+-(void)showHUDToMainWindow{
+    UIView *view = [[UIApplication sharedApplication].delegate window];
+
+    CGRect rect = CGRectMake(100, 100, 100, 100);
+    UIView *redView = [[UIView alloc] initWithFrame:rect];
+    [redView setBackgroundColor:UIColor.redColor];
+    [redView setCenter:view.center];
+    [view addSubview:redView];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [redView removeFromSuperview];
+    });
+}
+
 
 @end

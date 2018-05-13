@@ -46,10 +46,9 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-
-    return 1;
-}
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+//    return 1;
+//}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 4;
@@ -64,9 +63,6 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
         [cell.detailTextLabel setText:detailStr];
         [cell.textLabel setText:@"本地音乐"];
     }
-
-
-    
     return cell;
 }
 
@@ -80,12 +76,15 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
     if (indexPath.row == 1) {
         SKCloudServiceSetupViewController *sVC = [[SKCloudServiceSetupViewController alloc] init];
         sVC.delegate = self;
+        //页面设置
         NSDictionary *dict = @{SKCloudServiceSetupOptionsMessageIdentifierKey:SKCloudServiceSetupMessageIdentifierJoin,
                                SKCloudServiceSetupOptionsActionKey : SKCloudServiceSetupActionSubscribe
                                };
 
         [sVC loadWithOptions:dict completionHandler:^(BOOL result, NSError * _Nullable error) {
             if (result) {
+                //隐藏导航栏
+                [self.navigationController setNavigationBarHidden:YES animated:YES];
                 [self.navigationController pushViewController:sVC animated:YES];
             }
         }];
@@ -94,7 +93,7 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
 
 -(void)cloudServiceSetupViewControllerDidDismiss:(SKCloudServiceSetupViewController *)cloudServiceSetupViewController{
     [self.navigationController popToRootViewControllerAnimated:YES];
-    //[cloudServiceSetupViewController dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 
