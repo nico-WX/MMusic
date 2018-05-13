@@ -22,12 +22,10 @@
 #import "NSObject+Tool.h"
 
 @interface PlayerViewController ()
-
 /**播放器UI*/
 @property(nonatomic, strong) PlayerView *playerView;
 /**定时获取播放时间,更新UI*/
 @property(nonatomic, strong) NSTimer *timer;
-
 /**歌曲列表*/
 @property(nonatomic, strong) NSArray<Song*> *songs;
 @end
@@ -77,26 +75,22 @@ static PlayerViewController *_instance;
     __weak typeof(self) weakSelf = self;
     // 监听播放项目改变
     [center addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-        //更新本地现在播放项目  及 播放项目的index  在设值方法中触发更新UI方法
+        //更新本地现在播放项目 在设值方法中触发更新UI方法
+        //这里不判断self.songs  ,如果没有就赋值空
         weakSelf.nowPlaySong = [weakSelf.songs objectAtIndex:weakSelf.playerController.indexOfNowPlayingItem];
 
         //向外传递正在播放的项目
         if (_nowPlayingItem) _nowPlayingItem(weakSelf.playerController.nowPlayingItem);
-
     }];
+
     //开始获取当前播放时间
     [self.timer fire];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-    // 更新正在播放的信息
-    [self updateNowPlayItemToView];
+   [self updateNowPlayItemToView];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 - (void)dealloc{
     [self.playerController endGeneratingPlaybackNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -105,71 +99,85 @@ static PlayerViewController *_instance;
 #pragma mark - 更新UI信息
 /**更新当前播放的音乐信息到视图上*/
 - (void) updateNowPlayItemToView{
-    //确保主线程更新
+    //主线程更新
     dispatch_async(dispatch_get_main_queue(), ^{
 
-        /**
-         如果现在没有加载Song对象, 则从音乐播放器内部获取歌曲id  ,请求song数据, 内部没有在播放 弹出HUD
-         */
+        NSString *title;
+        NSString *artist;
+        NSString *durationString;
         if (self.nowPlaySong) {
-            //有加载Song 对象 直接更新
-            [self viewInfoWithSong:self.nowPlaySong];
-        }else if(self.playerController.nowPlayingItem){
-            //音乐app 有加载音乐
-            [self viewInfoWithSongIdentifier:self.playerController.nowPlayingItem.playbackStoreID];
+            [self.playerView.heartIcon setEnabled:YES];
+            Song *song = self.nowPlaySong;
+            title = song.name;
+            artist= song.artistName;
+            //时长
+            int duration = song.durationInMillis.intValue / 1000;
+            int min = duration/60;
+            int sec = duration%60;
+            durationString =[NSString stringWithFormat:@"%02d:%02d",min,sec];
+
+            //封面
+            [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
+            //红心
+            [self heartFromSongIdentifier:[song.playParams objectForKey:@"id"]];
+
         }else{
-            //无加载音乐
-            UIView *view = [[UIApplication sharedApplication].delegate window];
-            
+            //有Identifier 是AppleMusic版权库音乐 请求Song对象
+            if (![self.playerController.nowPlayingItem.playbackStoreID isEqualToString:@"0"]) {
+                [self songFromIdentifier:self.playerController.nowPlayingItem.playbackStoreID];
+            }else{
+                //第三方音乐
+                [self.playerView.heartIcon setEnabled:NO];  //关闭开关
+                [self showHUDToMainWindowFromText:@"该音乐非AppleMusic版权库内容"];
+                MPMediaItem *item = self.playerController.nowPlayingItem;
+                title = item.title;
+                artist = item.artist;
+                int duration = item.playbackDuration;
+                durationString = [NSString stringWithFormat:@"%02d:%02d",duration/60,duration%60];
+
+                //封面
+                CGSize size = self.playerView.artworkView.bounds.size;
+                UIImage *image = [item.artwork imageWithSize:size];
+                [self.playerView.artworkView setImage:image];
+            }
 
         }
+
+        self.playerView.songNameLabel.text = title;
+        self.playerView.artistLabel.text = artist;
+        self.playerView.progressView.durationTime.text = durationString;
     });
+
 }
 
-#pragma mark 更新UI Helper
--(void)viewInfoWithSong:(Song*) nowSong{
-    //歌曲封面
-    Artwork *artwork = nowSong.artwork;
-    [self showImageToView:self.playerView.artworkView withImageURL:artwork.url cacheToMemory:YES];
-
-    //歌曲  歌手信息
-    self.playerView.songNameLabel.text = nowSong.name;
-    self.playerView.artistLabel.text = nowSong.artistName;
-
-    //歌曲总时长
-    int duration = nowSong.durationInMillis.intValue/1000; //(毫秒,转为秒)
-    int min = duration / 60;
-    int sec = duration % 60;
-    self.playerView.progressView.durationTime.text =[NSString stringWithFormat:@"%.2d:%.2d",min,sec];
-
-    //是否是喜爱的歌曲
-    NSString *songID = [nowSong.playParams objectForKey:@"id"];
-    NSURLRequest *request = [[PersonalizedRequestFactory new] createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[songID,]];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (!error && data ) {
-            NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-            NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
-            if (json && res.statusCode==200) {
+//获取歌曲rating
+-(void)heartFromSongIdentifier:(NSString*) identifier{
+    if (identifier) {
+        NSURLRequest *request = [[PersonalizedRequestFactory new] createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[identifier,]];
+        [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (!error && data ) {
+                NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
+                NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
+                BOOL love = (json && res.statusCode==200) ? YES : NO;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.playerView.heartIcon setOn:YES animated:YES];
-                });
-            }else{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.playerView.heartIcon setOn:NO animated:YES];
+                    [self.playerView.heartIcon setOn:love animated:YES];
                 });
             }
-        }
-    }];
+        }];
+    }
 }
--(void)viewInfoWithSongIdentifier:(NSString*) identifier{
+//通过音乐 id 获取song 对象;
+-(void)songFromIdentifier:(NSString*) identifier{
     NSURLRequest *request = [[RequestFactory new] createRequestWithType:RequestSongType resourceIds:@[identifier,]];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (!error && data) {
-            NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
-            NSArray *data = [json valueForKeyPath:@"data"];
-            json = [data.firstObject valueForKeyPath:@"attributes"];
-            Song *song = [Song instanceWithDict:json];
-            self.nowPlaySong = song;
+        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+        if (json) {
+            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+                [(NSArray*)obj enumerateObjectsUsingBlock:^(id  _Nonnull songResource, NSUInteger idx, BOOL * _Nonnull stop) {
+                    Song *song = [Song instanceWithDict:[songResource objectForKey:@"attributes"]];
+                    self.nowPlaySong = song;
+                }];
+            }];
         }
     }];
 }
@@ -195,12 +203,11 @@ static PlayerViewController *_instance;
         _playerView = [[PlayerView alloc] initWithFrame:self.view.bounds];
 
         //事件绑定
-        [_playerView.progressView.progressSlider addTarget:self action:@selector(sliderChange:) forControlEvents:UIControlEventValueChanged];
-        [_playerView.heartIcon addTarget:self action:@selector(changeLove:) forControlEvents:UIControlEventTouchUpInside];
-
-        [_playerView.playCtrView.previous addTarget:self action:@selector(previous:) forControlEvents:UIControlEventTouchUpInside];
-        [_playerView.playCtrView.play addTarget:self action:@selector(playOrPause:) forControlEvents:UIControlEventTouchUpInside];
-        [_playerView.playCtrView.next addTarget:self action:@selector(next:) forControlEvents:UIControlEventTouchUpInside];
+        [_playerView.progressView.progressSlider    addTarget:self action:@selector(sliderChange:) forControlEvents:UIControlEventValueChanged];
+        [_playerView.playCtrView.previous           addTarget:self action:@selector(previous:) forControlEvents:UIControlEventTouchUpInside];
+        [_playerView.playCtrView.play               addTarget:self action:@selector(playOrPause:) forControlEvents:UIControlEventTouchUpInside];
+        [_playerView.playCtrView.next               addTarget:self action:@selector(next:) forControlEvents:UIControlEventTouchUpInside];
+        [_playerView.heartIcon                      addTarget:self action:@selector(changeLove:) forControlEvents:UIControlEventTouchUpInside];
 
         //下滑隐藏控制器 手势
         UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(closeViewController)];
@@ -266,8 +273,6 @@ static PlayerViewController *_instance;
     switch (self.playerController.playbackState) {
         case MPMusicPlaybackStatePlaying:
             [self.playerController pause];
-            //[self.timer invalidate];    //无效, 移除运行循环
-            //self.timer = nil;           //下一启动新的
             [button setCurrentButtonType:buttonRightTriangleType];
             break;
 
@@ -294,47 +299,56 @@ static PlayerViewController *_instance;
     });
 }
 
-//红心按钮 添加喜欢
+//红心按钮 添加喜欢或者取消喜欢
 - (void)changeLove:(LOTAnimatedSwitch*) heart{
-    PersonalizedRequestFactory *factort = [PersonalizedRequestFactory new];
+
     NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
+    Log(@"songid =====%@",songID);
+    //判断歌曲类型
+    if (songID) {
+        // 查询当前rating状态(不是基于当前按钮状态)  --> 操作
+        PersonalizedRequestFactory *factort = [PersonalizedRequestFactory new];
+        NSURLRequest *getRating = [factort createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[songID,]];
+        [self dataTaskWithRequest:getRating completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (!error && data ) {
+                NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
+                NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
 
-    // 查询当前rating状态(不是基于当前按钮状态)  --> 操作
-    NSURLRequest *getRating = [factort createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[songID,]];
-    [self dataTaskWithRequest:getRating completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (!error && data ) {
-            NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-            NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
+                if (json && res.statusCode==200) {
+                    //当前为喜欢状态
+                    //取消喜欢 <DELETE>
+                    NSURLRequest *request = [factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
+                    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                        NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
+                        if (!error && res.statusCode/10 == 20) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [heart setOn:NO animated:YES];
+                            });
+                        }
+                    }];
 
-            if (json && res.statusCode==200) {
-                //当前为喜欢状态
-                //取消喜欢 <DELETE>
-                NSURLRequest *request = [factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
-                [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                    NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-                    if (!error && res.statusCode/10 == 20) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [heart setOn:NO animated:YES];
-                        });
-                    }
-                }];
-
-            }else{
-                //当前没有添加为喜欢
-                //添加喜欢 <PUT>
-                NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
-                NSURLRequest *request = [factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
-                [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                    NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-                    if (!error && res.statusCode/10==20) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [heart setOn:YES animated:YES];
-                        });
-                    }
-                }];
+                }else{
+                    //当前没有添加为喜欢
+                    //添加喜欢 <PUT>
+                    NSString *songID = [self.nowPlaySong.playParams objectForKey:@"id"];
+                    NSURLRequest *request = [factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
+                    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                        NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
+                        if (!error && res.statusCode/10==20) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [heart setOn:YES animated:YES];
+                            });
+                        }
+                    }];
+                }
             }
-        }
-    }];
+        }];
+    }else{
+        [self showHUDToMainWindowFromText:@"非AppleMusic版权音乐,无法添加喜欢"];
+        //开关ON
+        [heart setOn:NO animated:YES];
+    }
+
 }
 
 

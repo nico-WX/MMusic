@@ -42,8 +42,10 @@
     //辅助层
     _midView = ({
         UIView *view = UIView.new;
+        [view.layer setMasksToBounds:NO];
+        [view.layer setCornerRadius:8.0f];
         view.layer.shadowColor = UIColor.blackColor.CGColor;
-        view.layer.shadowOffset = CGSizeMake(100, 100);
+        view.layer.shadowOffset = CGSizeMake(8.0f, 8.0f);
         view.layer.shadowRadius = 5;
 
         view.backgroundColor = UIColor.grayColor;

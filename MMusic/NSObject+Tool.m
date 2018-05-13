@@ -275,6 +275,16 @@ extern NSString *userTokenIssueNotification;
         [redView removeFromSuperview];
     });
 }
+- (void)showHUDToMainWindowFromText:(NSString *)text{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIView *view = [[UIApplication sharedApplication].delegate window];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+        [hud setRemoveFromSuperViewOnHide:YES];
+        [hud.label setText:text];
+        [hud setMode:MBProgressHUDModeCustomView];
+        [hud hideAnimated:YES afterDelay:4.0f];
+    });
+}
 
 
 @end

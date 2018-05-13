@@ -52,6 +52,7 @@
 -(void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL) cache;
 
 -(void)showHUDToMainWindow;
+-(void)showHUDToMainWindowFromText:(NSString*) text;
 
 
 
