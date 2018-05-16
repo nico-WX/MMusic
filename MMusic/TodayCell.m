@@ -25,11 +25,16 @@
         self.layer.masksToBounds = YES;
 
         //增加专辑封面
-        self.artworkView = [[UIImageView alloc] initWithFrame:self.bounds];
-        [self.contentView addSubview:self.artworkView];
+        _artworkView = [[UIImageView alloc] initWithFrame:self.bounds];
+        [self.contentView addSubview:_artworkView];
         [self.contentView setBackgroundColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.90 alpha:1.0]];
     }
     return self;
+}
+
+-(void)prepareForReuse{
+    self.artworkView.image = nil;
+    [super prepareForReuse];
 }
 
 @end

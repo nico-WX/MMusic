@@ -9,26 +9,27 @@
 #import <UIKit/UIKit.h>
 #import <VBFPopFlatButton.h>
 #import <Lottie/Lottie.h>
-@class PlayProgressView;
-@class PlayControllerView;
 
 /**播放器视图*/
 @interface PlayerView : UIView
-
 /**专辑封面*/
-@property(nonatomic, strong) UIImageView *artworkView;
-/**播放进度视图*/
-@property(nonatomic, strong) PlayProgressView *progressView;
+@property(nonatomic, strong,readonly) UIImageView *artworkView;
+/**播放进度信息*/
+@property(nonatomic,strong,readonly)UILabel *currentTime;
+@property(nonatomic,strong,readonly)UILabel *durationTime;
+@property(nonatomic,strong,readonly)UISlider *progressView;
 /**歌曲名称*/
-@property(nonatomic, strong) UILabel *songNameLabel;
+@property(nonatomic, strong,readonly) UILabel *songNameLabel;
 /**艺人名 或者 专辑信息*/
-@property(nonatomic, strong) UILabel *artistLabel;
-
-//
-@property(nonatomic ,strong) PlayControllerView *playCtrView;
-
+@property(nonatomic, strong,readonly) UILabel *artistLabel;
+/**上一首*/
+@property(nonatomic, strong,readonly) VBFPopFlatButton *previous;
+/**播放或暂停*/
+@property(nonatomic, strong,readonly) VBFPopFlatButton *play;
+/**下一首*/
+@property(nonatomic, strong,readonly) VBFPopFlatButton *next;
 /**喜爱按钮*/
-@property(nonatomic, strong) LOTAnimatedSwitch *heartIcon;
+@property(nonatomic, strong,readonly) LOTAnimatedSwitch *heartIcon;
 /**循环模式*/
-@property(nonatomic, strong) UIButton *repeat;
+@property(nonatomic, strong,readonly) UIButton *repeat;
 @end

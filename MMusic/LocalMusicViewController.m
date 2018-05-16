@@ -7,7 +7,6 @@
 //
 
 #import "LocalMusicViewController.h"
-#import "LocalMusicViewCell.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import <StoreKit/StoreKit.h>
 
@@ -29,8 +28,7 @@ static NSString *reuseID = @"localMusicCellIdentifier";
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
-
-    [self.tableView registerClass:[LocalMusicViewCell class] forCellReuseIdentifier:reuseID];
+    [self.tableView registerClass:UITableViewCell.class forCellReuseIdentifier:reuseID];
 
     //读取本地音乐数据
     [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {

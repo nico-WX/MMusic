@@ -13,10 +13,10 @@
 @interface PlayControllerView : UIView
 
 /**上一首*/
-@property(nonatomic, strong) VBFPopFlatButton *previous;
+@property(nonatomic, strong,readonly) VBFPopFlatButton *previous;
 /**播放或暂停*/
-@property(nonatomic, strong) VBFPopFlatButton *play;
+@property(nonatomic, strong,readonly) VBFPopFlatButton *play;
 /**下一首*/
-@property(nonatomic, strong) VBFPopFlatButton *next;
+@property(nonatomic, strong,readonly) VBFPopFlatButton *next;
 
 @end

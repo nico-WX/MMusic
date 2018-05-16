@@ -136,11 +136,13 @@ typedef NS_OPTIONS(NSUInteger, SearchType){
 
 /**
  创建搜索文本请求
-
  @param searchText 搜索文本
  @param types 指定手术类型
  @return 搜索请求体
  */
 -(NSURLRequest*)createSearchWithText:(NSString *)searchText types:(SearchType)types;
+
+
+
 
  @end

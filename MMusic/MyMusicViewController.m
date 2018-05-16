@@ -10,10 +10,16 @@
 
 #import "MyMusicViewController.h"
 #import "LocalMusicViewController.h"
+#import "PersonalizedRequestFactory.h"
 
-
-@interface MyMusicViewController ()<SKCloudServiceSetupViewControllerDelegate>
+#import "LibraryPlaylist.h"
+@interface MyMusicViewController ()
+//local
 @property(nonatomic, strong) NSArray<MPMediaItem*>  *items;
+
+//playlist
+@property(nonatomic, strong) NSArray<LibraryPlaylist*> *playlists;
+
 @end
 
 static NSString *reuseId = @"MyMusicViewControllerCellId";
@@ -23,6 +29,7 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
     [super viewDidLoad];
     [self setTitle:@"我的音乐"];
 
+    [self requestAllLibraryPlaylist];
     //读取本地音乐数据
     [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
         if (status == SKCloudServiceAuthorizationStatusAuthorized) {
@@ -30,7 +37,6 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
             [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
         }
     }];
-
 
     //注册Cell
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:reuseId];
@@ -45,15 +51,9 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
 }
 
 #pragma mark - Table view data source
-
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//    return 1;
-//}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return self.playlists.count+1;
 }
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseId forIndexPath:indexPath];
     if (indexPath.row == 0 && indexPath.section == 0) {
@@ -63,6 +63,13 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
         [cell.detailTextLabel setText:detailStr];
         [cell.textLabel setText:@"本地音乐"];
     }
+    if (indexPath.row == 1) {
+        NSUInteger index = indexPath.row;
+        LibraryPlaylist *playlist = [self.playlists objectAtIndex:--index];
+        cell.textLabel.text = playlist.name;
+    
+    }
+
     return cell;
 }
 
@@ -74,26 +81,15 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
     }
 
     if (indexPath.row == 1) {
-        SKCloudServiceSetupViewController *sVC = [[SKCloudServiceSetupViewController alloc] init];
-        sVC.delegate = self;
-        //页面设置
-        NSDictionary *dict = @{SKCloudServiceSetupOptionsMessageIdentifierKey:SKCloudServiceSetupMessageIdentifierJoin,
-                               SKCloudServiceSetupOptionsActionKey : SKCloudServiceSetupActionSubscribe
-                               };
+        NSUInteger index = indexPath.row;
+        LibraryPlaylist *playlist = [self.playlists objectAtIndex:--index];
 
-        [sVC loadWithOptions:dict completionHandler:^(BOOL result, NSError * _Nullable error) {
-            if (result) {
-                //隐藏导航栏
-                [self.navigationController setNavigationBarHidden:YES animated:YES];
-                [self.navigationController pushViewController:sVC animated:YES];
-            }
-        }];
     }
 }
 
--(void)cloudServiceSetupViewControllerDidDismiss:(SKCloudServiceSetupViewController *)cloudServiceSetupViewController{
-    [self.navigationController popToRootViewControllerAnimated:YES];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+#pragma mark - 请求所有播放列表
+-(void) requestAllLibraryPlaylist{
+    
 }
 
 

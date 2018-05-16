@@ -13,17 +13,19 @@
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = UIColor.whiteColor;
         [self setupSubview];
     }
     return self;
 }
+
 -(void) setupSubview{
+    [self setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
+
     UIColor *defaultColor = UIColor.grayColor;
     UIFont *defaultFont = [UIFont systemFontOfSize:12.0f];
     NSString *defaultText = @"00:00";
     //已经播放时间 标签(进度条左边)
-    self.currentTime = ({
+    _currentTime = ({
         UILabel *label = UILabel.new;
         label.font = defaultFont;
         label.textColor = defaultColor;
@@ -35,27 +37,25 @@
     });
 
     //progress
-    self.progressSlider = ({
+    _progressSlider = ({
         UISlider *slider = UISlider.new;
 
         //正常状态 滑块样式
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
         view.backgroundColor = UIColor.greenColor;
-        UIImage *image = [self getImageFromView:view];
-        [slider setThumbImage:image forState:UIControlStateNormal];
+        [slider setThumbImage:[self getImageFromView:view] forState:UIControlStateNormal];
 
         //拖动下 滑块样式
         view.frame = CGRectMake(0, 0, 20, 20);
         view.backgroundColor = UIColor.redColor;
-        image = [self getImageFromView:view];
-        [slider setThumbImage:image forState:UIControlStateHighlighted];
+        [slider setThumbImage:[self getImageFromView:view] forState:UIControlStateHighlighted];
 
         [self addSubview:slider];
         slider;
     });
 
     //总时长
-    self.durationTime = ({
+    _durationTime = ({
         UILabel *label = UILabel.new;
         label.textColor = defaultColor;
         label.font = defaultFont;
@@ -67,7 +67,7 @@
     });
 }
 
-/**通过视图产生图片*/
+/**通过视图产生图片 设置到滑块上 */
 -(UIImage *)getImageFromView:(UIView*) view{
     //切圆
     view.layer.cornerRadius = CGRectGetHeight(view.bounds)/2;

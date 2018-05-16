@@ -185,4 +185,218 @@
     }
     return request;
 }
+
 @end
+
+
+#pragma mark - PersonalizedRequestFactory(FetchLirraryResource)
+/**获取库资源*/
+@implementation PersonalizedRequestFactory(FetchLirraryResource)
+
+-(NSURLRequest*)fetchLibraryResourceWithType:(LibraryResourceType)type fromIds:(NSArray<NSString *> *)ids{
+    NSString *subPath = [self stringFrom:type];
+    NSString *path = self.rootPath;
+    path = [path stringByAppendingPathComponent:subPath];
+
+    if (ids.count == 0) {
+        //全部
+    }
+    if (ids.count == 1) {
+        //单个
+        NSString *lastPath = ids.lastObject;
+        path =[path stringByAppendingPathComponent:lastPath];
+    }
+    if (ids.count > 1) {
+        //多个
+        path = [path stringByAppendingString:@"?ids="];
+        for (NSString *identifier in ids) {
+            NSString *lastPath = [NSString stringWithFormat:@"%@,",identifier];
+            path = [path stringByAppendingString:lastPath];
+        }
+    }
+    return [self createRequestWithURLString:path setupUserToken:YES];
+}
+
+
+//辅助
+-(NSString*)stringFrom:(LibraryResourceType) type{
+    NSString *subPath;
+    switch (type) {
+        case LibraryResourceSongs:
+            subPath = @"songs";
+            break;
+        case LibraryResourceAlbums:
+            subPath = @"albums";
+            break;
+
+        case LibraryResourcePlaylists:
+            subPath = @"playlists";
+            break;
+        case LibraryResourceMusicVideos:
+            subPath = @"music-videos";
+            break;
+
+            case LibraryResourceArtists:
+            subPath = @"artists";
+            break;
+    }
+    return subPath;
+}
+@end
+
+#pragma mark -  管理库资源实现
+@implementation PersonalizedRequestFactory(ManagerLibrarySource)
+
+-(NSURLRequest *)managerLibrarySourcesWithOperation:(ManagerLibraryOperation)operation
+                                       resourceType:(LibraryResourceType)type
+                                              andId:(NSString *)identifier {
+
+    NSString *subPath = [self stringFrom:type];
+    NSString *path = [self.rootPath stringByAppendingPathComponent:@"library"];
+
+    //增加
+    if (operation == ManagerLibraryAddOperation) {
+        path = [path stringByAppendingString:@"?ids"];
+        NSString *lastPath = [NSString stringWithFormat:@"[%@]=%@",subPath,identifier];
+        path =[path stringByAppendingString:lastPath];
+
+        NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+        [request setHTTPMethod:@"POST"];
+        return request;
+    }else{
+        //删除
+        path = [path stringByAppendingPathComponent:subPath];
+        path = [path stringByAppendingPathComponent:identifier];
+        NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+        [request setHTTPMethod:@"DELETE"];
+        return request;
+    }
+}
+
+@end
+
+
+#pragma mark - 修改库播放列表实现
+@implementation PersonalizedRequestFactory(ModifyLibraryPlaylists)
+
+- (NSURLRequest *)modifyLibraryPlaylistsWithOperation:(ModifyOperationType)type
+                                               fromId:(NSString *)playlistIdnetifier
+                                       andJSONPayload:(NSDictionary *)jsonPlayload {
+
+    NSString *path = [self.rootPath stringByAppendingPathComponent:@"library/playlists"];
+    NSData *bodyData = [NSJSONSerialization dataWithJSONObject:jsonPlayload options:NSJSONWritingSortedKeys error:nil];
+
+    switch (type) {
+        case ModifyOperationCreateNewLibraryPlaylist:{
+
+            NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES ];
+            [request setHTTPMethod:@"POST"];
+            [request setHTTPBody:bodyData];
+            return request;
+        }
+            break;
+
+        case ModifyOperationReplaceLibraryPlaylistAttributes:{
+            path = [path stringByAppendingPathComponent:playlistIdnetifier];
+            NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+            [request setHTTPMethod:@"PUT"];
+            [request setHTTPBody:bodyData];
+            return request;
+        }
+            break;
+
+        case ModifyOperationUpdateLibraryPlaylistAttributes:{
+            path = [path stringByAppendingPathComponent:playlistIdnetifier];
+            NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+            [request setHTTPBody:bodyData];
+            [request setHTTPMethod:@"PATCH"];
+            return request;
+        }
+            break;
+
+        case ModifyOperationAddTracksToLibraryPlaylist:{
+            path = [path stringByAppendingPathComponent:playlistIdnetifier];
+            path = [path stringByAppendingPathComponent:@"tracks"];
+            NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+            [request setHTTPBody:bodyData];
+            [request setHTTPMethod:@"POST"];
+            return request;
+        }
+            break;
+
+        case ModifyOperationReplaceTrackListForLibraryPlaylist:{
+            path = [path stringByAppendingPathComponent:playlistIdnetifier];
+            path = [path stringByAppendingPathComponent:@"tracks"];
+            NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+            [request setHTTPBody:bodyData];
+            [request setHTTPMethod:@"PUT"];
+            return request;
+        }
+            break;
+    }
+}
+
+-(NSURLRequest *)deleteTracksFromLibraryPlaylistIdentifier:(NSString *)identifier types:(DeleteTrackType)type ids:(NSString *)deleteIdentifier mode:(DeleteMode)mode{
+
+    //拼接参数
+    NSString *path = [self.rootPath stringByAppendingPathComponent:@"library"];
+    path = [path stringByAppendingPathComponent:@"playlists"];
+    path = [path stringByAppendingPathComponent:identifier];
+    path = [path stringByAppendingPathComponent:@"tracks?ids"];
+    switch (type) {
+        case DeleteLibrarySongsType:
+            path = [path stringByAppendingString:@"[library-songs]="];
+            break;
+        case DeleteLibraryMusicVideosType:
+            path = [path stringByAppendingString:@"[library-music-videos]="];
+            break;
+    }
+
+    path = [path stringByAppendingString:deleteIdentifier];
+
+    switch (mode) {
+        case DeleteModeFirst:
+            path = [path stringByAppendingString:@"&mode=first"];
+            break;
+        case DeleteModeLast:
+            path = [path stringByAppendingString:@"&mode=last"];
+            break;
+        case DeleteModeAll:
+            path = [path stringByAppendingString:@"&mode=all"];
+            break;
+    }
+    Log(@"delete path=%@",path);
+    NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+    [request setHTTPMethod:@"DELETE"];
+    return request;
+}
+
+
+@end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

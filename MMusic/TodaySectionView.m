@@ -6,12 +6,12 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "HeadCell.h"
+#import "TodaySectionView.h"
 
-@interface HeadCell()
+@interface TodaySectionView()
 @end
 
-@implementation HeadCell
+@implementation TodaySectionView
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {

@@ -34,9 +34,10 @@
 @property(nonatomic, strong) UICollectionView *typesView;
 //内容滚动视图
 @property(nonatomic, strong) UIScrollView *scrollView;
+//视图控制器 模型
 @property(nonatomic, strong) ModelController *modelCtr;
+//子控制器数组
 @property(nonatomic, strong) NSArray<UIViewController*> *contentVCs;
-
 //all data
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,ResponseRoot*>*> *results;  //刷选搜索到的所有数据
 @end

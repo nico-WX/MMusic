@@ -12,6 +12,8 @@
 
 #import "NSObject+Tool.h"
 #import "AuthorizationManager.h"
+#import "PersonalizedRequestFactory.h"
+
 
 #import "Album.h"
 #import "Artist.h"
@@ -285,6 +287,17 @@ extern NSString *userTokenIssueNotification;
         [hud hideAnimated:YES afterDelay:4.0f];
     });
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 @end

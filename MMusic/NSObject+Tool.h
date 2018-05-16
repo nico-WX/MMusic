@@ -52,9 +52,11 @@
 -(void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL) cache;
 
 -(void)showHUDToMainWindow;
+/**主屏幕显示提示信息*/
 -(void)showHUDToMainWindowFromText:(NSString*) text;
 
-
+-(void)addRatingSongFromIdentifier:(NSString*) songIdentifier toPlaylist:(NSString*) playlistIdentifier;
+-(void)deleteRatingSongFromeIdentifier:(NSString*) songIdentifier fromPlaylist:(NSString*) playlistIdentifier;
 
 
 

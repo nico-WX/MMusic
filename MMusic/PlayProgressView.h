@@ -10,9 +10,9 @@
 
 @interface PlayProgressView : UIView
 /**已经播放的时间*/
-@property(nonatomic, strong) UILabel *currentTime;
+@property(nonatomic, strong, readonly) UILabel *currentTime;
 /**歌曲时长*/
-@property(nonatomic, strong) UILabel *durationTime;
+@property(nonatomic, strong, readonly) UILabel *durationTime;
 /**播放进度条*/
-@property(nonatomic, strong) UISlider *progressSlider;
+@property(nonatomic, strong, readonly) UISlider *progressSlider;
 @end

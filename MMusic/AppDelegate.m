@@ -102,6 +102,7 @@
                     }else{
                         //已订阅 请求基本的userToken  等
                         self.auth = [AuthorizationManager shareAuthorizationManager];
+                        //Log(@"user =%@",self.auth.userToken);
                     }
                 }];
             }

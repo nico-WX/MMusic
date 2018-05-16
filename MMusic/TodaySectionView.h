@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 /**今日推荐集合视图 节头View*/
-@interface HeadCell : UICollectionReusableView
+@interface TodaySectionView : UICollectionReusableView
 @property(nonatomic, strong) UILabel *titleLabel;
 @end
