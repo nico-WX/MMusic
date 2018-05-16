@@ -9,6 +9,11 @@
 #import "PersonalizedRequestFactory.h"
 #import "NSObject+Tool.h"
 
+@interface PersonalizedRequestFactory()
+/**根路径*/
+@property(nonatomic,copy) NSString *rootPath;
+@end
+
 @implementation PersonalizedRequestFactory
 
 -(instancetype)init{
@@ -191,7 +196,7 @@
 
 #pragma mark - PersonalizedRequestFactory(FetchLirraryResource)
 /**获取库资源*/
-@implementation PersonalizedRequestFactory(FetchLirraryResource)
+@implementation PersonalizedRequestFactory(FetchLibraryResource)
 
 -(NSURLRequest*)fetchLibraryResourceWithType:(LibraryResourceType)type fromIds:(NSArray<NSString *> *)ids{
     NSString *subPath = [self stringFrom:type];
@@ -365,7 +370,6 @@
             path = [path stringByAppendingString:@"&mode=all"];
             break;
     }
-    Log(@"delete path=%@",path);
     NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
     [request setHTTPMethod:@"DELETE"];
     return request;
@@ -374,7 +378,124 @@
 
 @end
 
+#pragma mark 管理Rating 实现
+@implementation PersonalizedRequestFactory(ManagerRating)
+-(NSURLRequest *)managerCatalogAndLibraryRatingsWithOperatin:(RatingsOperation)operation
+                                               resourcesType:(ResourcesType)type
+                                                      andIds:(NSArray<NSString *> *)ids{
 
+    NSString *path = [self.rootPath stringByAppendingPathComponent:@"ratings"];
+
+    //资源类型
+    NSString *subPath = [self subPathFromType:type];
+    path = [path stringByAppendingPathComponent:subPath];
+    if (ids.count == 1) {
+        path = [path stringByAppendingPathComponent:[ids lastObject]];
+    }
+    if (ids.count > 1) {
+        path = [path stringByAppendingString:@"?ids="];
+        for (NSString *identifier in ids) {
+            NSString *ID = [NSString stringWithFormat:@"%@,",identifier];
+            path = [path stringByAppendingString:ID];
+        }
+    }
+
+    NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+    switch (operation) {
+        case RatingsAddOperation:{
+            [request setHTTPMethod:@"PUT"];
+        }
+            break;
+        case RatingsGetOperation:{
+            //默认GET
+        }
+            break;
+        case RatingsDeleteOperation:{
+            [request setHTTPMethod:@"DELETE"];
+        }
+            break;
+    }
+
+    return request;
+}
+
+-(NSString *) subPathFromType:(ResourcesType) type{
+    switch (type) {
+        case ResourcesPersonalAlbumType:{
+            return @"albums";
+        }
+            break;
+        case ResourcesPersonalStationType:{
+            return @"stations";
+        }
+            break;
+        case ResourcesPersonalSongType:{
+            return @"songs";
+        }
+            break;
+        case ResourcesPersonalLibrarySongType:{
+            return @"library-songs";
+        }
+            break;
+        case ResourcesPersonalPlaylistsType:{
+            return @"playlists";
+        }
+            break;
+        case ResourcesPersonalLibraryPlaylistsType:{
+            return @"library-playlists";
+        }
+            break;
+
+        case ResourcesPersonalMusicVideosType:{
+            return @"music-videos";
+        }
+            break;
+        case ResourcesPersonalLibraryMusicVideosType:{
+            return @"library-music-videos";
+        }
+            break;
+    }
+}
+
+@end
+
+#pragma mark 获取推荐实现
+@implementation PersonalizedRequestFactory(FetchRecommendations);
+
+-(NSURLRequest *)fetchRecommendationsWithType:(FetchType)type andIds:(NSArray<NSString *> *)ids{
+    NSString *path = [self.rootPath stringByAppendingPathComponent:@"recommendations"];
+
+    switch (type) {
+        case FetchDefaultRecommendationsType:{
+            //默认直接请求
+        }
+            break;
+        case FetchAlbumRecommendationsType:{
+            path = [path stringByAppendingString:@"?type=albums"];
+        }
+            break;
+        case FetchPlaylistRecommendationsType:{
+            path = [path stringByAppendingString:@"?type=playlists"];
+        }
+            break;
+        case FetchAnRecommendatinsType:{
+            path = [path stringByAppendingPathComponent:ids.lastObject];
+        }
+            break;
+        case FetchMultipleRecommendationsType:{
+            path = [path stringByAppendingString:@"?ids="];
+            NSString *lastPath;
+            for (NSString *str in ids) {
+                lastPath = [NSString stringWithFormat:@"%@,",str];
+            }
+            path = [path stringByAppendingString:lastPath];
+        }
+            break;
+    }
+    return [self createRequestWithURLString:path setupUserToken:YES];
+}
+
+@end
 
 
 

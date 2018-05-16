@@ -85,9 +85,83 @@
 		3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		3B219FEC20AC60D1005675BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 79DB15000D3A6EEB4657198EC7B8DC90;
+			remoteInfo = "lottie-ios";
+		};
+		3B219FEE20AC60D1005675BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 69919329AD142DDD6128A4C73B01F14C;
+			remoteInfo = Masonry;
+		};
+		3B219FF020AC60D1005675BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E4EFF47AD9F461082FEC9BE3FC0C77CD;
+			remoteInfo = MBProgressHUD;
+		};
+		3B219FF220AC60D1005675BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 392A3EB18A2F96F68E84BA9929F3F195;
+			remoteInfo = MJExtension;
+		};
+		3B219FF420AC60D1005675BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0893DFEC74860A5BCF74FD69BA2A8297;
+			remoteInfo = MJRefresh;
+		};
+		3B219FF620AC60D1005675BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 07E7758A9883FA9B3D787CE20F21665C;
+			remoteInfo = NAKPlaybackIndicatorView;
+		};
+		3B219FF820AC60D1005675BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C317C6FE485F2FEC06E9F88E8A24D1F5;
+			remoteInfo = "Pods-MMusic";
+		};
+		3B219FFA20AC60D1005675BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BB0122DDED4833F8015169FA8E2D108D;
+			remoteInfo = pop;
+		};
+		3B219FFC20AC60D1005675BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EF6A5176DB87F01AFCD0FD8220D7CD45;
+			remoteInfo = SDWebImage;
+		};
+		3B219FFE20AC60D1005675BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3478B8D9D6E586FEA21E483A416B554E;
+			remoteInfo = VBFPopFlatButton;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		3A8F449D3A1F4F346C21DEC4 /* Pods-MMusic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MMusic.release.xcconfig"; path = "Pods/Target Support Files/Pods-MMusic/Pods-MMusic.release.xcconfig"; sourceTree = "<group>"; };
 		3B09CB922098A0BA00294851 /* TwitterHeart.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TwitterHeart.json; sourceTree = "<group>"; };
+		3B219FDF20AC60D1005675BA /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = ../Pods/Pods.xcodeproj; sourceTree = "<group>"; };
 		3B23AC731FF236A800F0A9CA /* TodayCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayCollectionViewController.h; sourceTree = "<group>"; };
 		3B23AC741FF236A800F0A9CA /* TodayCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayCollectionViewController.m; sourceTree = "<group>"; };
 		3B2D6EF92091F69200E1B22C /* ScreeningViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreeningViewController.h; sourceTree = "<group>"; };
@@ -263,6 +337,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		3B219FE020AC60D1005675BA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3B219FED20AC60D1005675BA /* liblottie-ios.a */,
+				3B219FEF20AC60D1005675BA /* libMasonry.a */,
+				3B219FF120AC60D1005675BA /* libMBProgressHUD.a */,
+				3B219FF320AC60D1005675BA /* libMJExtension.a */,
+				3B219FF520AC60D1005675BA /* libMJRefresh.a */,
+				3B219FF720AC60D1005675BA /* libNAKPlaybackIndicatorView.a */,
+				3B219FF920AC60D1005675BA /* libPods-MMusic.a */,
+				3B219FFB20AC60D1005675BA /* libpop.a */,
+				3B219FFD20AC60D1005675BA /* libSDWebImage.a */,
+				3B219FFF20AC60D1005675BA /* libVBFPopFlatButton.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		3B23AC721FF2363300F0A9CA /* Today */ = {
 			isa = PBXGroup;
 			children = (
@@ -309,9 +400,9 @@
 				3BDFCB57207CE3DE00D85021 /* ResultsSectionHeader.h */,
 				3BDFCB58207CE3DE00D85021 /* ResultsSectionHeader.m */,
 				3BB731D9207B743D00DC629B /* ResultsCell.h */,
-				3BB731DA207B743D00DC629B /* ResultsCell.m */,
 				3B4E3ACB208B91510042498C /* HintsCell.h */,
 				3B4E3ACC208B91510042498C /* HintsCell.m */,
+				3B219FDF20AC60D1005675BA /* Pods.xcodeproj */,
 				3B469ADC1FF2464D0035E138 /* TodayCell.h */,
 				3B469ADD1FF2464D0035E138 /* TodayCell.m */,
 				3B87992C204FF7E000EE9D2A /* TodaySectionView.h */,
@@ -426,6 +517,7 @@
 				3B9AA90F1FB4817F00720085 /* RequestFactory.m */,
 				3B4806741FC96585009035CD /* PersonalizedRequestFactory.h */,
 				3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */,
+				3BB731DA207B743D00DC629B /* ResultsCell.m */,
 				3B9AA9141FB588AF00720085 /* AuthorizationManager.h */,
 				3B9AA9151FB588AF00720085 /* AuthorizationManager.m */,
 				3B5371FC1FDBF50B009AFE47 /* NSObject+Tool.h */,
@@ -615,12 +707,91 @@
 			mainGroup = 3B9AA85E1FB04B5700720085;
 			productRefGroup = 3B9AA8681FB04B5700720085 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 3B219FE020AC60D1005675BA /* Products */;
+					ProjectRef = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				3B9AA8661FB04B5700720085 /* MMusic */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		3B219FED20AC60D1005675BA /* liblottie-ios.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "liblottie-ios.a";
+			remoteRef = 3B219FEC20AC60D1005675BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3B219FEF20AC60D1005675BA /* libMasonry.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libMasonry.a;
+			remoteRef = 3B219FEE20AC60D1005675BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3B219FF120AC60D1005675BA /* libMBProgressHUD.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libMBProgressHUD.a;
+			remoteRef = 3B219FF020AC60D1005675BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3B219FF320AC60D1005675BA /* libMJExtension.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libMJExtension.a;
+			remoteRef = 3B219FF220AC60D1005675BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3B219FF520AC60D1005675BA /* libMJRefresh.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libMJRefresh.a;
+			remoteRef = 3B219FF420AC60D1005675BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3B219FF720AC60D1005675BA /* libNAKPlaybackIndicatorView.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libNAKPlaybackIndicatorView.a;
+			remoteRef = 3B219FF620AC60D1005675BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3B219FF920AC60D1005675BA /* libPods-MMusic.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libPods-MMusic.a";
+			remoteRef = 3B219FF820AC60D1005675BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3B219FFB20AC60D1005675BA /* libpop.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libpop.a;
+			remoteRef = 3B219FFA20AC60D1005675BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3B219FFD20AC60D1005675BA /* libSDWebImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDWebImage.a;
+			remoteRef = 3B219FFC20AC60D1005675BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3B219FFF20AC60D1005675BA /* libVBFPopFlatButton.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libVBFPopFlatButton.a;
+			remoteRef = 3B219FFE20AC60D1005675BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		3B9AA8651FB04B5700720085 /* Resources */ = {

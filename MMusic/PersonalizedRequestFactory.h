@@ -9,24 +9,30 @@
 #import <Foundation/Foundation.h>
 
 
+/**个性化请求工厂*/
+@interface PersonalizedRequestFactory : NSObject
 
-/**个性化请求类型*/
+
+/**
+ 个人请求类型
+
+ - PersonalizedRotationContentType: 个人Rating 内容
+ - PersonalizedRecentlyPlayedType: 个人播放历史
+ - PersonalizedRecentStationsType: 电台播放历史
+ - PersonalizedDefaultRecommendationsType: 默认推荐
+ - PersonalizedAlbumRecommendationsType: 专辑推荐
+ - PersonalizedPlaylistRecommendationsType: 播放例表推荐
+ - PersonalizedRecommendationType: 推荐类型
+ - PersonalizedMultipleRecommendationType: 多个推荐
+ */
 typedef NS_ENUM(NSUInteger, PersonalizedType){
-    /**高度重复播放*/
     PersonalizedRotationContentType,
-    /**最近播放资源*/
     PersonalizedRecentlyPlayedType,
-    /**最近播放电台*/
     PersonalizedRecentStationsType,
-    /**默认推荐*/
     PersonalizedDefaultRecommendationsType,
-    /**推荐专辑*/
     PersonalizedAlbumRecommendationsType,
-    /**推荐播放列表*/
     PersonalizedPlaylistRecommendationsType,
-    /**单张推荐*/
     PersonalizedRecommendationType,
-    /**多张推荐*/
     PersonalizedMultipleRecommendationType,
 };
 
@@ -78,11 +84,6 @@ typedef NS_ENUM(NSUInteger, RatingsType){
     DeleteStationRatingsType,
 };
 
-/**个性化请求工厂*/
-@interface PersonalizedRequestFactory : NSObject
-/**根路径*/
-@property(nonatomic,copy) NSString *rootPath;
-
 /**
  创建个性化请求对象 注意:(单张推荐和多张推荐需要在ids中提供Identifier,其他请求设置空数组)
  @param type 请求资源的类型
@@ -101,9 +102,11 @@ typedef NS_ENUM(NSUInteger, RatingsType){
 
 @end
 
+
+
 #pragma mark - 获取库资源操作
 /**获取库资源*/
-@interface PersonalizedRequestFactory(FetchLirraryResource)
+@interface PersonalizedRequestFactory(FetchLibraryResource)
 
 /**库资源类型*/
 typedef NS_ENUM(NSUInteger, LibraryResourceType){
@@ -165,7 +168,6 @@ typedef NS_ENUM(NSUInteger,ManagerLibraryOperation){
  - ModifyOperationUpdateLibraryPlaylistAttributes: 更新播放列表属性
  - ModifyOperationAddTracksToLibraryPlaylist: 向播放例表添加Tracks
  - ModifyOperationReplaceTrackListForLibraryPlaylist: 替换播放列表Track
-
  */
 typedef NS_ENUM(NSUInteger,ModifyOperationType){
     ModifyOperationCreateNewLibraryPlaylist,
@@ -231,7 +233,101 @@ typedef NS_ENUM(NSUInteger, DeleteTrackType){
 
 
 
+#pragma mark - 管理Rating
 
+/**
+ 管理catalog 和 libraty rating
+ */
+@interface PersonalizedRequestFactory(ManagerRating)
+
+/**
+ Rating操作
+ - RatingsGetOperation: 获取Rating
+ - RatingsAddOperation: 增加Rating
+ - RatingsDeleteOperation: 删除Rating
+ */
+typedef NS_ENUM(NSUInteger, RatingsOperation){
+    RatingsGetOperation,
+    RatingsAddOperation,
+    RatingsDeleteOperation,
+};
+
+
+/**
+ rating管理资源类型
+
+ - ResourcesPersonalAlbumType:              个人专辑
+ - ResourcesPersonalMusicVideosType:        个人音乐视频
+ - ResourcesPersonalLibraryMusicVideosType: 个人库音乐视频
+ - ResourcesPersonalPlaylistsType:          个人播放列表
+ - ResourcesPersonalLibraryPlaylistsType:   个人库播放列表
+ - ResourcesPersonalSongType:               个人歌曲
+ - ResourcesPersonalLibrarySongType:        个人库歌曲
+ - ResourcesPersonalStationType:            个人电台
+ */
+typedef NS_ENUM(NSUInteger, ResourcesType){
+    ResourcesPersonalAlbumType,
+    ResourcesPersonalMusicVideosType,
+    ResourcesPersonalLibraryMusicVideosType,
+    ResourcesPersonalPlaylistsType,
+    ResourcesPersonalLibraryPlaylistsType,
+    ResourcesPersonalSongType,
+    ResourcesPersonalLibrarySongType,
+    ResourcesPersonalStationType
+};
+
+
+/**
+ 管理Rating
+
+ @param operation 操作类型
+ @param type 资源类型
+ @param ids 资源标识数组
+ @return 请求体
+ */
+-(NSURLRequest*) managerCatalogAndLibraryRatingsWithOperatin:(RatingsOperation) operation
+                                               resourcesType:(ResourcesType) type
+                                                      andIds:(NSArray<NSString*>*) ids;
+
+@end
+
+#pragma mark - 获取推荐
+
+
+/**
+ 获取推荐
+ */
+@interface PersonalizedRequestFactory(FetchRecommendations)
+
+
+/**
+ 获取类型
+
+ - FetchDefaultRecommendationsType: 默认推荐类型
+ - FetchAlbumRecommendationsType: 专辑推荐类型
+ - FetchPlaylistRecommendationsType: 播放列表类型
+ - FetchAnRecommendatinsType: 获取单个推荐类型(此时要传入推荐identifier)
+ - FetchMultipleRecommendationsType: 获取多个推荐类型(需要传入推荐identifier)
+ */
+typedef NS_ENUM(NSUInteger,FetchType){
+    FetchDefaultRecommendationsType,
+    FetchAlbumRecommendationsType,
+    FetchPlaylistRecommendationsType,
+    FetchAnRecommendatinsType,
+    FetchMultipleRecommendationsType
+};
+
+
+/**
+ 创建推荐获取请求
+
+ @param type 获取类型
+ @param ids 资源标识(如果需要)
+ @return 请求体
+ */
+-(NSURLRequest*) fetchRecommendationsWithType:(FetchType)type andIds:(NSArray<NSString*>*) ids;
+
+@end
 
 
 
