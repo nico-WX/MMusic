@@ -80,11 +80,11 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
         [self.navigationController pushViewController:lmCtr animated:YES];
     }
 
-    if (indexPath.row == 1) {
-        NSUInteger index = indexPath.row;
-        LibraryPlaylist *playlist = [self.playlists objectAtIndex:--index];
-
-    }
+//    if (indexPath.row == 1) {
+//        NSUInteger index = indexPath.row;
+//        LibraryPlaylist *playlist = [self.playlists objectAtIndex:--index];
+//
+//    }
 }
 
 #pragma mark - 请求所有播放列表

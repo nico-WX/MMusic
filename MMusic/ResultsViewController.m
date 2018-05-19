@@ -96,20 +96,19 @@ static NSString *const headerIdentifier = @"headerReuseID";
     ResponseRoot *root = [[self.results objectAtIndex:indexPath.section] allValues].firstObject;
     Resource *resource = [root.data objectAtIndex:indexPath.row];
 
-    //具体模型
-    Class cls = [self classForResourceType:resource.type];
-    id object = [cls instanceWithDict:resource.attributes];
 
-    cell.name.text = [object valueForKey:@"name"];
+
+    cell.name.text = [resource.attributes valueForKey:@"name"];
     //有艺人名称
-    if ([object respondsToSelector:@selector(artistName)]) {
-        cell.artistName.text = [object valueForKey:@"artistName"];
+
+    if ([resource.attributes valueForKey:@"artistName"]) {
+        cell.artistName.text = [resource.attributes valueForKey:@"artistName"];
     }else{
         cell.artistName.text = nil;
     }
 
     // 有海报
-    if ([object respondsToSelector:@selector(artwork)]) {
+    if ([resource.attributes valueForKey:@"artwork"]) {
         NSDictionary *artDict = [resource.attributes valueForKey:@"artwork"];
         Artwork *art = [Artwork instanceWithDict:artDict];
         [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:NO];

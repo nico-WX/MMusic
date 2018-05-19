@@ -128,7 +128,7 @@ static const CGFloat corner = 8.0f;
 
     //覆盖在中间层上
     [self.artworkView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(_midView).insets(UIEdgeInsetsMake(0, 0, 0, 0));
+        make.edges.mas_equalTo(self.midView).insets(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
 
 

@@ -133,7 +133,6 @@ typedef NS_OPTIONS(NSUInteger, SearchType){
  */
 - (NSURLRequest*)createRequestWithHref:(NSString*) href;
 
-
 /**
  创建搜索文本请求
  @param searchText 搜索文本

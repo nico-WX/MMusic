@@ -110,7 +110,7 @@
 
             case SKCloudServiceAuthorizationStatusDenied:{
                 //拒绝授权
-                [self showHUDTOMainWindowWithInfo:@"用户拒绝获取音乐库信息"];
+                [self showHUDTOMainWindowWithInfo:@"用户拒绝获取音乐库信息,请手动开启"];
             }
                 break;
             case SKCloudServiceAuthorizationStatusRestricted:

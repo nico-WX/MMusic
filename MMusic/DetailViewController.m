@@ -262,7 +262,11 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         PersonalizedRequestFactory *factort = [PersonalizedRequestFactory new];
         UIAlertAction *notLove = [UIAlertAction actionWithTitle:@"不喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             //DELETE
-            NSURLRequest *request = [factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
+            NSURLRequest *request = [factort managerCatalogAndLibraryRatingsWithOperatin:RatingsDeleteOperation
+                                                                           resourcesType:ResourcesPersonalSongType
+                                                                                  andIds:@[songID,]];
+
+            //[factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
             [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                 [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*)response];
             }];
@@ -270,7 +274,10 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
         UIAlertAction *love = [UIAlertAction actionWithTitle:@"喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             //PUT
-            NSURLRequest *request = [factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
+            NSURLRequest *request = [factort managerCatalogAndLibraryRatingsWithOperatin:RatingsAddOperation
+                                                                           resourcesType:ResourcesPersonalSongType
+                                                                                  andIds:@[songID,]];
+            //[factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
             [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                 [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*) response];
             }];

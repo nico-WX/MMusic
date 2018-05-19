@@ -47,6 +47,7 @@
 @end
 
 static CGFloat const spacing = 2.0f;
+
 static NSString *const cellId = @"cellReuseIdentifier";
 static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 @implementation ChartsViewController
@@ -79,11 +80,12 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
+    //布局 集合视图
     UIView *superview = self.view;
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);
         CGFloat tabH = 0.0f;
-        UIEdgeInsets padding = UIEdgeInsetsMake(y+4, 4, tabH, 4);
+        UIEdgeInsets padding = UIEdgeInsetsMake(y+spacing, spacing, tabH, spacing);
 
         make.edges.mas_equalTo(superview).with.insets(padding);
     }];
@@ -94,20 +96,23 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
     return self.results.count;
 }
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return [self.results objectAtIndex:section].data.count;
+    Chart *chart = [self.results objectAtIndex:section];
+    return chart.data.count;
 }
+
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 
     ChartsCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellId forIndexPath:indexPath];
+
     Chart *chart = [self.results objectAtIndex:indexPath.section];
     Resource *resource = [chart.data objectAtIndex:indexPath.row];
 
     cell.titleLabel.text = [resource.attributes valueForKey:@"name"];
-    self.title = chart.name;
+    //self.title = chart.name;
 
-    NSDictionary *artDict = [resource.attributes valueForKey:@"artwork"];
-    Artwork *art = [Artwork instanceWithDict:artDict];
+    Artwork *art = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
     [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:YES];
+
     if ([cell respondsToSelector:@selector(artistLabel)]) {
         NSString *artist;
         if ([resource.attributes valueForKey:@"artistName"]) {
@@ -118,12 +123,16 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
         cell.artistLabel.text = artist;
     }
 
+    cell.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1.0];
+
     //选中背景色
     UIView *selectedView = [[UIView alloc] initWithFrame:cell.bounds];
-    selectedView.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:0.88];
+    selectedView.backgroundColor = [UIColor colorWithRed:0.80 green:0.80 blue:0.80 alpha:0.80];
     cell.selectedBackgroundView = selectedView;
+
     return cell;
 }
+
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         ChartsSectionView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:sectionId forIndexPath:indexPath];
@@ -174,11 +183,15 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 }
 /**播放歌曲*/
 -(void)playSongQueue:(MPMusicPlayerQueueDescriptor*) queue atIndexPath:(NSIndexPath*) indexPath{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.playerVC.playerController setQueueWithDescriptor:queue];
-        [self.playerVC.playerController prepareToPlay];
-    });
+
     Song *startSong = [self.songs objectAtIndex:indexPath.row];
+    if (![startSong isEqualToNowPlayItem:self.playerVC.playerController.nowPlayingItem]) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self.playerVC.playerController setQueueWithDescriptor:queue];
+            [self.playerVC.playerController prepareToPlay];
+        });
+    }
+
     [self.playerVC showFromViewController:self withSongs:self.songs startItem:startSong];
 }
 
@@ -312,7 +325,7 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
         layout.minimumLineSpacing = spacing*2;        //行距
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
 
-        //实例 代理 数据源
+
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
@@ -322,7 +335,8 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
         [_collectionView registerClass:ChartsSectionView.class
             forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:sectionId];
-        //注册不同类型的cell
+
+        //注册cell
         switch (self.type) {
             case ChartsAlbumsType:
                 [_collectionView registerClass:AlbumCell.class forCellWithReuseIdentifier:cellId];

@@ -10,7 +10,6 @@
 
 #import "ChartsPageViewController.h"
 #import "ChartsViewController.h"
-#import "NewCardView.h"
 
 @interface ChartsPageViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>
 //分页视图控制器
@@ -37,7 +36,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-    //由于可能的类型只有: playlists, albums, songs, and music-videos.  所以这里生成3个对应的视图控制器
+    //由于可能的类型只有: playlists, albums, songs, and music-videos.  生成4个对应的视图控制器
     _albumsVC       = [[ChartsViewController alloc] initWithChartsType:ChartsAlbumsType];
     _playlistsVC    = [[ChartsViewController alloc] initWithChartsType:ChartsPlaylistsType];
     _musicVideosVC  = [[ChartsViewController alloc] initWithChartsType:ChartsMusicVideosType];
@@ -118,21 +117,13 @@
     return [self.pageList objectAtIndex:index];
 }
 
-////总页数
+//总页数
 -(NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController{
     return self.pageList.count;
 }
-//默认显示那一页
+//默认显示 第0页
 -(NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController{
     return 0;
-}
-
-
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    Log(@"end decelerating");
-}
--(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
-    Log(@"end Amination");
 }
 
 @end

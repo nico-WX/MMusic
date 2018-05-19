@@ -44,11 +44,13 @@ extern NSString *userTokenIssueNotification;
             break;
         case 401:
             //开发者Token 问题
-            Log(@"授权过期");
+            //Log(@"授权过期");
+            [self showHUDToMainWindowFromText:@"开发者令牌授权过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenExpireNotification object:nil];
             break;
         case 403:
             //userToken 问题
+            [self showHUDToMainWindowFromText:@"用户令牌授权过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:userTokenIssueNotification object:nil];
             break;
 
@@ -86,7 +88,8 @@ extern NSString *userTokenIssueNotification;
         [request setValue:developerToken forHTTPHeaderField:@"Authorization"];
     }else{
         [UIApplication sharedApplication] ;
-        Log(@"无法获得开发者Token!");
+        [self showHUDToMainWindowFromText:@"无法获得开发者Token"];
+        //Log(@"无法获得开发者Token!");
     }
 
     //个性化请求 设置UserToken 请求头
@@ -95,7 +98,10 @@ extern NSString *userTokenIssueNotification;
         if (userToken){
             [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];
             //Log(@"userToken: %@",userToken);
-        }else Log(@"无法获得userToken");
+        }else{
+            [self showHUDToMainWindowFromText:@"无法获得用户令牌"];
+            // Log(@"无法获得userToken");
+        }
     }
 }
 
@@ -110,7 +116,6 @@ extern NSString *userTokenIssueNotification;
     urlString = [urlString stringByRemovingPercentEncoding];
     urlString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     NSURL *url = [NSURL URLWithString:urlString];
-    //Log(@"url=%@",url);
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     //设置请求头
     [self setupAuthorizationWithRequest:request setupMusicUserToken:setupUserToken];
@@ -265,18 +270,6 @@ extern NSString *userTokenIssueNotification;
 }
 
 
--(void)showHUDToMainWindow{
-    UIView *view = [[UIApplication sharedApplication].delegate window];
-
-    CGRect rect = CGRectMake(100, 100, 100, 100);
-    UIView *redView = [[UIView alloc] initWithFrame:rect];
-    [redView setBackgroundColor:UIColor.redColor];
-    [redView setCenter:view.center];
-    [view addSubview:redView];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [redView removeFromSuperview];
-    });
-}
 - (void)showHUDToMainWindowFromText:(NSString *)text{
     dispatch_async(dispatch_get_main_queue(), ^{
         UIView *view = [[UIApplication sharedApplication].delegate window];
@@ -284,7 +277,7 @@ extern NSString *userTokenIssueNotification;
         [hud setRemoveFromSuperViewOnHide:YES];
         [hud.label setText:text];
         [hud setMode:MBProgressHUDModeCustomView];
-        [hud hideAnimated:YES afterDelay:4.0f];
+        [hud hideAnimated:YES afterDelay:3.0f];
     });
 }
 

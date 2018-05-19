@@ -23,6 +23,8 @@
 static NSString *const cellID = @"cellReuseIdentifier";
 @implementation SearchViewController
 
+@synthesize terms = _terms;
+
 #pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -81,7 +83,7 @@ static NSString *const cellID = @"cellReuseIdentifier";
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
         if ([json valueForKeyPath: @"results.terms"]) {
-            _terms = [json valueForKeyPath:@"results.terms"];
+            self->_terms = [json valueForKeyPath:@"results.terms"];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.hintsView reloadData];
             });

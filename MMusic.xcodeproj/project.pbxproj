@@ -20,7 +20,6 @@
 		3B3D99FA205EE0A0000F2E9E /* love-red.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B3D99F7205EE0A0000F2E9E /* love-red.png */; };
 		3B469ADE1FF2464D0035E138 /* TodayCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B469ADD1FF2464D0035E138 /* TodayCell.m */; };
 		3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */; };
-		3B4B866D207385140053BF18 /* NewCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B866B207385130053BF18 /* NewCardView.m */; };
 		3B4E3ACD208B91510042498C /* HintsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3ACC208B91510042498C /* HintsCell.m */; };
 		3B4E3AD6208F46B90042498C /* ChartsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD5208F46B90042498C /* ChartsViewController.m */; };
 		3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD8208F61E70042498C /* ChartsSongCell.m */; };
@@ -74,7 +73,6 @@
 		3BC33214209CA5ED0080D1B9 /* ScreeningSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC33213209CA5ED0080D1B9 /* ScreeningSection.m */; };
 		3BC3324520A04AE70080D1B9 /* ModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC3324420A04AE70080D1B9 /* ModelController.m */; };
 		3BC3324820A04E490080D1B9 /* ContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC3324720A04E490080D1B9 /* ContentViewController.m */; };
-		3BC4732A1FF23B380084016F /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3BC473291FF23B380084016F /* Info.plist */; };
 		3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */; };
 		3BD2FD9220A5C7FF00DB7F9C /* ChartsSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD2FD9120A5C7FE00DB7F9C /* ChartsSectionView.m */; };
 		3BDBBB2F2073D84600680CCB /* AlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBBB2E2073D84600680CCB /* AlbumCell.m */; };
@@ -181,8 +179,6 @@
 		3B469ADD1FF2464D0035E138 /* TodayCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayCell.m; sourceTree = "<group>"; };
 		3B4806741FC96585009035CD /* PersonalizedRequestFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersonalizedRequestFactory.h; sourceTree = "<group>"; };
 		3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PersonalizedRequestFactory.m; sourceTree = "<group>"; };
-		3B4B866B207385130053BF18 /* NewCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewCardView.m; sourceTree = "<group>"; };
-		3B4B866C207385130053BF18 /* NewCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewCardView.h; sourceTree = "<group>"; };
 		3B4E3ACB208B91510042498C /* HintsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HintsCell.h; sourceTree = "<group>"; };
 		3B4E3ACC208B91510042498C /* HintsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HintsCell.m; sourceTree = "<group>"; };
 		3B4E3AD4208F46B90042498C /* ChartsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsViewController.h; sourceTree = "<group>"; };
@@ -400,6 +396,7 @@
 				3BDFCB57207CE3DE00D85021 /* ResultsSectionHeader.h */,
 				3BDFCB58207CE3DE00D85021 /* ResultsSectionHeader.m */,
 				3BB731D9207B743D00DC629B /* ResultsCell.h */,
+				3BB731DA207B743D00DC629B /* ResultsCell.m */,
 				3B4E3ACB208B91510042498C /* HintsCell.h */,
 				3B4E3ACC208B91510042498C /* HintsCell.m */,
 				3B219FDF20AC60D1005675BA /* Pods.xcodeproj */,
@@ -457,8 +454,6 @@
 		3B7862A12060F8F700E9A26A /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				3B4B866C207385130053BF18 /* NewCardView.h */,
-				3B4B866B207385130053BF18 /* NewCardView.m */,
 				3BD2FD9020A5C7FE00DB7F9C /* ChartsSectionView.h */,
 				3BD2FD9120A5C7FE00DB7F9C /* ChartsSectionView.m */,
 				3B4E3ADD208F6E870042498C /* ChartsCell.h */,
@@ -517,7 +512,6 @@
 				3B9AA90F1FB4817F00720085 /* RequestFactory.m */,
 				3B4806741FC96585009035CD /* PersonalizedRequestFactory.h */,
 				3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */,
-				3BB731DA207B743D00DC629B /* ResultsCell.m */,
 				3B9AA9141FB588AF00720085 /* AuthorizationManager.h */,
 				3B9AA9151FB588AF00720085 /* AuthorizationManager.m */,
 				3B5371FC1FDBF50B009AFE47 /* NSObject+Tool.h */,
@@ -687,7 +681,7 @@
 		3B9AA85F1FB04B5700720085 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0910;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "com.😈";
 				TargetAttributes = {
 					3B9AA8661FB04B5700720085 = {
@@ -798,7 +792,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BC4732A1FF23B380084016F /* Info.plist in Resources */,
 				3B3D99F8205EE0A0000F2E9E /* love-gray.png in Resources */,
 				3B9AA8771FB04B5700720085 /* LaunchScreen.storyboard in Resources */,
 				3B09CB932098A0BA00294851 /* TwitterHeart.json in Resources */,
@@ -872,7 +865,6 @@
 				3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */,
 				3B9AA8D81FB452FF00720085 /* ResponseRoot.m in Sources */,
 				3B9AA8D71FB452FF00720085 /* Resource.m in Sources */,
-				3B4B866D207385140053BF18 /* NewCardView.m in Sources */,
 				3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */,
 				3B9AA8E01FB461CD00720085 /* Activity.m in Sources */,
 				3B9AA8D61FB452FF00720085 /* Relationship.m in Sources */,
@@ -969,6 +961,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -976,6 +969,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -1024,6 +1018,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -1031,6 +1026,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
