@@ -197,7 +197,8 @@ static PlayerViewController *_instance;
 }
 //通过音乐 id 获取song 对象;
 -(void)songFromIdentifier:(NSString*) identifier{
-    NSURLRequest *request = [[RequestFactory new] createRequestWithType:RequestSongType resourceIds:@[identifier,]];
+    NSURLRequest *request = [[RequestFactory new] fetchResourceFromType:ResourceSongsType andIds:@[identifier,]];
+    //createRequestWithType:RequestSongType resourceIds:@[identifier,]];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         if (json) {

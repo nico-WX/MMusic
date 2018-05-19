@@ -79,7 +79,7 @@ static NSString *const cellID = @"cellReuseIdentifier";
     return cell;
 }
 - (void)showHintsFromTerms:(NSString *)term{
-    NSURLRequest *request = [[RequestFactory new] createSearchHintsWithTerm:term];
+    NSURLRequest *request = [[RequestFactory new] fetchSearchHintsForTerms:term];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
         if ([json valueForKeyPath: @"results.terms"]) {

@@ -434,7 +434,6 @@
 				3B69895E20A99AA5000C3403 /* LibraryPlaylist.m */,
 				3B69896020A99DDC000C3403 /* LibrarySong.h */,
 				3B69896120A99DDC000C3403 /* LibrarySong.m */,
-				3B9AA8DD1FB4619500720085 /* Resource Object */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -570,6 +569,7 @@
 		3B9AA8CC1FB452AA00720085 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				3B9AA8DD1FB4619500720085 /* Resource Object */,
 				3B69895620A995EA000C3403 /* Library */,
 				3B9AA8DC1FB4618300720085 /* CoreObject */,
 			);

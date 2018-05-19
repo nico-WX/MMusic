@@ -202,11 +202,14 @@ static NSString *const headerIdentifier = @"headerReuseID";
 -(void) requestDataFromSearchTest:(NSString *) searchText{
     NSURLRequest *request = [[RequestFactory new] createSearchWithText:searchText];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        Log(@"path=   %@",request.URL.absoluteString);
         if (!error && data) {
-            NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
 
-            if (json) {
-                json = [json objectForKey:@"results"];
+            NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+            json = [json valueForKey:@"results"];
+
+            if (json.allKeys.count != 0)  {
+
                 NSMutableArray *resultsList = [NSMutableArray array];
                 //解析字典
                 [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
@@ -218,7 +221,11 @@ static NSString *const headerIdentifier = @"headerReuseID";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.tableView reloadData];
                 });
+            }else{
+                [self showHUDToMainWindowFromText:@"没有查找到数据"];
             }
+        }else{
+            Log(@"error ==%@",error);
         }
     }];
 }

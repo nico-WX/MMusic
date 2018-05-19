@@ -43,7 +43,11 @@
 @property(nonatomic, strong) NSArray<Song*> *songs;
 
 //data
-@property(nonatomic) NSArray<Chart*> *results;
+@property(nonatomic, strong) NSArray<Chart*> *results;
+
+//播放参数数组
+@property(nonatomic, strong) NSArray<NSDictionary*> *playParametersList;
+
 @end
 
 static CGFloat const spacing = 2.0f;
@@ -55,7 +59,7 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 #pragma mark - init
 -(instancetype)initWithChartsType:(ChartsType)type{
     if (self = [super init]) {
-        _request = [[RequestFactory new] createChartWithChartType:type];
+        _request = [[RequestFactory new] fetchChartsFromType:type];
         _type = type;
     }
     return self;
@@ -69,6 +73,7 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 
     [self.view addSubview:self.collectionView];
 
+    Log(@"url =%@",self.request.URL.absoluteString);
     [self requestDataFromRequest:self.request];
 }
 
@@ -153,11 +158,31 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
         case ChartsPlaylistsType:
             [self showAlbumsOrPlaylistsChartsDetailFromIndexPath:indexPath];
             break;
-        case ChartsMusicVideosType:
-            [self openToPlayQueueDescriptor:[self openToPlayMusicVideosAtIndexPath:indexPath]];
+            //MV 排行榜 选中跳转应用播放
+        case ChartsMusicVideosType:{
+            MPMusicPlayerPlayParametersQueueDescriptor *queue;
+            queue = [self playParametersQueueDescriptorFromParams:self.playParametersList startAtIndexPath:indexPath];
+            [self openToPlayQueueDescriptor:queue];
+            //[self openToPlayQueueDescriptor:[self openToPlayMusicVideosAtIndexPath:indexPath]];
+        }
             break;
-        case ChartsSongsType:
-            [self playSongQueue:[self openToPlayMusicVideosAtIndexPath:indexPath] atIndexPath:indexPath];
+
+            //歌曲排行榜, 选中直接播放
+        case ChartsSongsType:{
+            //[self playSongQueue:[self openToPlayMusicVideosAtIndexPath:indexPath] atIndexPath:indexPath];
+            Song *start = [self.songs objectAtIndex:indexPath.row];
+            //选中的歌曲正在播放中, 直接弹出视图
+            if (![start isEqualToNowPlayItem:self.playerVC.playerController.nowPlayingItem]) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    MPMusicPlayerPlayParametersQueueDescriptor *queue;
+                    queue = [self playParametersQueueDescriptorFromParams:self.playParametersList startAtIndexPath:indexPath];
+                    [self.playerVC.playerController setQueueWithDescriptor:queue];
+                    [self.playerVC.playerController prepareToPlay];
+                });
+            }
+            [self.playerVC showFromViewController:self withSongs:self.songs startItem:start];
+
+        }
             break;
     }
 }
@@ -168,31 +193,6 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
     Resource *resource = [[self.results objectAtIndex:indexPath.section].data objectAtIndex:indexPath.row];
     DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:resource];
     [self.navigationController pushViewController:detailVC animated:YES];
-}
-
-/**遍历出播放参数 初始化queue*/
-- (MPMusicPlayerQueueDescriptor*)openToPlayMusicVideosAtIndexPath:(NSIndexPath*) indexPath{
-    NSMutableArray *playParamsList = NSMutableArray.new;
-    for (NSDictionary *dict in [self.results firstObject].data) {
-        //部分无内容, 过滤
-        if ([dict valueForKey:@"attributes"]) {
-            [playParamsList addObject:[dict valueForKeyPath:@"attributes.playParams"]];
-        }
-    }
-    return [self playParametersQueueDescriptorFromParams:playParamsList startAtIndexPath:indexPath];
-}
-/**播放歌曲*/
--(void)playSongQueue:(MPMusicPlayerQueueDescriptor*) queue atIndexPath:(NSIndexPath*) indexPath{
-
-    Song *startSong = [self.songs objectAtIndex:indexPath.row];
-    if (![startSong isEqualToNowPlayItem:self.playerVC.playerController.nowPlayingItem]) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.playerVC.playerController setQueueWithDescriptor:queue];
-            [self.playerVC.playerController prepareToPlay];
-        });
-    }
-
-    [self.playerVC showFromViewController:self withSongs:self.songs startItem:startSong];
 }
 
 #pragma mark - MPSystemMusicPlayerController
@@ -396,5 +396,19 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
     }
     return _songs;
 }
+
+-(NSArray<NSDictionary *> *)playParametersList{
+    if (!_playParametersList) {
+        NSMutableArray<NSDictionary*> *temp = [NSMutableArray array];
+        [self.results enumerateObjectsUsingBlock:^(Chart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [obj.data enumerateObjectsUsingBlock:^(Resource * _Nonnull res, NSUInteger idx, BOOL * _Nonnull stop) {
+                [temp addObject:[res.attributes valueForKey:@"playParams"]];
+            }];
+        }];
+        _playParametersList = temp;
+    }
+    return _playParametersList;
+}
+
 
 @end

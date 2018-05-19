@@ -9,10 +9,26 @@
 #import <Foundation/Foundation.h>
 
 
+
+
+
 /**个性化请求工厂*/
 @interface PersonalizedRequestFactory : NSObject
 
 @end
+
+
+//#pragma mark - Fetch Library Resources
+//#pragma mark - Search the Library
+//#pragma mark - Fetch History
+//#pragma mark - Fetch Recent
+//#pragma mark - Fetch Library Recent
+//#pragma mark - Manage Library Resources
+//#pragma mark - Modify Library Playlists
+//#pragma mark - Manage Catalog and Library Ratings
+//#pragma mark - Fetch Recommendations
+
+
 
 #pragma mark - Fetch Library Resources (获取库资源操作)
 /**
@@ -82,7 +98,7 @@ typedef NS_ENUM(NSUInteger,ManagerLibraryOperation){
 
 
 
-#pragma mark - 修改库播放列表
+#pragma mark - Modify Library Playlists (修改库播放列表)
 @interface PersonalizedRequestFactory(ModifyLibraryPlaylists)
 
 /**
@@ -155,7 +171,7 @@ typedef NS_ENUM(NSUInteger, DeleteTrackType){
 
 
 
-#pragma mark - 管理Rating
+#pragma mark - Manage Catalog and Library Ratings (管理Rating,增删查)
 /**
  管理catalog 和 libraty rating
  */
@@ -212,7 +228,7 @@ typedef NS_ENUM(NSUInteger, ResourcesType){
 
 
 
-#pragma mark - 获取推荐
+#pragma mark - Fetch Recommendations (获取推荐)
 /**
  获取推荐
  */
