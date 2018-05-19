@@ -12,18 +12,14 @@
  普通请求工厂
  */
 @interface RequestFactory : NSObject
-/**根路径*/
-@property(nonatomic, copy) NSString *rootPath;
-/**当前用户地区商店代码*/
-@property(nonatomic, copy) NSString *storefront;
 
 /**
  通过子路径创建请求体
+
  @param href 子路径
  @return 请求体
  */
 - (NSURLRequest*)createRequestWithHref:(NSString*) href;
-
  @end
 
 
@@ -39,8 +35,9 @@
 //按 API分类
 #pragma mark - Get Started  (开启)
 #pragma mark - Fetch Storefront (获取地区商店)
-#pragma mark - Fetch Catalog Albums, MusicVideos, Playlists, Songs,Stations ,Artists, Curators, Activities,Apple Curators (通过ID获取资源)
 
+
+#pragma mark - Fetch Catalog Albums, MusicVideos, Playlists, Songs,Stations ,Artists, Curators, Activities,Apple Curators (通过ID获取资源)
 /**
  通过资源id 获取资源
  */
@@ -81,9 +78,7 @@ typedef NS_ENUM(NSUInteger,ResourceType){
 @end
 
 
-
 #pragma mark - Fetch Charts (获取排行榜)
-
 /**
  获取地区排行榜
  */
@@ -109,7 +104,6 @@ typedef NS_ENUM(NSUInteger, ChartsType){
 
 
 #pragma mark - Search the Catalog   (搜索)
-
 /**
  搜索目录
  */
@@ -160,7 +154,6 @@ typedef NS_OPTIONS(NSUInteger, SearchType){
  */
 -(NSURLRequest*)searchCatalogResourcesForText:(NSString*)text forType:(SearchType) type;
 
-
 /**
  创建搜索提示
 
@@ -169,7 +162,5 @@ typedef NS_OPTIONS(NSUInteger, SearchType){
  */
 -(NSURLRequest*)fetchSearchHintsForTerms:(NSString*) text;
 @end
-
-
 
 

@@ -10,14 +10,11 @@
 
 
 
-
-
 /**个性化请求工厂*/
 @interface PersonalizedRequestFactory : NSObject
-
 @end
 
-
+// API  分类列表
 //#pragma mark - Fetch Library Resources
 //#pragma mark - Search the Library
 //#pragma mark - Fetch History
@@ -38,6 +35,7 @@
 
 /**
  库资源类型
+
  - LibraryResourceAlbums:       库专辑
  - LibraryResourceArtists:      库艺人
  - LibraryResourceMusicVideos:  库音乐视频
@@ -63,6 +61,40 @@ typedef NS_ENUM(NSUInteger, LibraryResourceType){
 @end
 
 #pragma mark - Search the Library
+/**
+ 搜索库资源
+ */
+@interface PersonalizedRequestFactory(SearchLibrary)
+
+/**
+ 搜索资源库的类型
+
+ - SearchLibrarySongsType:      资源库音乐
+ - SearchLibraryAlbumsType:     资源库专辑
+ - SearchLibraryArtistsType:    资源库艺人
+ - SearchLibraryPlaylistsType:  资源库播放列表
+ - SearchLibraryMusicVideosType:资源库MV
+ */
+typedef NS_ENUM(NSUInteger, SearchLibraryType){
+    SearchLibrarySongsType,
+    SearchLibraryAlbumsType,
+    SearchLibraryArtistsType,
+    SearchLibraryPlaylistsType,
+    SearchLibraryMusicVideosType
+};
+
+
+/**
+ 搜索资源库中的资源
+
+ @param type 搜索类型
+ @param terms 搜索字段
+ @return 请求体
+ */
+-(NSURLRequest*) searchForLibrarySourceType:(SearchLibraryType)type terms:(NSString*) terms;
+
+@end
+
 #pragma mark - Fetch History
 #pragma mark - Fetch Recent
 #pragma mark - Fetch Library Recent
@@ -103,6 +135,7 @@ typedef NS_ENUM(NSUInteger,ManagerLibraryOperation){
 
 /**
  修改播放列表操作
+
  - ModifyOperationCreateNewLibraryPlaylist:             创建新的播放列表
  - ModifyOperationReplaceLibraryPlaylistAttributes:     替换播放列表属性(名称/描叙)
  - ModifyOperationUpdateLibraryPlaylistAttributes:      更新播放列表属性

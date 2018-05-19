@@ -33,14 +33,13 @@
 -(NSURLRequest*_Nonnull) createRequestWithURLString:(NSString*_Nonnull) urlString setupUserToken:(BOOL) setupUserToken;
 
 
-
 /**
  设置请求体中的 请求头信息
 
  @param request 请求体
  @param needSetupUserToken 是否需要设置用户令牌
  */
--(void)setupAuthorizationWithRequest:(NSMutableURLRequest *_Nonnull)request setupMusicUserToken:(BOOL)needSetupUserToken;
+-(void)setupAuthorizationWithRequest:(NSMutableURLRequest *_Nonnull)request setupUserToken:(BOOL) setupUserToken;
 
 
 
@@ -64,7 +63,6 @@
 -(void)dataTaskWithRequest:(NSURLRequest*_Nonnull) request completionHandler:(void(^_Nonnull)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler;
 
 
-
 /**
  替换ImageURL 中的Image大小参数 默认屏幕的缩放大小
 
@@ -75,9 +73,6 @@
  */
 -(NSString*_Nonnull) stringReplacingOfString:(NSString*_Nonnull) target height:(int) height width:(int) width;
 
-
-
-/**16进制颜色转换*/
 
 /**
 16进制颜色转换 RGBA

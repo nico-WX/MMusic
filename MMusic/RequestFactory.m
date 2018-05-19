@@ -8,11 +8,14 @@
 
 #import "RequestFactory.h"
 #import "AuthorizationManager.h"
-#import "NSObject+Tool.h"
 
-extern NSString *userTokenUserDefaultsKey ;
-extern NSString *developerTokenDefaultsKey;
-extern NSString *storefrontDefaultsKey;
+
+@interface RequestFactory()
+/**根路径*/
+@property(nonatomic, copy) NSString *rootPath;
+/**当前用户地区商店代码*/
+@property(nonatomic, copy) NSString *storefront;
+@end
 
 @implementation RequestFactory
 
@@ -37,6 +40,7 @@ extern NSString *storefrontDefaultsKey;
 
 @end
 
+#pragma mark - 获取资源分类
 @implementation RequestFactory(FetchResource)
 -(NSURLRequest *)fetchResourceFromType:(ResourceType)type andIds:(NSArray<NSString *> *)ids{
     NSString *path = self.rootPath;
@@ -51,7 +55,6 @@ extern NSString *storefrontDefaultsKey;
             [path stringByAppendingString:arg];
         }
     }
-    Log(@"path== %@",path);
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
 -(NSString*) subPathFromType:(ResourceType) type{
@@ -89,8 +92,7 @@ extern NSString *storefrontDefaultsKey;
 }
 @end
 
-
-
+#pragma mark - 获取排行榜分类
 @implementation RequestFactory(FetchCharts)
 -(NSURLRequest *)fetchChartsFromType:(ChartsType)type{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"charts?types="];
@@ -111,10 +113,10 @@ extern NSString *storefrontDefaultsKey;
     
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
-
 @end
 
 
+#pragma mark - 搜索分类
 @implementation RequestFactory(SearchCatalog)
 -(NSURLRequest *)createSearchWithText:(NSString *)text{
     return [self searchCatalogResourcesForText:text forType:SearchDefaultsType];

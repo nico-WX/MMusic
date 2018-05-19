@@ -80,7 +80,7 @@ extern NSString *userTokenIssueNotification;
 }
 
 /**设置请求头*/
--(void)setupAuthorizationWithRequest:(NSMutableURLRequest *)request setupMusicUserToken:(BOOL)needSetupUserToken{
+-(void)setupAuthorizationWithRequest:(NSMutableURLRequest *)request setupUserToken:(BOOL)needSetupUserToken{
     //设置开发者Token 请求头
     NSString *developerToken = [AuthorizationManager shareAuthorizationManager].developerToken;
     if (developerToken) {
@@ -118,28 +118,14 @@ extern NSString *userTokenIssueNotification;
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     //设置请求头
-    [self setupAuthorizationWithRequest:request setupMusicUserToken:setupUserToken];
+    [self setupAuthorizationWithRequest:request setupUserToken:setupUserToken];
     return request;
 }
 
-/**模型中的类型 映射*/
--(Class) classForResourceType:(NSString*)type{
-    Class cls;
-    if ([type isEqualToString:@"activities"])       cls = Activity.class;
-    if ([type isEqualToString:@"artists"])          cls = Artist.class;
-    if ([type isEqualToString:@"apple-curators"])   cls = AppleCurator.class;
-    if ([type isEqualToString:@"albums"])           cls = Album.class;
-    if ([type isEqualToString:@"curators"])         cls = Curator.class;
-    if ([type isEqualToString:@"songs"])            cls = Song.class;
-    if ([type isEqualToString:@"playlists"])        cls = Playlist.class;
-    if ([type isEqualToString:@"music-videos"])     cls = MusicVideo.class;
-    if ([type isEqualToString:@"stations"])         cls = Station.class;
-    return cls;
-}
 
 -(void)showImageToView:(UIImageView *)imageView withImageURL:(NSString *)url cacheToMemory:(BOOL)cache{
     dispatch_async(dispatch_get_main_queue(), ^{
-        //cell 重用时,上次没加载完成的hud 未能隐藏, 遍历隐藏
+        //cell 重用时,上次没加载完成的hud 未能隐藏, 遍历删除
         for (UIView *view in imageView.subviews) {
             if ([view isKindOfClass:UIActivityIndicatorView.class]) {
                 UIActivityIndicatorView *hud = (UIActivityIndicatorView*) view;
@@ -258,9 +244,10 @@ extern NSString *userTokenIssueNotification;
 }
 
 
-- (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueDescriptorFromParams:(NSArray<NSDictionary *> *)playParamses startAtIndexPath:(NSIndexPath *)indexPath{
+- (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueDescriptorFromParams:(NSArray<NSDictionary *> *)playParamses
+                                                                      startAtIndexPath:(NSIndexPath *)indexPath{
     NSMutableArray *list = NSMutableArray.new;
-    for (NSDictionary * playParams in playParamses ) {
+    for (NSDictionary * playParams in playParamses) {
         MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:playParams];
         [list addObject:parameters];
     }

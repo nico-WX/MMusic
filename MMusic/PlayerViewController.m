@@ -22,6 +22,7 @@
 #import "NSObject+Tool.h"
 
 @interface PlayerViewController ()
+@property(nonatomic, strong) PersonalizedRequestFactory *factory;
 /**播放器UI*/
 @property(nonatomic, strong) PlayerView *playerView;
 /**定时获取播放时间,更新UI*/
@@ -220,6 +221,14 @@ static PlayerViewController *_instance;
 }
 
 #pragma mark - getter
+
+-(PersonalizedRequestFactory *)factory{
+    if (!_factory) {
+        _factory = [PersonalizedRequestFactory new];
+    }
+    return _factory;
+}
+
 -(MPMusicPlayerController *)playerController{
     if (!_playerController) {
         _playerController = [MPMusicPlayerController systemMusicPlayer];
@@ -376,10 +385,37 @@ static PlayerViewController *_instance;
     }];
 
 }
+//@{@"name":@"Rating",@"description":@"My description"}
+-(void) createPlaylistForDict:(NSString*) dict{
+    NSDictionary *playload = @{@"attributes":dict,};
+    [self createNewLibraryPlaylistsForPlayload:playload];
+}
 
-//-(void) addRatingWithType:(RatingsType)operationType resourceIds:(NSArray*) ids{
-//    
-//}
+-(void) createNewLibraryPlaylistsForPlayload:(NSDictionary*) playload{
+    NSURLRequest *request = [self.factory modifyLibraryPlaylistsWithOperation:ModifyOperationCreateNewLibraryPlaylist
+                                                                       fromId:nil
+                                                               andJSONPayload:playload];
+
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+
+    }];
+}
+
+-(void) addSongToPlaylistsForPlaylistsIdentifier:(NSString*) playlistID playload:(NSDictionary*) playload{
+    NSURLRequest *request = [self.factory modifyLibraryPlaylistsWithOperation:ModifyOperationAddTracksToLibraryPlaylist
+                                                                       fromId:playlistID
+                                                               andJSONPayload:playload];
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+
+    }];
+
+}
+
+-(NSString*) fetchPlaylistForPlaylistName:(NSString*) playlistName{
+   
+
+    return @"1111111";
+}
 
 
 @end

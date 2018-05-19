@@ -24,21 +24,6 @@
     }
     return self;
 }
-
-#pragma mark - 映射不同的请求类型到 具体路径
-/**解析字符串数组参数 并拼接返回*/
--(NSString *) resolveStringArrayWithArray:(NSArray<NSString*> *) ids{
-    NSString *string = [NSString string];
-    if (ids.count == 1) {
-        string = ids.lastObject;
-    }else{
-        for (NSString *str in ids ) {
-            string = [string stringByAppendingFormat:@"%@,",str];
-        }
-    }
-    return string;
-}
-
 @end
 
 
@@ -97,6 +82,36 @@
 }
 @end
 
+#pragma mark - 搜搜资源库
+@implementation PersonalizedRequestFactory(SearchLibrary)
+- (NSURLRequest *)searchForLibrarySourceType:(SearchLibraryType)type terms:(NSString *)terms{
+    NSString *path = [self.rootPath stringByAppendingPathComponent:@"library"];
+    path = [path stringByAppendingPathComponent:@"search?term="];
+    path = [path stringByAppendingString:terms];
+
+    switch (type) {
+        case SearchLibrarySongsType:
+            path = [path stringByAppendingString:@"library-songs"];
+            break;
+        case SearchLibraryAlbumsType:
+            path = [path stringByAppendingString:@"library-albums"];
+            break;
+        case  SearchLibraryArtistsType:
+            path = [path stringByAppendingString:@"library-artists"];
+            break;
+        case  SearchLibraryPlaylistsType:
+            path = [path stringByAppendingString:@"library-playlists"];
+            break;
+        case SearchLibraryMusicVideosType:
+            path = [path stringByAppendingString:@"library-music-videos"];
+            break;
+    }
+    return [self createRequestWithURLString:path setupUserToken:YES];
+}
+
+@end
+
+
 #pragma mark -  管理库资源实现
 @implementation PersonalizedRequestFactory(ManagerLibrarySource)
 
@@ -141,7 +156,7 @@
 
     switch (type) {
         case ModifyOperationCreateNewLibraryPlaylist:{
-
+            //创建新的  不用identitier
             NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES ];
             [request setHTTPMethod:@"POST"];
             [request setHTTPBody:bodyData];
