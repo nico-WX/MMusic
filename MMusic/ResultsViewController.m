@@ -10,39 +10,33 @@
 #import <Masonry.h>
 
 #import "ResultsViewController.h"
-#import "DetailViewController.h"
-#import "PlayerViewController.h"
-#import "ResultsSectionHeader.h"
-#import "ResultsCell.h"
+#import "ResultsContentViewController.h"
+#import "ClassifyCell.h"
 
 #import "NSObject+Tool.h"
 #import "RequestFactory.h"
 
 #import "ResponseRoot.h"
-#import "Resource.h"
-#import "Artist.h"
-#import "Activity.h"
-#import "Artwork.h"
-#import "Album.h"
-#import "Playlist.h"
-#import "MusicVideo.h"
-#import "Station.h"
 
 #pragma mark - property
-@interface ResultsViewController ()<UITableViewDelegate, UITableViewDataSource,MPSystemMusicPlayerController>
-@property(nonatomic, strong) UITableView *tableView;
+@interface ResultsViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UICollectionViewDelegate,UICollectionViewDataSource>
+
+@property(nonatomic, assign) NSUInteger currentIndex;
+//资源分类指示视图
+@property(nonatomic, strong) UICollectionView *classifyView;
+
+//分页控制器
+@property(nonatomic, strong) UIPageViewController *pageViewController;
+
 @property(nonatomic, strong) NSString *searchText;
 //数据
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,ResponseRoot*> *> *results;
 @end
 
+static NSString * const cellID = @"colletionCellReuseId";
 @implementation ResultsViewController
 
-static NSString *const cellIdentifier = @"cellReuseIdentifier";
-static NSString *const headerIdentifier = @"headerReuseID";
-
 #pragma mark - init
-
 - (instancetype)initWithSearchText:(NSString *)searchText{
     if (self = [super init]) {
         _searchText = searchText;
@@ -55,9 +49,15 @@ static NSString *const headerIdentifier = @"headerReuseID";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
-    [self requestDataFromSearchTest:self.searchText];
+    [self requestDataFromSearchText:self.searchText];
 
-    [self.view addSubview:self.tableView];
+    //搜索分类视图
+    [self.view addSubview:self.classifyView];
+
+    //分页控制器
+    [self addChildViewController:self.pageViewController];
+    [self.view addSubview:self.pageViewController.view];
+    [self.pageViewController didMoveToParentViewController:self];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -68,143 +68,25 @@ static NSString *const headerIdentifier = @"headerReuseID";
     [super viewWillAppear:animated];
 
     UIView *superview = self.view;
-    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        CGFloat navH = CGRectGetMaxY(self.navigationController.navigationBar.frame);
-        CGFloat tabH = CGRectGetHeight(self.tabBarController.tabBar.frame);
-        UIEdgeInsets padding = UIEdgeInsetsMake(navH, 0, tabH, 0);
-        make.edges.mas_equalTo(superview).with.insets(padding);
+    __weak typeof(self) weakSelf = self;
+    UIEdgeInsets padding = UIEdgeInsetsMake(1, 4, 1, 4);
+    [self.pageViewController.view mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.classifyView.mas_bottom).offset(padding.top);
+        make.left.mas_equalTo(superview.mas_left).offset(padding.left);
+        make.right.mas_equalTo(superview.mas_right).offset(-padding.right);
+
+        CGFloat tabBarH = CGRectGetHeight(weakSelf.tabBarController.tabBar.frame);
+        make.bottom.mas_equalTo(superview.mas_bottom).offset(-(tabBarH+padding.bottom));
     }];
 }
 
-#pragma mark - UITableViewDataSource
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return self.results.count;
-}
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    //艺人返0 cell
-    if ([[self.results objectAtIndex:section] valueForKey:@"artists"]) {
-        return 0;
-    }
 
-    ResponseRoot *root = [[self.results objectAtIndex:section] allValues].firstObject;
-    return root.data.count;
-}
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ResultsCell *cell = (ResultsCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-
-    //数据对象
-    ResponseRoot *root = [[self.results objectAtIndex:indexPath.section] allValues].firstObject;
-    Resource *resource = [root.data objectAtIndex:indexPath.row];
-
-
-
-    cell.name.text = [resource.attributes valueForKey:@"name"];
-    //有艺人名称
-
-    if ([resource.attributes valueForKey:@"artistName"]) {
-        cell.artistName.text = [resource.attributes valueForKey:@"artistName"];
-    }else{
-        cell.artistName.text = nil;
-    }
-
-    // 有海报
-    if ([resource.attributes valueForKey:@"artwork"]) {
-        NSDictionary *artDict = [resource.attributes valueForKey:@"artwork"];
-        Artwork *art = [Artwork instanceWithDict:artDict];
-        [self showImageToView:cell.artworkView withImageURL:art.url cacheToMemory:NO];
-    }else{
-        cell.artworkView.image = nil;
-    }
-    return cell;
-}
-
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    ResultsSectionHeader *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:headerIdentifier];
-    //艺人headerView返回空
-    if ([[self.results objectAtIndex:section] valueForKey:@"artists"]) {
-        return nil;
-    }
-
-    NSDictionary<NSString*,ResponseRoot*> *dict = [self.results objectAtIndex:section];
-    ResponseRoot *root = [dict allValues].firstObject;
-
-    header.title.text = [dict allKeys].firstObject;
-
-    if (!root.next) {
-        header.more.hidden = YES;
-    }else{
-        header.more.hidden = NO;
-            //按钮点击事件
-        [header.more handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-            //按钮动画交互提示
-            [header.more animateToType:buttonDownBasicType];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                //加载 下一页
-                [header.more animateToType:buttonMinusType];
-                [self loadNextPageWithHref:root.next];
-            });
-        }];
-    }
-    return header;
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    if ([[self.results objectAtIndex:section] valueForKey:@"artists"]) {
-        return 0.0f;
-    }
-    return 44.0f;
-}
-
-#pragma mark - UITableViewDelegate
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    ResponseRoot *root = [[self.results objectAtIndex:indexPath.section] allValues].firstObject;
-    Resource *resource = [root.data objectAtIndex:indexPath.row];
-
-    //确定操作 专辑和播放列表弹出详细视图  其他直接播放
-    NSString *type = resource.type;
-
-    // album  / playlist
-    if ([type isEqualToString:@"albums"] || [type isEqualToString:@"playlists"]) {
-        DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
-        [self.navigationController pushViewController:detail animated:YES];
-    }
-
-    //mv
-    if ([type isEqualToString:@"music-videos"]) {
-        MusicVideo *mv = [MusicVideo instanceWithDict:resource.attributes];
-        [self openToPlayQueueDescriptor:[self playParametersQueueDescriptorFromParams:@[mv.playParams,] startAtIndexPath:indexPath]];
-    }
-
-    //song / station
-    if ([type isEqualToString:@"songs"] || [type isEqualToString:@"stations"]) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSDictionary *dict = [resource.attributes valueForKeyPath:@"playParams"];
-            MPMusicPlayerController *playCtr =[MPMusicPlayerController systemMusicPlayer];
-            [playCtr setQueueWithDescriptor:[self playParametersQueueDescriptorFromParams:@[dict,] startAtIndexPath:indexPath]];
-            [playCtr play];
-         });
-    }
-}
-
-#pragma mark - MPSystemMusicPlayerController
-- (void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor{
-    UIApplication *app = [UIApplication sharedApplication];
-    NSURL *url = [NSURL URLWithString:@"Music:prefs:root=MUSIC"];
-    if ([app canOpenURL:url]) {
-        [app openURL:url options:@{} completionHandler:^(BOOL success) {
-            [[MPMusicPlayerController systemMusicPlayer] setQueueWithDescriptor:queueDescriptor];
-            [[MPMusicPlayerController systemMusicPlayer] play];
-        }];
-    }
-}
-
-#pragma mark - Tool Method
--(void) requestDataFromSearchTest:(NSString *) searchText{
+#pragma mark - Helper
+-(void) requestDataFromSearchText:(NSString *) searchText{
     NSURLRequest *request = [[RequestFactory new] createSearchWithText:searchText];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        Log(@"path=   %@",request.URL.absoluteString);
-        if (!error && data) {
 
+        if (!error && data) {
             NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
             json = [json valueForKey:@"results"];
 
@@ -217,10 +99,23 @@ static NSString *const headerIdentifier = @"headerReuseID";
                     [resultsList addObject:@{(NSString*)key:root}];
                 }];
                 self.results = resultsList;
-                //刷新
+
+                //数据完成处理  设置视图
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView reloadData];
+                    [self.classifyView reloadData];
+
+                    self.currentIndex = 0;
+                    [self.classifyView selectItemAtIndexPath:[NSIndexPath indexPathForRow:self.currentIndex inSection:0]
+                                                    animated:YES
+                                              scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+
+                    UIViewController *vc = [self viewControllerAtIndex:self.currentIndex];
+                    [self->_pageViewController setViewControllers:@[vc,]
+                                                        direction:UIPageViewControllerNavigationDirectionForward
+                                                         animated:YES
+                                                       completion:nil];
                 });
+
             }else{
                 [self showHUDToMainWindowFromText:@"没有查找到数据"];
             }
@@ -230,43 +125,140 @@ static NSString *const headerIdentifier = @"headerReuseID";
     }];
 }
 
-/**加载某一节 的下一页数据*/
--(void) loadNextPageWithHref:(NSString*) href{
-    NSURLRequest *request = [[RequestFactory new] createRequestWithHref:href];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
-        if (json) {
-            json = [json objectForKey:@"results"];
-            //枚举当前的 josn
-            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-                ResponseRoot *newRoot = [ResponseRoot instanceWithDict:obj];
-                //添加 到原有的数据列表中
-                [self.results enumerateObjectsUsingBlock:^(NSDictionary<NSString *,ResponseRoot *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    if ([obj valueForKey:key]) {
-                        [obj valueForKey:key].next = newRoot.next;
-                        [obj valueForKey:key].data = [[obj valueForKey:key].data arrayByAddingObjectsFromArray:newRoot.data];
-                        *stop = YES;
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.tableView reloadData];
-                        });
-                    }
-                }];
-            }];
+
+-(NSUInteger) indexOfViewController:(ResultsContentViewController*) viewController{
+    NSUInteger index = 0;
+    for (NSDictionary<NSString*,ResponseRoot*> *dict in self.results) {
+        if (viewController.responseRoot == dict.allValues.firstObject) {
+            index = [self.results indexOfObject:dict];
         }
-    }];
+    }
+    return index;
+}
+-(UIViewController*) viewControllerAtIndex:(NSUInteger) index{
+    if (self.results.count == 0 || index > self.results.count) return nil;
+
+    NSDictionary<NSString*,ResponseRoot*> *dict = [self.results objectAtIndex:index];
+
+    NSString *title = [dict allKeys].firstObject;
+    ResponseRoot *root = [dict allValues].firstObject;
+    ResultsContentViewController *contentVC = [[ResultsContentViewController alloc] initWithResponseRoot:root];
+    [contentVC setTitle:title];
+    return contentVC;
 }
 
-#pragma mark -getter
--(UITableView *)tableView{
-    if (!_tableView) {
-        _tableView =  [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        [_tableView registerClass:[ResultsCell class] forCellReuseIdentifier:cellIdentifier];
-        [_tableView registerClass:ResultsSectionHeader.class forHeaderFooterViewReuseIdentifier:headerIdentifier];
-        _tableView.delegate = self;
-        _tableView.dataSource = self;
 
+#pragma mark - UIPageViewControllerDataSource
+//向前
+-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
+    ResultsContentViewController *resultsVC = (ResultsContentViewController*) viewController;
+
+    NSUInteger index = [self indexOfViewController:resultsVC];
+    if (index == 0 || index == NSNotFound) return nil;
+    index--;
+    return [self viewControllerAtIndex:index];
+}
+
+//向后
+-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
+     ResultsContentViewController *resultsVC = (ResultsContentViewController*) viewController;
+    NSUInteger index = [self indexOfViewController:resultsVC];
+    if (index== NSNotFound) return nil;
+
+    index++;
+    if (index==self.results.count) return nil;
+
+    return [self viewControllerAtIndex:index];
+}
+
+#pragma mark - UIPageViewControllerDelegate
+-(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers{
+
+}
+-(void)pageViewController:(UIPageViewController *)pageViewController
+       didFinishAnimating:(BOOL)finished
+  previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers
+      transitionCompleted:(BOOL)completed{
+
+    if (completed) {
+        if (finished) {
+            ResultsContentViewController *contentVC = pageViewController.viewControllers.lastObject;
+            NSUInteger index = [self indexOfViewController:contentVC];
+
+            [self.classifyView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]
+                                            animated:YES
+                                      scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+        }
     }
-    return _tableView;
+
+}
+
+#pragma mark - UICollectionViewDataSource
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return self.results.count;
+}
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    ClassifyCell *cell = (ClassifyCell*)[collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
+    NSDictionary<NSString*,ResponseRoot*> *dict = [self.results objectAtIndex:indexPath.row];
+    [cell.titleLabel setText:dict.allKeys.firstObject];
+    return cell;
+}
+#pragma mark - UICollectionViewDelegate
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    UIViewController *vc = [self viewControllerAtIndex:indexPath.row];
+
+    //判断滚动方向, 选中的item 与当前控制器下标一致  不处理
+    if (indexPath.row > self.currentIndex) {
+        [self.pageViewController setViewControllers:@[vc,] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+    }
+    if (indexPath.row < self.currentIndex) {
+        [self.pageViewController setViewControllers:@[vc,] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
+    }
+
+    self.currentIndex = indexPath.row;
+}
+
+#pragma mark - getter
+-(UIPageViewController *)pageViewController{
+    if (!_pageViewController) {
+        _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
+                                                              navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+                                                                            options:nil];
+        _pageViewController.delegate =self;
+        _pageViewController.dataSource = self;
+    }
+    return _pageViewController;
+}
+
+-(UICollectionView *)classifyView{
+    if (!_classifyView) {
+        //colle frame
+        CGFloat x = 0;
+        CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);
+        CGFloat w = CGRectGetWidth(self.view.frame);
+        CGFloat h = 38.0f;
+        CGRect frame = CGRectMake(x, y, w, h);
+
+        //layout
+        UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
+        CGFloat cellH = h-2;
+        CGFloat cellW = w/4;
+        [layout setItemSize:CGSizeMake(cellW, cellH)];
+        [layout setMinimumInteritemSpacing:1];
+        [layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
+
+        //collectionView
+        _classifyView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:layout];
+        _classifyView.delegate = self;
+        _classifyView.dataSource = self;
+        [_classifyView registerClass:ClassifyCell.class forCellWithReuseIdentifier:cellID];
+        [_classifyView setBackgroundColor:UIColor.whiteColor];
+        [_classifyView setShowsHorizontalScrollIndicator:NO];
+
+        _classifyView.layer.borderColor = UIColor.grayColor.CGColor;
+        _classifyView.layer.borderWidth = 0.5;
+    }
+    return _classifyView;
 }
 
 

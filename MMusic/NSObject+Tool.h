@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "PersonalizedRequestFactory.h"
 
 @class Album;
 @class Artist;
@@ -37,7 +38,7 @@
  设置请求体中的 请求头信息
 
  @param request 请求体
- @param needSetupUserToken 是否需要设置用户令牌
+ @param setupUserToken 是否需要设置用户令牌
  */
 -(void)setupAuthorizationWithRequest:(NSMutableURLRequest *_Nonnull)request setupUserToken:(BOOL) setupUserToken;
 
@@ -120,5 +121,7 @@
  */
 -(void)showHUDToMainWindowFromText:(NSString*) text;
 
-
 @end
+
+
+

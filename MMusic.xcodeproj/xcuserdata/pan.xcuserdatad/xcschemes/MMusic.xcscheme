@@ -28,6 +28,36 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3BAADF4D20B2C75B00C82F4B"
+               BuildableName = "MMusicTests.xctest"
+               BlueprintName = "MMusicTests"
+               ReferencedContainer = "container:MMusic.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3BAADF5B20B2C77100C82F4B"
+               BuildableName = "MMusicUITests.xctest"
+               BlueprintName = "MMusicUITests"
+               ReferencedContainer = "container:MMusic.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3BAADF6920B2C9C100C82F4B"
+               BuildableName = "MMusicLogicTests.xctest"
+               BlueprintName = "MMusicLogicTests"
+               ReferencedContainer = "container:MMusic.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

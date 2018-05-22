@@ -144,7 +144,7 @@ static AuthorizationManager *_instance;
                 NSString *token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 if (token) {
                     Log(@"request new DeveloperToken: %@",token);
-                    _developerToken = token;
+                    self->_developerToken = token;
                     [[NSUserDefaults standardUserDefaults] setObject:token forKey:developerTokenDefaultsKey];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenUpdatedNotification object:nil];
@@ -166,7 +166,7 @@ static AuthorizationManager *_instance;
             [controller requestUserTokenForDeveloperToken:self.developerToken completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
                 if (userToken) {
                     Log(@"userToken: %@",userToken);
-                    _userToken = userToken;
+                    self->_userToken = userToken;
                     [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:userTokenUserDefaultsKey];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [[NSNotificationCenter defaultCenter] postNotificationName:userTokenUpdatedNotification object:nil];
@@ -184,7 +184,7 @@ static AuthorizationManager *_instance;
             //获取绑定的商店  并缓存
             [controller requestStorefrontCountryCodeWithCompletionHandler:^(NSString * _Nullable storefrontCountryCode, NSError * _Nullable error) {
                 if (!error && storefrontCountryCode) {
-                    _storefront = storefrontCountryCode;
+                    self->_storefront = storefrontCountryCode;
                     [[NSUserDefaults standardUserDefaults] setObject:storefrontCountryCode forKey:storefrontDefaultsKey];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                 }

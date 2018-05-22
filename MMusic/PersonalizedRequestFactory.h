@@ -184,7 +184,7 @@ typedef NS_ENUM(NSUInteger, DeleteTrackType){
  */
 -(NSURLRequest *) modifyLibraryPlaylistsWithOperation:(ModifyOperationType) type
                                                fromId:(NSString*) playlistIdnetifier
-                                       andJSONPayload:(NSDictionary*) jsonPlayload;
+                                       payload:(NSDictionary*) jsonPlayload;
 
 /**
  删除播放列表中的track
@@ -292,6 +292,15 @@ typedef NS_ENUM(NSUInteger,FetchType){
  @return        请求体
  */
 -(NSURLRequest*) fetchRecommendationsWithType:(FetchType)type andIds:(NSArray<NSString*>*) ids;
+@end
+
+#pragma mark - Tool
+@interface PersonalizedRequestFactory (Tool)
+-(void)fetchIdentiferForSearchLibraryType:(SearchLibraryType)type name:(NSString*)name usingBlock:(void(^)(NSString* identifier)) usingBlock;
+-(void)createLibraryResourceForType:(LibraryResourceType)type name:(NSString*)name descriptor:(NSString*)desc;
+-(void)addTrackToPlaylists:(NSString *)identifier tracks:(NSArray<NSDictionary*>*) tracks;
+-(void)deleteTrackForPlaylists:(NSString*)identifier tracks:(NSArray<NSDictionary*>*) tracks;
+
 
 @end
 

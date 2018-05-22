@@ -23,6 +23,7 @@
 static NSString *const cellID = @"cellReuseIdentifier";
 @implementation SearchViewController
 
+@synthesize serachBar = _serachBar;
 @synthesize terms = _terms;
 
 #pragma mark - cycle

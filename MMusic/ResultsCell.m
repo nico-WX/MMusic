@@ -28,6 +28,13 @@
     return self;
 }
 
+-(void)prepareForReuse{
+    [super prepareForReuse ];
+    _name.text = nil;
+    _artistName.text = nil;
+    _artworkView.image = nil;
+}
+
 -(void)drawRect:(CGRect)rect{
 
     __weak typeof(self) weakSelf = self;

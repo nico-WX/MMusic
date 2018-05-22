@@ -11,5 +11,5 @@
 /**搜索视图*/
 @interface SearchViewController : UIViewController
 /**搜索栏*/
-@property(nonatomic, strong) UISearchBar *serachBar;
+@property(nonatomic, strong, readonly) UISearchBar *serachBar;
 @end

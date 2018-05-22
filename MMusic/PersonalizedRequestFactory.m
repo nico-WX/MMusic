@@ -22,6 +22,7 @@
         _rootPath = [_rootPath stringByAppendingPathComponent:@"v1"];
         _rootPath = [_rootPath stringByAppendingPathComponent:@"me"];
     }
+
     return self;
 }
 @end
@@ -88,6 +89,7 @@
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"library"];
     path = [path stringByAppendingPathComponent:@"search?term="];
     path = [path stringByAppendingString:terms];
+    path = [path stringByAppendingString:@"&types="];
 
     switch (type) {
         case SearchLibrarySongsType:
@@ -149,9 +151,11 @@
 
 - (NSURLRequest *)modifyLibraryPlaylistsWithOperation:(ModifyOperationType)type
                                                fromId:(NSString *)playlistIdnetifier
-                                       andJSONPayload:(NSDictionary *)jsonPlayload {
+                                              payload:(NSDictionary *)jsonPlayload {
 
-    NSString *path = [self.rootPath stringByAppendingPathComponent:@"library/playlists"];
+    NSString *path = [self.rootPath stringByAppendingPathComponent:@"library"];
+    path = [path stringByAppendingPathComponent:@"playlists"];
+
     NSData *bodyData = [NSJSONSerialization dataWithJSONObject:jsonPlayload options:NSJSONWritingSortedKeys error:nil];
 
     switch (type) {
@@ -160,6 +164,7 @@
             NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES ];
             [request setHTTPMethod:@"POST"];
             [request setHTTPBody:bodyData];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
             return request;
         }
             break;
@@ -169,6 +174,7 @@
             NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
             [request setHTTPMethod:@"PUT"];
             [request setHTTPBody:bodyData];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
             return request;
         }
             break;
@@ -178,6 +184,7 @@
             NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
             [request setHTTPBody:bodyData];
             [request setHTTPMethod:@"PATCH"];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
             return request;
         }
             break;
@@ -186,8 +193,10 @@
             path = [path stringByAppendingPathComponent:playlistIdnetifier];
             path = [path stringByAppendingPathComponent:@"tracks"];
             NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
-            [request setHTTPBody:bodyData];
             [request setHTTPMethod:@"POST"];
+            [request setHTTPBody:bodyData];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+
             return request;
         }
             break;
@@ -196,8 +205,9 @@
             path = [path stringByAppendingPathComponent:playlistIdnetifier];
             path = [path stringByAppendingPathComponent:@"tracks"];
             NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
-            [request setHTTPBody:bodyData];
             [request setHTTPMethod:@"PUT"];
+            [request setHTTPBody:bodyData];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
             return request;
         }
             break;
@@ -364,7 +374,44 @@
 
 @end
 
+@implementation PersonalizedRequestFactory(Tool)
+-(void)fetchIdentiferForSearchLibraryType:(SearchLibraryType)type name:(NSString *)name usingBlock:(void (^)(NSString *))usingBlock{
+    NSURLRequest *request = [self searchForLibrarySourceType:type terms:name];
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+        NSArray *list = [json valueForKeyPath:@"results.library-playlists.data"];
+        NSString *identifier = [list.firstObject valueForKey:@"id"];
+        if (usingBlock) {
+            usingBlock(identifier);
+        }
+    }];
+}
+- (void)addTrackToPlaylists:(NSString *)identifier tracks:(NSArray<NSDictionary *> *)tracks{
+    NSDictionary *playload = @{@"data":tracks};
+    NSURLRequest *request = [self modifyLibraryPlaylistsWithOperation:ModifyOperationAddTracksToLibraryPlaylist
+                                                               fromId:identifier
+                                                              payload:playload];
 
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
+        Log(@"add track code =%ld",res.statusCode);
+        Log(@"response = %@",response);
+    }];
+}
+-(void)createLibraryResourceForType:(LibraryResourceType)type name:(NSString *)name descriptor:(NSString *)desc{
+    NSDictionary *playload = @{@"attributes":@{@"name":name,@"description":desc}};
+    NSURLRequest *request = [self modifyLibraryPlaylistsWithOperation:ModifyOperationCreateNewLibraryPlaylist fromId:nil payload:playload];
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
+        Log(@"create resource code =%ld",res.statusCode);
+    }];
+}
+
+-(void)deleteTrackForPlaylists:(NSString *)identifier tracks:(NSArray<NSDictionary *> *)tracks{
+    
+}
+
+@end
 
 
 

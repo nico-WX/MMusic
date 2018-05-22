@@ -7,12 +7,42 @@
 		<key>MMusic.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>0</integer>
+		</dict>
+		<key>MMusicLogicTests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>14</integer>
+		</dict>
+		<key>MMusicTests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>12</integer>
+		</dict>
+		<key>MMusicUITests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>13</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>3B9AA8661FB04B5700720085</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3BAADF4D20B2C75B00C82F4B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3BAADF5B20B2C77100C82F4B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3BAADF6920B2C9C100C82F4B</key>
 		<dict>
 			<key>primary</key>
 			<true/>

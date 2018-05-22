@@ -106,8 +106,8 @@ static NSString * const cellID = @"cellReuseIdentifier";
         [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
             [obj enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                 ResponseRoot *nextRoot = [ResponseRoot instanceWithDict:obj];
-                _resourceDict.allValues.firstObject.next = nextRoot.next;
-                _resourceDict.allValues.firstObject.data = [_resourceDict.allValues.firstObject.data arrayByAddingObjectsFromArray:nextRoot.data];
+                self->_resourceDict.allValues.firstObject.next = nextRoot.next;
+                self->_resourceDict.allValues.firstObject.data = [self->_resourceDict.allValues.firstObject.data arrayByAddingObjectsFromArray:nextRoot.data];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.collectionView.mj_footer endRefreshing];
                     [self.collectionView reloadData];
