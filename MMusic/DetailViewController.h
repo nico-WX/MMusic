@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 @class Resource;
-@class HeaderView;
+@class DetailHeaderView;
 
 @interface DetailViewController : UIViewController
 /**头视图*/
-@property(nonatomic, strong) HeaderView *header;
+@property(nonatomic, strong) DetailHeaderView *header;
 /**表视图*/
 @property(nonatomic, strong) UITableView *tableView;
 

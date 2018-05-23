@@ -17,7 +17,7 @@
 
 #import "Album.h"
 #import "Artist.h"
-#import "Activity.h"
+#import "Activities.h"
 #import "AppleCurator.h"
 #import "Curator.h"
 #import "Song.h"

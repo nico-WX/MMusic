@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface ResultsContentCell : UITableViewCell
-
+@property(nonatomic, strong, readonly) UILabel *nameLabel;
+@property(nonatomic, strong, readonly) UILabel *artistLabel;
+@property(nonatomic, strong, readonly) UILabel *descLabel;
 @end

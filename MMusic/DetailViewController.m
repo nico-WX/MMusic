@@ -13,7 +13,7 @@
 //view & controller
 #import "DetailViewController.h"
 #import "PlayerViewController.h"
-#import "HeaderView.h"
+#import "DetailHeaderView.h"
 #import "SongCell.h"
 
 //model & tool
@@ -56,7 +56,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     [self requestData];
 
     //表头视图
-    self.header = [[HeaderView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 150)];
+    self.header = [[DetailHeaderView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 150)];
     self.header.backgroundColor = UIColor.whiteColor;
 
     self.tableView.tableHeaderView = self.header;

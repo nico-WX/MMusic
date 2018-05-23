@@ -1,19 +1,19 @@
 //
-//  Activity.m
+//  Activities.m
 //  MMusic
 //
 //  Created by Magician on 2017/11/9.
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "Activity.h"
+#import "Activities.h"
 #import "Artwork.h"
 #import "Playlist.h"
 #import "EditorialNotes.h"
 
 #import <MJExtension.h>
 
-@implementation Activity
+@implementation Activities
 
 +(instancetype)instanceWithDict:(NSDictionary *)dict{
     return [[self alloc] initWithDict:dict];

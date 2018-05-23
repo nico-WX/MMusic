@@ -1,5 +1,5 @@
 //
-//  Activity.h
+//  Activities.h
 //  MMusic
 //
 //  Created by Magician on 2017/11/9.
@@ -12,7 +12,7 @@
 @class EditorialNotes;
 
 /**活动*/
-@interface Activity : MMObject
+@interface Activities : MMObject
 //属性
 /**活动海报*/
 @property(nonatomic, strong) Artwork *artwork;

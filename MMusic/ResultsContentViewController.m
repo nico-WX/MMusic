@@ -9,6 +9,7 @@
 #import <MJRefresh.h>
 
 #import "ResultsContentViewController.h"
+#import "ResultsContentCell.h"
 
 #import "RequestFactory.h"
 
@@ -21,6 +22,7 @@
 @end
 
 static NSString *const cellID = @"tableCellReuseID";
+
 @implementation ResultsContentViewController
 
 - (instancetype)initWithResponseRoot:(ResponseRoot *)responseRoot{
@@ -47,9 +49,16 @@ static NSString *const cellID = @"tableCellReuseID";
     return self.responseRoot.data.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    ResultsContentCell *cell = (ResultsContentCell*)[tableView dequeueReusableCellWithIdentifier:cellID];
     Resource *resource = [self.responseRoot.data objectAtIndex:indexPath.row];
-    cell.textLabel.text = [resource.attributes valueForKey:@"name"];
+    cell.nameLabel.text = [resource.attributes valueForKey:@"name"];
+
+    if ([resource.attributes valueForKey:@"artistName"]) {
+        cell.artistLabel.text = [resource.attributes valueForKey:@"artistName"];
+    }
+    if ([resource.attributes valueForKey:@""] || [resource.attributes valueForKey:@""]) {
+        
+    }
 
     return cell;
 }
@@ -106,22 +115,60 @@ static NSString *const cellID = @"tableCellReuseID";
         _tableView.delegate = self;
         _tableView.dataSource = self;
 
-        [_tableView registerClass:UITableViewCell.class forCellReuseIdentifier:cellID];
+        [_tableView registerClass:ResultsContentCell.class forCellReuseIdentifier:cellID];
 
-        //刷新
-        _tableView.mj_footer = [MJRefreshAutoFooter footerWithRefreshingBlock:^{
-            if (self.responseRoot.next) {
-                [self loadNextPageWithHref:self.responseRoot.next];
-            }else{
-                [self->_tableView.mj_footer endRefreshingWithNoMoreData];
-            }
-        }];
+        //[self registerCellForTableView:_tableView];
+
+        //刷新  初始有下一页 , 设置刷新控件
+        if (self.responseRoot.next) {
+            _tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+                if (self.responseRoot.next) {
+                    [self loadNextPageWithHref:self.responseRoot.next];
+                }else{
+                    [self->_tableView.mj_footer endRefreshingWithNoMoreData];
+                }
+            }];
+        }
     }
     return _tableView;
 }
 
 
 #pragma mark - helper
+//-(void) registerCellForTableView:(UITableView*) tableViwe{
+//    //activities, artists, apple-curators, albums, curators, songs, playlists, music-videos, and stations.
+//    Resource *resource = self.responseRoot.data.firstObject;
+//    NSString *type = resource.type;
+//    if ([type isEqualToString:@"activities"]) {
+//
+//    }
+//    if ([type isEqualToString:@"artists"]) {
+//
+//    }
+//    if ([type isEqualToString:@"apple-curators"]) {
+//
+//    }
+//    if ([type isEqualToString:@"albums"]) {
+//
+//    }
+//    if ([type isEqualToString:@"curators"]) {
+//
+//    }
+//    if ([type isEqualToString:@"songs"]) {
+//        tableViwe registerClass:<#(nullable Class)#> forCellReuseIdentifier:cellID
+//    }
+//    if ([type isEqualToString:@"playlists"]) {
+//
+//    }
+//    if ([type isEqualToString:@"music-videos"]) {
+//
+//    }
+//    if ([type isEqualToString:@"stations"]) {
+//
+//    }
+//}
+
+
 -(void) loadNextPageWithHref:(NSString*) href{
     NSURLRequest *request = [[RequestFactory new] createRequestWithHref:href];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {

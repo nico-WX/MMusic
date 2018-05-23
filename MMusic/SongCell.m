@@ -79,6 +79,7 @@
 }
 
 - (void)setNeedsUpdateConstraints{
+    
     UIEdgeInsets padding = UIEdgeInsetsMake(2, 2, 2, 2);
     NSUInteger timer = 3;
     UIView *superview = self.contentView;

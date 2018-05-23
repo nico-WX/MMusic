@@ -6,10 +6,10 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "HeaderView.h"
+#import "DetailHeaderView.h"
 #import <Masonry.h>
 
-@implementation HeaderView
+@implementation DetailHeaderView
 
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

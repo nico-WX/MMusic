@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  By setting `enabled` to `YES` for `sharedManager`, the network activity indicator will show and hide automatically as requests start and finish. You should not ever need to call `incrementActivityCount` or `decrementActivityCount` yourself.
 
- See the Apple Human Interface Guidelines section about the Network Activity Indicator for more information:
+ See the Apple Human Interface Guidelines section about the Network Activities Indicator for more information:
  http://developer.apple.com/library/iOS/#documentation/UserExperience/Conceptual/MobileHIG/UIElementGuidelines/UIElementGuidelines.html#//apple_ref/doc/uid/TP40006556-CH13-SW44
  */
 NS_EXTENSION_UNAVAILABLE_IOS("Use view controller based solutions where appropriate instead.")
@@ -90,7 +90,7 @@ NS_EXTENSION_UNAVAILABLE_IOS("Use view controller based solutions where appropri
 - (void)decrementActivityCount;
 
 /**
- Set the a custom method to be executed when the network activity indicator manager should be hidden/shown. By default, this is null, and the UIApplication Network Activity Indicator will be managed automatically. If this block is set, it is the responsiblity of the caller to manager the network activity indicator going forward.
+ Set the a custom method to be executed when the network activity indicator manager should be hidden/shown. By default, this is null, and the UIApplication Network Activities Indicator will be managed automatically. If this block is set, it is the responsiblity of the caller to manager the network activity indicator going forward.
 
  @param block A block to be executed when the network activity indicator status changes.
  */
