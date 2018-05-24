@@ -205,6 +205,9 @@ static NSString * const cellID = @"colletionCellReuseId";
 }
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    //滚动item居中
+    [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+
     UIViewController *vc = [self viewControllerAtIndex:indexPath.row];
 
     //判断滚动方向, 选中的item 与当前控制器下标一致  不处理
@@ -217,6 +220,7 @@ static NSString * const cellID = @"colletionCellReuseId";
 
     self.currentIndex = indexPath.row;
 }
+
 
 #pragma mark - getter
 -(UIPageViewController *)pageViewController{
@@ -257,6 +261,9 @@ static NSString * const cellID = @"colletionCellReuseId";
 
         _classifyView.layer.borderColor = UIColor.grayColor.CGColor;
         _classifyView.layer.borderWidth = 0.5;
+
+
+
     }
     return _classifyView;
 }

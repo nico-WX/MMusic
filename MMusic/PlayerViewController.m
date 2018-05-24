@@ -257,6 +257,10 @@ static PlayerViewController *_instance;
         UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(closeViewController)];
         [gesture setDirection:UISwipeGestureRecognizerDirectionDown];
         [_playerView addGestureRecognizer:gesture];
+
+        //pan
+        //UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(closeViewController)];
+        
     }
     return _playerView;
 }

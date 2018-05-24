@@ -13,4 +13,5 @@
 /**抽取初始及 实例化类方法*/
 @interface MMObject : NSObject
 
+
 @end

@@ -19,6 +19,8 @@
 @class Station;
 @class Playlist;
 @class MusicVideo;
+@class Resource;
+@class ResponseRoot;
 @class MPMusicPlayerPlayParametersQueueDescriptor;
 
 @interface NSObject (Tool)

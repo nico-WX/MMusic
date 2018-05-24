@@ -24,6 +24,8 @@
 #import "Station.h"
 #import "Playlist.h"
 #import "MusicVideo.h"
+#import "Resource.h"
+#import "ResponseRoot.h"
 
 extern NSString *developerTokenExpireNotification;
 extern NSString *userTokenIssueNotification;
@@ -265,6 +267,8 @@ extern NSString *userTokenIssueNotification;
         [hud.label setText:text];
         [hud setMode:MBProgressHUDModeCustomView];
         [hud hideAnimated:YES afterDelay:3.0f];
+        //不接收事件
+        [hud setUserInteractionEnabled:NO];
     });
 }
 

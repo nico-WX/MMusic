@@ -253,9 +253,9 @@
 
 #pragma mark 管理Rating 实现
 @implementation PersonalizedRequestFactory(ManagerRating)
--(NSURLRequest *)managerCatalogAndLibraryRatingsWithOperatin:(RatingsOperation)operation
-                                               resourcesType:(ResourcesType)type
-                                                      andIds:(NSArray<NSString *> *)ids{
+-(NSURLRequest*) managerCatalogAndLibraryRatingsWithOperatin:(RatingsOperation) operation
+                                               resourcesType:(PersonalResourcesType) type
+                                                      andIds:(NSArray<NSString*>*) ids{
 
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"ratings"];
 
@@ -296,7 +296,7 @@
     return request;
 }
 
--(NSString *) subPathFromType:(ResourcesType) type{
+-(NSString *) subPathFromType:(PersonalResourcesType) type{
     switch (type) {
         case ResourcesPersonalAlbumType:{
             return @"albums";

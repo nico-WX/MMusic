@@ -234,7 +234,7 @@ typedef NS_ENUM(NSUInteger, RatingsOperation){
  - ResourcesPersonalLibrarySongType:        个人库歌曲
  - ResourcesPersonalStationType:            个人电台
  */
-typedef NS_ENUM(NSUInteger, ResourcesType){
+typedef NS_ENUM(NSUInteger, PersonalResourcesType){
     ResourcesPersonalAlbumType,
     ResourcesPersonalMusicVideosType,
     ResourcesPersonalLibraryMusicVideosType,
@@ -255,7 +255,7 @@ typedef NS_ENUM(NSUInteger, ResourcesType){
  @return            请求体
  */
 -(NSURLRequest*) managerCatalogAndLibraryRatingsWithOperatin:(RatingsOperation) operation
-                                               resourcesType:(ResourcesType) type
+                                               resourcesType:(PersonalResourcesType) type
                                                       andIds:(NSArray<NSString*>*) ids;
 @end
 
