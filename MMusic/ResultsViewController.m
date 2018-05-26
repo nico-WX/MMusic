@@ -149,7 +149,7 @@ static NSString * const cellID = @"colletionCellReuseId";
 
 
 #pragma mark - UIPageViewControllerDataSource
-//向前
+//返回左边控制器
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
     ResultsContentViewController *resultsVC = (ResultsContentViewController*) viewController;
 
@@ -159,7 +159,7 @@ static NSString * const cellID = @"colletionCellReuseId";
     return [self viewControllerAtIndex:index];
 }
 
-//向后
+//返回右边控制器
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
      ResultsContentViewController *resultsVC = (ResultsContentViewController*) viewController;
     NSUInteger index = [self indexOfViewController:resultsVC];

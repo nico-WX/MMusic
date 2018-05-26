@@ -18,6 +18,10 @@
 		3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D99E9205E990F000F2E9E /* NSString+Hash.m */; };
 		3B3D99F8205EE0A0000F2E9E /* love-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B3D99F5205EE09D000F2E9E /* love-gray.png */; };
 		3B3D99FA205EE0A0000F2E9E /* love-red.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B3D99F7205EE0A0000F2E9E /* love-red.png */; };
+		3B408EDC20B6A8600057E323 /* ArtistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EDB20B6A8600057E323 /* ArtistsViewController.m */; };
+		3B408EEB20B6E7D70057E323 /* ArtistsContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */; };
+		3B408EED20B81E3B0057E323 /* qimono.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B408EEC20B81E3A0057E323 /* qimono.jpg */; };
+		3B44056C20B989BB0085FDAB /* FelixMittermeier.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B44055C20B989BB0085FDAB /* FelixMittermeier.jpg */; };
 		3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */; };
 		3B4E3AD6208F46B90042498C /* ChartsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD5208F46B90042498C /* ChartsViewController.m */; };
 		3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD8208F61E70042498C /* ChartsSongCell.m */; };
@@ -72,7 +76,7 @@
 		3BAADFCD20B2EE6B00C82F4B /* PerformanceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAADFCC20B2EE6B00C82F4B /* PerformanceTest.m */; };
 		3BAAE01920B4211B00C82F4B /* ResultsContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAE01820B4211B00C82F4B /* ResultsContentViewController.m */; };
 		3BAAE02A20B437FB00C82F4B /* ClassifyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAE02920B437FB00C82F4B /* ClassifyCell.m */; };
-		3BAAE02D20B45A9A00C82F4B /* ResultsContentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAE02C20B45A9A00C82F4B /* ResultsContentCell.m */; };
+		3BAAE02D20B45A9A00C82F4B /* ResultsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAE02C20B45A9A00C82F4B /* ResultsCell.m */; };
 		3BB731DE207B9BD800DC629B /* NSObject+MMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731DD207B9BD800DC629B /* NSObject+MMObject.m */; };
 		3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731E0207BAF7E00DC629B /* ResultsViewController.m */; };
 		3BB8793C2091D521004677B6 /* BrowseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB8793B2091D521004677B6 /* BrowseViewController.m */; };
@@ -84,12 +88,21 @@
 		3BD2FD9220A5C7FF00DB7F9C /* ChartsSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD2FD9120A5C7FE00DB7F9C /* ChartsSectionView.m */; };
 		3BDBBB2F2073D84600680CCB /* AlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBBB2E2073D84600680CCB /* AlbumCell.m */; };
 		3BDBBBAA2077645700680CCB /* MusicVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBBBA92077645700680CCB /* MusicVideoCell.m */; };
+		3BDFC19820B5A90D0045B33A /* ResultsArtistsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFC19720B5A90C0045B33A /* ResultsArtistsCell.m */; };
+		3BDFC19B20B5A93F0045B33A /* ResultsMusicVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFC19A20B5A93F0045B33A /* ResultsMusicVideoCell.m */; };
 		3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB6120820A4700D85021 /* PlayControllerView.m */; };
 		3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB672082219900D85021 /* PlayProgressView.m */; };
 		3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3B44056A20B989BB0085FDAB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DF1B7278B7D1EA2287DFA1215A927E95;
+			remoteInfo = HJTabViewController;
+		};
 		3BAADF5320B2C75B00C82F4B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3B9AA85F1FB04B5700720085 /* Project object */;
@@ -223,6 +236,12 @@
 		3B3D99E9205E990F000F2E9E /* NSString+Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hash.m"; sourceTree = "<group>"; };
 		3B3D99F5205EE09D000F2E9E /* love-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "love-gray.png"; sourceTree = "<group>"; };
 		3B3D99F7205EE0A0000F2E9E /* love-red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "love-red.png"; sourceTree = "<group>"; };
+		3B408EDA20B6A8600057E323 /* ArtistsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArtistsViewController.h; sourceTree = "<group>"; };
+		3B408EDB20B6A8600057E323 /* ArtistsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArtistsViewController.m; sourceTree = "<group>"; };
+		3B408EE920B6E7D70057E323 /* ArtistsContentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArtistsContentViewController.h; sourceTree = "<group>"; };
+		3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArtistsContentViewController.m; sourceTree = "<group>"; };
+		3B408EEC20B81E3A0057E323 /* qimono.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = qimono.jpg; sourceTree = "<group>"; };
+		3B44055C20B989BB0085FDAB /* FelixMittermeier.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = FelixMittermeier.jpg; sourceTree = "<group>"; };
 		3B4806741FC96585009035CD /* PersonalizedRequestFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersonalizedRequestFactory.h; sourceTree = "<group>"; };
 		3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PersonalizedRequestFactory.m; sourceTree = "<group>"; };
 		3B4E3AD4208F46B90042498C /* ChartsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsViewController.h; sourceTree = "<group>"; };
@@ -327,8 +346,8 @@
 		3BAAE01820B4211B00C82F4B /* ResultsContentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsContentViewController.m; sourceTree = "<group>"; };
 		3BAAE02820B437FB00C82F4B /* ClassifyCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClassifyCell.h; sourceTree = "<group>"; };
 		3BAAE02920B437FB00C82F4B /* ClassifyCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClassifyCell.m; sourceTree = "<group>"; };
-		3BAAE02B20B45A9A00C82F4B /* ResultsContentCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsContentCell.h; sourceTree = "<group>"; };
-		3BAAE02C20B45A9A00C82F4B /* ResultsContentCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsContentCell.m; sourceTree = "<group>"; };
+		3BAAE02B20B45A9A00C82F4B /* ResultsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsCell.h; sourceTree = "<group>"; };
+		3BAAE02C20B45A9A00C82F4B /* ResultsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsCell.m; sourceTree = "<group>"; };
 		3BB731DC207B9BD800DC629B /* NSObject+MMObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+MMObject.h"; sourceTree = "<group>"; };
 		3BB731DD207B9BD800DC629B /* NSObject+MMObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MMObject.m"; sourceTree = "<group>"; };
 		3BB731DF207BAF7D00DC629B /* ResultsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsViewController.h; sourceTree = "<group>"; };
@@ -351,6 +370,10 @@
 		3BDBBB2D2073D84600680CCB /* AlbumCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AlbumCell.h; sourceTree = "<group>"; };
 		3BDBBB2E2073D84600680CCB /* AlbumCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AlbumCell.m; sourceTree = "<group>"; };
 		3BDBBBA92077645700680CCB /* MusicVideoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicVideoCell.m; sourceTree = "<group>"; };
+		3BDFC19620B5A90C0045B33A /* ResultsArtistsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsArtistsCell.h; sourceTree = "<group>"; };
+		3BDFC19720B5A90C0045B33A /* ResultsArtistsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsArtistsCell.m; sourceTree = "<group>"; };
+		3BDFC19920B5A93F0045B33A /* ResultsMusicVideoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsMusicVideoCell.h; sourceTree = "<group>"; };
+		3BDFC19A20B5A93F0045B33A /* ResultsMusicVideoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsMusicVideoCell.m; sourceTree = "<group>"; };
 		3BDFCB6020820A4700D85021 /* PlayControllerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayControllerView.h; sourceTree = "<group>"; };
 		3BDFCB6120820A4700D85021 /* PlayControllerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayControllerView.m; sourceTree = "<group>"; };
 		3BDFCB662082219900D85021 /* PlayProgressView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayProgressView.h; sourceTree = "<group>"; };
@@ -423,6 +446,10 @@
 				3BB731E0207BAF7E00DC629B /* ResultsViewController.m */,
 				3BAAE01720B4211B00C82F4B /* ResultsContentViewController.h */,
 				3BAAE01820B4211B00C82F4B /* ResultsContentViewController.m */,
+				3B408EDA20B6A8600057E323 /* ArtistsViewController.h */,
+				3B408EDB20B6A8600057E323 /* ArtistsViewController.m */,
+				3B408EE920B6E7D70057E323 /* ArtistsContentViewController.h */,
+				3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */,
 				3B8799572052BBC300EE9D2A /* DetailViewController.h */,
 				3B8799582052BBC300EE9D2A /* DetailViewController.m */,
 				3B469ADB1FF2462C0035E138 /* View */,
@@ -448,6 +475,8 @@
 		3B3D99FF205EE625000F2E9E /* ImageSource */ = {
 			isa = PBXGroup;
 			children = (
+				3B44055C20B989BB0085FDAB /* FelixMittermeier.jpg */,
+				3B408EEC20B81E3A0057E323 /* qimono.jpg */,
 				3B3D99F7205EE0A0000F2E9E /* love-red.png */,
 				3B3D99F5205EE09D000F2E9E /* love-gray.png */,
 			);
@@ -465,8 +494,12 @@
 				3B3D9980205512FA000F2E9E /* SongCell.m */,
 				3BAAE02820B437FB00C82F4B /* ClassifyCell.h */,
 				3BAAE02920B437FB00C82F4B /* ClassifyCell.m */,
-				3BAAE02B20B45A9A00C82F4B /* ResultsContentCell.h */,
-				3BAAE02C20B45A9A00C82F4B /* ResultsContentCell.m */,
+				3BAAE02B20B45A9A00C82F4B /* ResultsCell.h */,
+				3BAAE02C20B45A9A00C82F4B /* ResultsCell.m */,
+				3BDFC19620B5A90C0045B33A /* ResultsArtistsCell.h */,
+				3BDFC19720B5A90C0045B33A /* ResultsArtistsCell.m */,
+				3BDFC19920B5A93F0045B33A /* ResultsMusicVideoCell.h */,
+				3BDFC19A20B5A93F0045B33A /* ResultsMusicVideoCell.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -734,6 +767,7 @@
 			isa = PBXGroup;
 			children = (
 				3BDCA71420B461B6000F0CFD /* libAFNetworking.a */,
+				3B44056B20B989BB0085FDAB /* libHJTabViewController.a */,
 				3BDCA71620B461B6000F0CFD /* liblottie-ios.a */,
 				3BDCA71820B461B6000F0CFD /* libMasonry.a */,
 				3BDCA71A20B461B6000F0CFD /* libMBProgressHUD.a */,
@@ -901,6 +935,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		3B44056B20B989BB0085FDAB /* libHJTabViewController.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libHJTabViewController.a;
+			remoteRef = 3B44056A20B989BB0085FDAB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		3BDCA71420B461B6000F0CFD /* libAFNetworking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -996,9 +1037,11 @@
 				3B9AA8771FB04B5700720085 /* LaunchScreen.storyboard in Resources */,
 				3B09CB932098A0BA00294851 /* TwitterHeart.json in Resources */,
 				3B3D99FA205EE0A0000F2E9E /* love-red.png in Resources */,
+				3B408EED20B81E3B0057E323 /* qimono.jpg in Resources */,
 				3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */,
 				3B9AA8741FB04B5700720085 /* Assets.xcassets in Resources */,
 				3B9AA8721FB04B5700720085 /* Main.storyboard in Resources */,
+				3B44056C20B989BB0085FDAB /* FelixMittermeier.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1082,17 +1125,20 @@
 				3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */,
 				3BD2FD9220A5C7FF00DB7F9C /* ChartsSectionView.m in Sources */,
 				3B4E3ADC208F620E0042498C /* PlaylistsCell.m in Sources */,
+				3BDFC19820B5A90D0045B33A /* ResultsArtistsCell.m in Sources */,
 				3B9AA8DB1FB4535400720085 /* Error.m in Sources */,
 				3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */,
 				3B9AA8D81FB452FF00720085 /* ResponseRoot.m in Sources */,
 				3B9AA8D71FB452FF00720085 /* Resource.m in Sources */,
 				3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */,
+				3B408EDC20B6A8600057E323 /* ArtistsViewController.m in Sources */,
 				3B9AA8E01FB461CD00720085 /* Activities.m in Sources */,
 				3B9AA8D61FB452FF00720085 /* Relationship.m in Sources */,
 				3B9AA8E31FB463E800720085 /* Album.m in Sources */,
 				3B9AA9011FB479B700720085 /* Preview.m in Sources */,
 				3BB731DE207B9BD800DC629B /* NSObject+MMObject.m in Sources */,
 				3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */,
+				3B408EEB20B6E7D70057E323 /* ArtistsContentViewController.m in Sources */,
 				3B9AA90A1FB47D6B00720085 /* Station.m in Sources */,
 				3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */,
 				3B9AA9041FB47A6C00720085 /* Recommendation.m in Sources */,
@@ -1102,7 +1148,7 @@
 				3B9AA8FB1FB4769500720085 /* Playlist.m in Sources */,
 				3BDBBB2F2073D84600680CCB /* AlbumCell.m in Sources */,
 				3B87992E204FF7E000EE9D2A /* TodaySectionView.m in Sources */,
-				3BAAE02D20B45A9A00C82F4B /* ResultsContentCell.m in Sources */,
+				3BAAE02D20B45A9A00C82F4B /* ResultsCell.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
 				3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */,
 				3B23AC751FF236A800F0A9CA /* TodayCollectionViewController.m in Sources */,
@@ -1113,6 +1159,7 @@
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
 				3BB8793C2091D521004677B6 /* BrowseViewController.m in Sources */,
 				3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */,
+				3BDFC19B20B5A93F0045B33A /* ResultsMusicVideoCell.m in Sources */,
 				3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */,
 				3B9AA9101FB4817F00720085 /* RequestFactory.m in Sources */,
 				3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */,

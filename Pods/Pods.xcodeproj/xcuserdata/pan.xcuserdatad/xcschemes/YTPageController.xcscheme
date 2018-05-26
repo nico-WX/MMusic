@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'E16E2FCF387326F915E42C8166EB5FEA'
+               BlueprintIdentifier = 'CD4CE0D7447B31C6F679D898876C6BBE'
                BlueprintName = 'YTPageController'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libYTPageController.a'>

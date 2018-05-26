@@ -13,5 +13,6 @@ pod 'VBFPopFlatButton'
 pod 'lottie-ios'
 pod 'NAKPlaybackIndicatorView'
 pod 'YTPageController'
+pod 'HJTabViewController'
 
 end
