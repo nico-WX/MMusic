@@ -23,6 +23,10 @@
 		3B408EED20B81E3B0057E323 /* qimono.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B408EEC20B81E3A0057E323 /* qimono.jpg */; };
 		3B44056C20B989BB0085FDAB /* FelixMittermeier.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B44055C20B989BB0085FDAB /* FelixMittermeier.jpg */; };
 		3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */; };
+		3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D988020BA8A2600139BE0 /* DBTool.m */; };
+		3B4D989120BA8A3D00139BE0 /* DBModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D989020BA8A3D00139BE0 /* DBModel.m */; };
+		3B4D989420BA8C1700139BE0 /* ArtistsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D989320BA8C1600139BE0 /* ArtistsModel.m */; };
+		3B4D989720BAC71200139BE0 /* TracksModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D989620BAC71200139BE0 /* TracksModel.m */; };
 		3B4E3AD6208F46B90042498C /* ChartsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD5208F46B90042498C /* ChartsViewController.m */; };
 		3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD8208F61E70042498C /* ChartsSongCell.m */; };
 		3B4E3ADC208F620E0042498C /* PlaylistsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3ADB208F620E0042498C /* PlaylistsCell.m */; };
@@ -96,12 +100,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3B44056A20B989BB0085FDAB /* PBXContainerItemProxy */ = {
+		3B44057C20BA89B30085FDAB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = DF1B7278B7D1EA2287DFA1215A927E95;
-			remoteInfo = HJTabViewController;
+			remoteGlobalIDString = 7CD318A86DDBF7C7D7FD6C1ACB09018D;
+			remoteInfo = FMDB;
 		};
 		3BAADF5320B2C75B00C82F4B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -244,6 +248,14 @@
 		3B44055C20B989BB0085FDAB /* FelixMittermeier.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = FelixMittermeier.jpg; sourceTree = "<group>"; };
 		3B4806741FC96585009035CD /* PersonalizedRequestFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersonalizedRequestFactory.h; sourceTree = "<group>"; };
 		3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PersonalizedRequestFactory.m; sourceTree = "<group>"; };
+		3B4D987F20BA8A2600139BE0 /* DBTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBTool.h; sourceTree = "<group>"; };
+		3B4D988020BA8A2600139BE0 /* DBTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBTool.m; sourceTree = "<group>"; };
+		3B4D988F20BA8A3D00139BE0 /* DBModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBModel.h; sourceTree = "<group>"; };
+		3B4D989020BA8A3D00139BE0 /* DBModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBModel.m; sourceTree = "<group>"; };
+		3B4D989220BA8C1600139BE0 /* ArtistsModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArtistsModel.h; sourceTree = "<group>"; };
+		3B4D989320BA8C1600139BE0 /* ArtistsModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArtistsModel.m; sourceTree = "<group>"; };
+		3B4D989520BAC71200139BE0 /* TracksModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TracksModel.h; sourceTree = "<group>"; };
+		3B4D989620BAC71200139BE0 /* TracksModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TracksModel.m; sourceTree = "<group>"; };
 		3B4E3AD4208F46B90042498C /* ChartsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsViewController.h; sourceTree = "<group>"; };
 		3B4E3AD5208F46B90042498C /* ChartsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsViewController.m; sourceTree = "<group>"; };
 		3B4E3AD7208F61E70042498C /* ChartsSongCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsSongCell.h; sourceTree = "<group>"; };
@@ -483,6 +495,21 @@
 			name = ImageSource;
 			sourceTree = "<group>";
 		};
+		3B44056E20BA89B30085FDAB /* DBTool */ = {
+			isa = PBXGroup;
+			children = (
+				3B4D987F20BA8A2600139BE0 /* DBTool.h */,
+				3B4D988020BA8A2600139BE0 /* DBTool.m */,
+				3B4D988F20BA8A3D00139BE0 /* DBModel.h */,
+				3B4D989020BA8A3D00139BE0 /* DBModel.m */,
+				3B4D989220BA8C1600139BE0 /* ArtistsModel.h */,
+				3B4D989320BA8C1600139BE0 /* ArtistsModel.m */,
+				3B4D989520BAC71200139BE0 /* TracksModel.h */,
+				3B4D989620BAC71200139BE0 /* TracksModel.m */,
+			);
+			name = DBTool;
+			sourceTree = "<group>";
+		};
 		3B469ADB1FF2462C0035E138 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -595,6 +622,7 @@
 				3B9AA8C61FB450B600720085 /* MyMusic */,
 				3B9AA8CC1FB452AA00720085 /* Model */,
 				3B9AA8CB1FB4512B00720085 /* Support */,
+				3B44056E20BA89B30085FDAB /* DBTool */,
 				3B9AA8BE1FB4503200720085 /* Tool */,
 			);
 			path = MMusic;
@@ -767,7 +795,7 @@
 			isa = PBXGroup;
 			children = (
 				3BDCA71420B461B6000F0CFD /* libAFNetworking.a */,
-				3B44056B20B989BB0085FDAB /* libHJTabViewController.a */,
+				3B44057D20BA89B30085FDAB /* libFMDB.a */,
 				3BDCA71620B461B6000F0CFD /* liblottie-ios.a */,
 				3BDCA71820B461B6000F0CFD /* libMasonry.a */,
 				3BDCA71A20B461B6000F0CFD /* libMBProgressHUD.a */,
@@ -935,11 +963,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		3B44056B20B989BB0085FDAB /* libHJTabViewController.a */ = {
+		3B44057D20BA89B30085FDAB /* libFMDB.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libHJTabViewController.a;
-			remoteRef = 3B44056A20B989BB0085FDAB /* PBXContainerItemProxy */;
+			path = libFMDB.a;
+			remoteRef = 3B44057C20BA89B30085FDAB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		3BDCA71420B461B6000F0CFD /* libAFNetworking.a */ = {
@@ -1142,6 +1170,7 @@
 				3B9AA90A1FB47D6B00720085 /* Station.m in Sources */,
 				3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */,
 				3B9AA9041FB47A6C00720085 /* Recommendation.m in Sources */,
+				3B4D989720BAC71200139BE0 /* TracksModel.m in Sources */,
 				3BAAE01920B4211B00C82F4B /* ResultsContentViewController.m in Sources */,
 				3B9AA8EF1FB46F9300720085 /* Chart.m in Sources */,
 				3BAAE02A20B437FB00C82F4B /* ClassifyCell.m in Sources */,
@@ -1151,6 +1180,8 @@
 				3BAAE02D20B45A9A00C82F4B /* ResultsCell.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
 				3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */,
+				3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */,
+				3B4D989120BA8A3D00139BE0 /* DBModel.m in Sources */,
 				3B23AC751FF236A800F0A9CA /* TodayCollectionViewController.m in Sources */,
 				3BAAB7C9207A45B6007A74EA /* SearchViewController.m in Sources */,
 				3B9AA90D1FB47E0700720085 /* Storefront.m in Sources */,
@@ -1170,6 +1201,7 @@
 				3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */,
 				3B9AA8F51FB4719A00720085 /* MusicVideo.m in Sources */,
 				3BC33214209CA5ED0080D1B9 /* ScreeningSection.m in Sources */,
+				3B4D989420BA8C1700139BE0 /* ArtistsModel.m in Sources */,
 				3B9AA8EC1FB46E7B00720085 /* Artwork.m in Sources */,
 				3B9AA8E91FB46D6100720085 /* Artist.m in Sources */,
 				3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */,

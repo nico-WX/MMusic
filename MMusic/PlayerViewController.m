@@ -21,14 +21,25 @@
 #import "RequestFactory.h"
 #import "NSObject+Tool.h"
 
+
+#import "DBTool.h"
+#import "TracksModel.h"
+#import "ArtistsModel.h"
+
+
 @interface PlayerViewController ()
+/**个人 请求*/
 @property(nonatomic, strong) PersonalizedRequestFactory *factory;
 /**播放器UI*/
 @property(nonatomic, strong) PlayerView *playerView;
+
 /**定时获取播放时间,更新UI*/
 @property(nonatomic, strong) NSTimer *timer;
+
 /**歌曲列表*/
 @property(nonatomic, strong) NSArray<Song*> *songs;
+
+@property(nonatomic, strong)MPMusicPlayerPlayParametersQueueDescriptor *parametersQueue;
 @end
 
 
@@ -52,6 +63,14 @@ static PlayerViewController *_instance;
     });
     return _instance;
 }
+-(instancetype)initWithTrackArray:(NSArray<Song *> *)trackArray startIndex:(NSUInteger)startIndex{
+    if (self = [super init]) {
+        _songs = trackArray;
+        _nowPlaySong = [trackArray objectAtIndex:startIndex];
+    }
+    return self;
+}
+
 -(id)copyWithZone:(NSZone *)zone{
     return _instance;
 }
@@ -404,6 +423,16 @@ static PlayerViewController *_instance;
                 [self.factory addTrackToPlaylists:identifier tracks:@[track,]];
             }];
 
+            for (Song *song in self.songs) {
+                if ([[song.playParams valueForKey:@"id"] isEqualToString:identifier]) {
+                    TracksModel *tracks = [[TracksModel alloc] init];
+                    tracks.name         = song.name;
+                    tracks.identifier   = [song.playParams valueForKey:@"id"];
+                    [DBTool insertData:tracks];
+                }
+            }
+
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playerView.heartIcon setOn:YES animated:YES];
 

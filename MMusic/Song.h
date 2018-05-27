@@ -48,6 +48,6 @@
  @param mediaItem 媒体对象
  @return 是否为相同的歌曲
  */
--(BOOL) isEqualToNowPlayItem:(MPMediaItem*) mediaItem;
+-(BOOL) isEqualToMediaItem:(MPMediaItem*) mediaItem;
 
 @end

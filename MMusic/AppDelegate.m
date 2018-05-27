@@ -34,6 +34,11 @@
     //定时锁屏
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
+
+
+    Log(@"path =%@",DB_PATH);
+
+
     //检查授权
     [self checkAuthorization];
 

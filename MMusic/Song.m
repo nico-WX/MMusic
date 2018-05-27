@@ -32,10 +32,10 @@
 }
 
 
--(BOOL)isEqualToNowPlayItem:(MPMediaItem *)mediaItem{
-    NSString *nowPlaySongID = mediaItem.playbackStoreID;
-    NSString *cellSongID = [self.playParams objectForKey:@"id"];
-    return [nowPlaySongID isEqualToString:cellSongID];
+-(BOOL)isEqualToMediaItem:(MPMediaItem *)mediaItem{
+    NSString *storeID = mediaItem.playbackStoreID;
+    NSString *songID = [self.playParams objectForKey:@"id"];
+    return [storeID isEqualToString:songID];
 }
 
 @end

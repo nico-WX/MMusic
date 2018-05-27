@@ -101,7 +101,7 @@ static NSString *const cellID = @"tableCellReuseID";
     }
      //artists 显示艺人详情页
      if ([type isEqualToString:@"artists"]) {
-         ArtistsViewController *artist = [[ArtistsViewController alloc] initWithArtistResource:resource];
+         ArtistsViewController *artist = [[ArtistsViewController alloc] initWithArtistsName:[resource.attributes valueForKey:@"name"]];
          [self.navigationController pushViewController:artist animated:YES];
      }
 

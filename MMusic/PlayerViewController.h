@@ -23,4 +23,6 @@
 /**显示播放控制器*/
 -(void)showFromViewController:(UIViewController *)vc withSongs:(NSArray<Song*>*) songs startItem:(Song*)startSong;
 
+-(instancetype)initWithTrackArray:(NSArray<Song*>*) trackArray startIndex:(NSUInteger) startIndex;
+
 @end

@@ -172,7 +172,7 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
             //[self playSongQueue:[self openToPlayMusicVideosAtIndexPath:indexPath] atIndexPath:indexPath];
             Song *start = [self.songs objectAtIndex:indexPath.row];
             //选中的歌曲正在播放中, 直接弹出视图
-            if (![start isEqualToNowPlayItem:self.playerVC.playerController.nowPlayingItem]) {
+            if (![start isEqualToMediaItem:self.playerVC.playerController.nowPlayingItem]) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     MPMusicPlayerPlayParametersQueueDescriptor *queue;
                     queue = [self playParametersQueueDescriptorFromParams:self.playParametersList startAtIndexPath:indexPath];

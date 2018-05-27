@@ -124,7 +124,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     MPMediaItem *nowItem = self.playerVC.playerController.nowPlayingItem;
 
     //歌曲播放状态
-    if ([cell.song isEqualToNowPlayItem:nowItem]) {
+    if ([cell.song isEqualToMediaItem:nowItem]) {
         if (self.playerVC.playerController.playbackState == MPMusicPlaybackStatePlaying) {
             [cell setState:NAKPlaybackIndicatorViewStatePlaying];
         }else{
@@ -147,7 +147,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     MPMediaItem *nowItem = self.playerVC.playerController.nowPlayingItem;
     Song *selectSong = [self.songs objectAtIndex:indexPath.row];
 
-    if (![selectSong isEqualToNowPlayItem:nowItem]) {
+    if (![selectSong isEqualToMediaItem:nowItem]) {
         [self.prametersQueue setStartItemPlayParameters:[self.prameters objectAtIndex:indexPath.row]];
         [self.playerVC.playerController setQueueWithDescriptor:self.prametersQueue];
         [self.playerVC.playerController prepareToPlay];
@@ -172,7 +172,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
                 SongCell *cell = [weakSelf.tableView cellForRowAtIndexPath:path];
 
                 //修改在正在播放的song cell 颜色
-                if ([song isEqualToNowPlayItem:item]) {
+                if ([song isEqualToMediaItem:item]) {
                     Log(@"current =%@",[NSThread currentThread]);
                     [cell setState:NAKPlaybackIndicatorViewStatePlaying];
                     [cell setSelected:YES animated:YES];

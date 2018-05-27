@@ -10,5 +10,6 @@
 
 @interface ArtistsViewController : UIViewController
 
--(instancetype)initWithArtistResource:(Resource*) resource;
+-(instancetype)initWithArtistsName:(NSString*) artistsName;
+
 @end

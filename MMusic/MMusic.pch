@@ -20,10 +20,12 @@
 #import "NSString+Hash.h"
 #import "NSObject+Tool.h"
 #import "UIButton+BlockButton.h"
-//Artwork 目录
+/**Artwork 目录*/
 #define ARTWORKIMAGEPATH [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"artwork"]
-//封面图片地址
+/**封面图片地址*/
 #define IMAGEPATH_FOR_URL(urlString) [[ARTWORKIMAGEPATH stringByAppendingPathComponent:[urlString md5String]] stringByAppendingString:@".png"]
+/**DB 目录*/
+#define DB_PATH ([[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"DB"])
 
     //end __OBJC__
     #endif

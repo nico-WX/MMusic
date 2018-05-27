@@ -11,6 +11,7 @@
 #import "RequestFactory.h"
 #import "Resource.h"
 #import "ResponseRoot.h"
+#import "Artwork.h"
 
 @interface ArtistsViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>
 
@@ -19,14 +20,13 @@
 @property(nonatomic, strong) UIScrollView *scrollView;          //滚动视图
 @property(nonatomic, strong) UIView *contentView;               //分页内容 和分段控制器 容器
 @property(nonatomic, strong) UISegmentedControl *segmentControl;//分段控制器
-@property(nonatomic, assign) CGFloat rate;                      //照片高/宽比
 @property(nonatomic, assign) CGFloat topOffset;                 //顶部距离
 
 @property(nonatomic, assign) NSUInteger currentIndex;           //当前选择的坐标
 
 
-//数据
-@property(nonatomic, strong)Resource *resource;
+//艺人名称
+@property(nonatomic, copy) NSString *artistsName;
 
 /**
  艺人相关数据
@@ -41,16 +41,24 @@
 
 @implementation ArtistsViewController
 
--(instancetype)initWithArtistResource:(Resource *)resource{
-    if (self = [super init]) {
-        _resource = resource;
+-(instancetype)initWithArtistsName:(NSString *)artistsName{
+    if ( self = [super init]) {
+        _artistsName = artistsName;
     }
     return self;
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+
+    /**
+     1.在 self.view 中分别添加 imageView 和 scrollView;
+     2.在 scrollView 中添加 contentView;
+     3.在 contentView 中添加 分段控制器和pageView
+     */
+
 
     self.topOffset = CGRectGetHeight(self.navigationController.navigationBar.frame)+20;
 
@@ -60,14 +68,13 @@
     [self.scrollView addSubview:self.contentView];
 
     [self.contentView addSubview:self.segmentControl];
-
     //分页控制器
     [self.contentView addSubview:self.pageViewController.view];
     [self addChildViewController:self.pageViewController];
     [self.pageViewController didMoveToParentViewController:self];
 
     //数据请求
-    [self requestFromArtistResource:self.resource];
+    [self requestFromArtistName:self.artistsName];
 
 
     self.view.backgroundColor = UIColor.whiteColor ;
@@ -93,10 +100,14 @@
     index--;
     return [self viewControllerAtIndex:index];
 }
+
+
 #pragma mark - UIPageViewControllerDelegate
+//滑动完成后,  更新分段控制选中的item
 -(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed{
     if (completed) {
         if (finished) {
+            //完成滑动
             UIViewController *contentVC = pageViewController.viewControllers.lastObject;
             NSUInteger index = [self indexForViewController:(ArtistsContentViewController*)contentVC];
 
@@ -106,6 +117,7 @@
 }
 
 #pragma mark - UIScrollViewDelegate
+// 处理下拉放大  和上拉到顶部 悬停分段控制器
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
 
     CGFloat y = scrollView.contentOffset.y;
@@ -144,6 +156,7 @@
 
 
 #pragma mark -helper
+//视图控制器下标
 -(NSUInteger) indexForViewController:(ArtistsContentViewController*) vc{
     NSUInteger index = 0;
     ResponseRoot *root = vc.responseRoot;
@@ -166,39 +179,30 @@
     return artistsContentVC;
 }
 
-/**
- 数据请求
- @param resource 艺人Resource
- */
--(void)requestFromArtistResource:(Resource*) resource{
-
-    NSString *name = [resource.attributes valueForKey:@"name"];
+//请求艺人信息
+-(void) requestFromArtistName:(NSString*) name{
     NSURLRequest *request = [[RequestFactory new] createSearchWithText:name];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
-        json = [json valueForKey:@"results"];
         if (json) {
-            NSMutableArray<NSDictionary<NSString*,ResponseRoot*>*> *list = [NSMutableArray array];
-            NSMutableArray<NSString*> *titles = [NSMutableArray array];
+            json = [json valueForKey:@"results"];
 
+            NSMutableArray<NSDictionary<NSString*,ResponseRoot*>*> *list = [NSMutableArray array];
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                 ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
                 NSDictionary *dict = @{(NSString*)key:root};
 
-
-                //过滤多余的资源
+                //过滤多余的资源, 保留下面这4 种
                 if ([key isEqualToString:@"artists"]  ||
                     [key isEqualToString:@"songs"]    ||
                     [key isEqualToString:@"albums"]   ||
                     [key isEqualToString:@"music-videos"]) {
                     [list addObject:dict];
-                    //设置分段控制器
-                    [titles addObject:key];
                 }
             }];
             self.results = list;
 
-            //设置pageView 第一页
+            //设置pageView 第一页 (下标0)
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIViewController *artistContentVC = [self viewControllerAtIndex:0];
                 [self->_pageViewController setViewControllers:@[artistContentVC,]
@@ -206,11 +210,19 @@
                                                      animated:YES
                                                    completion:nil];
 
-                //设置分段控制器
-                for (int i = 0; i<titles.count; i++) {
-                    [self.segmentControl insertSegmentWithTitle:titles[i] atIndex:i animated:YES];
+                //设置分段控制器, 并选出一张图片, 设置到image中
+                for (int i = 0; i < self.results.count; i++) {
+                    NSDictionary<NSString*,ResponseRoot*> *dict = [self.results objectAtIndex:i];
+                    [self.segmentControl insertSegmentWithTitle:dict.allKeys.firstObject atIndex:i animated:YES];
+                    if ([dict valueForKey:@"albums"]) {
+                        Resource *resource = [dict valueForKey:@"albums"].data.firstObject;
+                        Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
+                        [self showImageToView:self.imageView withImageURL:artwork.url cacheToMemory:YES];
+                    }
                 }
                 [self.segmentControl setSelectedSegmentIndex:0];
+
+
             });
         }
     }];
@@ -224,6 +236,7 @@
     NSUInteger index = segmented.selectedSegmentIndex;
     UIViewController *selectedVC = [self viewControllerAtIndex:index];
 
+    //判断方向
     if (index > self.currentIndex) {
         [self.pageViewController setViewControllers:@[selectedVC,]
                                            direction:UIPageViewControllerNavigationDirectionForward
@@ -244,17 +257,10 @@
 #pragma mark getter
 -(UIImageView *)imageView{
     if (!_imageView) {
-        UIImage *image = [UIImage imageNamed:@"FelixMittermeier.jpg"];
-        _imageView = [[UIImageView alloc] initWithImage:image];
-
-        CGSize imageSize = image.size;
-        CGFloat rate = imageSize.height/imageSize.width;
-        self.rate = rate;
-
-        CGFloat w = CGRectGetWidth(self.view.bounds);
-        CGFloat h = w *rate;
-
-        [_imageView setFrame:CGRectMake(0, self.topOffset, w, h)];
+        CGFloat w = CGRectGetWidth(self.view.frame);
+        CGFloat h = w;
+        CGRect frame = CGRectMake(0, self.topOffset, w, h);
+        _imageView = [[UIImageView alloc] initWithFrame:frame];
     }
     return _imageView;
 }
@@ -317,10 +323,8 @@
         });
 
     }
-
     return _pageViewController;
 }
-
 
 
 @end
