@@ -246,7 +246,7 @@ extern NSString *userTokenIssueNotification;
 }
 
 
-- (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueDescriptorFromParams:(NSArray<NSDictionary *> *)playParamses
+- (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueFromParams:(NSArray<NSDictionary *> *)playParamses
                                                                       startAtIndexPath:(NSIndexPath *)indexPath{
     NSMutableArray *list = NSMutableArray.new;
     for (NSDictionary * playParams in playParamses) {
@@ -258,6 +258,19 @@ extern NSString *userTokenIssueNotification;
     return queue;
 }
 
+-(MPMusicPlayerPlayParametersQueueDescriptor *)playParametersQueueFromSongs:(NSArray<Song *> *)songs startPlayIndex:(NSUInteger)index{
+    NSMutableArray<MPMusicPlayerPlayParameters*> *list = [NSMutableArray array];
+    for (Song *song in songs) {
+        if (song.playParams) {
+            MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
+            [list addObject:parameters];
+        }
+    }
+    MPMusicPlayerPlayParametersQueueDescriptor *queue;
+    queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:list];
+    [queue setStartItemPlayParameters:[list objectAtIndex:index]];
+    return queue;
+}
 
 - (void)showHUDToMainWindowFromText:(NSString *)text{
     dispatch_async(dispatch_get_main_queue(), ^{

@@ -44,7 +44,11 @@
 
 
 static PlayerViewController *_instance;
+
+
 @implementation PlayerViewController
+
+@synthesize playbackIndicatorView = _playbackIndicatorView;
 
 #pragma mark - 初始化 / 单例
 + (instancetype)sharePlayerViewController{
@@ -57,9 +61,7 @@ static PlayerViewController *_instance;
     //防止同时访问
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        if (!_instance) {
-            _instance = [super allocWithZone:zone];
-        }
+        if (!_instance) _instance = [super allocWithZone:zone];
     });
     return _instance;
 }
@@ -67,6 +69,7 @@ static PlayerViewController *_instance;
     if (self = [super init]) {
         _songs = trackArray;
         _nowPlaySong = [trackArray objectAtIndex:startIndex];
+        _parametersQueue = [self playParametersQueueFromSongs:trackArray startPlayIndex:startIndex];
     }
     return self;
 }
@@ -94,17 +97,34 @@ static PlayerViewController *_instance;
         weakSelf.nowPlaySong = [weakSelf.songs objectAtIndex:weakSelf.playerController.indexOfNowPlayingItem];
 
         //向外传递正在播放的项目
-        if (self->_nowPlayingItem) self->_nowPlayingItem(weakSelf.playerController.nowPlayingItem);
+        if (weakSelf.nowPlayingItem) weakSelf.nowPlayingItem(weakSelf.playerController.nowPlayingItem);
     }];
 
-//
-//    [self fetchIdentifierForSearchType:SearchLibraryPlaylistsType forName:@"Rating" usingBlock:^(NSString * identifier) {
-//        Log(@"rating identifier =%@",identifier);
-//    }];
+    //播放状态;
+    [center addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
 
+        MPMusicPlayerController *ctr = note.object;
+        switch (ctr.playbackState) {
+            case MPMusicPlaybackStatePaused:
+            case MPMusicPlaybackStateStopped:
+            case MPMusicPlaybackStateInterrupted:
+                [weakSelf.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
+                break;
+
+            case MPMusicPlaybackStatePlaying:
+            case MPMusicPlaybackStateSeekingForward:
+            case MPMusicPlaybackStateSeekingBackward:
+                [weakSelf.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
+                break;
+        }
+    }];
 
     //开始获取当前播放时间
     [self.timer fire];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -140,9 +160,20 @@ static PlayerViewController *_instance;
     //主线程更新
     dispatch_async(dispatch_get_main_queue(), ^{
 
+        /**
+         1.判断当前有没有加载Song 对象, 如果没有, 页面信息从系统获取
+
+         2.0 : 如果没有,从系统获取页面信息
+         2.1 : 从系统获取时, 需要识别是否为Apple版权的音乐,还是第三方添加的,Apple版权音乐直接通过ID获取Song 对象,更新信息
+         2.2 : 第三方音乐直接获取数据,更新信息
+         2.3 : (未完成: 第三方音乐, 通过音乐名称,和艺人, 在Apple 目录中搜索, 返回Song 对象)
+
+         */
+
         NSString *title;
         NSString *artist;
         NSString *durationString;
+
         if (self.nowPlaySong) {
             [self.playerView.heartIcon setEnabled:YES];
             Song *song = self.nowPlaySong;
@@ -156,13 +187,15 @@ static PlayerViewController *_instance;
 
             //封面
             [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
-            //红心
+
+            //红心开关 状态查询,设置
             [self heartFromSongIdentifier:[song.playParams objectForKey:@"id"]];
 
         }else{
 
             //判断当前播放时有没有在播放(加载了音乐)
             if (self.playerController.nowPlayingItem){
+
                 //有Identifier 属于AppleMusic版权库音乐 请求Song对象
                 NSString *identifier = self.playerController.nowPlayingItem.playbackStoreID;
                 if ((identifier) && (![identifier isEqualToString:@"0"])) {
@@ -192,6 +225,7 @@ static PlayerViewController *_instance;
             }
         }
 
+        //页面信息
         self.playerView.songNameLabel.text = title;
         self.playerView.artistLabel.text = artist;
 
@@ -201,13 +235,15 @@ static PlayerViewController *_instance;
     });
 }
 
-//获取歌曲rating
+#pragma mark - Helper
+
+/**获取歌曲rating 状态, 并设置 开关状态*/
 -(void)heartFromSongIdentifier:(NSString*) identifier{
     if (identifier) {
         NSURLRequest *request = [[PersonalizedRequestFactory new] managerCatalogAndLibraryRatingsWithOperatin:RatingsGetOperation
                                                                                                 resourcesType:ResourcesPersonalSongType
                                                                                                        andIds:@[identifier,]];
-                                 //createManageRatingsRequestWithType:GetSongRatingsType resourceIds:@[identifier,]];
+
         [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             if (!error && data ) {
                 NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
@@ -220,6 +256,7 @@ static PlayerViewController *_instance;
         }];
     }
 }
+
 //通过音乐 id 获取song 对象;
 -(void)songFromIdentifier:(NSString*) identifier{
     NSURLRequest *request = [[RequestFactory new] fetchResourceFromType:ResourceSongsType andIds:@[identifier,]];
@@ -369,9 +406,10 @@ static PlayerViewController *_instance;
 //红心按钮 添加喜欢或者取消喜欢
 - (void)changeLove:(LOTAnimatedSwitch*) heart{
 
-    NSString *identifier = [self.nowPlaySong.playParams objectForKey:@"id"];
+    NSString *identifier = self.playerController.nowPlayingItem.playbackStoreID; //[self.nowPlaySong.playParams objectForKey:@"id"];
     // 查询当前rating状态(不是基于当前按钮状态)  --> 操作
 
+    Log(@"playbackStoreID =%@",identifier);
     NSURLRequest *getRating = [self.factory managerCatalogAndLibraryRatingsWithOperatin:RatingsGetOperation
                                                                      resourcesType:ResourcesPersonalSongType
                                                                             andIds:@[identifier,]];
@@ -388,7 +426,6 @@ static PlayerViewController *_instance;
         }else{
             //当前没有添加为喜欢
             //添加喜欢 <PUT>
-            Log(@"id =%@",identifier);
             [self addRatingForSongId:identifier];
         }
     }];
@@ -423,6 +460,7 @@ static PlayerViewController *_instance;
                 [self.factory addTrackToPlaylists:identifier tracks:@[track,]];
             }];
 
+            //添加到数据库存储
             for (Song *song in self.songs) {
                 if ([[song.playParams valueForKey:@"id"] isEqualToString:identifier]) {
                     TracksModel *tracks = [[TracksModel alloc] init];
@@ -439,6 +477,29 @@ static PlayerViewController *_instance;
             });
         }
     }];
+}
+
+-(NAKPlaybackIndicatorView *)playbackIndicatorView{
+    if (!_playbackIndicatorView) {
+        NAKPlaybackIndicatorViewStyle *style = [NAKPlaybackIndicatorViewStyle iOS10Style];
+        _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
+        [_playbackIndicatorView setUserInteractionEnabled:NO];
+
+        switch (self.playerController.playbackState){
+            case MPMusicPlaybackStatePaused:
+            case MPMusicPlaybackStateStopped:
+            case MPMusicPlaybackStateInterrupted:
+                [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
+                break;
+
+            case MPMusicPlaybackStatePlaying:
+            case MPMusicPlaybackStateSeekingForward:
+            case MPMusicPlaybackStateSeekingBackward:
+                [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
+                break;
+        }
+    }
+    return _playbackIndicatorView;
 }
 
 

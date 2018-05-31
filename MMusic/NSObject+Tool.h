@@ -103,7 +103,17 @@
  @param indexPath 开始播放位置
  @return 播放队列
  */
--(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueDescriptorFromParams:(NSArray<NSDictionary*>*) playParamses startAtIndexPath:(NSIndexPath*) indexPath;
+-(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueFromParams:(NSArray<NSDictionary*>*) playParamses startAtIndexPath:(NSIndexPath*) indexPath;
+
+
+/**
+ 音乐列表生成播放队列
+
+ @param songs song 列表
+ @param index 开始播放音乐下标
+ @return 播放队列
+ */
+-(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueFromSongs:(NSArray<Song*>*) songs startPlayIndex:(NSUInteger) index;
 
 
 /**

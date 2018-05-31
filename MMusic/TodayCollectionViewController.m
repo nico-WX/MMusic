@@ -24,14 +24,15 @@
 #import "Playlist.h"
 #import "Album.h"
 
+
+
 @interface TodayCollectionViewController()<UICollectionViewDelegate, UICollectionViewDataSource>
-@property(nonatomic, strong) MPMusicPlayerController *playerCtr;
-@property(nonatomic, strong) UIButton *playbackViewButton;                      //右上角播放器指示器按钮
+@property(nonatomic, strong) UIButton *playbackViewButton;                      //右上角播放器指示器按钮(占位)
 @property(nonatomic, strong) NAKPlaybackIndicatorView *playbackIndicatorView;   //播放器视图(添加到上面的按钮中)
 @property(nonatomic, strong) UIActivityIndicatorView *activityView;     //加载指示器
 @property(nonatomic, strong) NSArray<NSString*> *titles;                //节title
 @property(nonatomic, strong) NSArray<NSArray<Resource*>*> *resources;   //所有资源
-@property(nonatomic, strong) UICollectionView *collectionView;          //推荐内容
+@property(nonatomic, strong) UICollectionView *collectionView;          //内容ui
 @property(nonatomic, strong) SearchViewController *searchVC;            //搜索控制器
 @end
 
@@ -58,7 +59,7 @@ static NSString *const cellIdentifier = @"todayCell";
     //添加搜索提示和结果视图
     [self.view addSubview:self.searchVC.view];
 
-    //显示播放器按钮
+    //显示播放器视图 按钮,(将播放状态指示器添加到这按钮上)
     [self.navigationController.navigationBar addSubview:self.playbackViewButton];
 
     //推荐内容
@@ -72,11 +73,28 @@ static NSString *const cellIdentifier = @"todayCell";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
 
+//更新UI
+-(void)viewDidAppear:(BOOL)animated{
     //显示搜搜框(搜索/显示详细时, 会隐藏搜索框)
     [self.searchVC.serachBar setHidden:NO];
+
+    //更新指示器
+    switch ([PlayerViewController sharePlayerViewController].playerController.playbackState) {
+        case MPMusicPlaybackStatePaused:
+        case MPMusicPlaybackStateStopped:
+        case MPMusicPlaybackStateInterrupted:
+            [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
+            break;
+
+        default:
+            [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
+            break;
+    }
+}
+//布局
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 
     //layout
     __weak typeof(self) weakSelf = self;
@@ -105,20 +123,6 @@ static NSString *const cellIdentifier = @"todayCell";
         UIEdgeInsets insets = UIEdgeInsetsMake(miniSpacing+y, miniSpacing, miniSpacing+tabBatH, miniSpacing);
         make.edges.mas_equalTo(superview).with.insets(insets);
     }];
-
-    //更新指示器
-    switch (self.playerCtr.playbackState) {
-        case MPMusicPlaybackStatePaused:
-        case MPMusicPlaybackStateStopped:
-        case MPMusicPlaybackStateInterrupted:
-            [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
-            break;
-
-        default:
-            [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
-            break;
-    }
-
 }
 
 #pragma  mark - 请求数据 和解析JSON
@@ -126,7 +130,6 @@ static NSString *const cellIdentifier = @"todayCell";
     //个人数据请求
     PersonalizedRequestFactory *fac = [PersonalizedRequestFactory new];
     NSURLRequest *request = [fac fetchRecommendationsWithType:FetchDefaultRecommendationsType andIds:@[]];
-    //[fac createRequestWithType:PersonalizedDefaultRecommendationsType resourceIds:@[]];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary * json= [self serializationDataWithResponse:response data:data error:error];
         if (json) {
@@ -139,6 +142,7 @@ static NSString *const cellIdentifier = @"todayCell";
                     NSArray *list = [subJSON valueForKeyPath:@"relationships.contents.data"];
                     title = [list.firstObject valueForKeyPath:@"attributes.curatorName"];
                 }
+                //title set
                 [titleList addObject:title];
                 //解析
                 [tempList addObject:[self serializationJSON:subJSON]];
@@ -226,6 +230,7 @@ static NSString *const cellIdentifier = @"todayCell";
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Resource *obj = [[self.resources objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:obj];
+    //隐藏搜索栏, 返回时显示
     [self.searchVC.serachBar setHidden:YES];
     [self.navigationController pushViewController:detailVC animated:YES];
 }
@@ -235,21 +240,20 @@ static NSString *const cellIdentifier = @"todayCell";
     if (!_collectionView) {
         UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
         layout.scrollDirection =  UICollectionViewScrollDirectionVertical;
-        layout.sectionHeadersPinToVisibleBounds = YES;
+        //layout.sectionHeadersPinToVisibleBounds = YES;
         layout.minimumLineSpacing = miniSpacing;
         layout.minimumInteritemSpacing = miniSpacing;
 
         //cell size
         CGFloat cellW = CGRectGetWidth(self.view.bounds)-((row+1)*miniSpacing);
         cellW = cellW/row;                  //单个cell 宽度
-        CGFloat cellH = cellW + 28;
+        CGFloat cellH = cellW + 28;         //28 高度标签
         [layout setItemSize:CGSizeMake(cellW, cellH)];
 
         //section size
         CGFloat h = 44.0f;
         CGFloat w = CGRectGetWidth(self.view.bounds);
         [layout setHeaderReferenceSize:CGSizeMake(w, h)];
-
 
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         [_collectionView registerClass:AlbumCell.class forCellWithReuseIdentifier:cellIdentifier];
@@ -279,15 +283,7 @@ static NSString *const cellIdentifier = @"todayCell";
     return _activityView;
 }
 
--(NAKPlaybackIndicatorView *)playbackIndicatorView{
-    if (!_playbackIndicatorView) {
-        NAKPlaybackIndicatorViewStyle *style = [NAKPlaybackIndicatorViewStyle iOS10Style];
-        _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
-        //不接收事件
-        [_playbackIndicatorView setUserInteractionEnabled:NO];
-    }
-    return _playbackIndicatorView;
-}
+
 -(UIButton *)playbackViewButton{
     if (!_playbackViewButton) {
         _playbackViewButton = [[UIButton alloc] init];
@@ -301,14 +297,8 @@ static NSString *const cellIdentifier = @"todayCell";
     }
     return _playbackViewButton;
 }
-
--(MPMusicPlayerController *)playerCtr{
-    if (!_playerCtr) {
-        _playerCtr = [PlayerViewController sharePlayerViewController].playerController;
-    }
-    return _playerCtr;
+-(NAKPlaybackIndicatorView *)playbackIndicatorView{
+    return [PlayerViewController sharePlayerViewController].playbackIndicatorView;
 }
-
-
 
 @end

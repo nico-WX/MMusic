@@ -161,7 +161,7 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
             //MV 排行榜 选中跳转应用播放
         case ChartsMusicVideosType:{
             MPMusicPlayerPlayParametersQueueDescriptor *queue;
-            queue = [self playParametersQueueDescriptorFromParams:self.playParametersList startAtIndexPath:indexPath];
+            queue = [self playParametersQueueFromParams:self.playParametersList startAtIndexPath:indexPath];
             [self openToPlayQueueDescriptor:queue];
             //[self openToPlayQueueDescriptor:[self openToPlayMusicVideosAtIndexPath:indexPath]];
         }
@@ -175,7 +175,7 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
             if (![start isEqualToMediaItem:self.playerVC.playerController.nowPlayingItem]) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     MPMusicPlayerPlayParametersQueueDescriptor *queue;
-                    queue = [self playParametersQueueDescriptorFromParams:self.playParametersList startAtIndexPath:indexPath];
+                    queue = [self playParametersQueueFromParams:self.playParametersList startAtIndexPath:indexPath];
                     [self.playerVC.playerController setQueueWithDescriptor:queue];
                     [self.playerVC.playerController prepareToPlay];
                 });

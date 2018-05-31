@@ -31,6 +31,13 @@ static NSString *const cellID = @"cellReuseIdentifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
+
+    /**
+     1. 当搜索栏未获得焦点时, hintsView 高度为0,隐藏在父视图上方;
+     2. 当搜索栏获得焦点时, 通过接受键盘弹出通知, 改变hintsView高度
+     3. 选中cell 或者 搜索按钮点击时 显示搜索结果视图
+     */
+
     //替换视图
     self.view = self.hintsView;
 }
@@ -112,14 +119,15 @@ static NSString *const cellID = @"cellReuseIdentifier";
 #pragma mark - getter
 - (UISearchBar *)serachBar{
     if (!_serachBar) {
-        _serachBar = UISearchBar.new;
+        _serachBar = [UISearchBar new] ;
         _serachBar.delegate = self;
 
-        //监听键盘弹出, 获取键盘高度,修改Hints view Frame
+        //监听键盘Frame 改变通知, 获取键盘高度,修改Hints view Frame 显示
         __weak typeof(self) weakSelf = self;
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        //键盘Frame改变, 同时更改TableViewFrame
-        [center addObserverForName:UIKeyboardWillChangeFrameNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillChangeFrameNotification
+                                                          object:nil
+                                                           queue:[NSOperationQueue mainQueue]
+                                                      usingBlock:^(NSNotification * _Nonnull note) {
             NSDictionary *info = note.userInfo;
             NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
 

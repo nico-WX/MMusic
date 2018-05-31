@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import <NAKPlaybackIndicatorView.h>
 
 @class Song;
 
 @interface PlayerViewController : UIViewController
+//播放状态指示器
+@property(nonatomic, strong, readonly) NAKPlaybackIndicatorView *playbackIndicatorView;
+
 /**播放器*/
 @property(nonatomic, strong) MPMusicPlayerController *playerController;
 /**正在播放的歌曲*/

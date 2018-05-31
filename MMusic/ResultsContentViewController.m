@@ -6,6 +6,7 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
+#import <Masonry.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <MJRefresh.h>
 
@@ -15,6 +16,8 @@
 #import "ResultsCell.h"
 #import "ResultsArtistsCell.h"
 #import "ResultsMusicVideoCell.h"
+
+#import "CuratorsAndActivitiesViewController.h"
 
 #import "RequestFactory.h"
 
@@ -28,7 +31,6 @@
 @end
 
 static NSString *const cellID = @"tableCellReuseID";
-
 @implementation ResultsContentViewController
 
 - (instancetype)initWithResponseRoot:(ResponseRoot *)responseRoot{
@@ -37,17 +39,27 @@ static NSString *const cellID = @"tableCellReuseID";
     }
     return self;
 }
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
+    //直接替换self.view  会出现TableView 部分cell 没有separator 线?
     [self.view addSubview:self.tableView];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+
+    //填充父视图
+    UIView *superview = self.view;
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(superview).insets(UIEdgeInsetsZero);
+    }];
 }
 
 #pragma mark - UITableViewDataSource
@@ -59,31 +71,31 @@ static NSString *const cellID = @"tableCellReuseID";
     ResultsCell *cell = (ResultsCell*)[tableView dequeueReusableCellWithIdentifier:cellID];
     Resource *resource = [self.responseRoot.data objectAtIndex:indexPath.row];
     cell.resource = resource;
-
     return cell;
 }
 #pragma mark - UITableViewDelegate
  -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 
-     Resource *resource = [_responseRoot.data objectAtIndex:indexPath.row];
+     Resource *resource = [self.responseRoot.data objectAtIndex:indexPath.row];
 
-     // activities, artists, apple-curators, albums, curators, songs, playlists, music-videos, and stations.
-     //确定操作 专辑和播放列表弹出详细视图  其他直接播放
+     // 可能的资源类型: activities, artists, apple-curators, albums, curators, songs, playlists, music-videos,stations.
+
+     //判断不同的资源类型, 区别操作
      NSString *type = resource.type;
 
-     // album  / playlist
+     // album  / playlist  弹出详细页面
      if ([type isEqualToString:@"albums"] || [type isEqualToString:@"playlists"]) {
          DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
          [self.navigationController pushViewController:detail animated:YES];
      }
 
-     //mv 跳转播放
+     //mv 跳转到Music App 播放
      if ([type isEqualToString:@"music-videos"]) {
          NSMutableArray *list = [NSMutableArray array];
          for (Resource *res in _responseRoot.data) {
              [list addObject: [res.attributes valueForKey:@"playParams"]];
          }
-         [self openToPlayQueueDescriptor:[self playParametersQueueDescriptorFromParams:list startAtIndexPath:indexPath]];
+         [self openToPlayQueueDescriptor:[self playParametersQueueFromParams:list startAtIndexPath:indexPath]];
      }
 
      //song / station 直接播放
@@ -95,7 +107,7 @@ static NSString *const cellID = @"tableCellReuseID";
              }
 
              MPMusicPlayerController *playCtr =[MPMusicPlayerController systemMusicPlayer];
-             [playCtr setQueueWithDescriptor:[self playParametersQueueDescriptorFromParams:list startAtIndexPath:indexPath]];
+             [playCtr setQueueWithDescriptor:[self playParametersQueueFromParams:list startAtIndexPath:indexPath]];
              [playCtr play];
              });
     }
@@ -105,8 +117,11 @@ static NSString *const cellID = @"tableCellReuseID";
          [self.navigationController pushViewController:artist animated:YES];
      }
 
-     //curators  / apple-curators
-     
+     //curators  / apple-curators  /activities
+     if ([type isEqualToString:@"curators"] || [type isEqualToString:@"apple-curators"] || [type isEqualToString:@"activities"]) {
+         CuratorsAndActivitiesViewController *vc = [[CuratorsAndActivitiesViewController alloc] initWithResource:resource];
+         [self.navigationController pushViewController:vc animated:YES];
+     }
 }
 
  #pragma mark - MPSystemMusicPlayerController
@@ -139,7 +154,6 @@ static NSString *const cellID = @"tableCellReuseID";
             [_tableView registerClass:ResultsCell.class forCellReuseIdentifier:cellID];
         }
 
-
         //刷新  初始有下一页 , 设置刷新控件
         if (self.responseRoot.next) {
             _tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
@@ -160,8 +174,9 @@ static NSString *const cellID = @"tableCellReuseID";
     NSURLRequest *request = [[RequestFactory new] createRequestWithHref:href];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
-        if (json) {
-            json = [json objectForKey:@"results"];
+
+        json = [json objectForKey:@"results"];
+        if (json.allKeys.count >0) {
             //枚举当前的 josn
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                 ResponseRoot *newRoot = [ResponseRoot instanceWithDict:obj];
@@ -172,12 +187,16 @@ static NSString *const cellID = @"tableCellReuseID";
                     self.responseRoot.next = nil;
                 }
                 self.responseRoot.data = [self.responseRoot.data arrayByAddingObjectsFromArray:newRoot.data];
-
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView.mj_footer endRefreshing];
-                    [self.tableView reloadData];
-                });
             }];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView.mj_footer endRefreshing];
+                [self.tableView reloadData];
+            });
+        }else{
+            self.responseRoot.next = nil;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView.mj_footer endRefreshingWithNoMoreData];
+            });
         }
     }];
 }

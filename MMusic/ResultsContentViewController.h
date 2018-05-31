@@ -10,6 +10,7 @@
 @class ResponseRoot;
 
 @interface ResultsContentViewController : UIViewController
+@property(nonatomic, strong,readonly) UITableView *tableView;
 @property(nonatomic,strong,readonly) ResponseRoot *responseRoot;
 -(instancetype)initWithResponseRoot:(ResponseRoot*) responseRoot;
 @end

@@ -12,13 +12,16 @@
 
 #import <Masonry.h>
 
-
+//统一圆角半径
 static const CGFloat corner = 8.0f;
+
 @interface PlayerView()
-//歌曲时长 等
+//播放进度信息
 @property(nonatomic, strong) PlayProgressView *playProgressView;
-//播放控件
+
+//播放控制视图
 @property(nonatomic ,strong) PlayControllerView *playCtrView;
+
 /**设置专辑阴影辅助视图*/
 @property(nonatomic, strong) UIView *midView;
 @end
@@ -40,7 +43,8 @@ static const CGFloat corner = 8.0f;
     _midView = ({
         UIView *view = UIView.new;
         [view.layer setCornerRadius:corner];
-        //默认 0
+
+        //默认阴影不透明 = 0 看不见效果
         [view.layer setShadowOpacity:0.8];
         [view.layer setShadowRadius:corner];
         [view.layer setShadowOffset:CGSizeMake(3, 6)];
@@ -49,6 +53,7 @@ static const CGFloat corner = 8.0f;
         [self addSubview:view];
         view;
     });
+
     //artwork
     _artworkView = ({
         UIImageView *imageView = UIImageView.new;
@@ -71,7 +76,6 @@ static const CGFloat corner = 8.0f;
         [self addSubview:view];
         view;
     });
-
 
     //歌曲名称
     _songNameLabel = ({
@@ -105,8 +109,10 @@ static const CGFloat corner = 8.0f;
         playCtr;
     });
 
-    //喜欢按钮
+    //红心开关
     _heartIcon = [LOTAnimatedSwitch switchNamed:@"TwitterHeart"];
+    [_heartIcon setContentMode:UIViewContentModeScaleToFill];
+    [_heartIcon setTransform:CGAffineTransformMakeScale(2, 2)];
     [self insertSubview:_heartIcon belowSubview:_playCtrView];
 
     //循环按钮
@@ -114,6 +120,7 @@ static const CGFloat corner = 8.0f;
     [self addSubview:_repeat];
 
 }
+
 
 - (void)layoutSubviews{
     UIEdgeInsets padding = UIEdgeInsetsMake(40, 40, 40, 40);
@@ -161,12 +168,13 @@ static const CGFloat corner = 8.0f;
         make.height.mas_equalTo(55);
     }];
 
+    //红心收藏
     [self.heartIcon mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.playCtrView.play.mas_bottom);
         make.centerX.mas_equalTo(weakSelf.playCtrView.play.mas_centerX);
-        make.size.mas_equalTo(CGSizeMake(200,200));
+        make.size.mas_equalTo(CGSizeMake(100,100));
     }];
 }
- 
+
 
 @end

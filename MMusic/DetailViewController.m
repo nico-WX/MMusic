@@ -27,6 +27,11 @@
 #import "Resource.h"
 
 @interface DetailViewController ()<UITableViewDelegate,UITableViewDataSource>
+/**头视图*/
+@property(nonatomic, strong) DetailHeaderView *header;
+/**表视图*/
+@property(nonatomic, strong) UITableView *tableView;
+
 @property(nonatomic, strong) Resource *resource;
 //播放器视图控制器
 @property(nonatomic, strong) PlayerViewController *playerVC;
@@ -43,8 +48,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 -(instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
         _resource = resource;
-
-
     }
     return self;
 }
@@ -61,6 +64,12 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
     self.tableView.tableHeaderView = self.header;
     [self.view addSubview:self.tableView];
+
+}
+
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
 
     //设置UI
     //封面海报
@@ -90,7 +99,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     }
 }
 
-
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
@@ -102,6 +110,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         }
     }
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -173,7 +182,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
                 //修改在正在播放的song cell 颜色
                 if ([song isEqualToMediaItem:item]) {
-                    Log(@"current =%@",[NSThread currentThread]);
                     [cell setState:NAKPlaybackIndicatorViewStatePlaying];
                     [cell setSelected:YES animated:YES];
                 }else{

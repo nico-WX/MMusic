@@ -109,7 +109,6 @@
     NSTimeInterval timeDuration = frameDuration / _framerate.floatValue;
     _timeDuration = timeDuration;
   }
-  
   NSArray *assetArray = jsonDictionary[@"assets"];
   if (assetArray.count) {
     _assetGroup = [[LOTAssetGroup alloc] initWithJSON:assetArray withAssetBundle:bundle withFramerate:_framerate];

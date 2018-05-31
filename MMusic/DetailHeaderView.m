@@ -37,6 +37,7 @@
 
 - (void)drawRect:(CGRect)rect {
     // Drawing code
+    [self setBackgroundColor:UIColor.whiteColor];
     __weak typeof(self) weakSelf = self;
     UIEdgeInsets padding = UIEdgeInsetsMake(5, 5, 5, 5);
     [self.artworkView mas_makeConstraints:^(MASConstraintMaker *make) {

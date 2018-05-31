@@ -103,7 +103,7 @@ static AuthorizationManager *_instance;
     if (!_developerToken) {
         _developerToken = [[NSUserDefaults standardUserDefaults] objectForKey:developerTokenDefaultsKey];
 #warning The token is set manually
-        _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTExODgyNjU5LCJleHAiOjE1Mjc0MzQ2NTl9.fbtthWV4K0kUedKa55CYN3y02SsrzwZLtTPhLfqQhYtovw-b5uk7ab-3O1YKQ1TtXn68Wdtv6TOUhw164Lv1hQ";
+        _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTI3NTAwMjY0LCJleHAiOjE1NDMwNTIyNjR9.UtcI1T7Xu1qizH7XR_91Xyd7KNkUkPh318l6k11Jap5S8TW2pFtL-mjCrG9N42jdvmrkA-oIaKzvyN4oKnBwnQ";
         if (!_developerToken) {
             [self requestDeveloperToken];
         }
@@ -137,11 +137,12 @@ static AuthorizationManager *_instance;
 /**请求开发者Token 并缓存在默认设置*/
 - (void)requestDeveloperToken{
 #warning DeveloperTokenURL no set!
-        NSURL *url = [NSURL URLWithString:@""];
+    NSURL *url = [NSURL URLWithString:@"http://127.0.0.1:5000/jwt"];
         [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
             if (res.statusCode == 200) {
                 NSString *token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
                 if (token) {
                     Log(@"request new DeveloperToken: %@",token);
                     self->_developerToken = token;
