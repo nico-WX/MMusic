@@ -33,10 +33,9 @@ static NSString *const cellID = @"cellReuseIdentifier";
     //不同的类型  添加不同的视图
     Resource *resource = self.responseRoot.data.lastObject ;
     if ([resource.type isEqualToString:@"artists"]) {
-        [self.view setBackgroundColor:UIColor.redColor];
         [self.view addSubview:self.artistView];
+        [self.artistView setBackgroundColor:UIColor.whiteColor];
     }else{
-        [self.view setBackgroundColor:UIColor.brownColor];
         [self.view addSubview:self.tableView];
     }
 
@@ -73,6 +72,30 @@ static NSString *const cellID = @"cellReuseIdentifier";
 }
 #pragma mark - UITableViewDelegate
 
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    if (scrollView.contentOffset.y < 0) {
+        //滚动到顶部了,
+        [scrollView setScrollEnabled:NO];
+
+        scrollView hitTest:<#(CGPoint)#> withEvent:<#(nullable UIEvent *)#>
+
+       // [scrollView resignFirstResponder];
+
+    }
+    Log(@"conten size =%@",NSStringFromCGSize(scrollView.contentSize));
+    Log(@"y =%f",scrollView.contentOffset.y);
+}
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    Log(@"end drag");
+}
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    Log(@"begin dra");
+}
+
+-(void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    Log(@"move ");
+}
+
 
 #pragma mark -getter
 -(UITableView *)tableView{
@@ -82,12 +105,13 @@ static NSString *const cellID = @"cellReuseIdentifier";
         _tableView.dataSource = self;
 
         [_tableView registerClass:UITableViewCell.class forCellReuseIdentifier:cellID];
+
     }
     return _tableView;
 }
 - (UIView *)artistView{
     if (!_artistView) {
-        _artistView = UIView.new;
+        _artistView = [[UIView alloc] initWithFrame:self.view.frame];
     }
     return _artistView;
 }

@@ -26,6 +26,8 @@
 #define IMAGEPATH_FOR_URL(urlString) [[ARTWORKIMAGEPATH stringByAppendingPathComponent:[urlString md5String]] stringByAppendingString:@".png"]
 /**DB 目录*/
 #define DB_PATH ([[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"DB"])
+/**主题颜色*/
+#define MainColor ([UIColor colorWithHue:0.968 saturation:0.827 brightness:1.000 alpha:1.000])
 
     //end __OBJC__
     #endif

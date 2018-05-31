@@ -484,6 +484,7 @@ static PlayerViewController *_instance;
         NAKPlaybackIndicatorViewStyle *style = [NAKPlaybackIndicatorViewStyle iOS10Style];
         _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
         [_playbackIndicatorView setUserInteractionEnabled:NO];
+        //[_playbackIndicatorView setTintColor:MainColor];
 
         switch (self.playerController.playbackState){
             case MPMusicPlaybackStatePaused:

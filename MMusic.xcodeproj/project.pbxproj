@@ -31,6 +31,7 @@
 		3B4D98A520BD42EC00139BE0 /* AlbumsSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D98A420BD42EC00139BE0 /* AlbumsSongCell.m */; };
 		3B4D98A820BD55DF00139BE0 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D98A720BD55DF00139BE0 /* TableViewController.m */; };
 		3B4D98AB20BD61F600139BE0 /* CuratorsAndActivitiesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D98AA20BD61F600139BE0 /* CuratorsAndActivitiesViewController.m */; };
+		3B4D98F120C0214000139BE0 /* ArtistsContentTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D98F020C0213F00139BE0 /* ArtistsContentTableView.m */; };
 		3B4E3AD6208F46B90042498C /* ChartsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD5208F46B90042498C /* ChartsViewController.m */; };
 		3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD8208F61E70042498C /* ChartsSongCell.m */; };
 		3B4E3ADC208F620E0042498C /* PlaylistsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3ADB208F620E0042498C /* PlaylistsCell.m */; };
@@ -268,6 +269,8 @@
 		3B4D98A720BD55DF00139BE0 /* TableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
 		3B4D98A920BD61F600139BE0 /* CuratorsAndActivitiesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CuratorsAndActivitiesViewController.h; sourceTree = "<group>"; };
 		3B4D98AA20BD61F600139BE0 /* CuratorsAndActivitiesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CuratorsAndActivitiesViewController.m; sourceTree = "<group>"; };
+		3B4D98EF20C0213F00139BE0 /* ArtistsContentTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArtistsContentTableView.h; sourceTree = "<group>"; };
+		3B4D98F020C0213F00139BE0 /* ArtistsContentTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArtistsContentTableView.m; sourceTree = "<group>"; };
 		3B4E3AD4208F46B90042498C /* ChartsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsViewController.h; sourceTree = "<group>"; };
 		3B4E3AD5208F46B90042498C /* ChartsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsViewController.m; sourceTree = "<group>"; };
 		3B4E3AD7208F61E70042498C /* ChartsSongCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsSongCell.h; sourceTree = "<group>"; };
@@ -478,6 +481,8 @@
 				3B408EDB20B6A8600057E323 /* ArtistsViewController.m */,
 				3B408EE920B6E7D70057E323 /* ArtistsContentViewController.h */,
 				3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */,
+				3B4D98EF20C0213F00139BE0 /* ArtistsContentTableView.h */,
+				3B4D98F020C0213F00139BE0 /* ArtistsContentTableView.m */,
 				3B8799572052BBC300EE9D2A /* DetailViewController.h */,
 				3B8799582052BBC300EE9D2A /* DetailViewController.m */,
 				3B469ADB1FF2462C0035E138 /* View */,
@@ -1250,6 +1255,7 @@
 				3B69896220A99DDC000C3403 /* LibrarySong.m in Sources */,
 				3B4D98A520BD42EC00139BE0 /* AlbumsSongCell.m in Sources */,
 				3B9AA8891FB2E06C00720085 /* MyMusicViewController.m in Sources */,
+				3B4D98F120C0214000139BE0 /* ArtistsContentTableView.m in Sources */,
 				3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */,
 				3B9AA8821FB04BC400720085 /* LocalMusicViewController.m in Sources */,
 				3BC3324820A04E490080D1B9 /* ContentViewController.m in Sources */,

@@ -25,7 +25,7 @@
 
         NAKPlaybackIndicatorViewStyle *viewStyle = [NAKPlaybackIndicatorViewStyle iOS10Style];
         _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:viewStyle];
-        [_playbackIndicatorView setTintColor:[UIColor colorWithHue:0.968 saturation:0.827 brightness:1.000 alpha:1.000]];
+        [_playbackIndicatorView setTintColor:MainColor];
 
         _numberLabel = ({
             UILabel *label = UILabel.new;

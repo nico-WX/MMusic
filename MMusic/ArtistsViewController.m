@@ -18,12 +18,10 @@
 //基本 下拉  控件悬停
 @property(nonatomic, strong) UIImageView *imageView;            //艺人照片
 @property(nonatomic, strong) UIScrollView *scrollView;          //滚动视图
-@property(nonatomic, strong) UIView *contentView;               //分页内容 和分段控制器 容器
+@property(nonatomic, strong) UIView *contentView;               //分段控制器  和内容视图(pageView)
 @property(nonatomic, strong) UISegmentedControl *segmentControl;//分段控制器
-@property(nonatomic, assign) CGFloat topOffset;                 //顶部距离
-
-@property(nonatomic, assign) NSUInteger currentIndex;           //当前选择的坐标
-
+@property(nonatomic, assign) NSUInteger currentIndex;           //当前选择的下标
+@property(nonatomic, assign) CGFloat topOffset;                 //偏移
 
 //艺人名称
 @property(nonatomic, copy) NSString *artistsName;
@@ -48,7 +46,6 @@
     return self;
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
@@ -59,7 +56,6 @@
      3.在 contentView 中添加 分段控制器和pageView
      */
 
-
     self.topOffset = CGRectGetHeight(self.navigationController.navigationBar.frame)+20;
 
     [self.view addSubview:self.imageView];
@@ -68,17 +64,27 @@
     [self.scrollView addSubview:self.contentView];
 
     [self.contentView addSubview:self.segmentControl];
-    //分页控制器
     [self.contentView addSubview:self.pageViewController.view];
+
+
     [self addChildViewController:self.pageViewController];
     [self.pageViewController didMoveToParentViewController:self];
 
     //数据请求
     [self requestFromArtistName:self.artistsName];
 
-
     self.view.backgroundColor = UIColor.whiteColor ;
+
 }
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+
+
+    //导航栏透明
+    [self.navigationController.navigationBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
+}
+
 
 #pragma mark - UIPageViewControllerDataSource
 //返回右边控制器
@@ -98,6 +104,9 @@
     if (0 == index || index == NSNotFound) return nil;
 
     index--;
+
+
+
     return [self viewControllerAtIndex:index];
 }
 
@@ -123,9 +132,10 @@
     CGFloat y = scrollView.contentOffset.y;
 
     //悬停控件
-    CGFloat imageH = CGRectGetHeight(self.imageView.frame);
-    if (y >= imageH) {
+    CGFloat imageH = CGRectGetHeight(self.imageView.frame)-self.topOffset;
 
+
+    if (y >= imageH) {
         self.segmentControl.frame = ({
             CGRect frame = self.segmentControl.frame;
             frame.origin.y = self.topOffset;
@@ -259,7 +269,7 @@
     if (!_imageView) {
         CGFloat w = CGRectGetWidth(self.view.frame);
         CGFloat h = w;
-        CGRect frame = CGRectMake(0, self.topOffset, w, h);
+        CGRect frame = CGRectMake(0, 0, w, h);
         _imageView = [[UIImageView alloc] initWithFrame:frame];
     }
     return _imageView;
@@ -270,7 +280,7 @@
 
         //frame
         CGRect frame = [UIScreen mainScreen].bounds;
-        CGFloat y = CGRectGetMinY(self.imageView.frame);
+        CGFloat y = CGRectGetHeight(self.navigationController.navigationBar.frame)+20;
         frame.origin.y = y;
         _scrollView = [[UIScrollView alloc] initWithFrame:frame];
 
@@ -283,15 +293,14 @@
     }
     return _scrollView;
 }
-
 -(UIView *)contentView{
     if (!_contentView) {
 
         CGFloat y = CGRectGetMaxY(self.imageView.frame)-(self.topOffset);
         CGRect rect = CGRectMake(0, y, CGRectGetWidth(self.scrollView.bounds), CGRectGetHeight(self.scrollView.bounds));
-
         _contentView = [[UIView alloc] initWithFrame:rect];
-        [_contentView setBackgroundColor:UIColor.brownColor];
+        [_contentView setBackgroundColor:UIColor.whiteColor];
+
     }
     return _contentView;
 }
@@ -299,9 +308,8 @@
 -(UISegmentedControl *)segmentControl{
     if (!_segmentControl) {
         CGRect frame = CGRectMake(0, 0, 414, 44);
-        _segmentControl = [[UISegmentedControl alloc] initWithFrame:frame];
+         _segmentControl = [[UISegmentedControl alloc] initWithFrame:frame];
         [_segmentControl setBackgroundColor:UIColor.whiteColor];
-
         [_segmentControl addTarget:self action:@selector(valueChange:) forControlEvents:UIControlEventValueChanged];
     }
     return _segmentControl;
@@ -315,16 +323,15 @@
         _pageViewController.delegate =self;
         _pageViewController.dataSource = self;
 
-        //分段控制器下方
-        _pageViewController.view.frame = ({
-            CGRect frame = self.contentView.frame;
-            frame.origin.y = CGRectGetMaxY(self.segmentControl.frame);
-            frame;
-        });
-
+        //分段控制器下方  //(用高度,不用Y值, 因为滚动到上部时,将分段控制器移动到self.view 中,)
+        CGFloat y = CGRectGetHeight(self.segmentControl.frame);
+        CGRect frame = self.contentView.frame;
+        frame.origin.y = y;
+        _pageViewController.view.frame = frame;
     }
     return _pageViewController;
 }
+
 
 
 @end
