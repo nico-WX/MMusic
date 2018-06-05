@@ -278,9 +278,9 @@
         case RatingsAddOperation:{
             //添加 playload
             NSDictionary *dict = @{@"type":@"rating",@"attributes":@{@"value":@1}};
-            NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingSortedKeys error:nil];
-            [request setHTTPBody:data];
+            NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
             [request setHTTPMethod:@"PUT"];
+            [request setHTTPBody:data];
         }
             break;
         case RatingsGetOperation:{
@@ -292,7 +292,6 @@
         }
             break;
     }
-
     return request;
 }
 
@@ -311,7 +310,7 @@
         }
             break;
         case ResourcesPersonalLibrarySongType:{
-            return @"library-songs";
+            return @"librar y-songs";
         }
             break;
         case ResourcesPersonalPlaylistsType:{
@@ -388,6 +387,7 @@
 }
 - (void)addTrackToPlaylists:(NSString *)identifier tracks:(NSArray<NSDictionary *> *)tracks{
     NSDictionary *playload = @{@"data":tracks};
+    Log(@"playload =%@",playload);
     NSURLRequest *request = [self modifyLibraryPlaylistsWithOperation:ModifyOperationAddTracksToLibraryPlaylist
                                                                fromId:identifier
                                                               payload:playload];
@@ -395,7 +395,7 @@
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
         Log(@"add track code =%ld",res.statusCode);
-        Log(@"response = %@",response);
+
     }];
 }
 -(void)createLibraryResourceForType:(LibraryResourceType)type name:(NSString *)name descriptor:(NSString *)desc{

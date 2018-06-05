@@ -12,7 +12,7 @@
 
 @interface SongCell : UITableViewCell
 /**歌曲编号*/
-@property(nonatomic, strong) UILabel *numberLabel;
+@property(nonatomic, strong,readonly) UILabel *numberLabel;
 @property(nonatomic, strong) Song *song;
 /**歌曲当前播放状态*/
 @property(nonatomic, assign) NAKPlaybackIndicatorViewState state;

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface ArtistsContentTableView : UITableView
-
+@property(nonatomic, assign) BOOL scrollToTop;
 @end

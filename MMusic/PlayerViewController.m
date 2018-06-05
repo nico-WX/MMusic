@@ -409,7 +409,6 @@ static PlayerViewController *_instance;
     NSString *identifier = self.playerController.nowPlayingItem.playbackStoreID; //[self.nowPlaySong.playParams objectForKey:@"id"];
     // 查询当前rating状态(不是基于当前按钮状态)  --> 操作
 
-    Log(@"playbackStoreID =%@",identifier);
     NSURLRequest *getRating = [self.factory managerCatalogAndLibraryRatingsWithOperatin:RatingsGetOperation
                                                                      resourcesType:ResourcesPersonalSongType
                                                                             andIds:@[identifier,]];
@@ -446,23 +445,32 @@ static PlayerViewController *_instance;
     }];
 }
 
--(void) addRatingForSongId:(NSString*)identifier{
+
+/**添加到播放列表中,
+ 0.添加rating, 成功后,执行添加到库播放列表中
+ 1.先查询播放列表id
+ 2.添加到播放列表中,
+ 3.存储到数据库中
+ */
+-(void) addRatingForSongId:(NSString*)songID{
+
+    //添加rating
     NSURLRequest *request = [self.factory managerCatalogAndLibraryRatingsWithOperatin:RatingsAddOperation
                                                                         resourcesType:ResourcesPersonalSongType
-                                                                               andIds:@[identifier,]];
+                                                                               andIds:@[songID,]];
 
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
         if (!error && res.statusCode/10==20) {
-            //添加到
+            //将track  添加到默认Rating 列表中
             [self.factory fetchIdentiferForSearchLibraryType:SearchLibraryPlaylistsType name:@"Rating" usingBlock:^(NSString *identifier) {
-                NSDictionary *track = @{@"id":identifier,@"type":@"songs"};
+                NSDictionary *track = @{@"id":songID,@"type":@"songs"};
                 [self.factory addTrackToPlaylists:identifier tracks:@[track,]];
             }];
 
             //添加到数据库存储
             for (Song *song in self.songs) {
-                if ([[song.playParams valueForKey:@"id"] isEqualToString:identifier]) {
+                if ([[song.playParams valueForKey:@"id"] isEqualToString:songID]) {
                     TracksModel *tracks = [[TracksModel alloc] init];
                     tracks.name         = song.name;
                     tracks.identifier   = [song.playParams valueForKey:@"id"];
@@ -470,7 +478,7 @@ static PlayerViewController *_instance;
                 }
             }
 
-            
+            //更新ui
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playerView.heartIcon setOn:YES animated:YES];
 

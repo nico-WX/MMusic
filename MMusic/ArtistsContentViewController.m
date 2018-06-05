@@ -8,12 +8,19 @@
 
 #import <Masonry.h>
 #import "ArtistsContentViewController.h"
+#import "ArtistsContentTableView.h"
+#import "ArtistsInfoView.h"
+#import "SongCell.h"
 #import "ResponseRoot.h"
 #import "Resource.h"
+#import "Song.h"
+
+
+#import "PlayerViewController.h"
 
 @interface ArtistsContentViewController ()<UITableViewDelegate,UITableViewDataSource>
-@property(nonatomic, strong) UITableView *tableView;
-@property(nonatomic, strong) UIView *artistView;
+@property(nonatomic, strong) ArtistsContentTableView *tableView;
+@property(nonatomic, strong) ArtistsInfoView *artistView;
 @end
 
 static NSString *const cellID = @"cellReuseIdentifier";
@@ -33,6 +40,8 @@ static NSString *const cellID = @"cellReuseIdentifier";
     //不同的类型  添加不同的视图
     Resource *resource = self.responseRoot.data.lastObject ;
     if ([resource.type isEqualToString:@"artists"]) {
+        Artist *artist = [Artist instanceWithDict:resource.attributes];
+        [self.artistView setArtist:artist];
         [self.view addSubview:self.artistView];
         [self.artistView setBackgroundColor:UIColor.whiteColor];
     }else{
@@ -45,13 +54,16 @@ static NSString *const cellID = @"cellReuseIdentifier";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
     UIView *superview =self.view;
     Resource *resource = self.responseRoot.data.lastObject ;
     if ([resource.type isEqualToString:@"artists"]) {
-
+        [self.artistView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.mas_equalTo(superview).insets(UIEdgeInsetsZero);
+        }];
     }else{
         [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.mas_equalTo(superview).insets(UIEdgeInsetsZero) ;
@@ -65,53 +77,59 @@ static NSString *const cellID = @"cellReuseIdentifier";
     return self.responseRoot.data.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:cellID];
+
     Resource *resource = [self.responseRoot.data objectAtIndex:indexPath.row];
-    cell.textLabel.text = [resource.attributes valueForKey:@"name"];
+    Song *song = [Song instanceWithDict:resource.attributes];
+    cell.song = song;
+    cell.numberLabel.text = [NSString stringWithFormat:@"%.2ld",indexPath.row+1];
     return cell;
 }
 #pragma mark - UITableViewDelegate
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    if (scrollView.contentOffset.y < 0) {
-        //滚动到顶部了,
-        [scrollView setScrollEnabled:NO];
-
-        scrollView hitTest:<#(CGPoint)#> withEvent:<#(nullable UIEvent *)#>
-
-       // [scrollView resignFirstResponder];
+    Resource *resource = [self.responseRoot.data objectAtIndex:indexPath.row];
+    if ([resource.type isEqualToString:@"songs"]) {
+        PlayerViewController *playVC = [PlayerViewController sharePlayerViewController];
+        
 
     }
-    Log(@"conten size =%@",NSStringFromCGSize(scrollView.contentSize));
-    Log(@"y =%f",scrollView.contentOffset.y);
-}
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    Log(@"end drag");
-}
--(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
-    Log(@"begin dra");
+    if ([resource.type isEqualToString:@""]) {
+
+    }
+    if ([resource.type isEqualToString:@""]) {
+
+    }
 }
 
--(void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    Log(@"move ");
+#pragma mark - UIScrollViewDelegate
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//    if (scrollView.contentOffset.y < 0) {
+//        [self.tableView setScrollToTop:YES];
+//    }else{
+//        [self.tableView setScrollToTop:NO];
+//    }
+
 }
 
 
 #pragma mark -getter
--(UITableView *)tableView{
+-(ArtistsContentTableView *)tableView{
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        _tableView = [[ArtistsContentTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _tableView.delegate = self;
         _tableView.dataSource = self;
+        [_tableView setShowsVerticalScrollIndicator:YES];
+        [_tableView setRowHeight:44.0f];
+        
 
-        [_tableView registerClass:UITableViewCell.class forCellReuseIdentifier:cellID];
-
+        [_tableView registerClass:SongCell.class forCellReuseIdentifier:cellID];
     }
     return _tableView;
 }
-- (UIView *)artistView{
+- (ArtistsInfoView *)artistView{
     if (!_artistView) {
-        _artistView = [[UIView alloc] initWithFrame:self.view.frame];
+        _artistView = [[ArtistsInfoView alloc] initWithFrame:self.view.frame];
     }
     return _artistView;
 }

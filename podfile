@@ -14,5 +14,6 @@ pod 'lottie-ios'
 pod 'NAKPlaybackIndicatorView'
 pod 'YTPageController'
 pod 'FMDB'
+pod 'Reveal-iOS-SDK', :configurations => ['Debug']
 
 end

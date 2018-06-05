@@ -46,8 +46,8 @@
         [slider setThumbImage:[self getImageFromView:view] forState:UIControlStateNormal];
 
         //拖动下 滑块样式
-        view.frame = CGRectMake(0, 0, 20, 20);
-        view.backgroundColor = UIColor.redColor;
+        view.frame = CGRectMake(0, 0, 16, 16);
+        view.backgroundColor = MainColor;
         [slider setThumbImage:[self getImageFromView:view] forState:UIControlStateHighlighted];
 
         [self addSubview:slider];

@@ -17,6 +17,14 @@
     // Drawing code
 }
 */
+//-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
+//    Log(@"to top =%d",self.scrollsToTop);
+//    if (self.scrollsToTop) {
+//        //穿透
+//        return nil;
+//    }
+//    return [super hitTest:point withEvent:event];
+//}
 
 
 

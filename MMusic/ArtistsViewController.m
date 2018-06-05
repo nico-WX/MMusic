@@ -26,9 +26,7 @@
 //艺人名称
 @property(nonatomic, copy) NSString *artistsName;
 
-/**
- 艺人相关数据
- */
+/**艺人相关数据*/
 @property(nonatomic, strong)NSArray<NSDictionary<NSString*,ResponseRoot*>*> *results;
 
 //分页
@@ -79,7 +77,6 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 
-
     //导航栏透明
     [self.navigationController.navigationBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
     [self.navigationController.navigationBar setShadowImage:[UIImage new]];
@@ -110,7 +107,6 @@
     return [self viewControllerAtIndex:index];
 }
 
-
 #pragma mark - UIPageViewControllerDelegate
 //滑动完成后,  更新分段控制选中的item
 -(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed{
@@ -129,28 +125,33 @@
 // 处理下拉放大  和上拉到顶部 悬停分段控制器
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
 
+
+   // Log(@"scrollview =%@",scrollView);
+
+//    Log(@"YYYY =%f",scrollView.contentOffset.y);
+//    if (scrollView.contentOffset.y < 0) {
+//        //滚动到顶部了,
+//        [self.tableView setScrollToTop:YES];
+//    }else{
+//        [self.tableView setScrollToTop:NO];
+//    }
+
+
     CGFloat y = scrollView.contentOffset.y;
-
     //悬停控件
-    CGFloat imageH = CGRectGetHeight(self.imageView.frame)-self.topOffset;
+    CGFloat imageOffset = CGRectGetHeight(self.imageView.frame)-self.topOffset;
 
-
-    if (y >= imageH) {
-        self.segmentControl.frame = ({
-            CGRect frame = self.segmentControl.frame;
-            frame.origin.y = self.topOffset;
-            frame;
-        });
-
-        [self.view addSubview:self.segmentControl];
+    if (y >= imageOffset) {
+        //设置在scrollerView 上的y点
+        CGRect frame = self.segmentControl.frame;
+        frame.origin.y = y;
+        self.segmentControl.frame = frame;
+        [self.scrollView addSubview:self.segmentControl];
     }else{
-
-        self.segmentControl.frame = ({
-            CGRect frame = self.segmentControl.frame;
-            frame.origin.y = 0;
-            frame;
-        });
-
+        //返回到contentView 中
+        CGRect frame = self.segmentControl.frame;
+        frame.origin.y = 0;
+        self.segmentControl.frame = frame;
         [self.contentView addSubview:self.segmentControl];
     }
 
@@ -194,9 +195,9 @@
     NSURLRequest *request = [[RequestFactory new] createSearchWithText:name];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
-        if (json) {
-            json = [json valueForKey:@"results"];
 
+        json = [json valueForKey:@"results"];
+        if (json) {
             NSMutableArray<NSDictionary<NSString*,ResponseRoot*>*> *list = [NSMutableArray array];
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                 ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
@@ -212,10 +213,11 @@
             }];
             self.results = list;
 
-            //设置pageView 第一页 (下标0)
+            //UI
             dispatch_async(dispatch_get_main_queue(), ^{
+                //设置pageView 第一页 (下标0)
                 UIViewController *artistContentVC = [self viewControllerAtIndex:0];
-                [self->_pageViewController setViewControllers:@[artistContentVC,]
+                [self.pageViewController setViewControllers:@[artistContentVC,]
                                                     direction:UIPageViewControllerNavigationDirectionForward
                                                      animated:YES
                                                    completion:nil];
@@ -231,8 +233,6 @@
                     }
                 }
                 [self.segmentControl setSelectedSegmentIndex:0];
-
-
             });
         }
     }];
@@ -246,22 +246,16 @@
     NSUInteger index = segmented.selectedSegmentIndex;
     UIViewController *selectedVC = [self viewControllerAtIndex:index];
 
-    //判断方向
-    if (index > self.currentIndex) {
-        [self.pageViewController setViewControllers:@[selectedVC,]
-                                           direction:UIPageViewControllerNavigationDirectionForward
-                                            animated:YES
-                                          completion:nil];
+    //判断方向 默认向前
+    UIPageViewControllerNavigationDirection navDir = UIPageViewControllerNavigationDirectionForward;
+    //方向向后
+    if (index < self.currentIndex)navDir = UIPageViewControllerNavigationDirectionReverse;
 
-        self.currentIndex = index;
-    }
-    if (index < self.currentIndex){
-        [self.pageViewController setViewControllers:@[selectedVC]
-                                          direction:UIPageViewControllerNavigationDirectionReverse
-                                           animated:YES
-                                         completion:nil];
-        self.currentIndex = index;
-    }
+    [self.pageViewController setViewControllers:@[selectedVC]
+                                      direction:navDir
+                                       animated:YES
+                                     completion:nil];
+    self.currentIndex = index;
 }
 
 #pragma mark getter
@@ -279,16 +273,19 @@
     if (!_scrollView) {
 
         //frame
-        CGRect frame = [UIScreen mainScreen].bounds;
-        CGFloat y = CGRectGetHeight(self.navigationController.navigationBar.frame)+20;
-        frame.origin.y = y;
+        CGFloat x = 0 ;
+        CGFloat y = self.topOffset;
+        CGFloat w = CGRectGetWidth(self.view.frame);
+        CGFloat h = CGRectGetHeight(self.view.frame)-(y+CGRectGetHeight(self.tabBarController.tabBar.frame));
+        CGRect frame = CGRectMake(x, y, w, h);
         _scrollView = [[UIScrollView alloc] initWithFrame:frame];
 
         _scrollView.delegate = self;
 
         //content size
-        CGSize size = frame.size;
-        size.height += CGRectGetHeight(self.imageView.frame)+64;
+        CGFloat contentW = CGRectGetWidth(frame);
+        CGFloat contentH = CGRectGetHeight(frame)+(CGRectGetHeight(self.imageView.frame)-self.topOffset);
+        CGSize size = CGSizeMake(contentW, contentH);
         [_scrollView setContentSize:size];
     }
     return _scrollView;
@@ -296,8 +293,12 @@
 -(UIView *)contentView{
     if (!_contentView) {
 
+        CGFloat x = 0;
         CGFloat y = CGRectGetMaxY(self.imageView.frame)-(self.topOffset);
-        CGRect rect = CGRectMake(0, y, CGRectGetWidth(self.scrollView.bounds), CGRectGetHeight(self.scrollView.bounds));
+        CGFloat w = CGRectGetWidth(self.scrollView.frame);
+        CGFloat h = CGRectGetHeight(self.scrollView.frame);
+
+        CGRect rect = CGRectMake(x, y, w, h);
         _contentView = [[UIView alloc] initWithFrame:rect];
         [_contentView setBackgroundColor:UIColor.whiteColor];
 
@@ -307,7 +308,12 @@
 
 -(UISegmentedControl *)segmentControl{
     if (!_segmentControl) {
-        CGRect frame = CGRectMake(0, 0, 414, 44);
+        CGFloat x = 0;
+        CGFloat y = 0;
+        CGFloat w = CGRectGetWidth(self.contentView.frame);
+        CGFloat h = 44.0f;
+
+        CGRect frame = CGRectMake(x, y, w, h);
          _segmentControl = [[UISegmentedControl alloc] initWithFrame:frame];
         [_segmentControl setBackgroundColor:UIColor.whiteColor];
         [_segmentControl addTarget:self action:@selector(valueChange:) forControlEvents:UIControlEventValueChanged];
@@ -323,10 +329,13 @@
         _pageViewController.delegate =self;
         _pageViewController.dataSource = self;
 
-        //分段控制器下方  //(用高度,不用Y值, 因为滚动到上部时,将分段控制器移动到self.view 中,)
-        CGFloat y = CGRectGetHeight(self.segmentControl.frame);
-        CGRect frame = self.contentView.frame;
-        frame.origin.y = y;
+        //分段控制器下方
+        CGFloat x = 0;
+        CGFloat y = CGRectGetHeight(self.segmentControl.frame); //不用Y值, 因为滚动到顶部会将分段控制器移到scrollView中
+        CGFloat w = CGRectGetWidth(self.contentView.frame);
+        CGFloat h = CGRectGetHeight(self.contentView.frame)-y;
+
+        CGRect frame = CGRectMake(x, y, w, h);
         _pageViewController.view.frame = frame;
     }
     return _pageViewController;

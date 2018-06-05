@@ -35,10 +35,6 @@
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
 
-
-    Log(@"path =%@",DB_PATH);
-
-
     //检查授权
     [self checkAuthorization];
 
@@ -115,7 +111,7 @@
 
             case SKCloudServiceAuthorizationStatusDenied:{
                 //拒绝授权
-                [self showHUDTOMainWindowWithInfo:@"用户拒绝获取音乐库信息,请手动开启"];
+                [self showHUDToMainWindowFromText:@"用户拒绝获取音乐库信息,请手动开启"];
             }
                 break;
             case SKCloudServiceAuthorizationStatusRestricted:
@@ -129,17 +125,6 @@
     }];
 }
 
-
-//显示信息HUD 到主窗口
--(void) showHUDTOMainWindowWithInfo:(NSString*) text{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.window animated:YES];
-        hud.label.text = text;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [hud removeFromSuperview];
-        });
-    });
-}
 //显示订阅视图
 -(void) showSubscriptionView{
 

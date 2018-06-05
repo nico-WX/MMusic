@@ -24,6 +24,7 @@ PODS:
   - MJRefresh (3.1.15.3)
   - NAKPlaybackIndicatorView (0.1.1)
   - pop (1.0.10)
+  - Reveal-iOS-SDK (1.6.2)
   - SDWebImage (4.2.2):
     - SDWebImage/Core (= 4.2.2)
   - SDWebImage/Core (4.2.2)
@@ -40,6 +41,7 @@ DEPENDENCIES:
   - MJExtension
   - MJRefresh
   - NAKPlaybackIndicatorView
+  - Reveal-iOS-SDK
   - SDWebImage
   - VBFPopFlatButton
   - YTPageController
@@ -54,10 +56,11 @@ SPEC CHECKSUMS:
   MJRefresh: b48380ae2b927b46c4ef000de9adb8dc748e1df7
   NAKPlaybackIndicatorView: f1468937ae3828ef6e9a50feda0781fdfa67dce8
   pop: 82ca6b068ce9278fd350fd9dd09482a0ce9492e6
+  Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   SDWebImage: 89a9d32cd520bbb46eb14e541d5109b3564af198
   VBFPopFlatButton: 39e48ab56277f3d056734a9b5ec5d0cc60d69778
   YTPageController: a42ed15972066e66ff7c8d769c214c11f27d483b
 
-PODFILE CHECKSUM: d7cc25df2efddc13d8e7921de45811357a5ee678
+PODFILE CHECKSUM: 7d8a23346fe62ca3939926aa767683732f38d927
 
 COCOAPODS: 1.3.0.beta.1
