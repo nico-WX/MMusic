@@ -5,8 +5,7 @@
 //  Created by Magician on 2018/3/11.
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
-#import <MBProgressHUD.h>
-#import <UIImageView+WebCache.h>
+
 #import <VBFPopFlatButton.h>
 
 #import "PlayerViewController.h"
@@ -19,13 +18,10 @@
 #import "Song.h"
 #import "PersonalizedRequestFactory.h"
 #import "RequestFactory.h"
-#import "NSObject+Tool.h"
-
 
 #import "DBTool.h"
 #import "TracksModel.h"
 #import "ArtistsModel.h"
-
 
 @interface PlayerViewController ()
 /**个人 请求*/
@@ -39,15 +35,14 @@
 /**歌曲列表*/
 @property(nonatomic, strong) NSArray<Song*> *songs;
 
+/**播放队列*/
 @property(nonatomic, strong)MPMusicPlayerPlayParametersQueueDescriptor *parametersQueue;
 @end
 
 
 static PlayerViewController *_instance;
 
-
 @implementation PlayerViewController
-
 @synthesize playbackIndicatorView = _playbackIndicatorView;
 
 #pragma mark - 初始化 / 单例
@@ -84,6 +79,7 @@ static PlayerViewController *_instance;
 #pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+
 
     //添加视图
     self.view = self.playerView;
@@ -152,6 +148,8 @@ static PlayerViewController *_instance;
 - (void)dealloc{
     [self.playerController endGeneratingPlaybackNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+
 }
 
 #pragma mark - 更新UI信息
@@ -228,14 +226,41 @@ static PlayerViewController *_instance;
         //页面信息
         self.playerView.songNameLabel.text = title;
         self.playerView.artistLabel.text = artist;
-
         if (durationString) {
             self.playerView.durationTime.text = durationString;
         }
+        [self addArtistsToDataBaseFromSong:self.nowPlaySong];
     });
 }
 
 #pragma mark - Helper
+
+/**存储艺人信息 , 添加到数据库, 创建艺人视图表*/
+-(void)addArtistsToDataBaseFromSong:(Song*) song{
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ArtistsModel *artist = [ArtistsModel new];
+        artist.name = song.artistName;
+
+        UIImage *image = self.playerView.artworkView.image;
+        if (!image) {
+            image = [self imageFromURL:song.artwork.url withImageSize:self.playerView.artworkView.frame.size];
+        }
+        artist.image = image;
+
+        if (song.artistName) {
+            //获取艺人 ID  写入数据库, 用来创建艺人列表
+            NSURLRequest *request = [[RequestFactory new] createSearchWithText:song.artistName];
+            [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+                json = [[json valueForKeyPath:@"results.artists.data"] lastObject];
+                artist.identifier = [json valueForKey:@"id"];
+                [DBTool addArtists:artist];
+            }];
+        }
+    });
+
+}
 
 /**获取歌曲rating 状态, 并设置 开关状态*/
 -(void)heartFromSongIdentifier:(NSString*) identifier{
@@ -344,9 +369,12 @@ static PlayerViewController *_instance;
 
 #pragma mark - setter
 -(void)setNowPlaySong:(Song *)nowPlaySong{
-    
-    _nowPlaySong = nowPlaySong;
-    [self updateNowPlayItemToView];
+    if (_nowPlaySong != nowPlaySong) {
+        Log(@"setter");
+        _nowPlaySong = nowPlaySong;
+        [self updateNowPlayItemToView];
+        //[self observe];
+    }
 }
 
 #pragma mark - Button Action
@@ -481,7 +509,6 @@ static PlayerViewController *_instance;
             //更新ui
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playerView.heartIcon setOn:YES animated:YES];
-
             });
         }
     }];
@@ -510,6 +537,53 @@ static PlayerViewController *_instance;
     }
     return _playbackIndicatorView;
 }
+
+
+-  (void) observe{
+    CFRunLoopRef runLoopRef = CFRunLoopGetCurrent();
+    CFRunLoopObserverRef runLoopObs = [self runLoopObsRef];
+    CFRunLoopAddObserver(runLoopRef, runLoopObs, kCFRunLoopDefaultMode);
+}
+- (CFRunLoopObserverRef) runLoopObsRef{
+    //(分配内存函数|监听RunLoop的那些状态|是否持续监听|优先级| 状态改变时的回调)
+    return CFRunLoopObserverCreateWithHandler(CFAllocatorGetDefault(), kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+        /*  可以监听的状态
+         typedef CF_OPTIONS(CFOptionFlags, CFRunLoopActivity) {
+         kCFRunLoopEntry = (1UL << 0),              //即将进入RunLoop
+         kCFRunLoopBeforeTimers = (1UL << 1),       //即将处理timer事件
+         kCFRunLoopBeforeSources = (1UL << 2),      //即将处理source事件
+         kCFRunLoopBeforeWaiting = (1UL << 5),      //即将进入睡眠
+         kCFRunLoopAfterWaiting = (1UL << 6),       //被唤醒
+         kCFRunLoopExit = (1UL << 7),               //退出RunLoop
+         kCFRunLoopAllActivities = 0x0FFFFFFFU      //所有状态
+         };
+         */
+        switch (activity) {
+            case kCFRunLoopEntry:
+                NSLog(@"//即将进入RunLoop");
+                break;
+            case kCFRunLoopBeforeTimers:
+                NSLog(@"//即将处理timer事件");
+                break;
+            case kCFRunLoopBeforeWaiting:
+                NSLog(@"//即将处理source事件");
+                break;
+            case kCFRunLoopBeforeSources:
+                NSLog(@"//即将进入睡眠");
+                break;
+            case kCFRunLoopAfterWaiting:
+                NSLog(@"//被唤醒");
+                break;
+            case  kCFRunLoopExit:
+                NSLog(@"//退出RunLoop");
+                break;
+
+            default:
+                break;
+        }
+    });
+}
+
 
 
 @end

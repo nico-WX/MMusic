@@ -11,6 +11,8 @@
 #import "ArtistsContentTableView.h"
 #import "ArtistsInfoView.h"
 #import "SongCell.h"
+#import "ResultsMusicVideoCell.h"
+#import "ResultsCell.h"
 #import "ResponseRoot.h"
 #import "Resource.h"
 #import "Song.h"
@@ -21,6 +23,9 @@
 @interface ArtistsContentViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic, strong) ArtistsContentTableView *tableView;
 @property(nonatomic, strong) ArtistsInfoView *artistView;
+
+@property(nonatomic, strong)NSArray<Song*> *songs;
+@property(nonatomic, strong)NSArray<MusicVideo*> *musicVideos;
 @end
 
 static NSString *const cellID = @"cellReuseIdentifier";
@@ -90,14 +95,12 @@ static NSString *const cellID = @"cellReuseIdentifier";
 
     Resource *resource = [self.responseRoot.data objectAtIndex:indexPath.row];
     if ([resource.type isEqualToString:@"songs"]) {
-        PlayerViewController *playVC = [PlayerViewController sharePlayerViewController];
         
+    }
+    if ([resource.type isEqualToString:@"albums"]) {
 
     }
-    if ([resource.type isEqualToString:@""]) {
-
-    }
-    if ([resource.type isEqualToString:@""]) {
+    if ([resource.type isEqualToString:@"music-videos"]) {
 
     }
 }
@@ -123,7 +126,19 @@ static NSString *const cellID = @"cellReuseIdentifier";
         [_tableView setRowHeight:44.0f];
         
 
-        [_tableView registerClass:SongCell.class forCellReuseIdentifier:cellID];
+        Resource *resource = self.responseRoot.data.firstObject;
+        if ([resource.type isEqualToString:@"songs"]) {
+            [_tableView registerClass:SongCell.class forCellReuseIdentifier:cellID];
+        }
+        if ([resource.type isEqualToString:@"albums"]) {
+            [_tableView registerClass:ResultsCell.class forCellReuseIdentifier:cellID];
+        }
+        if ([resource.type isEqualToString:@"music-videos"]) {
+            [_tableView registerClass:ResultsMusicVideoCell.class forCellReuseIdentifier:cellID];
+        }
+
+
+
     }
     return _tableView;
 }

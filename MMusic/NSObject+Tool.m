@@ -40,7 +40,7 @@ extern NSString *userTokenIssueNotification;
     switch (res.statusCode) {
         case 200:
             if (data) {
-                dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+                dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
                 if (error) Log(@"Serialization Error:%@",error);
             }
             break;
@@ -283,6 +283,21 @@ extern NSString *userTokenIssueNotification;
         //不接收事件
         [hud setUserInteractionEnabled:NO];
     });
+}
+
+
+
+-(UIImage *)imageFromURL:(NSString *)url withImageSize:(CGSize)imageSize{
+
+    NSString *path = IMAGEPATH_FOR_URL(url);
+    UIImage *image = [UIImage imageWithContentsOfFile:path];
+    if (!image) {
+
+        NSString *imagePath = [self stringReplacingOfString:url height:imageSize.height width:imageSize.width];
+        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
+        image = [UIImage imageWithData:data];
+    }
+    return image;
 }
 
 @end

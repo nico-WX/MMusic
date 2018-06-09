@@ -46,48 +46,61 @@ static FMDatabase *_db;
     _db = [FMDatabase databaseWithPath:path];
     [_db open];
 
-    //建表 t_artists 和 t_tracks
+    //删除表
+    //    NSString *deleteArtists = [NSString stringWithFormat:@"DROP TABLE %@",ARTISTS];
+    //    [_db executeUpdate:deleteArtists];
+
+
+    //检查表 t_artists 和 t_tracks
     NSString *createArtists = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(\
-                               identifier   TEXT PRIMARK KEY NOT NULL,\
+                               identifier   TEXT PRIMARY KEY NOT NULL ,\
                                name         TEXT NOT NULL ,\
                                image        BLOB NOT NULL);",ARTISTS];
 
     NSString *createTracks  = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(\
-                               identifier          TEXT PRIMARY KEY NOT NULL ,\
-                               name                TEXT NOT NULL);",TRACKS];
+                               identifier   TEXT PRIMARY KEY NOT NULL ,\
+                               name         TEXT NOT NULL);",TRACKS];
 
-
-    if ([_db executeUpdate:createTracks]) {
-        Log(@"t_tracks创建表");
-    }else{
-        Log(@"t_tracks表存在");
-    }
-    if ([_db executeUpdate:createArtists]) {
-        Log(@"t_artists 表创建");
-    }else{
-        Log(@"t_artists 存在");
-    }
-
-
+    //没有表时 自动创建,
+    [_db executeUpdate:createArtists];
+    [_db executeUpdate:createTracks];
 }
 
 +(void)insertData:(DBModel *)dbModel{
-    NSString *insertSQL;
+    NSString *SQL;
     if ([dbModel isKindOfClass:ArtistsModel.class]) {
         ArtistsModel *artists = (ArtistsModel*) dbModel;
         NSData *data = UIImagePNGRepresentation(artists.image);
-        insertSQL = [NSString stringWithFormat:@"INSERT INTO %@ (name,identifier,image)\
-                     VALUES('%@','%@',%@);",ARTISTS,artists.name,artists.identifier,data];
+        SQL = [NSString stringWithFormat:@"INSERT INTO %@(name,identifier,image) VALUES('%@','%@','%@');",ARTISTS,artists.name,artists.identifier,data];
+
     }
     if ([dbModel isKindOfClass:TracksModel.class]) {
         TracksModel *track = (TracksModel*)dbModel;
-
-        insertSQL = [NSString stringWithFormat:@"INSERT INTO %@ (identifier,name)\
-                     VALUES('%@','%@');",TRACKS,track.identifier,track.name];
+        SQL = [NSString stringWithFormat:@"INSERT INTO %@(identifier,name) VALUES('%@','%@');",TRACKS,track.identifier,track.name];
     }
 
-     [_db executeUpdate:insertSQL];
+    Log(@"SQL=%@",SQL);
+     [_db executeUpdate:SQL];
 }
+
+
++(void)addArtists:(ArtistsModel *)artist{
+    //先判断是否存在, 存在不再添加
+    NSString *SQLString = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE identifier=%@ ",ARTISTS,artist.identifier];
+    FMResultSet *set = [_db  executeQuery:SQLString];
+
+    if (!set.next) {
+        Log(@"没有结果  插入数据");
+        if (artist.identifier && artist.name && artist.image) {
+            [self insertData:artist];
+            Log(@"插入记录 :%@",artist.name);
+        }
+    }else{
+        Log(@"有结果");
+    }
+
+}
+
 
 +(void)deleteData:(DBModel *)dbModel{
     NSString *deleteSQL;
@@ -102,6 +115,7 @@ static FMDatabase *_db;
     }
     [_db executeUpdate:deleteSQL];
 }
+
 
 //+(void)updateData:(DBModel *)dbModel withIdentifier:(NSString *)identifier{
 //    NSString *updateSQL;

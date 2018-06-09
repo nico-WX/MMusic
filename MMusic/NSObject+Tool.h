@@ -126,12 +126,24 @@
 -(void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL) cache;
 
 
+
+/**
+ 获取Image
+
+ @param url image地址(未转换参数的地址)
+ @param imageSize 图片大小
+ @return 图片
+ */
+-(UIImage*)imageFromURL:(NSString*) url withImageSize:(CGSize) imageSize;
+
 /**
  主屏幕显示提示信息
 
 @param text 显示的文本信息
  */
 -(void)showHUDToMainWindowFromText:(NSString*) text;
+
+
 
 @end
 

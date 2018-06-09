@@ -35,6 +35,7 @@
 -(NSURLRequest*)fetchLibraryResourceWithType:(LibraryResourceType)type fromIds:(NSArray<NSString *> *)ids{
     NSString *subPath = [self stringFrom:type];
     NSString *path = self.rootPath;
+    path = [path stringByAppendingPathComponent:@"library"];
     path = [path stringByAppendingPathComponent:subPath];
 
     if (ids.count == 0) {
@@ -44,6 +45,7 @@
         //单个
         NSString *lastPath = ids.lastObject;
         path =[path stringByAppendingPathComponent:lastPath];
+        path = [path stringByAppendingString:@"?include=tracks"];
     }
     if (ids.count > 1) {
         //多个
@@ -52,6 +54,7 @@
             NSString *lastPath = [NSString stringWithFormat:@"%@,",identifier];
             path = [path stringByAppendingString:lastPath];
         }
+        path = [path stringByAppendingString:@"?include=tracks"];
     }
     return [self createRequestWithURLString:path setupUserToken:YES];
 }

@@ -27,36 +27,21 @@
         _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:viewStyle];
         [_playbackIndicatorView setTintColor:MainColor];
 
-        _numberLabel = ({
-            UILabel *label = UILabel.new;
-            [label setTextAlignment:NSTextAlignmentCenter];
-            [label setFont:[UIFont boldSystemFontOfSize:16]];
+        _numberLabel = UILabel.new;
+        [_numberLabel setTextAlignment:NSTextAlignmentCenter];
+        [_numberLabel setFont:[UIFont boldSystemFontOfSize:16]];
 
-            label;
-        });
+        _nameLabel = UILabel.new;
+        [_nameLabel setAdjustsFontSizeToFitWidth:YES];
 
-        _nameLabel = ({
-            UILabel *lable = UILabel.new;
-            [lable setAdjustsFontSizeToFitWidth:YES];
+        _artistLabel = UILabel.new;
+        [_artistLabel setFont:[UIFont systemFontOfSize:12]];
+        [_artistLabel setTextColor:[UIColor grayColor]];
 
-            lable;
-        });
+        _durationLabel = UILabel.new;
+        [_durationLabel setTextAlignment:NSTextAlignmentCenter];
+        [_durationLabel setFont:[UIFont italicSystemFontOfSize:12]];
 
-        _artistLabel = ({
-            UILabel *label = UILabel.new;
-            [label setFont:[UIFont systemFontOfSize:12]];
-            [label setTextColor:[UIColor grayColor]];
-
-            label;
-        });
-
-        _durationLabel = ({
-            UILabel *label = UILabel.new;
-            [label setTextAlignment:NSTextAlignmentCenter];
-            [label setFont:[UIFont italicSystemFontOfSize:12]];
-
-            label;
-        });
 
         [self.contentView addSubview:_playbackIndicatorView];
         [self.contentView addSubview:_numberLabel];
@@ -119,6 +104,7 @@
     }];
 
     [super setNeedsUpdateConstraints];
+
 }
 
 #pragma mark - setter

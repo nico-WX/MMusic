@@ -62,23 +62,23 @@
     UINavigationController *browseNav = [[UINavigationController alloc] initWithRootViewController:browseVC];
 
     //music
-    UIViewController *musicVC = UIViewController.new;
-    musicVC.title = @"音乐库";
-    UINavigationController *musicNav = [[UINavigationController alloc] initWithRootViewController:musicVC];
+//    UIViewController *musicVC = UIViewController.new;
+//    musicVC.title = @"音乐库";
+//    UINavigationController *musicNav = [[UINavigationController alloc] initWithRootViewController:musicVC];
 
     //添加控制器
     [barCtr addChildViewController:todayNavCtr];
     [barCtr addChildViewController:chartNav];
     [barCtr addChildViewController:browseNav];
-    [barCtr addChildViewController:musicNav];
+    //[barCtr addChildViewController:musicNav];
     [barCtr addChildViewController:mmusicNavCtr];
 
     //设置item 图标
-    [todayNavCtr.tabBarItem setImage:[UIImage imageNamed:@"今日推荐"]];
-    [chartNav.tabBarItem setImage:[UIImage imageNamed:@"排行榜"]];
-    [browseNav.tabBarItem setImage:[UIImage imageNamed:@"浏览"]];
-    [mmusicNavCtr.tabBarItem setImage:[UIImage imageNamed:@"我的"]];
-    [musicNav.tabBarItem setImage:[UIImage imageNamed:@"music"]];
+    [todayNavCtr.tabBarItem setImage:[UIImage imageNamed:@"心"]];
+    [chartNav.tabBarItem setImage:[UIImage imageNamed:@"Chart"]];
+    [browseNav.tabBarItem setImage:[UIImage imageNamed:@"B"]];
+    [mmusicNavCtr.tabBarItem setImage:[UIImage imageNamed:@"Library"]];
+    //[musicNav.tabBarItem setImage:[UIImage imageNamed:@"music"]];
 
     //[barCtr setSelectedIndex:2];
 
