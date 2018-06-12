@@ -11,7 +11,7 @@
 #import <MJRefresh.h>
 #import <Masonry.h>
 
-#import "TodayCollectionViewController.h"
+#import "TodayRecommendationViewController.h"
 #import "PlayerViewController.h"
 #import "AlbumCell.h"
 #import "TodaySectionView.h"
@@ -25,21 +25,21 @@
 #import "Album.h"
 
 
-
-@interface TodayCollectionViewController()<UICollectionViewDelegate, UICollectionViewDataSource>
+@interface TodayRecommendationViewController()<UICollectionViewDelegate, UICollectionViewDataSource>
 @property(nonatomic, strong) UIButton *playbackViewButton;                      //右上角播放器指示器按钮(占位)
 @property(nonatomic, strong) NAKPlaybackIndicatorView *playbackIndicatorView;   //播放器视图(添加到上面的按钮中)
-@property(nonatomic, strong) UIActivityIndicatorView *activityView;     //加载指示器
-@property(nonatomic, strong) NSArray<NSString*> *titles;                //节title
-@property(nonatomic, strong) NSArray<NSArray<Resource*>*> *resources;   //所有资源
+@property(nonatomic, strong) UIActivityIndicatorView *activityView;     //内容加载指示器
 @property(nonatomic, strong) UICollectionView *collectionView;          //内容ui
 @property(nonatomic, strong) SearchViewController *searchVC;            //搜索控制器
+
+@property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *allData;
+
 @end
 
 static const CGFloat row = 2.0f;
 static const CGFloat miniSpacing = 2.0f;
 
-@implementation TodayCollectionViewController
+@implementation TodayRecommendationViewController
 //reuse  identifier
 static NSString *const sectionIdentifier = @"sectionView";
 static NSString *const cellIdentifier = @"todayCell";
@@ -51,21 +51,25 @@ static NSString *const cellIdentifier = @"todayCell";
     self.view.backgroundColor = UIColor.whiteColor;
     [self requestData];
 
+    /**
+     1.添加搜索栏到导航栏
+     2.添加搜索控制器视图到视图中, 高度为0 隐藏在导航栏下方
+     */
     //搜索栏
     self.searchVC = SearchViewController.new;
     [self addChildViewController:self.searchVC];
-    //添加到导航栏
     [self.navigationController.navigationBar addSubview:self.searchVC.serachBar];
-    //添加搜索提示和结果视图
     [self.view addSubview:self.searchVC.view];
 
+
     //显示播放器视图 按钮,(将播放状态指示器添加到这按钮上)
+    [self.playbackViewButton addSubview:self.playbackIndicatorView];
     [self.navigationController.navigationBar addSubview:self.playbackViewButton];
 
     //推荐内容
     [self.view insertSubview:self.collectionView belowSubview:self.searchVC.view];
 
-    //添加加载指示器
+    //加载遮罩 (mask)
     [self.collectionView addSubview:self.activityView];
 }
 
@@ -100,8 +104,7 @@ static NSString *const cellIdentifier = @"todayCell";
     __weak typeof(self) weakSelf = self;
     UIView *superview = self.navigationController.navigationBar;
     [self.searchVC.serachBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        UIEdgeInsets padding = UIEdgeInsetsMake(0, 0, 0, 60);
-        make.edges.mas_equalTo(superview).with.insets(padding);
+        make.edges.mas_equalTo(superview).with.insets(UIEdgeInsetsMake(0, 0, 0, 60));
     }];
 
     [self.playbackViewButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -110,6 +113,7 @@ static NSString *const cellIdentifier = @"todayCell";
         make.bottom.mas_equalTo(superview.mas_bottom);
         make.width.mas_equalTo(CGRectGetHeight(weakSelf.navigationController.navigationBar.frame));
     }];
+
     superview = self.playbackViewButton;
     [self.playbackIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(superview).insets(UIEdgeInsetsZero);
@@ -130,27 +134,27 @@ static NSString *const cellIdentifier = @"todayCell";
     //个人数据请求
     PersonalizedRequestFactory *fac = [PersonalizedRequestFactory new];
     NSURLRequest *request = [fac fetchRecommendationsWithType:FetchDefaultRecommendationsType andIds:@[]];
+
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary * json= [self serializationDataWithResponse:response data:data error:error];
         if (json) {
-            NSMutableArray *tempList = NSMutableArray.new;  //所有数据临时集合
-            NSMutableArray *titleList = NSMutableArray.new; //临时节title 集合
+
+            //数据列表
+            NSMutableArray<NSDictionary<NSString*,NSArray*>*> *array = [NSMutableArray array];
 
             for (NSDictionary *subJSON in [json objectForKey:@"data"]) {
+                //获取title
                 NSString *title = [subJSON valueForKeyPath:@"attributes.title.stringForDisplay"];
                 if (!title) {
                     NSArray *list = [subJSON valueForKeyPath:@"relationships.contents.data"];
                     title = [list.firstObject valueForKeyPath:@"attributes.curatorName"];
                 }
-                //title set
-                [titleList addObject:title];
-                //解析
-                [tempList addObject:[self serializationJSON:subJSON]];
-            }
 
-            //所有数据解析完成, 设置数据
-            self.resources = tempList;
-            self.titles = titleList;
+                NSArray *resources = [self serializationJSON:subJSON];
+                NSDictionary *dict = @{title:resources};
+                [array addObject:dict];
+            }
+            self.allData = array;
             //刷新UI
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.activityView stopAnimating];
@@ -189,21 +193,24 @@ static NSString *const cellIdentifier = @"todayCell";
 
 #pragma mark - <UICollectionViewDataSource>
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    return self.resources.count;
+    return self.allData.count;
 }
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self.resources objectAtIndex:section].count;
+
+    NSArray *array = [self.allData objectAtIndex:section].allValues.firstObject;
+    return  array.count;
 }
 
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
     AlbumCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    Resource* resource = [[self.resources objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+
+    NSDictionary<NSString*,NSArray<Resource*>*> *dict = [self.allData objectAtIndex:indexPath.section];
+    Resource* resource = [dict.allValues.firstObject objectAtIndex:indexPath.row];
     if ([resource respondsToSelector:@selector(attributes)]) {
         Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
         [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
-
         cell.titleLabel.text = [resource.attributes valueForKey:@"name"];
     }
     cell.contentView.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
@@ -215,7 +222,7 @@ static NSString *const cellIdentifier = @"todayCell";
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     //节头
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
-        NSString *title = [self.titles objectAtIndex:indexPath.section];
+        NSString *title = [self.allData objectAtIndex:indexPath.section].allKeys.firstObject;
         TodaySectionView *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                             withReuseIdentifier:sectionIdentifier
                                                                 forIndexPath:indexPath];
@@ -228,7 +235,7 @@ static NSString *const cellIdentifier = @"todayCell";
 
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    Resource *obj = [[self.resources objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    Resource *obj = [[[self.allData objectAtIndex:indexPath.section] allValues].firstObject objectAtIndex:indexPath.row];
     DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:obj];
     //隐藏搜索栏, 返回时显示
     [self.searchVC.serachBar setHidden:YES];
@@ -240,11 +247,10 @@ static NSString *const cellIdentifier = @"todayCell";
     if (!_collectionView) {
         UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
         layout.scrollDirection =  UICollectionViewScrollDirectionVertical;
-        //layout.sectionHeadersPinToVisibleBounds = YES;
         layout.minimumLineSpacing = miniSpacing;
         layout.minimumInteritemSpacing = miniSpacing;
 
-        //cell size
+        //cell size(提前设置, 请求图片时 需要使用大小参数)
         CGFloat cellW = CGRectGetWidth(self.view.bounds)-((row+1)*miniSpacing);
         cellW = cellW/row;                  //单个cell 宽度
         CGFloat cellH = cellW + 28;         //28 高度标签
@@ -288,9 +294,7 @@ static NSString *const cellIdentifier = @"todayCell";
     if (!_playbackViewButton) {
         _playbackViewButton = [[UIButton alloc] init];
 
-        //将播放指示视图 添加到按钮上
-        [_playbackViewButton addSubview:self.playbackIndicatorView];
-        //事件处理(显示控制器)
+        //事件处理回调
         [_playbackViewButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
             [self presentViewController:[PlayerViewController sharePlayerViewController] animated:YES completion:nil];
         }];

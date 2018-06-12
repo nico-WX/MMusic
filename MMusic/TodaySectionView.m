@@ -15,18 +15,20 @@
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        self.titleLabel = [[UILabel alloc] init];
-        [self addSubview:self.titleLabel];
-        [self.titleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:28.0]];
+
+        CGFloat spacing = 6;
+        CGFloat x = spacing;
+        CGFloat y = 0;
+        CGFloat w = CGRectGetWidth(frame)-spacing*2;
+        CGFloat h = CGRectGetHeight(frame);
+        CGRect labelFrame = CGRectMake(x,y,w,h);
+        _titleLabel = [[UILabel alloc] initWithFrame:labelFrame];
+        [_titleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:26.0]];
+
+        [self addSubview:_titleLabel];
     }
     return self;
 }
 
-- (void)layoutSubviews{
-    self.titleLabel.frame = ({
-        CGRect rect = self.bounds;
-        CGRect labelRect = CGRectMake(rect.origin.x+8, rect.origin.y, rect.size.width-8, rect.size.height);
-        labelRect;
-    });
-}
+
 @end

@@ -363,11 +363,9 @@
             break;
         case FetchMultipleRecommendationsType:{
             path = [path stringByAppendingString:@"?ids="];
-            NSString *lastPath;
             for (NSString *str in ids) {
-                lastPath = [NSString stringWithFormat:@"%@,",str];
+                path = [path stringByAppendingString:[NSString stringWithFormat:@"%@,",str]];
             }
-            path = [path stringByAppendingString:lastPath];
         }
             break;
     }

@@ -63,6 +63,7 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
     [self.view insertSubview:self.scrollView belowSubview:self.screeningVC.view];
 
     self.screeningVC.selectedItem(@"国语");
+
 }
 
 - (void)didReceiveMemoryWarning {

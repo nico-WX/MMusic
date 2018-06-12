@@ -19,7 +19,7 @@
 #import "ResponseRoot.h"
 
 #pragma mark - property
-@interface ResultsViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UICollectionViewDelegate,UICollectionViewDataSource>
+@interface ResultsViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 //记录当前显示的分页, 处理pageViewController 导航方向
 @property(nonatomic, assign) NSUInteger currentIndex;
 //结果分类指示视图
@@ -51,6 +51,7 @@ static NSString * const cellID = @"colletionCellReuseId";
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+     self.title = self.searchText;
 
     /**
      1.搜索到结果后, 通过分页控制器显示内容分页,
@@ -97,6 +98,7 @@ static NSString * const cellID = @"colletionCellReuseId";
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         json = [json valueForKey:@"results"];
 
+        //检查结果返回空结果字典
         if (json.allKeys.count != 0)  {
 
             NSMutableArray *resultsList = [NSMutableArray array];
@@ -127,11 +129,15 @@ static NSString * const cellID = @"colletionCellReuseId";
 
         }else{
             [self showHUDToMainWindowFromText:@"没有查找到数据"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.navigationController popViewControllerAnimated:YES];
+            });
+
         }
     }];
 }
 
-//返回内容视图的下标
+//返回控制器对应的下标
 -(NSUInteger) indexOfViewController:(ResultsContentViewController*) viewController{
     NSUInteger index = 0;
     for (NSDictionary<NSString*,ResponseRoot*> *dict in self.results) {
@@ -142,8 +148,9 @@ static NSString * const cellID = @"colletionCellReuseId";
     return index;
 }
 
-//返回下标的 内容视图
+//按下标, 获取控制器
 -(UIViewController*) viewControllerAtIndex:(NSUInteger) index{
+    //没有内容 , 或者大于内容数量  直接返回nil
     if (self.results.count == 0 || index > self.results.count) return nil;
 
     NSDictionary<NSString*,ResponseRoot*> *dict = [self.results objectAtIndex:index];
@@ -157,9 +164,10 @@ static NSString * const cellID = @"colletionCellReuseId";
         }
     }
 
+    //数组中没有创建过的控制器, 创建新的,并添加到数组
     ResultsContentViewController *contentVC = [[ResultsContentViewController alloc] initWithResponseRoot:root];
-    [self.vcArray addObject:contentVC];
     [contentVC setTitle:title];
+    [self.vcArray addObject:contentVC];
     return contentVC;
 }
 
@@ -219,6 +227,8 @@ static NSString * const cellID = @"colletionCellReuseId";
     [cell.titleLabel setText:dict.allKeys.firstObject];
     return cell;
 }
+
+
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     //滚动item居中
@@ -235,6 +245,23 @@ static NSString * const cellID = @"colletionCellReuseId";
     }
 
     self.currentIndex = indexPath.row;
+}
+
+#pragma mark - UICollectionDelegateFlowLayout
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+
+    CGFloat w = CGRectGetWidth(self.view.frame);
+    CGFloat h = 38.0f;
+
+    CGFloat cellH = h-2;
+    CGFloat cellW = 0;
+
+    if (self.results && self.results.count > 4) {
+        cellW = w/4;
+    }else{
+        cellW = w/self.results.count;
+    }
+    return CGSizeMake(cellW, cellH);
 }
 
 
@@ -261,10 +288,8 @@ static NSString * const cellID = @"colletionCellReuseId";
 
         //layout
         UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
-        CGFloat cellH = h-2;
-        CGFloat cellW = w/4;
-        [layout setItemSize:CGSizeMake(cellW, cellH)];
         [layout setMinimumInteritemSpacing:1];
+        [layout setMinimumLineSpacing:1];
         [layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
 
         //collectionView

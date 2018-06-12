@@ -15,7 +15,7 @@
 /**提示视图*/
 @property(nonatomic, strong) UITableView *hintsView;
 /**提示数据*/
-@property(nonatomic, strong,readonly) NSArray<NSString*> *terms;
+@property(nonatomic, strong) NSArray<NSString*> *terms;
 /**搜索结果*/
 @property(nonatomic, strong) ResultsViewController *resultsVC;
 @end
@@ -24,13 +24,10 @@ static NSString *const cellID = @"cellReuseIdentifier";
 @implementation SearchViewController
 
 @synthesize serachBar = _serachBar;
-@synthesize terms = _terms;
-
 #pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-
 
     /**
      1. 当搜索栏未获得焦点时, hintsView 高度为0,隐藏在父视图上方;
@@ -41,6 +38,7 @@ static NSString *const cellID = @"cellReuseIdentifier";
     //替换视图
     self.view = self.hintsView;
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -61,7 +59,8 @@ static NSString *const cellID = @"cellReuseIdentifier";
 }
 //搜索点击
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
-    [searchBar resignFirstResponder];
+    [self.serachBar resignFirstResponder];
+
     [self showSearchResultsFromText:searchBar.text];
 }
 //搜索栏取消按钮 隐藏提示栏
@@ -83,7 +82,10 @@ static NSString *const cellID = @"cellReuseIdentifier";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
-    cell.textLabel.text = [self.terms objectAtIndex:indexPath.row];
+    if (self.terms.count > 0) {
+        cell.textLabel.text = [self.terms objectAtIndex:indexPath.row];
+    }
+
     return cell;
 }
 - (void)showHintsFromTerms:(NSString *)term{
@@ -101,8 +103,9 @@ static NSString *const cellID = @"cellReuseIdentifier";
 
 #pragma mark - UITableView Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [self.serachBar resignFirstResponder];
     NSString *text = [self.terms objectAtIndex:indexPath.row];
+    [self.serachBar resignFirstResponder];
+
     //选中的文本填入搜索框
     self.serachBar.text = text;
     [self showSearchResultsFromText:text];
@@ -111,8 +114,8 @@ static NSString *const cellID = @"cellReuseIdentifier";
 #pragma mark - 显示搜索结果
 -(void)showSearchResultsFromText:(NSString*) searchText{
     [self.serachBar setHidden:YES];
+
     self.resultsVC = [[ResultsViewController alloc] initWithSearchText:searchText];
-    self.resultsVC.title = searchText;
     [self.navigationController pushViewController:self.resultsVC animated:YES];
 }
 
@@ -121,6 +124,7 @@ static NSString *const cellID = @"cellReuseIdentifier";
     if (!_serachBar) {
         _serachBar = [UISearchBar new] ;
         _serachBar.delegate = self;
+        [_serachBar setBackgroundColor:UIColor.clearColor];
 
         //监听键盘Frame 改变通知, 获取键盘高度,修改Hints view Frame 显示
         __weak typeof(self) weakSelf = self;
@@ -132,8 +136,8 @@ static NSString *const cellID = @"cellReuseIdentifier";
             NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
 
             CGRect rect = weakSelf.hintsView.frame;
-            CGFloat navH = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
-            rect.size.height = CGRectGetMinY(value.CGRectValue) - navH;
+            CGFloat navMaxY = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
+            rect.size.height = CGRectGetMinY(value.CGRectValue) - navMaxY;
             [UIView animateWithDuration:0.7 animations:^{
                 weakSelf.hintsView.frame = rect;
             }];

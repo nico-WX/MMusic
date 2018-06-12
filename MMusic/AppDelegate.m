@@ -12,7 +12,7 @@
 
 //Controller
 #import "MyMusicViewController.h"
-#import "TodayCollectionViewController.h"
+#import "TodayRecommendationViewController.h"
 #import "ChartsPageViewController.h"
 #import "BrowseViewController.h"
 #import "SearchViewController.h"
@@ -47,7 +47,7 @@
     [mmusicVC setTitle:@"我的音乐"];
 
     //今日推荐
-    TodayCollectionViewController *todayCVC = [[TodayCollectionViewController alloc] init];
+    TodayRecommendationViewController *todayCVC = [[TodayRecommendationViewController alloc] init];
     [todayCVC setTitle:@"今日推荐"];
     UINavigationController *todayNavCtr = [[UINavigationController alloc] initWithRootViewController:todayCVC];
 

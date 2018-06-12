@@ -1,5 +1,5 @@
 //
-//  TodayCollectionViewController.h
+//  TodayRecommendationViewController.h
 //  MMusic
 //
 //  Created by Magician on 2017/12/26.
@@ -12,6 +12,5 @@
 /**
  今日推荐
  */
-@interface TodayCollectionViewController : UIViewController
-
+@interface TodayRecommendationViewController : UIViewController
 @end
