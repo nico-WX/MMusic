@@ -20,7 +20,7 @@
 
 #pragma mark - property
 @interface ResultsViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
-//记录当前显示的分页, 处理pageViewController 导航方向
+//记录当前显示的分页, 处理pageViewController 滚动导航方向
 @property(nonatomic, assign) NSUInteger currentIndex;
 //结果分类指示视图
 @property(nonatomic, strong) UICollectionView *classifyView;

@@ -6,14 +6,14 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "MMObject.h"
+#import "Resource.h"
 
 @class Artwork;
 @class EditorialNotes;
 @class PlayParameters;
 @class Preview;
 
-@interface MusicVideo : MMObject
+@interface MusicVideo : Resource
 @property(nonatomic, copy) NSString *artistName;
 @property(nonatomic, copy) NSString *contentRating;
 @property(nonatomic, copy) NSString *isrc;

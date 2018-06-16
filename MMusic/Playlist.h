@@ -6,13 +6,13 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "MMObject.h"
+#import "Resource.h"
 
 @class Artwork;
 @class EditorialNotes;
 @class PlayParameters;
 
-@interface Playlist : MMObject
+@interface Playlist : Resource
 @property(nonatomic, copy) NSString *curatorName;
 @property(nonatomic, copy) NSString *url;
 @property(nonatomic, copy) NSString *playlistType;

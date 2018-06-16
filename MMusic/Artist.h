@@ -6,11 +6,11 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "MMObject.h"
+#import "Resource.h"
 
 @class EditorialNotes;
 /**艺人*/
-@interface Artist : MMObject
+@interface Artist : Resource
 @property(nonatomic, strong) NSArray<NSString*> *genreNames;
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
 @property(nonatomic, copy) NSString *name;

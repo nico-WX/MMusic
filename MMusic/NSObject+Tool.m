@@ -14,7 +14,6 @@
 #import "AuthorizationManager.h"
 #import "PersonalizedRequestFactory.h"
 
-
 #import "Album.h"
 #import "Artist.h"
 #import "Activities.h"
@@ -31,7 +30,7 @@ extern NSString *developerTokenExpireNotification;
 extern NSString *userTokenIssueNotification;
 @implementation NSObject (Tool)
 
-//解析响应体
+//统一解析响应体,处理异常等.
 -(NSDictionary *)serializationDataWithResponse:(NSURLResponse *)response data:(NSData *)data error:(NSError *)error{
 
     if (error) Log(@"Location Error:%@",error);
@@ -57,13 +56,13 @@ extern NSString *userTokenIssueNotification;
             break;
 
         default:
-             //Log(@"response info :%@",res);
+             Log(@"response info :%@",res);
             break;
     }
     return dict;
 }
 
-//封装发起任务请求操作
+//封装发起任务请求操作,通过block 回调返回数据.
 -(void)dataTaskWithRequest:(NSURLRequest*) request completionHandler:(void(^)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler{
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
         if (handler) handler(data,response,error);
@@ -83,15 +82,14 @@ extern NSString *userTokenIssueNotification;
 
 /**设置请求头*/
 -(void)setupAuthorizationWithRequest:(NSMutableURLRequest *)request setupUserToken:(BOOL)needSetupUserToken{
+
     //设置开发者Token 请求头
     NSString *developerToken = [AuthorizationManager shareAuthorizationManager].developerToken;
     if (developerToken) {
         developerToken = [NSString stringWithFormat:@"Bearer %@",developerToken];
         [request setValue:developerToken forHTTPHeaderField:@"Authorization"];
     }else{
-        [UIApplication sharedApplication] ;
         [self showHUDToMainWindowFromText:@"无法获得开发者Token"];
-        //Log(@"无法获得开发者Token!");
     }
 
     //个性化请求 设置UserToken 请求头
@@ -99,10 +97,8 @@ extern NSString *userTokenIssueNotification;
         NSString *userToken = [AuthorizationManager shareAuthorizationManager].userToken;
         if (userToken){
             [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];
-            //Log(@"userToken: %@",userToken);
         }else{
             [self showHUDToMainWindowFromText:@"无法获得用户令牌"];
-            // Log(@"无法获得userToken");
         }
     }
 }
@@ -113,7 +109,6 @@ extern NSString *userTokenIssueNotification;
     //urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
     //转码方法2
-
     //移除 '%' 防止将%编码成25
     urlString = [urlString stringByRemovingPercentEncoding];
     urlString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
@@ -121,6 +116,9 @@ extern NSString *userTokenIssueNotification;
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     //设置请求头
     [self setupAuthorizationWithRequest:request setupUserToken:setupUserToken];
+
+    //Log(@"header %@",request.allHTTPHeaderFields);
+
     return request;
 }
 
@@ -136,32 +134,36 @@ extern NSString *userTokenIssueNotification;
         }
 
         //获取视图宽高, 设置请求图片大小
-        CGFloat h = CGRectGetHeight(imageView.bounds);
-        CGFloat w = CGRectGetWidth(imageView.bounds);
+        CGFloat scale = [UIScreen mainScreen].scale;
+        CGFloat h = CGRectGetHeight(imageView.bounds)*scale;
+        CGFloat w = CGRectGetWidth(imageView.bounds)*scale;
         if (w <= 10 || h <= 10) w=h=40; //拦截高度, 宽度为 0 的情况, 设置默认值,
                                         //image
-        NSString *path = IMAGEPATH_FOR_URL(url);
+        NSString *path = IMAGE_PATH_FOR_URL(url);
         UIImage *image = [UIImage imageWithContentsOfFile:path];
 
         //照片太小, 删除
-        CGFloat scale = [UIScreen mainScreen].scale;
-        if (image.size.width < w*scale || image.size.height < h*scale) {
+        if (image.size.width < w || image.size.height < h) {
             [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
             image = nil;
         }
 
         if (image) {
+            //照片可以设置.
             [imageView setImage:image];
-            //内存中无图片
         }else{
+            //从网络请求图片
             UIActivityIndicatorView *hud = [[UIActivityIndicatorView alloc] initWithFrame:imageView.frame];
             [hud setHidesWhenStopped:YES];
             [hud startAnimating];
             hud.color = UIColor.grayColor;
+            [imageView addSubview:hud];
+            //[imageView performSelectorOnMainThread:@selector(addSubview:) withObject:hud waitUntilDone:NO];
 
-            [imageView performSelectorOnMainThread:@selector(addSubview:) withObject:hud waitUntilDone:NO];
-
+            //image url
             NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
+
+            //部分URL 多出@"{c}" 这个参数,  替换掉
             NSRange range = [urlStr rangeOfString:@"{c}"];
             if (range.length > 0) {
                 urlStr = [urlStr stringByReplacingOccurrencesOfString:@"{c}" withString:@"cc"];
@@ -173,10 +175,10 @@ extern NSString *userTokenIssueNotification;
                     //判断目标文件夹是否存在
                     NSFileManager *fm = [NSFileManager defaultManager];
                     BOOL isDir = NO;
-                    BOOL exist = [fm fileExistsAtPath:ARTWORKIMAGEPATH isDirectory:&isDir];
+                    BOOL exist = [fm fileExistsAtPath:ARTWORK_IMAGE_PATH isDirectory:&isDir];
                     //目标文件夹不存在就创建
                     if (!(isDir && exist)){
-                        [fm createDirectoryAtPath:ARTWORKIMAGEPATH withIntermediateDirectories:YES attributes:nil error:nil];
+                        [fm createDirectoryAtPath:ARTWORK_IMAGE_PATH withIntermediateDirectories:YES attributes:nil error:nil];
                     }
                     //存储文件
                     BOOL sucess = [fm createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
@@ -289,7 +291,7 @@ extern NSString *userTokenIssueNotification;
 
 -(UIImage *)imageFromURL:(NSString *)url withImageSize:(CGSize)imageSize{
 
-    NSString *path = IMAGEPATH_FOR_URL(url);
+    NSString *path = IMAGE_PATH_FOR_URL(url);
     UIImage *image = [UIImage imageWithContentsOfFile:path];
     if (!image) {
 

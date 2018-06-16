@@ -12,7 +12,7 @@
 
 @property(nonatomic, copy) NSString *href;
 @property(nonatomic, copy) NSString *next;
-@property(nonatomic, strong) NSArray *data;
+@property(nonatomic, strong) NSArray<Resource*> *data;
 @property(nonatomic, strong) NSDictionary *meta;
 
 @end

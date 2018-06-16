@@ -20,8 +20,6 @@
 		3B3D99FA205EE0A0000F2E9E /* love-red.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B3D99F7205EE0A0000F2E9E /* love-red.png */; };
 		3B408EDC20B6A8600057E323 /* ArtistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EDB20B6A8600057E323 /* ArtistsViewController.m */; };
 		3B408EEB20B6E7D70057E323 /* ArtistsContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */; };
-		3B408EED20B81E3B0057E323 /* qimono.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B408EEC20B81E3A0057E323 /* qimono.jpg */; };
-		3B44056C20B989BB0085FDAB /* FelixMittermeier.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B44055C20B989BB0085FDAB /* FelixMittermeier.jpg */; };
 		3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */; };
 		3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D988020BA8A2600139BE0 /* DBTool.m */; };
 		3B4D989120BA8A3D00139BE0 /* DBModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D989020BA8A3D00139BE0 /* DBModel.m */; };
@@ -80,7 +78,6 @@
 		3BAAE01920B4211B00C82F4B /* ResultsContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAE01820B4211B00C82F4B /* ResultsContentViewController.m */; };
 		3BAAE02A20B437FB00C82F4B /* ClassifyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAE02920B437FB00C82F4B /* ClassifyCell.m */; };
 		3BAAE02D20B45A9A00C82F4B /* ResultsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAE02C20B45A9A00C82F4B /* ResultsCell.m */; };
-		3BB731DE207B9BD800DC629B /* NSObject+MMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731DD207B9BD800DC629B /* NSObject+MMObject.m */; };
 		3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB731E0207BAF7E00DC629B /* ResultsViewController.m */; };
 		3BB8793C2091D521004677B6 /* BrowseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB8793B2091D521004677B6 /* BrowseViewController.m */; };
 		3BB990EF20C6CF9C002A6BA1 /* PlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB990EE20C6CF9C002A6BA1 /* PlayerController.m */; };
@@ -216,8 +213,6 @@
 		3B408EDB20B6A8600057E323 /* ArtistsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArtistsViewController.m; sourceTree = "<group>"; };
 		3B408EE920B6E7D70057E323 /* ArtistsContentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArtistsContentViewController.h; sourceTree = "<group>"; };
 		3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArtistsContentViewController.m; sourceTree = "<group>"; };
-		3B408EEC20B81E3A0057E323 /* qimono.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = qimono.jpg; sourceTree = "<group>"; };
-		3B44055C20B989BB0085FDAB /* FelixMittermeier.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = FelixMittermeier.jpg; sourceTree = "<group>"; };
 		3B4806741FC96585009035CD /* PersonalizedRequestFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersonalizedRequestFactory.h; sourceTree = "<group>"; };
 		3B4806751FC96585009035CD /* PersonalizedRequestFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PersonalizedRequestFactory.m; sourceTree = "<group>"; };
 		3B4D987F20BA8A2600139BE0 /* DBTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBTool.h; sourceTree = "<group>"; };
@@ -340,8 +335,6 @@
 		3BAAE02920B437FB00C82F4B /* ClassifyCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClassifyCell.m; sourceTree = "<group>"; };
 		3BAAE02B20B45A9A00C82F4B /* ResultsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsCell.h; sourceTree = "<group>"; };
 		3BAAE02C20B45A9A00C82F4B /* ResultsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsCell.m; sourceTree = "<group>"; };
-		3BB731DC207B9BD800DC629B /* NSObject+MMObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+MMObject.h"; sourceTree = "<group>"; };
-		3BB731DD207B9BD800DC629B /* NSObject+MMObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MMObject.m"; sourceTree = "<group>"; };
 		3BB731DF207BAF7D00DC629B /* ResultsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsViewController.h; sourceTree = "<group>"; };
 		3BB731E0207BAF7E00DC629B /* ResultsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsViewController.m; sourceTree = "<group>"; };
 		3BB8793A2091D521004677B6 /* BrowseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BrowseViewController.h; sourceTree = "<group>"; };
@@ -452,8 +445,6 @@
 		3B3D99FF205EE625000F2E9E /* ImageSource */ = {
 			isa = PBXGroup;
 			children = (
-				3B44055C20B989BB0085FDAB /* FelixMittermeier.jpg */,
-				3B408EEC20B81E3A0057E323 /* qimono.jpg */,
 				3B3D99F7205EE0A0000F2E9E /* love-red.png */,
 				3B3D99F5205EE09D000F2E9E /* love-gray.png */,
 			);
@@ -687,6 +678,8 @@
 		3B9AA8DC1FB4618300720085 /* CoreObject */ = {
 			isa = PBXGroup;
 			children = (
+				3B5371E61FD2BC60009AFE47 /* MMObject.h */,
+				3B5371E71FD2BC60009AFE47 /* MMObject.m */,
 				3B9AA8D91FB4535400720085 /* Error.h */,
 				3B9AA8DA1FB4535400720085 /* Error.m */,
 				3B9AA8D01FB452FE00720085 /* Relationship.h */,
@@ -702,24 +695,11 @@
 		3B9AA8DD1FB4619500720085 /* Resource Object */ = {
 			isa = PBXGroup;
 			children = (
-				3B9AA8DE1FB461CD00720085 /* Activities.h */,
-				3B9AA8DF1FB461CD00720085 /* Activities.m */,
-				3B9AA8E11FB463E800720085 /* Album.h */,
-				3B9AA8E21FB463E800720085 /* Album.m */,
-				3B9AA8E41FB46C7700720085 /* AppleCurator.h */,
-				3B9AA8E51FB46C7700720085 /* AppleCurator.m */,
-				3B9AA8E71FB46D6100720085 /* Artist.h */,
-				3B9AA8E81FB46D6100720085 /* Artist.m */,
+				3B9B268820D54CB100881199 /* Resource */,
 				3B9AA8EA1FB46E7B00720085 /* Artwork.h */,
 				3B9AA8EB1FB46E7B00720085 /* Artwork.m */,
 				3B9AA8ED1FB46F9300720085 /* Chart.h */,
 				3B9AA8EE1FB46F9300720085 /* Chart.m */,
-				3B9AA8F01FB4708E00720085 /* Curator.h */,
-				3B9AA8F11FB4708E00720085 /* Curator.m */,
-				3B5371E31FD148B6009AFE47 /* Genre.h */,
-				3B5371E41FD148B6009AFE47 /* Genre.m */,
-				3B9AA8F31FB4719A00720085 /* MusicVideo.h */,
-				3B9AA8F41FB4719A00720085 /* MusicVideo.m */,
 				3B9AA8F61FB4759F00720085 /* EditorialNotes.h */,
 				3B9AA8F71FB4759F00720085 /* EditorialNotes.m */,
 				3B9AA8F91FB4769500720085 /* Playlist.h */,
@@ -736,12 +716,29 @@
 				3B9AA9091FB47D6B00720085 /* Station.m */,
 				3B9AA90B1FB47E0700720085 /* Storefront.h */,
 				3B9AA90C1FB47E0700720085 /* Storefront.m */,
-				3B5371E61FD2BC60009AFE47 /* MMObject.h */,
-				3B5371E71FD2BC60009AFE47 /* MMObject.m */,
-				3BB731DC207B9BD800DC629B /* NSObject+MMObject.h */,
-				3BB731DD207B9BD800DC629B /* NSObject+MMObject.m */,
 			);
 			name = "Resource Object";
+			sourceTree = "<group>";
+		};
+		3B9B268820D54CB100881199 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				3B9AA8DE1FB461CD00720085 /* Activities.h */,
+				3B9AA8DF1FB461CD00720085 /* Activities.m */,
+				3B9AA8E11FB463E800720085 /* Album.h */,
+				3B9AA8E21FB463E800720085 /* Album.m */,
+				3B9AA8E41FB46C7700720085 /* AppleCurator.h */,
+				3B9AA8E51FB46C7700720085 /* AppleCurator.m */,
+				3B9AA8E71FB46D6100720085 /* Artist.h */,
+				3B9AA8E81FB46D6100720085 /* Artist.m */,
+				3B9AA8F01FB4708E00720085 /* Curator.h */,
+				3B9AA8F11FB4708E00720085 /* Curator.m */,
+				3B5371E31FD148B6009AFE47 /* Genre.h */,
+				3B5371E41FD148B6009AFE47 /* Genre.m */,
+				3B9AA8F31FB4719A00720085 /* MusicVideo.h */,
+				3B9AA8F41FB4719A00720085 /* MusicVideo.m */,
+			);
+			name = Resource;
 			sourceTree = "<group>";
 		};
 		3BAADF4F20B2C75B00C82F4B /* MMusicTests */ = {
@@ -988,11 +985,9 @@
 				3B9AA8771FB04B5700720085 /* LaunchScreen.storyboard in Resources */,
 				3B09CB932098A0BA00294851 /* TwitterHeart.json in Resources */,
 				3B3D99FA205EE0A0000F2E9E /* love-red.png in Resources */,
-				3B408EED20B81E3B0057E323 /* qimono.jpg in Resources */,
 				3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */,
 				3B9AA8741FB04B5700720085 /* Assets.xcassets in Resources */,
 				3B9AA8721FB04B5700720085 /* Main.storyboard in Resources */,
-				3B44056C20B989BB0085FDAB /* FelixMittermeier.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1066,7 +1061,6 @@
 				3B9AA8D61FB452FF00720085 /* Relationship.m in Sources */,
 				3B9AA8E31FB463E800720085 /* Album.m in Sources */,
 				3B9AA9011FB479B700720085 /* Preview.m in Sources */,
-				3BB731DE207B9BD800DC629B /* NSObject+MMObject.m in Sources */,
 				3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */,
 				3B408EEB20B6E7D70057E323 /* ArtistsContentViewController.m in Sources */,
 				3B9AA90A1FB47D6B00720085 /* Station.m in Sources */,

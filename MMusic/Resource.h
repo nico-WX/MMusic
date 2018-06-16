@@ -7,6 +7,7 @@
 //
 
 #import "MMObject.h"
+#import "Relationship.h"
 
 
 @interface Resource : MMObject
@@ -23,6 +24,10 @@
 @property(nonatomic, strong) NSDictionary *meta;
 
 /**有关系的资源(个人推荐数据)*/
-@property(nonatomic, strong) NSDictionary *relationships;
+@property(nonatomic, strong) Relationship *relationships;
 
+/**该方法只能在Resource 子类初始中调用*/
+-(instancetype)initWithResource:(Resource*) resource ;
+/**该方法只能在Resource 子类调用*/
++(instancetype)instanceWithResource:(Resource*) resource;
 @end

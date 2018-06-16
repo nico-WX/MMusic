@@ -208,13 +208,27 @@ static NSString *const cellIdentifier = @"todayCell";
 
     NSDictionary<NSString*,NSArray<Resource*>*> *dict = [self.allData objectAtIndex:indexPath.section];
     Resource* resource = [dict.allValues.firstObject objectAtIndex:indexPath.row];
+
+    if ([resource.type isEqualToString:@"albums"]) {
+//        Album *album =  [Album instanceWithDict:resource.attributes]; //[Album instanceWithResource:resource];
+//        Log(@"ablum =%@",album.name);
+
+    }
+    if ([resource.type isEqualToString:@"playlists"]) {
+//        Playlist *playlist = [Playlist instanceWithDict:resource.attributes];
+//        Log(@"1...>>>>%@",playlist);
+//        playlist = [Playlist instanceWithResource:resource];
+//        Log(@"2....>>>>%@",playlist);
+    }
+
+
+
     if ([resource respondsToSelector:@selector(attributes)]) {
         Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
         [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
         cell.titleLabel.text = [resource.attributes valueForKey:@"name"];
     }
     cell.contentView.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
-
     return cell;
 }
 

@@ -34,7 +34,6 @@
 
 @end
 
-
 @implementation ArtistsViewController
 
 -(instancetype)initWithArtistsName:(NSString *)artistsName{
@@ -47,6 +46,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+
+    self.view.backgroundColor = UIColor.whiteColor ;
+    //数据请求
+    [self requestFromArtistName:self.artistsName];
 
     /**
      1.在 self.view 中分别添加 imageView 和 scrollView;
@@ -64,15 +67,8 @@
     [self.contentView addSubview:self.segmentControl];
     [self.contentView addSubview:self.pageViewController.view];
 
-
     [self addChildViewController:self.pageViewController];
     [self.pageViewController didMoveToParentViewController:self];
-
-    //数据请求
-    [self requestFromArtistName:self.artistsName];
-
-    self.view.backgroundColor = UIColor.whiteColor ;
-
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -99,11 +95,7 @@
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
     NSUInteger index = [self indexForViewController:(ArtistsContentViewController *)viewController];
     if (0 == index || index == NSNotFound) return nil;
-
     index--;
-
-
-
     return [self viewControllerAtIndex:index];
 }
 

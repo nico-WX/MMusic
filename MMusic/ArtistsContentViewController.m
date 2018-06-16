@@ -82,12 +82,25 @@ static NSString *const cellID = @"cellReuseIdentifier";
     return self.responseRoot.data.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:cellID];
-
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
     Resource *resource = [self.responseRoot.data objectAtIndex:indexPath.row];
-    Song *song = [Song instanceWithDict:resource.attributes];
-    cell.song = song;
-    cell.numberLabel.text = [NSString stringWithFormat:@"%.2ld",indexPath.row+1];
+
+    if ([cell isKindOfClass:SongCell.class]) {
+        Song *song = [Song instanceWithDict:resource.attributes];
+        SongCell *songCell = (SongCell*)cell;
+        songCell.song = song;
+        songCell.numberLabel.text = [NSString stringWithFormat:@"%.2ld",indexPath.row+1];
+    }
+    if ([cell isKindOfClass:ResultsCell.class]) {
+        ResultsCell *albumCell = (ResultsCell*) cell;
+        [albumCell.nameLabel setText:[resource.attributes valueForKey:@"name"]];
+
+    }
+    if ([cell isKindOfClass:ResultsMusicVideoCell.class]) {
+        
+
+    }
+
     return cell;
 }
 #pragma mark - UITableViewDelegate
@@ -124,7 +137,6 @@ static NSString *const cellID = @"cellReuseIdentifier";
         _tableView.dataSource = self;
         [_tableView setShowsVerticalScrollIndicator:YES];
         [_tableView setRowHeight:44.0f];
-        
 
         Resource *resource = self.responseRoot.data.firstObject;
         if ([resource.type isEqualToString:@"songs"]) {
@@ -136,9 +148,6 @@ static NSString *const cellID = @"cellReuseIdentifier";
         if ([resource.type isEqualToString:@"music-videos"]) {
             [_tableView registerClass:ResultsMusicVideoCell.class forCellReuseIdentifier:cellID];
         }
-
-
-
     }
     return _tableView;
 }

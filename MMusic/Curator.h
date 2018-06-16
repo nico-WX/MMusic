@@ -6,12 +6,12 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "MMObject.h"
+#import "Resource.h"
 
 @class Artwork;
 @class EditorialNotes;
 
-@interface Curator : MMObject
+@interface Curator : Resource
 @property(nonatomic, strong) Artwork *artwork;
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
 @property(nonatomic, copy) NSString *name;

@@ -6,14 +6,13 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "MMObject.h"
+#import "Resource.h"
 
 @class Artwork;
 @class EditorialNotes;
-@class PlayParameters;
 
 /**专辑*/
-@interface Album : MMObject
+@interface Album : Resource
 /**歌手*/
 @property(nonatomic, copy) NSString *artistName;
 /**内容评级*/
@@ -34,7 +33,7 @@
 /**评论*/
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
 /**播放参数*/
-@property(nonatomic, strong) NSDictionary *playParams;
+@property(nonatomic, strong) NSDictionary   *playParams;
 /**流派*/
 @property(nonatomic, strong) NSArray<NSString*> *genreNames;
 /**内容完整*/

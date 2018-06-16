@@ -6,6 +6,7 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
+#import "Resource.h"
 #import "MMObject.h"
 
 @class Artwork;
@@ -14,7 +15,7 @@
 @class Preview;
 @class MPMediaItem;
 
-@interface Song : MMObject
+@interface Song : Resource
 /**艺人名称*/
 @property(nonatomic, copy) NSString *artistName;
 /**作家*/

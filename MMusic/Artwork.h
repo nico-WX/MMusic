@@ -6,9 +6,9 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "MMObject.h"
+#import "Resource.h"
 
-@interface Artwork : MMObject
+@interface Artwork : Resource
 @property(nonatomic,assign) NSInteger width;
 @property(nonatomic,assign) NSInteger height;
 

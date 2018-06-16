@@ -402,7 +402,10 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
         NSMutableArray<NSDictionary*> *temp = [NSMutableArray array];
         [self.results enumerateObjectsUsingBlock:^(Chart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [obj.data enumerateObjectsUsingBlock:^(Resource * _Nonnull res, NSUInteger idx, BOOL * _Nonnull stop) {
-                [temp addObject:[res.attributes valueForKey:@"playParams"]];
+                //部分 返回的json 无该数据
+                if ([res.attributes valueForKey:@"playParams"]) {
+                    [temp addObject:[res.attributes valueForKey:@"playParams"]];
+                }
             }];
         }];
         _playParametersList = temp;

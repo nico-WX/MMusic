@@ -31,6 +31,7 @@
 
     //实例化主窗口
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+
     //定时锁屏
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
