@@ -7,20 +7,11 @@
 //
 
 #import "Playlist.h"
-#import <MJExtension.h>
 
 @implementation Playlist
 
 +(NSDictionary*)mj_replacedKeyFromPropertyName{
     return @{@"editorialNotes":@"description"};
 }
-//+(instancetype)instanceWithDict:(NSDictionary *)dict{
-//    return [[self alloc] initWithDict:dict];
-//}
-//-(instancetype)initWithDict:(NSDictionary *)dict{
-//    if (self = [super initWithDict:dict]) {
-//        [self mj_setKeyValues:dict];
-//    }
-//    return self;
-//}
+
 @end

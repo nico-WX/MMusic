@@ -6,6 +6,7 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
+#import "Resource.h"
 #import "MMObject.h"
 @class Resource;
 @class Contents;

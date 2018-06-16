@@ -695,27 +695,8 @@
 		3B9AA8DD1FB4619500720085 /* Resource Object */ = {
 			isa = PBXGroup;
 			children = (
+				3B9B268920D5550D00881199 /* Attribute Object */,
 				3B9B268820D54CB100881199 /* Resource */,
-				3B9AA8EA1FB46E7B00720085 /* Artwork.h */,
-				3B9AA8EB1FB46E7B00720085 /* Artwork.m */,
-				3B9AA8ED1FB46F9300720085 /* Chart.h */,
-				3B9AA8EE1FB46F9300720085 /* Chart.m */,
-				3B9AA8F61FB4759F00720085 /* EditorialNotes.h */,
-				3B9AA8F71FB4759F00720085 /* EditorialNotes.m */,
-				3B9AA8F91FB4769500720085 /* Playlist.h */,
-				3B9AA8FA1FB4769500720085 /* Playlist.m */,
-				3B9AA8FC1FB478C700720085 /* PlayParameters.h */,
-				3B9AA8FD1FB478C700720085 /* PlayParameters.m */,
-				3B9AA8FF1FB479B700720085 /* Preview.h */,
-				3B9AA9001FB479B700720085 /* Preview.m */,
-				3B9AA9021FB47A6C00720085 /* Recommendation.h */,
-				3B9AA9031FB47A6C00720085 /* Recommendation.m */,
-				3B9AA9051FB47C1200720085 /* Song.h */,
-				3B9AA9061FB47C1200720085 /* Song.m */,
-				3B9AA9081FB47D6B00720085 /* Station.h */,
-				3B9AA9091FB47D6B00720085 /* Station.m */,
-				3B9AA90B1FB47E0700720085 /* Storefront.h */,
-				3B9AA90C1FB47E0700720085 /* Storefront.m */,
 			);
 			name = "Resource Object";
 			sourceTree = "<group>";
@@ -737,8 +718,35 @@
 				3B5371E41FD148B6009AFE47 /* Genre.m */,
 				3B9AA8F31FB4719A00720085 /* MusicVideo.h */,
 				3B9AA8F41FB4719A00720085 /* MusicVideo.m */,
+				3B9AA8F91FB4769500720085 /* Playlist.h */,
+				3B9AA8FA1FB4769500720085 /* Playlist.m */,
+				3B9AA9051FB47C1200720085 /* Song.h */,
+				3B9AA9061FB47C1200720085 /* Song.m */,
+				3B9AA9081FB47D6B00720085 /* Station.h */,
+				3B9AA9091FB47D6B00720085 /* Station.m */,
+				3B9AA90B1FB47E0700720085 /* Storefront.h */,
+				3B9AA90C1FB47E0700720085 /* Storefront.m */,
+				3B9AA9021FB47A6C00720085 /* Recommendation.h */,
+				3B9AA9031FB47A6C00720085 /* Recommendation.m */,
 			);
 			name = Resource;
+			sourceTree = "<group>";
+		};
+		3B9B268920D5550D00881199 /* Attribute Object */ = {
+			isa = PBXGroup;
+			children = (
+				3B9AA8F61FB4759F00720085 /* EditorialNotes.h */,
+				3B9AA8F71FB4759F00720085 /* EditorialNotes.m */,
+				3B9AA8FC1FB478C700720085 /* PlayParameters.h */,
+				3B9AA8FD1FB478C700720085 /* PlayParameters.m */,
+				3B9AA8FF1FB479B700720085 /* Preview.h */,
+				3B9AA9001FB479B700720085 /* Preview.m */,
+				3B9AA8EA1FB46E7B00720085 /* Artwork.h */,
+				3B9AA8EB1FB46E7B00720085 /* Artwork.m */,
+				3B9AA8ED1FB46F9300720085 /* Chart.h */,
+				3B9AA8EE1FB46F9300720085 /* Chart.m */,
+			);
+			name = "Attribute Object";
 			sourceTree = "<group>";
 		};
 		3BAADF4F20B2C75B00C82F4B /* MMusicTests */ = {

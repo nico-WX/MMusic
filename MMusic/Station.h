@@ -6,11 +6,11 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "MMObject.h"
+#import "Resource.h"
 @class Artwork;
 @class EditorialNotes;
 
-@interface Station : MMObject
+@interface Station : Resource
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *url;
 

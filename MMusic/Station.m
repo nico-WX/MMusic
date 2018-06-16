@@ -7,19 +7,6 @@
 //
 
 #import "Station.h"
-#import "Artwork.h"
-#import "EditorialNotes.h"
-
-#import <MJExtension.h>
 
 @implementation Station
--(instancetype)initWithDict:(NSDictionary *)dict{
-    if (self = [super initWithDict:dict]) {
-        [self mj_setKeyValues:dict];
-    }
-    return self;
-}
-+(instancetype)instanceWithDict:(NSDictionary *)dict{
-    return [[self alloc] initWithDict:dict];
-}
 @end

@@ -7,30 +7,13 @@
 //
 
 #import "Song.h"
-#import "Artwork.h"
-#import "EditorialNotes.h"
-#import "PlayParameters.h"
-#import "Preview.h"
-
-#import <MJExtension.h>
 #import <MediaPlayer/MediaPlayer.h>
 
 @implementation Song
 
--(instancetype)initWithDict:(NSDictionary *)dict{
-    if(self = [super initWithDict:dict]){
-        [self mj_setKeyValues:dict];
-    }
-    return self;
-}
-
-+(instancetype)instanceWithDict:(NSDictionary *)dict{
-    return [[self alloc] initWithDict:dict];
-}
 +(NSDictionary *)mj_objectClassInArray{
     return @{@"previews":@"Preview",@"genreNames":@"NSString"};
 }
-
 
 -(BOOL)isEqualToMediaItem:(MPMediaItem *)mediaItem{
     NSString *storeID = mediaItem.playbackStoreID;

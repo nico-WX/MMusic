@@ -6,9 +6,9 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import "MMObject.h"
+#import "Resource.h"
 
-@interface Storefront : MMObject
+@interface Storefront : Resource
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *defaultLanguageTag;
 

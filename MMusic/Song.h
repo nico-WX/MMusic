@@ -7,7 +7,6 @@
 //
 
 #import "Resource.h"
-#import "MMObject.h"
 
 @class Artwork;
 @class EditorialNotes;
