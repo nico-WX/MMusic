@@ -33,6 +33,9 @@ extern NSString *userTokenIssueNotification;
 //统一解析响应体,处理异常等.
 -(NSDictionary *)serializationDataWithResponse:(NSURLResponse *)response data:(NSData *)data error:(NSError *)error{
 
+    //NSSearchPathForDirectoriesInDomains(NSCachesDirectory, <#NSSearchPathDomainMask domainMask#>, <#BOOL expandTilde#>)
+
+
     if (error) Log(@"Location Error:%@",error);
     NSDictionary *dict;
     NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
@@ -56,7 +59,8 @@ extern NSString *userTokenIssueNotification;
             break;
 
         default:
-             Log(@"response info :%@",res);
+            [self showHUDToMainWindowFromText:[NSString stringWithFormat:@"path:%@ code =%ld",res.URL.lastPathComponent,res.statusCode]];
+             //Log(@"response info :%@",res);
             break;
     }
     return dict;
@@ -66,6 +70,14 @@ extern NSString *userTokenIssueNotification;
 -(void)dataTaskWithRequest:(NSURLRequest*) request completionHandler:(void(^)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler{
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
         if (handler) handler(data,response,error);
+    }] resume];
+}
+-(void)datataskWithRequest:(NSURLRequest*)request completionHandler:(void (^)(NSDictionary *))block{
+    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+        if (block) {
+            block(json);
+        }
     }] resume];
 }
 
@@ -170,8 +182,10 @@ extern NSString *userTokenIssueNotification;
             }
 
             NSURL *url = [NSURL URLWithString:urlStr];
-            [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-                if (cache == YES) {
+            [imageView sd_setImageWithURL:url
+                                completed:^(UIImage * _Nullable image, NSError * _Nullable error,
+                                            SDImageCacheType cacheType, NSURL * _Nullable imageURL){
+                if(cache == YES) {
                     //判断目标文件夹是否存在
                     NSFileManager *fm = [NSFileManager defaultManager];
                     BOOL isDir = NO;

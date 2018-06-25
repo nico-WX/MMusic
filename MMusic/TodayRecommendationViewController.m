@@ -13,11 +13,14 @@
 
 #import "TodayRecommendationViewController.h"
 #import "PlayerViewController.h"
-#import "AlbumCell.h"
+#import "ResourceCollectionViewCell.h"
+#import "AlbumsCollectionCell.h"
 #import "TodaySectionView.h"
 #import "DetailViewController.h"
 #import "SearchViewController.h"
 
+
+#import "MusicKit.h"
 #import "PersonalizedRequestFactory.h"
 #import "Resource.h"
 #import "Artwork.h"
@@ -71,6 +74,29 @@ static NSString *const cellIdentifier = @"todayCell";
 
     //加载遮罩 (mask)
     [self.collectionView addSubview:self.activityView];
+
+    //test
+    MusicKit *music = [MusicKit new];
+//    [music.api resources:@[@"535790918",] byType:CatalogAlbums callBack:^(NSDictionary *json) {
+//        Log(@"json ===> %@",json);
+//    }];
+//    [music.api songsByISRC:@[@"TWK970000106",] callBack:^(NSDictionary *json) {
+//        Log(@"json ===========>>>>> %@",json);
+//    }];
+//    [music.api relationship:@"535791114" byType:CatalogSongs forName:@"albums" callBack:^(NSDictionary *json) {
+//        Log(@"json RElationship ===========>>>>> %@",json);
+//    }];
+//    [music.api.library resource:nil byType:CLibrarySongs callBack:^(NSDictionary *json) {
+//        NSLog(@"json =%@",json);
+//    }];
+//    [music.api.library relationship:@"i.EYVbDrZuVPeVXQ" forType:CLibrarySongs byName:@"albums" callBacl:^(NSDictionary *json) {
+//         NSLog(@"json ==========>%@",json);
+//    }];
+
+//    [music.api searchForTerm:@"周" callBack:^(NSDictionary *json) {
+//        Log(@"json=%@",json);
+//    }];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -203,32 +229,15 @@ static NSString *const cellIdentifier = @"todayCell";
 
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-
-    AlbumCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    ResourceCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
 
     NSDictionary<NSString*,NSArray<Resource*>*> *dict = [self.allData objectAtIndex:indexPath.section];
     Resource* resource = [dict.allValues.firstObject objectAtIndex:indexPath.row];
 
-    if ([resource.type isEqualToString:@"albums"]) {
-//        Album *album =  [Album instanceWithDict:resource.attributes]; //[Album instanceWithResource:resource];
-//        Log(@"ablum =%@",album.name);
-
-    }
-    if ([resource.type isEqualToString:@"playlists"]) {
-//        Playlist *playlist = [Playlist instanceWithDict:resource.attributes];
-//        Log(@"1...>>>>%@",playlist);
-//        playlist = [Playlist instanceWithResource:resource];
-//        Log(@"2....>>>>%@",playlist);
-    }
-
-
-
-    if ([resource respondsToSelector:@selector(attributes)]) {
-        Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
-        [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
-        cell.titleLabel.text = [resource.attributes valueForKey:@"name"];
-    }
-    cell.contentView.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
+    cell.nameLabel.text = [resource.attributes valueForKey:@"name"];
+    Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
+    [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
+    
     return cell;
 }
 
@@ -276,7 +285,8 @@ static NSString *const cellIdentifier = @"todayCell";
         [layout setHeaderReferenceSize:CGSizeMake(w, h)];
 
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
-        [_collectionView registerClass:AlbumCell.class forCellWithReuseIdentifier:cellIdentifier];
+        [_collectionView registerClass:ResourceCollectionViewCell.class forCellWithReuseIdentifier:cellIdentifier];
+        //[_collectionView registerClass:AlbumCell.class forCellWithReuseIdentifier:cellIdentifier];
         [_collectionView registerClass:TodaySectionView.class
             forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:sectionIdentifier];

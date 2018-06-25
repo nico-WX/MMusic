@@ -6,8 +6,11 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
+#import <Masonry.h>
+
 #import "ArtistsViewController.h"
 #import "ArtistsContentViewController.h"
+#import "DetailViewController.h"
 #import "RequestFactory.h"
 #import "Resource.h"
 #import "ResponseRoot.h"
@@ -76,6 +79,7 @@
     //导航栏透明
     [self.navigationController.navigationBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
     [self.navigationController.navigationBar setShadowImage:[UIImage new]];
+
 }
 
 
@@ -116,19 +120,6 @@
 #pragma mark - UIScrollViewDelegate
 // 处理下拉放大  和上拉到顶部 悬停分段控制器
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-
-
-   // Log(@"scrollview =%@",scrollView);
-
-//    Log(@"YYYY =%f",scrollView.contentOffset.y);
-//    if (scrollView.contentOffset.y < 0) {
-//        //滚动到顶部了,
-//        [self.tableView setScrollToTop:YES];
-//    }else{
-//        [self.tableView setScrollToTop:NO];
-//    }
-
-
     CGFloat y = scrollView.contentOffset.y;
     //悬停控件
     CGFloat imageOffset = CGRectGetHeight(self.imageView.frame)-self.topOffset;
@@ -170,16 +161,22 @@
     }
     return index;
 }
-//生成下标下的视图控制器
+//生成下标对应视图控制器
 -(UIViewController*)viewControllerAtIndex:(NSUInteger)index{
     if ( 0 == self.results.count || index >= self.results.count) return nil;
 
     NSDictionary<NSString*,ResponseRoot*> *dict = [self.results objectAtIndex:index];
     NSString *title = dict.allKeys.lastObject ;
     ResponseRoot *root = dict.allValues.lastObject;
-    ArtistsContentViewController *artistsContentVC = [[ArtistsContentViewController alloc] initWithResponseRoot:root];
-    artistsContentVC.title = title;
-    return artistsContentVC;
+    if ([title isEqualToString:@"songs"]) {
+        DetailViewController *detail = [[DetailViewController alloc] initWithResponseRoot:root];
+        return detail;
+
+    }else{
+        ArtistsContentViewController *artistsContentVC = [[ArtistsContentViewController alloc] initWithResponseRoot:root];
+        artistsContentVC.title = title;
+        return artistsContentVC;
+    }
 }
 
 //请求艺人信息

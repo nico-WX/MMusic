@@ -4,37 +4,48 @@
 //
 //  Created by Magician on 2018/3/9.
 //  Copyright © 2018年 com.😈. All rights reserved.
-//
+
+//pod /sy
 #import <VBFPopFlatButton.h>
 #import <UIImageView+WebCache.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <MBProgressHUD.h>
+#import <Masonry.h>
+#import <MJRefresh.h>
 
-//view & controller
+//vc
 #import "DetailViewController.h"
 #import "PlayerViewController.h"
+
+//view
 #import "DetailHeaderView.h"
 #import "SongCell.h"
 
 //model & tool
+
+#import "RequestFactory.h"
+#import "PersonalizedRequestFactory.h"
+#import "ResponseRoot.h"
 #import "Playlist.h"
 #import "Artwork.h"
 #import "Album.h"
 #import "Song.h"
 #import "EditorialNotes.h"
-#import "RequestFactory.h"
-#import "PersonalizedRequestFactory.h"
 #import "Resource.h"
 
 @interface DetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 /**头视图*/
 @property(nonatomic, strong) DetailHeaderView *header;
-/**表视图*/
-@property(nonatomic, strong) UITableView *tableView;
 
+//专辑,播放列表等初始数据
 @property(nonatomic, strong) Resource *resource;
+
+//songs 处水花列表数据
+@property(nonatomic, strong) ResponseRoot *responseRoot;
+
 //播放器视图控制器
 @property(nonatomic, strong) PlayerViewController *playerVC;
+
 //data 数据在请求数据方法中 初始化
 @property(nonatomic, strong) NSArray<Song*> *songs;
 @property(nonatomic, strong) NSArray<MPMusicPlayerPlayParameters*> *prameters;
@@ -42,7 +53,7 @@
 @end
 
 @implementation DetailViewController
-
+@synthesize tableView = _tableView;
 static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
 -(instancetype)initWithResource:(Resource *)resource{
@@ -51,20 +62,40 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     }
     return self;
 }
+-(instancetype)initWithResponseRoot:(ResponseRoot *)responseRoot{
+    if (self = [super init]) {
+        _responseRoot = responseRoot;
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    //数据请求(专辑/列表)
-    [self requestData];
-
-    //表头视图
-    self.header = [[DetailHeaderView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 150)];
-    self.header.backgroundColor = UIColor.whiteColor;
-
-    self.tableView.tableHeaderView = self.header;
     [self.view addSubview:self.tableView];
+    //数据请求(专辑/列表)
+    if (self.resource) {
+        [self requestDataWithResource:self.resource];
 
+        //通过播放列表等 初始化, 有头部
+        [self.tableView setTableHeaderView:self.header];
+    }else{
+
+        //通过Songs ResponseRoot 没有头视图
+        NSMutableArray *temp = [NSMutableArray array];
+        for (Resource *resource in self.responseRoot.data) {
+            [temp addObject:[Song instanceWithResource:resource]];
+        }
+        self.songs = temp;
+        [self.tableView reloadData];
+        self.tableView.mj_footer = [MJRefreshBackFooter footerWithRefreshingBlock:^{
+            if (self.responseRoot.next) {
+                [self loadNextPageDataWithHref:self.responseRoot.next];
+            }else{
+                [self->_tableView.mj_footer endRefreshingWithNoMoreData];
+            }
+        }];
+    }
 }
 
 
@@ -102,6 +133,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
+    //
     for (SongCell *cell in [self.tableView visibleCells]) {
         if (cell.state == NAKPlaybackIndicatorViewStatePlaying) {
             //从播放器界面返回时, 播放指示器会停留在暂停的状态, (未知BUG)
@@ -109,8 +141,13 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
             [cell setSelected:YES animated:YES];
         }
     }
-}
 
+    UIView *superview = self.view;
+    //与父视图大小一致
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(superview).insets(UIEdgeInsetsZero);
+    }];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -122,10 +159,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier forIndexPath:indexPath];
-
-    //安装长按手势识别器, 弹出操作菜单
-    UILongPressGestureRecognizer *longGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureActive:)];
-    [cell addGestureRecognizer:longGR];
 
     //song info
     cell.song = [self.songs objectAtIndex:indexPath.row];
@@ -145,10 +178,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
     return cell;
 }
-//定行高
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 44.0f;
-}
+
 
 #pragma mark - tableView delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -175,9 +205,10 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         __weak typeof(self) weakSelf = self;
         _playerVC.nowPlayingItem = ^(MPMediaItem *item) {
 
-            //遍历当前songs 列表, 找到id相匹配的 song和song所在的cell
+            //遍历当前songs 列表, 找到与当前播放的song id相匹配的cell
             for (Song *song in weakSelf.songs) {
-                NSIndexPath *path= [NSIndexPath indexPathForRow:[weakSelf.songs indexOfObject:song] inSection:0];
+                NSUInteger row = [weakSelf.songs indexOfObject:song];
+                NSIndexPath *path= [NSIndexPath indexPathForRow:row inSection:0];
                 SongCell *cell = [weakSelf.tableView cellForRowAtIndexPath:path];
 
                 //修改在正在播放的song cell 颜色
@@ -200,14 +231,36 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         [_tableView registerClass:[SongCell class] forCellReuseIdentifier:cellReuseIdentifier];
         _tableView.dataSource = self;
         _tableView.delegate = self;
+        [_tableView setRowHeight:44.0f];
+
+        UILongPressGestureRecognizer *longGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureActive:)];
+        [_tableView addGestureRecognizer:longGR];
     }
     return _tableView;
+}
+-(DetailHeaderView *)header{
+    if (!_header) {
+        //header
+        _header = [[DetailHeaderView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 150)];
+        _header.backgroundColor = UIColor.whiteColor;
+    }
+    return _header;
+}
+-(MPMusicPlayerPlayParametersQueueDescriptor *)prametersQueue{
+    if (!_prametersQueue) {
+        NSMutableArray *temp = [NSMutableArray array];
+        for (Song *song in self.songs) {
+            [temp addObject: [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams]];
+        }
+        _prametersQueue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:temp];
+    }
+    return _prametersQueue;
 }
 
 #pragma mark - Helper
 
 /**请求数据*/
-- (void) requestData{
+- (void) requestDataWithResource:(Resource*) resource{
 
     NSURLRequest *request;
     if ([self.resource.type isEqualToString:@"library-playlists"]) {
@@ -226,25 +279,38 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         }
     }];
 }
+-(void) loadNextPageDataWithHref:(NSString*) href{
+    NSURLRequest *request = [[RequestFactory new] createRequestWithHref:href];
+    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+
+        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+        json =[json valueForKeyPath:@"results.songs"];
+
+        //覆盖next url,  增加song
+        self.responseRoot.next = [json valueForKey:@"next"];
+        for (NSDictionary *dict in [json valueForKey:@"data"]) {
+            Song *song = [Song instanceWithDict:[dict valueForKey:@"attributes"]];
+            self.songs = [self.songs arrayByAddingObject:song];
+        }
+        self.prametersQueue = nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView.mj_footer endRefreshing];
+            [self.tableView reloadData];
+        });
+    }];
+}
+
 /**解析返回的JSON 数据*/
 - (NSArray<Song*>*) serializationJSON:(NSDictionary*)json{
     NSMutableArray<Song*> *songList = [NSMutableArray array];
-    //播放参数
-    NSMutableArray<MPMusicPlayerPlayParameters*> *playParameters = [NSMutableArray array];
     for (NSDictionary *temp in [json objectForKey:@"data"]) {
         NSArray *tracks = [temp valueForKeyPath:@"relationships.tracks.data"];
         for (NSDictionary *songDict in tracks) {
             Song *song = [Song instanceWithDict:[songDict objectForKey:@"attributes"]];
             [songList addObject:song];
-
-            //获取播放参数
-            MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
-            [playParameters addObject:parameters];
         }
     }
-    //设置播放队列
-    self.prameters = playParameters;
-    self.prametersQueue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:playParameters];;
     return songList;
 }
 
@@ -281,7 +347,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
                                                                            resourcesType:ResourcesPersonalSongType
                                                                                   andIds:@[songID,]];
 
-            //[factort createManageRatingsRequestWithType:DeleteSongRatingsType resourceIds:@[songID,]];
             [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                 [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*)response];
             }];
@@ -292,7 +357,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
             NSURLRequest *request = [factort managerCatalogAndLibraryRatingsWithOperatin:RatingsAddOperation
                                                                            resourcesType:ResourcesPersonalSongType
                                                                                   andIds:@[songID,]];
-            //[factort createManageRatingsRequestWithType:AddSongRatingsType resourceIds:@[songID,]];
             [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                 [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*) response];
             }];

@@ -6,21 +6,27 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
+// pod/sy
 #import <Masonry.h>
 #import <MJRefresh.h>
-
+//vc
 #import "ContentViewController.h"
+#import "DetailViewController.h"
+
+//view
+#import "MusicVideosCollectionCell.h"
+#import "SongCell.h"
+
+//model
 #import "ResponseRoot.h"
 #import "Resource.h"
 #import "Artwork.h"
 #import "RequestFactory.h"
 
-#import "ChartsSongCell.h"
-#import "MusicVideoCell.h"
-#import "AlbumCell.h"
 
-@interface ContentViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
-@property(nonatomic,strong) UICollectionView *collectionView;
+@interface ContentViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UITableViewDelegate,UITableViewDataSource>
+@property(nonatomic, strong) UICollectionView *collectionView;
+@property(nonatomic, strong) UITableView *tableView;
 @end
 
 static const CGFloat row = 2;
@@ -39,18 +45,13 @@ static NSString * const cellID = @"cellReuseIdentifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view setBackgroundColor:UIColor.whiteColor];
-    [self.view addSubview:self.collectionView];
-    self.collectionView.frame = self.view.bounds;
 
-    __weak typeof(self) weakSelf = self;
-    self.collectionView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        ResponseRoot *root = self.resourceDict.allValues.firstObject;
-        if (root.next) {
-            [self requestNextPageDataFromHref:root.next];
-        }else{
-            [weakSelf.collectionView.mj_footer endRefreshingWithNoMoreData];
-        }
-    }];
+    NSString *type = self.resourceDict.allKeys.firstObject;
+    if ([type isEqualToString:@"songs"]) {
+        [self.view addSubview:self.tableView];
+    }else{
+        [self.view addSubview:self.collectionView];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -60,10 +61,17 @@ static NSString * const cellID = @"cellReuseIdentifier";
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 
-    UIView *superview = self.view;
-    [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superview).insets(UIEdgeInsetsMake(0, miniSpacing, 0, miniSpacing));
-    }];
+    NSString *type = self.resourceDict.allKeys.firstObject;
+    UIView*superview = self.view;
+    if ([type isEqualToString:@"songs"]) {
+        [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.mas_equalTo(superview).insets(UIEdgeInsetsZero);
+        }];
+    }else{
+        [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+             make.edges.mas_equalTo(superview).insets(UIEdgeInsetsZero);
+        }];
+    }
 }
 
 
@@ -72,30 +80,47 @@ static NSString * const cellID = @"cellReuseIdentifier";
     return [self.resourceDict.allValues.firstObject.data  count];
 }
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    ChartsCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
+    ResourceCollectionViewCell *cell;
+    cell = (ResourceCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
 
     Resource *resource = [self.resourceDict.allValues.firstObject.data objectAtIndex:indexPath.row];
-    cell.titleLabel.text = [resource.attributes valueForKeyPath:@"name"];
-
-    NSString *artistText;
-    if ([resource.attributes valueForKeyPath:@"artistName"]) {
-        artistText = [resource.attributes valueForKeyPath:@"artistName"];
-    }else if ([resource.attributes valueForKeyPath:@"curatorName"]){
-        artistText = [resource.attributes valueForKeyPath:@"curatorName"];
+    if ([resource.type isEqualToString:@"music-videos"]) {
+        MusicVideo *mv = [MusicVideo instanceWithResource:resource];
+        cell.nameLabel.text = mv.name;
+        cell.artistLabel.text = mv.artistName;
+        [self showImageToView:cell.artworkView withImageURL:mv.artwork.url cacheToMemory:YES];
     }else{
-        artistText = [resource.attributes valueForKeyPath:@"editorialNotes.short"];
+        cell.nameLabel.text = [resource.attributes valueForKey:@"name"];
+        Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
+        [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
     }
-    cell.artistLabel.text = artistText;
-
-
-    Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
-    [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
-
-    cell.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     return cell;
 }
 #pragma mark - UICollectionViewDelegate
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
+    Resource *resource = [self.resourceDict.allValues.firstObject.data objectAtIndex:indexPath.row];
+    if ([resource.type isEqualToString:@"music-videos"]) {
+
+    }else{
+        DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
+        [self.navigationController pushViewController:detail animated:YES];
+    }
+}
+#pragma mark - UITableViewDataSource
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return self.resourceDict.allValues.firstObject.data.count;
+}
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    SongCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    Resource *resource = [self.resourceDict.allValues.firstObject.data objectAtIndex:indexPath.row];
+    Song *song = [Song instanceWithResource:resource];
+    cell.song = song;
+    //歌曲序号
+    cell.numberLabel.text = [NSString stringWithFormat:@"%ld",indexPath.row+1];
+    return cell;
+}
+#pragma mark - UITableViewDelegate
 
 #pragma mark - loadNextPage
 -(void) requestNextPageDataFromHref:(NSString*) href{
@@ -108,9 +133,16 @@ static NSString * const cellID = @"cellReuseIdentifier";
                 ResponseRoot *nextRoot = [ResponseRoot instanceWithDict:obj];
                 self->_resourceDict.allValues.firstObject.next = nextRoot.next;
                 self->_resourceDict.allValues.firstObject.data = [self->_resourceDict.allValues.firstObject.data arrayByAddingObjectsFromArray:nextRoot.data];
+
+                Resource *resource = nextRoot.data.firstObject;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.collectionView.mj_footer endRefreshing];
-                    [self.collectionView reloadData];
+                    if ([resource.type isEqualToString:@"songs"]) {
+                        [self.tableView.mj_footer endRefreshing];
+                        [self.tableView reloadData];
+                    }else{
+                        [self.collectionView.mj_footer endRefreshing];
+                        [self.collectionView reloadData];
+                    }
                 });
             }];
         }];
@@ -118,6 +150,26 @@ static NSString * const cellID = @"cellReuseIdentifier";
 }
 
 #pragma mark - getter
+-(UITableView *)tableView{
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+        [_tableView registerClass:SongCell.class forCellReuseIdentifier:cellID];
+        [_tableView setRowHeight:44.0f];
+
+        ResponseRoot *root = self.resourceDict.allValues.firstObject;
+        _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+            if (root.next) {
+                [self requestNextPageDataFromHref:root.next];
+            }else{
+                [self->_tableView.mj_footer endRefreshingWithNoMoreData];
+            }
+        }];
+    }
+    return _tableView;
+}
+
 -(UICollectionView *)collectionView{
     if (!_collectionView) {
         UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
@@ -125,32 +177,38 @@ static NSString * const cellID = @"cellReuseIdentifier";
         layout.minimumInteritemSpacing = miniSpacing;
         layout.minimumLineSpacing = miniSpacing;
 
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
         _collectionView.backgroundColor = UIColor.whiteColor;
+
+        //
+         ResponseRoot *root = self.resourceDict.allValues.firstObject;
+        _collectionView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+            if (root.next) {
+                [self requestNextPageDataFromHref:root.next];
+            }else{
+                [self->_collectionView.mj_footer endRefreshingWithNoMoreData];
+            }
+        }];
 
         //注册不同类型的cell 并决定不同大小的Cell
         NSString *type = self.resourceDict.allKeys.firstObject;
         CGFloat h;
         CGFloat w;
         CGRect rect = self.view.frame;
-        if ([type isEqualToString:@"songs"]) {
-            [_collectionView registerClass:ChartsSongCell.class forCellWithReuseIdentifier:cellID];
-            w =CGRectGetWidth(rect);
-            h = 44.0f;
-        }else if([type isEqualToString:@"music-videos"]){
-            [_collectionView registerClass:MusicVideoCell.class forCellWithReuseIdentifier:cellID];
+
+        if([type isEqualToString:@"music-videos"]){
+            [_collectionView registerClass:MusicVideosCollectionCell.class forCellWithReuseIdentifier:cellID];
             w = CGRectGetWidth(rect);
             h = w*0.75;
         }else{
-            [_collectionView registerClass:AlbumCell.class forCellWithReuseIdentifier:cellID];
+            [_collectionView registerClass:ResourceCollectionViewCell.class forCellWithReuseIdentifier:cellID];
             w = CGRectGetWidth(rect);
             w = w - (row+1)*miniSpacing;
             w = w/row;
             h = w +28;
         }
-
         [layout setItemSize:CGSizeMake(w, h)];
     }
     return _collectionView;

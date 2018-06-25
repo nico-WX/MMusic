@@ -7,21 +7,10 @@
 //
 
 #import "EditorialNotes.h"
-#import <MJExtension.h>
 
 @implementation EditorialNotes
-
 +(NSDictionary *)mj_replacedKeyFromPropertyName{
     return @{@"shortNotes":@"short"};
-}
-+(instancetype)instanceWithDict:(NSDictionary *)dict{
-    return [[self alloc] initWithDict:dict];
-}
--(instancetype)initWithDict:(NSDictionary *)dict{
-    if (self = [super initWithDict:dict]) {
-        [self mj_setKeyValues:dict];
-    }
-    return  self;
 }
 
 @end

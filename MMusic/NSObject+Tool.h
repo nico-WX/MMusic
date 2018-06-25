@@ -66,6 +66,15 @@
 -(void)dataTaskWithRequest:(NSURLRequest*_Nonnull) request completionHandler:(void(^_Nonnull)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler;
 
 
+
+/**
+ 请求直接返回 json数据
+
+ @param request 请求体
+ @param block 回调
+ */
+-(void)datataskWithRequest:(NSURLRequest*)request completionHandler:(void(^)(NSDictionary*json))block;
+
 /**
  替换ImageURL 中的Image大小参数 默认屏幕的缩放大小
 

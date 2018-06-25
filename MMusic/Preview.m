@@ -7,17 +7,6 @@
 //
 
 #import "Preview.h"
-#import <MJExtension.h>
 
 @implementation Preview
-
--(instancetype)initWithDict:(NSDictionary *)dict{
-    if (self = [super initWithDict:dict]) {
-        [self mj_setKeyValues:dict];
-    }
-    return self;
-}
-+(instancetype)instanceWithDict:(NSDictionary *)dict{
-    return [[self alloc] initWithDict:dict];
-}
 @end

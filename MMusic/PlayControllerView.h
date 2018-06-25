@@ -7,16 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-@class VBFPopFlatButton;
 
 /**播放器控制按钮*/
 @interface PlayControllerView : UIView
 
 /**上一首*/
-@property(nonatomic, strong,readonly) VBFPopFlatButton *previous;
+@property(nonatomic, strong,readonly) UIButton *previous;
 /**播放或暂停*/
-@property(nonatomic, strong,readonly) VBFPopFlatButton *play;
+@property(nonatomic, strong,readonly) UIButton *play;
 /**下一首*/
-@property(nonatomic, strong,readonly) VBFPopFlatButton *next;
+@property(nonatomic, strong,readonly) UIButton *next;
 
 @end

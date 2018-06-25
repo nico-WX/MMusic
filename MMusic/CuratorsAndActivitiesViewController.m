@@ -12,7 +12,7 @@
 #import "CuratorsAndActivitiesViewController.h"
 #import "DetailViewController.h"
 #import "DetailHeaderView.h"
-#import "PlaylistsCell.h"
+#import "ResourceCollectionViewCell.h"
 
 #import "RequestFactory.h"
 
@@ -80,11 +80,12 @@ static NSString *const cellID = @"CollectionViewCellReuseID";
     return self.root.data.count;
 }
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    PlaylistsCell *cell = (PlaylistsCell*)[collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
+    ResourceCollectionViewCell *cell;
+    cell = (ResourceCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
 
     Resource *resource = [self.root.data objectAtIndex:indexPath.row];
-    Playlist *playlist = [Playlist instanceWithDict:resource.attributes];
-    [cell.titleLabel setText:playlist.name];
+    Playlist *playlist = [Playlist instanceWithResource:resource];
+    cell.nameLabel.text =  playlist.name;
     [self showImageToView:cell.artworkView withImageURL:playlist.artwork.url cacheToMemory:YES];
     [cell setBackgroundColor:[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1]];
 
@@ -185,7 +186,7 @@ static NSString *const cellID = @"CollectionViewCellReuseID";
         [_collectionView setDelegate:self];
         [_collectionView setDataSource:self];
 
-        [_collectionView registerClass:PlaylistsCell.class forCellWithReuseIdentifier:cellID];
+        [_collectionView registerClass:ResourceCollectionViewCell.class forCellWithReuseIdentifier:cellID];
         [_collectionView setBackgroundColor:UIColor.whiteColor];
 
         __weak typeof(self) weakSelf = self;

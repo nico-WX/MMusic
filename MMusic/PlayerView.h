@@ -23,11 +23,11 @@
 /**艺人名 或者 专辑信息*/
 @property(nonatomic, strong,readonly) UILabel *artistLabel;
 /**上一首*/
-@property(nonatomic, strong,readonly) VBFPopFlatButton *previous;
+@property(nonatomic, strong,readonly) UIButton *previous;
 /**播放或暂停*/
-@property(nonatomic, strong,readonly) VBFPopFlatButton *play;
+@property(nonatomic, strong,readonly) UIButton *play;
 /**下一首*/
-@property(nonatomic, strong,readonly) VBFPopFlatButton *next;
+@property(nonatomic, strong,readonly) UIButton *next;
 /**喜爱按钮*/
 @property(nonatomic, strong,readonly) LOTAnimatedSwitch *heartIcon;
 /**循环模式*/

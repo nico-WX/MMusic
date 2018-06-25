@@ -96,6 +96,11 @@ strip_invalid_archs() {
   fi
 }
 
+
+if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "${PODS_ROOT}/Reveal-SDK/RevealServer-15/iOS/RevealServer.framework"
+  install_dsym "${PODS_ROOT}/Reveal-SDK/RevealServer-15/iOS/RevealServer.framework.dSYM"
+fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait
 fi

@@ -16,7 +16,6 @@
 
 //view
 #import "ScreeningCell.h"
-#import "PlaylistsCell.h"
 
 //tool model
 #import "ModelController.h"
@@ -83,7 +82,6 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
 
 
     //布局
-
     __weak typeof(self) weakSelf = self;
     UIView *superview = self.view;
     UIEdgeInsets padding = UIEdgeInsetsMake(2, 2, 2, 2);
@@ -99,7 +97,9 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
         make.top.mas_equalTo(weakSelf.typesView.mas_bottom).offset(padding.top);
         make.left.mas_equalTo(superview.mas_left);
         make.right.mas_equalTo(superview.mas_right);
-        make.bottom.mas_equalTo(superview.mas_bottom);
+        //tabBar H
+        CGFloat tabBarH = CGRectGetHeight(self.tabBarController.tabBar.frame);
+        make.bottom.mas_equalTo(superview.mas_bottom).offset(-tabBarH);
     }];
 }
 

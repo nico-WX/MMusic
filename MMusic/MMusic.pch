@@ -21,12 +21,19 @@
 #import "NSObject+Tool.h"
 #import "UIButton+BlockButton.h"
 
+
+
+//NSCachesDirectory
+//NSLibraryDirectory
 /**Artwork 目录*/
-#define ARTWORK_IMAGE_PATH [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"artwork"]
+#define ARTWORK_IMAGE_PATH [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"artwork"]
+
 /**封面图片地址*/
 #define IMAGE_PATH_FOR_URL(urlString) [[ARTWORK_IMAGE_PATH stringByAppendingPathComponent:[urlString md5String]] stringByAppendingString:@".png"]
+
 /**DB 目录*/
 #define DB_PATH ([[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"DB"])
+
 /**主题颜色*/
 #define MainColor ([UIColor colorWithHue:0.968 saturation:0.827 brightness:1.000 alpha:1.000])
 

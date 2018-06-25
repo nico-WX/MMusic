@@ -29,15 +29,14 @@
 		3B4D98A520BD42EC00139BE0 /* AlbumsSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D98A420BD42EC00139BE0 /* AlbumsSongCell.m */; };
 		3B4D98AB20BD61F600139BE0 /* CuratorsAndActivitiesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D98AA20BD61F600139BE0 /* CuratorsAndActivitiesViewController.m */; };
 		3B4D98F120C0214000139BE0 /* ArtistsContentTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D98F020C0213F00139BE0 /* ArtistsContentTableView.m */; };
-		3B4D98F320C117DF00139BE0 /* libReveal.dylib in Resources */ = {isa = PBXBuildFile; fileRef = 3B4D98F220C117DE00139BE0 /* libReveal.dylib */; };
 		3B4D98F720C162EF00139BE0 /* ArtistsInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D98F620C162EF00139BE0 /* ArtistsInfoView.m */; };
 		3B4E3AD6208F46B90042498C /* ChartsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD5208F46B90042498C /* ChartsViewController.m */; };
-		3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD8208F61E70042498C /* ChartsSongCell.m */; };
-		3B4E3ADC208F620E0042498C /* PlaylistsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3ADB208F620E0042498C /* PlaylistsCell.m */; };
-		3B4E3ADF208F6E870042498C /* ChartsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3ADE208F6E870042498C /* ChartsCell.m */; };
 		3B5371E51FD148B6009AFE47 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E41FD148B6009AFE47 /* Genre.m */; };
 		3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E71FD2BC60009AFE47 /* MMObject.m */; };
 		3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */; };
+		3B555EE720E0C23900AFF9A2 /* MusicKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B555EE620E0C23800AFF9A2 /* MusicKit.m */; };
+		3B555EEA20E0C25100AFF9A2 /* API.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B555EE920E0C25100AFF9A2 /* API.m */; };
+		3B555EED20E0EDAF00AFF9A2 /* Library.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B555EEC20E0EDAF00AFF9A2 /* Library.m */; };
 		3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895820A9968C000C3403 /* LibraryAlbum.m */; };
 		3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895B20A998B6000C3403 /* LibraryMusicVideo.m */; };
 		3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895E20A99AA5000C3403 /* LibraryPlaylist.m */; };
@@ -74,6 +73,9 @@
 		3B9AA90D1FB47E0700720085 /* Storefront.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA90C1FB47E0700720085 /* Storefront.m */; };
 		3B9AA9101FB4817F00720085 /* RequestFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA90F1FB4817F00720085 /* RequestFactory.m */; };
 		3B9AA9161FB588AF00720085 /* AuthorizationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA9151FB588AF00720085 /* AuthorizationManager.m */; };
+		3B9B269320D65EEA00881199 /* ResourceCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9B269220D65EEA00881199 /* ResourceCollectionViewCell.m */; };
+		3B9B269620D65F4F00881199 /* AlbumsCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9B269520D65F4F00881199 /* AlbumsCollectionCell.m */; };
+		3B9B269920D6877E00881199 /* MusicVideosCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9B269820D6877E00881199 /* MusicVideosCollectionCell.m */; };
 		3BAAB7C9207A45B6007A74EA /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAB7C8207A45B6007A74EA /* SearchViewController.m */; };
 		3BAAE01920B4211B00C82F4B /* ResultsContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAE01820B4211B00C82F4B /* ResultsContentViewController.m */; };
 		3BAAE02A20B437FB00C82F4B /* ClassifyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAE02920B437FB00C82F4B /* ClassifyCell.m */; };
@@ -87,8 +89,6 @@
 		3BC3324820A04E490080D1B9 /* ContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC3324720A04E490080D1B9 /* ContentViewController.m */; };
 		3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */; };
 		3BD2FD9220A5C7FF00DB7F9C /* ChartsSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD2FD9120A5C7FE00DB7F9C /* ChartsSectionView.m */; };
-		3BDBBB2F2073D84600680CCB /* AlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBBB2E2073D84600680CCB /* AlbumCell.m */; };
-		3BDBBBAA2077645700680CCB /* MusicVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBBBA92077645700680CCB /* MusicVideoCell.m */; };
 		3BDFC19820B5A90D0045B33A /* ResultsArtistsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFC19720B5A90C0045B33A /* ResultsArtistsCell.m */; };
 		3BDFC19B20B5A93F0045B33A /* ResultsMusicVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFC19A20B5A93F0045B33A /* ResultsMusicVideoCell.m */; };
 		3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB6120820A4700D85021 /* PlayControllerView.m */; };
@@ -236,18 +236,18 @@
 		3B4D98F620C162EF00139BE0 /* ArtistsInfoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArtistsInfoView.m; sourceTree = "<group>"; };
 		3B4E3AD4208F46B90042498C /* ChartsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsViewController.h; sourceTree = "<group>"; };
 		3B4E3AD5208F46B90042498C /* ChartsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsViewController.m; sourceTree = "<group>"; };
-		3B4E3AD7208F61E70042498C /* ChartsSongCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsSongCell.h; sourceTree = "<group>"; };
-		3B4E3AD8208F61E70042498C /* ChartsSongCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsSongCell.m; sourceTree = "<group>"; };
-		3B4E3ADA208F620E0042498C /* PlaylistsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaylistsCell.h; sourceTree = "<group>"; };
-		3B4E3ADB208F620E0042498C /* PlaylistsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlaylistsCell.m; sourceTree = "<group>"; };
-		3B4E3ADD208F6E870042498C /* ChartsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsCell.h; sourceTree = "<group>"; };
-		3B4E3ADE208F6E870042498C /* ChartsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsCell.m; sourceTree = "<group>"; };
 		3B5371E31FD148B6009AFE47 /* Genre.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Genre.h; sourceTree = "<group>"; };
 		3B5371E41FD148B6009AFE47 /* Genre.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Genre.m; sourceTree = "<group>"; };
 		3B5371E61FD2BC60009AFE47 /* MMObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMObject.h; sourceTree = "<group>"; };
 		3B5371E71FD2BC60009AFE47 /* MMObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMObject.m; sourceTree = "<group>"; };
 		3B5371FC1FDBF50B009AFE47 /* NSObject+Tool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+Tool.h"; sourceTree = "<group>"; };
 		3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Tool.m"; sourceTree = "<group>"; };
+		3B555EE520E0C23800AFF9A2 /* MusicKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicKit.h; sourceTree = "<group>"; };
+		3B555EE620E0C23800AFF9A2 /* MusicKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicKit.m; sourceTree = "<group>"; };
+		3B555EE820E0C25100AFF9A2 /* API.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = API.h; sourceTree = "<group>"; };
+		3B555EE920E0C25100AFF9A2 /* API.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = API.m; sourceTree = "<group>"; };
+		3B555EEB20E0EDAF00AFF9A2 /* Library.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Library.h; sourceTree = "<group>"; };
+		3B555EEC20E0EDAF00AFF9A2 /* Library.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Library.m; sourceTree = "<group>"; };
 		3B69895720A9968C000C3403 /* LibraryAlbum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryAlbum.h; sourceTree = "<group>"; };
 		3B69895820A9968C000C3403 /* LibraryAlbum.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibraryAlbum.m; sourceTree = "<group>"; };
 		3B69895A20A998B6000C3403 /* LibraryMusicVideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryMusicVideo.h; sourceTree = "<group>"; };
@@ -256,7 +256,6 @@
 		3B69895E20A99AA5000C3403 /* LibraryPlaylist.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibraryPlaylist.m; sourceTree = "<group>"; };
 		3B69896020A99DDC000C3403 /* LibrarySong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibrarySong.h; sourceTree = "<group>"; };
 		3B69896120A99DDC000C3403 /* LibrarySong.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibrarySong.m; sourceTree = "<group>"; };
-		3B699EC220A066B0000B0D1C /* MusicVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicVideoCell.h; sourceTree = "<group>"; };
 		3B87992C204FF7E000EE9D2A /* TodaySectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodaySectionView.h; sourceTree = "<group>"; };
 		3B87992D204FF7E000EE9D2A /* TodaySectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodaySectionView.m; sourceTree = "<group>"; };
 		3B8799572052BBC300EE9D2A /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
@@ -319,6 +318,12 @@
 		3B9AA90F1FB4817F00720085 /* RequestFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RequestFactory.m; sourceTree = "<group>"; };
 		3B9AA9141FB588AF00720085 /* AuthorizationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthorizationManager.h; sourceTree = "<group>"; };
 		3B9AA9151FB588AF00720085 /* AuthorizationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthorizationManager.m; sourceTree = "<group>"; };
+		3B9B269120D65EEA00881199 /* ResourceCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceCollectionViewCell.h; sourceTree = "<group>"; };
+		3B9B269220D65EEA00881199 /* ResourceCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResourceCollectionViewCell.m; sourceTree = "<group>"; };
+		3B9B269420D65F4F00881199 /* AlbumsCollectionCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AlbumsCollectionCell.h; sourceTree = "<group>"; };
+		3B9B269520D65F4F00881199 /* AlbumsCollectionCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AlbumsCollectionCell.m; sourceTree = "<group>"; };
+		3B9B269720D6877E00881199 /* MusicVideosCollectionCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicVideosCollectionCell.h; sourceTree = "<group>"; };
+		3B9B269820D6877E00881199 /* MusicVideosCollectionCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicVideosCollectionCell.m; sourceTree = "<group>"; };
 		3BAAB7C7207A45B6007A74EA /* SearchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		3BAAB7C8207A45B6007A74EA /* SearchViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		3BAADF5020B2C75B00C82F4B /* MMusicTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMusicTests.m; sourceTree = "<group>"; };
@@ -354,9 +359,6 @@
 		3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsPageViewController.m; sourceTree = "<group>"; };
 		3BD2FD9020A5C7FE00DB7F9C /* ChartsSectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsSectionView.h; sourceTree = "<group>"; };
 		3BD2FD9120A5C7FE00DB7F9C /* ChartsSectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsSectionView.m; sourceTree = "<group>"; };
-		3BDBBB2D2073D84600680CCB /* AlbumCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AlbumCell.h; sourceTree = "<group>"; };
-		3BDBBB2E2073D84600680CCB /* AlbumCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AlbumCell.m; sourceTree = "<group>"; };
-		3BDBBBA92077645700680CCB /* MusicVideoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicVideoCell.m; sourceTree = "<group>"; };
 		3BDFC19620B5A90C0045B33A /* ResultsArtistsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsArtistsCell.h; sourceTree = "<group>"; };
 		3BDFC19720B5A90C0045B33A /* ResultsArtistsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsArtistsCell.m; sourceTree = "<group>"; };
 		3BDFC19920B5A93F0045B33A /* ResultsMusicVideoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsMusicVideoCell.h; sourceTree = "<group>"; };
@@ -549,16 +551,6 @@
 			children = (
 				3BD2FD9020A5C7FE00DB7F9C /* ChartsSectionView.h */,
 				3BD2FD9120A5C7FE00DB7F9C /* ChartsSectionView.m */,
-				3B4E3ADD208F6E870042498C /* ChartsCell.h */,
-				3B4E3ADE208F6E870042498C /* ChartsCell.m */,
-				3BDBBB2D2073D84600680CCB /* AlbumCell.h */,
-				3BDBBB2E2073D84600680CCB /* AlbumCell.m */,
-				3B4E3ADA208F620E0042498C /* PlaylistsCell.h */,
-				3B4E3ADB208F620E0042498C /* PlaylistsCell.m */,
-				3B699EC220A066B0000B0D1C /* MusicVideoCell.h */,
-				3BDBBBA92077645700680CCB /* MusicVideoCell.m */,
-				3B4E3AD7208F61E70042498C /* ChartsSongCell.h */,
-				3B4E3AD8208F61E70042498C /* ChartsSongCell.m */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -567,6 +559,7 @@
 			isa = PBXGroup;
 			children = (
 				3B9AA8691FB04B5700720085 /* MMusic */,
+				3BAADF4F20B2C75B00C82F4B /* MMusicTests */,
 				3BAADF5D20B2C77100C82F4B /* MMusicUITests */,
 				3BAADF6B20B2C9C100C82F4B /* MMusicLogicTests */,
 				3B9AA8681FB04B5700720085 /* Products */,
@@ -596,6 +589,12 @@
 				3B9AA8CB1FB4512B00720085 /* Support */,
 				3B44056E20BA89B30085FDAB /* DBTool */,
 				3B9AA8BE1FB4503200720085 /* Tool */,
+				3B9B269120D65EEA00881199 /* ResourceCollectionViewCell.h */,
+				3B9B269220D65EEA00881199 /* ResourceCollectionViewCell.m */,
+				3B9B269420D65F4F00881199 /* AlbumsCollectionCell.h */,
+				3B9B269520D65F4F00881199 /* AlbumsCollectionCell.m */,
+				3B9B269720D6877E00881199 /* MusicVideosCollectionCell.h */,
+				3B9B269820D6877E00881199 /* MusicVideosCollectionCell.m */,
 			);
 			path = MMusic;
 			sourceTree = "<group>";
@@ -603,9 +602,14 @@
 		3B9AA8BE1FB4503200720085 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
-				3BAADF4F20B2C75B00C82F4B /* MMusicTests */,
 				3B3D99E8205E990D000F2E9E /* NSString+Hash.h */,
 				3B3D99E9205E990F000F2E9E /* NSString+Hash.m */,
+				3B555EE520E0C23800AFF9A2 /* MusicKit.h */,
+				3B555EE620E0C23800AFF9A2 /* MusicKit.m */,
+				3B555EE820E0C25100AFF9A2 /* API.h */,
+				3B555EE920E0C25100AFF9A2 /* API.m */,
+				3B555EEB20E0EDAF00AFF9A2 /* Library.h */,
+				3B555EEC20E0EDAF00AFF9A2 /* Library.m */,
 				3B9AA90E1FB4817F00720085 /* RequestFactory.h */,
 				3B9AA90F1FB4817F00720085 /* RequestFactory.m */,
 				3B4806741FC96585009035CD /* PersonalizedRequestFactory.h */,
@@ -695,6 +699,8 @@
 		3B9AA8DD1FB4619500720085 /* Resource Object */ = {
 			isa = PBXGroup;
 			children = (
+				3B9AA8ED1FB46F9300720085 /* Chart.h */,
+				3B9AA8EE1FB46F9300720085 /* Chart.m */,
 				3B9B268920D5550D00881199 /* Attribute Object */,
 				3B9B268820D54CB100881199 /* Resource */,
 			);
@@ -735,16 +741,14 @@
 		3B9B268920D5550D00881199 /* Attribute Object */ = {
 			isa = PBXGroup;
 			children = (
+				3B9AA8EA1FB46E7B00720085 /* Artwork.h */,
+				3B9AA8EB1FB46E7B00720085 /* Artwork.m */,
 				3B9AA8F61FB4759F00720085 /* EditorialNotes.h */,
 				3B9AA8F71FB4759F00720085 /* EditorialNotes.m */,
 				3B9AA8FC1FB478C700720085 /* PlayParameters.h */,
 				3B9AA8FD1FB478C700720085 /* PlayParameters.m */,
 				3B9AA8FF1FB479B700720085 /* Preview.h */,
 				3B9AA9001FB479B700720085 /* Preview.m */,
-				3B9AA8EA1FB46E7B00720085 /* Artwork.h */,
-				3B9AA8EB1FB46E7B00720085 /* Artwork.m */,
-				3B9AA8ED1FB46F9300720085 /* Chart.h */,
-				3B9AA8EE1FB46F9300720085 /* Chart.m */,
 			);
 			name = "Attribute Object";
 			sourceTree = "<group>";
@@ -988,7 +992,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B4D98F320C117DF00139BE0 /* libReveal.dylib in Resources */,
 				3B3D99F8205EE0A0000F2E9E /* love-gray.png in Resources */,
 				3B9AA8771FB04B5700720085 /* LaunchScreen.storyboard in Resources */,
 				3B09CB932098A0BA00294851 /* TwitterHeart.json in Resources */,
@@ -1057,7 +1060,6 @@
 				3B9AA9071FB47C1200720085 /* Song.m in Sources */,
 				3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */,
 				3BD2FD9220A5C7FF00DB7F9C /* ChartsSectionView.m in Sources */,
-				3B4E3ADC208F620E0042498C /* PlaylistsCell.m in Sources */,
 				3BDFC19820B5A90D0045B33A /* ResultsArtistsCell.m in Sources */,
 				3B9AA8DB1FB4535400720085 /* Error.m in Sources */,
 				3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */,
@@ -1079,8 +1081,8 @@
 				3BAAE01920B4211B00C82F4B /* ResultsContentViewController.m in Sources */,
 				3B9AA8EF1FB46F9300720085 /* Chart.m in Sources */,
 				3BAAE02A20B437FB00C82F4B /* ClassifyCell.m in Sources */,
+				3B555EED20E0EDAF00AFF9A2 /* Library.m in Sources */,
 				3B9AA8FB1FB4769500720085 /* Playlist.m in Sources */,
-				3BDBBB2F2073D84600680CCB /* AlbumCell.m in Sources */,
 				3B87992E204FF7E000EE9D2A /* TodaySectionView.m in Sources */,
 				3BAAE02D20B45A9A00C82F4B /* ResultsCell.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
@@ -1091,6 +1093,7 @@
 				3BAAB7C9207A45B6007A74EA /* SearchViewController.m in Sources */,
 				3B9AA90D1FB47E0700720085 /* Storefront.m in Sources */,
 				3B5371E51FD148B6009AFE47 /* Genre.m in Sources */,
+				3B555EE720E0C23900AFF9A2 /* MusicKit.m in Sources */,
 				3B8799592052BBC300EE9D2A /* DetailViewController.m in Sources */,
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
 				3BB8793C2091D521004677B6 /* BrowseViewController.m in Sources */,
@@ -1098,11 +1101,9 @@
 				3BDFC19B20B5A93F0045B33A /* ResultsMusicVideoCell.m in Sources */,
 				3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */,
 				3B9AA9101FB4817F00720085 /* RequestFactory.m in Sources */,
-				3B4E3AD9208F61E70042498C /* ChartsSongCell.m in Sources */,
 				3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */,
 				3BC33211209CA3220080D1B9 /* ScreeningCell.m in Sources */,
 				3B3D9989205540A0000F2E9E /* PlayerView.m in Sources */,
-				3B4E3ADF208F6E870042498C /* ChartsCell.m in Sources */,
 				3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */,
 				3B9AA8F51FB4719A00720085 /* MusicVideo.m in Sources */,
 				3BC33214209CA5ED0080D1B9 /* ScreeningSection.m in Sources */,
@@ -1112,22 +1113,25 @@
 				3B9AA8E91FB46D6100720085 /* Artist.m in Sources */,
 				3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */,
 				3B9AA8FE1FB478C700720085 /* PlayParameters.m in Sources */,
-				3BDBBBAA2077645700680CCB /* MusicVideoCell.m in Sources */,
 				3B4D98F720C162EF00139BE0 /* ArtistsInfoView.m in Sources */,
 				3B3D998420553CD4000F2E9E /* PlayerViewController.m in Sources */,
 				3B69896220A99DDC000C3403 /* LibrarySong.m in Sources */,
 				3B4D98A520BD42EC00139BE0 /* AlbumsSongCell.m in Sources */,
 				3B9AA8891FB2E06C00720085 /* MyMusicViewController.m in Sources */,
+				3B9B269620D65F4F00881199 /* AlbumsCollectionCell.m in Sources */,
 				3B4D98F120C0214000139BE0 /* ArtistsContentTableView.m in Sources */,
 				3B4806761FC96585009035CD /* PersonalizedRequestFactory.m in Sources */,
 				3B9AA8821FB04BC400720085 /* LocalMusicViewController.m in Sources */,
 				3BC3324820A04E490080D1B9 /* ContentViewController.m in Sources */,
+				3B9B269320D65EEA00881199 /* ResourceCollectionViewCell.m in Sources */,
 				3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */,
 				3BB990EF20C6CF9C002A6BA1 /* PlayerController.m in Sources */,
 				3B2D6EFB2091F69200E1B22C /* ScreeningViewController.m in Sources */,
 				3B4E3AD6208F46B90042498C /* ChartsViewController.m in Sources */,
 				3B9AA9161FB588AF00720085 /* AuthorizationManager.m in Sources */,
+				3B555EEA20E0C25100AFF9A2 /* API.m in Sources */,
 				3B8799612053DC4600EE9D2A /* DetailHeaderView.m in Sources */,
+				3B9B269920D6877E00881199 /* MusicVideosCollectionCell.m in Sources */,
 				3B3D9981205512FA000F2E9E /* SongCell.m in Sources */,
 				3B9AA8E61FB46C7700720085 /* AppleCurator.m in Sources */,
 				3B9AA8F21FB4708E00720085 /* Curator.m in Sources */,

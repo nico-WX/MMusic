@@ -31,12 +31,15 @@
         _playView = UIView.new;
         _nextView = UIView.new;
 
-        //按钮   '<<' '▷' '>>'
-        FlatButtonStyle style = buttonRoundedStyle;
-        CGRect rect = CGRectMake(0, 0, 55.0f, 55.0f);
-        _previous = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonRewindType buttonStyle:style animateToInitialState:YES];
-        _play     = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonPausedType buttonStyle:style animateToInitialState:YES];
-        _next     = [[VBFPopFlatButton alloc] initWithFrame:rect buttonType:buttonFastForwardType buttonStyle:style animateToInitialState:YES];
+        //按钮
+        _previous   = [[UIButton alloc] init];
+        _play       = [[UIButton alloc] init];
+        _next       = [[UIButton alloc] init];
+
+        //按钮 image
+        [_previous setImage:[UIImage imageNamed:@"rewind"] forState:UIControlStateNormal];
+        [_play setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
+        [_next setImage:[UIImage imageNamed:@"forward"] forState:UIControlStateNormal];
 
         //添加辅助层带视图中
         [self addSubview:_preView];
@@ -86,20 +89,35 @@
     }];
 
     //按钮布局
-    CGFloat h = CGRectGetHeight(rect);
-    CGSize buttonSize = CGSizeMake(h, h);
+    CGFloat H = CGRectGetHeight(self.frame);
+    UIView *superview = self.preView;
     [self.previous mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(weakSelf.preView.center);
-        make.size.mas_equalTo(buttonSize);
+        make.center.mas_equalTo(superview);
+        UIImage *image = [UIImage imageNamed:@"rewind"];
+        CGFloat w = [self aspectRatioWithImage:image] *H;
+        make.size.mas_equalTo(CGSizeMake(w, H));
     }];
+
+    superview = self.playView;
     [self.play mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(weakSelf.playView.center);
-        make.size.mas_equalTo(buttonSize);
+        make.center.mas_equalTo(superview);
+        UIImage *image = [UIImage imageNamed:@"play"];
+        CGFloat w = [self aspectRatioWithImage:image] *H ;
+        make.size.mas_equalTo(CGSizeMake(w, H));
     }];
+
+    superview = self.nextView;
     [self.next mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(weakSelf.nextView.center);
-        make.size.mas_equalTo(buttonSize);
+        make.center.mas_equalTo(superview);
+        CGFloat w = [self aspectRatioWithImage:[UIImage imageNamed:@"forward"]] *H;
+        make.size.mas_equalTo(CGSizeMake(w, H));
     }];
+
+}
+
+//图片宽高比
+-(CGFloat) aspectRatioWithImage:(UIImage*) image{
+    return image.size.width/image.size.height;
 }
 
 @end

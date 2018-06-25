@@ -6,8 +6,6 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import <VBFPopFlatButton.h>
-
 #import "PlayerViewController.h"
 #import "PlayerView.h"
 #import "PlayProgressView.h"
@@ -80,7 +78,6 @@ static PlayerViewController *_instance;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-
     //添加视图
     self.view = self.playerView;
 
@@ -119,9 +116,6 @@ static PlayerViewController *_instance;
     [self.timer fire];
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-}
 
 - (void)viewDidAppear:(BOOL)animated{
     //更新播放按钮状态
@@ -129,12 +123,13 @@ static PlayerViewController *_instance;
         case MPMusicPlaybackStatePaused:
         case MPMusicPlaybackStateStopped:
         case MPMusicPlaybackStateInterrupted:{
-            [self.playerView.play animateToType:buttonRightTriangleType];
+            [self.playerView.play setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
+            //[self.playerView.play animateToType:buttonRightTriangleType];
         }
-
             break;
         case MPMusicPlaybackStatePlaying:{
-            [self.playerView.play animateToType:buttonPausedType];
+            [self.playerView.play setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
+            //[self.playerView.play animateToType:buttonPausedType];
         }
             break;
         default:
@@ -148,8 +143,6 @@ static PlayerViewController *_instance;
 - (void)dealloc{
     [self.playerController endGeneratingPlaybackNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-
-
 }
 
 #pragma mark - 更新UI信息
@@ -165,7 +158,6 @@ static PlayerViewController *_instance;
          2.1 : 从系统获取时, 需要识别是否为Apple版权的音乐,还是第三方添加的,Apple版权音乐直接通过ID获取Song 对象,更新信息
          2.2 : 第三方音乐直接获取数据,更新信息
          2.3 : (未完成: 第三方音乐, 通过音乐名称,和艺人, 在Apple 目录中搜索, 返回Song 对象)
-
          */
 
         NSString *title;
@@ -190,8 +182,8 @@ static PlayerViewController *_instance;
             [self heartFromSongIdentifier:[song.playParams objectForKey:@"id"]];
 
         }else{
-
-            //判断当前播放时有没有在播放(加载了音乐)
+            //当前没有从app 中加载song,
+            //判断系统播放器有没有在播放或者加载了音乐
             if (self.playerController.nowPlayingItem){
 
                 //有Identifier 属于AppleMusic版权库音乐 请求Song对象
@@ -218,7 +210,7 @@ static PlayerViewController *_instance;
                 }
             }else{
                 //没有在播放
-                [self showHUDToMainWindowFromText:@"当前没有在播放!"];
+                [self showHUDToMainWindowFromText:@"系统播放器没有加载音乐"];
                 [self.playerView.heartIcon setEnabled:NO];
             }
         }
@@ -229,13 +221,14 @@ static PlayerViewController *_instance;
         if (durationString) {
             self.playerView.durationTime.text = durationString;
         }
+        //收集艺人信息, 填充艺人列表数据
         [self addArtistsToDataBaseFromSong:self.nowPlaySong];
     });
 }
 
 #pragma mark - Helper
 
-/**存储艺人信息 , 添加到数据库, 创建艺人视图表*/
+/**存储艺人信息 , 添加到数据库, 创建艺人列表*/
 -(void)addArtistsToDataBaseFromSong:(Song*) song{
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -259,7 +252,6 @@ static PlayerViewController *_instance;
             }];
         }
     });
-
 }
 
 /**获取歌曲rating 状态, 并设置 开关状态*/
@@ -285,7 +277,6 @@ static PlayerViewController *_instance;
 //通过音乐 id 获取song 对象;
 -(void)songFromIdentifier:(NSString*) identifier{
     NSURLRequest *request = [[RequestFactory new] fetchResourceFromType:ResourceSongsType andIds:@[identifier,]];
-    //createRequestWithType:RequestSongType resourceIds:@[identifier,]];
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         if (json) {
@@ -350,8 +341,9 @@ static PlayerViewController *_instance;
 - (NSTimer *)timer{
     if (!_timer) {
         __weak typeof(self) weakSelf = self;
-        _timer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-
+        _timer = [NSTimer scheduledTimerWithTimeInterval:1
+                                                 repeats:YES
+                                                   block:^(NSTimer * _Nonnull timer) {
             //当前播放时间
             NSTimeInterval current = self->_playerController.currentPlaybackTime;//秒 self->
             int min = (int)current/60;
@@ -370,10 +362,8 @@ static PlayerViewController *_instance;
 #pragma mark - setter
 -(void)setNowPlaySong:(Song *)nowPlaySong{
     if (_nowPlaySong != nowPlaySong) {
-        Log(@"setter");
         _nowPlaySong = nowPlaySong;
         [self updateNowPlayItemToView];
-        //[self observe];
     }
 }
 
@@ -388,24 +378,25 @@ static PlayerViewController *_instance;
     NSTimeInterval duration = self.playerController.nowPlayingItem.playbackDuration; //秒
     NSTimeInterval current = duration * slider.value;
     [self.playerController setCurrentPlaybackTime:current];
+
+    int min = (int)current/60;
+    int sec = (int)current%60;
+    self.playerView.currentTime.text = [NSString stringWithFormat:@"%.2d:%.2d",min,sec];
 }
 
 //上一首
-- (void)previous:(VBFPopFlatButton*) button{
+- (void)previous:(UIButton*) button{
     [self.playerController skipToPreviousItem];
-    //动画
-    [button animateToType:buttonBackType];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [button animateToType:buttonRewindType];
-    });
+    [self animationButton:button];
 }
 
 //播放或暂停
-- (void)playOrPause:(VBFPopFlatButton*) button{
+- (void)playOrPause:(UIButton*) button{
     switch (self.playerController.playbackState) {
         case MPMusicPlaybackStatePlaying:
             [self.playerController pause];
-            [button setCurrentButtonType:buttonRightTriangleType];
+            [self animationButton:button];
+            [button setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
             break;
 
         case MPMusicPlaybackStatePaused:
@@ -413,7 +404,8 @@ static PlayerViewController *_instance;
         case MPMusicPlaybackStateInterrupted:
             [self.timer fire];
             [self.playerController play];
-            [button setCurrentButtonType:buttonPausedType];
+            [self animationButton:button];
+            [button setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
             break;
 
         default:
@@ -422,13 +414,22 @@ static PlayerViewController *_instance;
 }
 
 //下一首
--(void)next:(VBFPopFlatButton*) button{
+-(void)next:(UIButton*) button{
     [self.playerController skipToNextItem];
-    //动画
-    [button animateToType:buttonForwardType];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [button animateToType:buttonFastForwardType];
-    });
+    [self animationButton:button];
+}
+
+-(void) animationButton:(UIButton*) sender{
+    [UIView animateWithDuration:0.2 animations:^{
+        [sender setTransform:CGAffineTransformMakeScale(0.88, 0.88)];
+    } completion:^(BOOL finished) {
+        if (finished) {
+            //恢复
+            [UIView animateWithDuration:0.2 animations:^{
+                [sender setTransform:CGAffineTransformIdentity];
+            }];
+        }
+    }];
 }
 
 //红心按钮 添加喜欢或者取消喜欢
@@ -480,32 +481,22 @@ static PlayerViewController *_instance;
  2.添加到播放列表中,
  3.存储到数据库中
  */
--(void) addRatingForSongId:(NSString*)songID{
+-(void) addRatingForSongId:(NSString*)song{
 
     //添加rating
     NSURLRequest *request = [self.factory managerCatalogAndLibraryRatingsWithOperatin:RatingsAddOperation
                                                                         resourcesType:ResourcesPersonalSongType
-                                                                               andIds:@[songID,]];
+                                                                               andIds:@[song,]];
 
     [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
         if (!error && res.statusCode/10==20) {
-            //将track  添加到默认Rating 列表中
+
+            //请求Rating 的默认库播放列表 identifier,
             [self.factory fetchIdentiferForSearchLibraryType:SearchLibraryPlaylistsType name:@"Rating" usingBlock:^(NSString *identifier) {
-                NSDictionary *track = @{@"id":songID,@"type":@"songs"};
+                NSDictionary *track = @{@"id":song,@"type":@"songs"};
                 [self.factory addTrackToPlaylists:identifier tracks:@[track,]];
             }];
-
-            //添加到数据库存储
-            for (Song *song in self.songs) {
-                if ([[song.playParams valueForKey:@"id"] isEqualToString:songID]) {
-                    TracksModel *tracks = [[TracksModel alloc] init];
-                    tracks.name         = song.name;
-                    tracks.identifier   = [song.playParams valueForKey:@"id"];
-                    [DBTool insertData:tracks];
-                }
-            }
-
             //更新ui
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playerView.heartIcon setOn:YES animated:YES];
@@ -537,53 +528,5 @@ static PlayerViewController *_instance;
     }
     return _playbackIndicatorView;
 }
-
-
--  (void) observe{
-    CFRunLoopRef runLoopRef = CFRunLoopGetCurrent();
-    CFRunLoopObserverRef runLoopObs = [self runLoopObsRef];
-    CFRunLoopAddObserver(runLoopRef, runLoopObs, kCFRunLoopDefaultMode);
-}
-- (CFRunLoopObserverRef) runLoopObsRef{
-    //(分配内存函数|监听RunLoop的那些状态|是否持续监听|优先级| 状态改变时的回调)
-    return CFRunLoopObserverCreateWithHandler(CFAllocatorGetDefault(), kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
-        /*  可以监听的状态
-         typedef CF_OPTIONS(CFOptionFlags, CFRunLoopActivity) {
-         kCFRunLoopEntry = (1UL << 0),              //即将进入RunLoop
-         kCFRunLoopBeforeTimers = (1UL << 1),       //即将处理timer事件
-         kCFRunLoopBeforeSources = (1UL << 2),      //即将处理source事件
-         kCFRunLoopBeforeWaiting = (1UL << 5),      //即将进入睡眠
-         kCFRunLoopAfterWaiting = (1UL << 6),       //被唤醒
-         kCFRunLoopExit = (1UL << 7),               //退出RunLoop
-         kCFRunLoopAllActivities = 0x0FFFFFFFU      //所有状态
-         };
-         */
-        switch (activity) {
-            case kCFRunLoopEntry:
-                NSLog(@"//即将进入RunLoop");
-                break;
-            case kCFRunLoopBeforeTimers:
-                NSLog(@"//即将处理timer事件");
-                break;
-            case kCFRunLoopBeforeWaiting:
-                NSLog(@"//即将处理source事件");
-                break;
-            case kCFRunLoopBeforeSources:
-                NSLog(@"//即将进入睡眠");
-                break;
-            case kCFRunLoopAfterWaiting:
-                NSLog(@"//被唤醒");
-                break;
-            case  kCFRunLoopExit:
-                NSLog(@"//退出RunLoop");
-                break;
-
-            default:
-                break;
-        }
-    });
-}
-
-
 
 @end
