@@ -39,8 +39,10 @@ extern NSString *userTokenIssueNotification;
     if (error) Log(@"Location Error:%@",error);
     NSDictionary *dict;
     NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
+    Log(@"code=%ld",res.statusCode);
     switch (res.statusCode) {
         case 200:
+
             if (data) {
                 dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
                 if (error) Log(@"Serialization Error:%@",error);

@@ -177,7 +177,7 @@
     }];
 }
 
--(void)addTracksToLibraryPlaylistForIdentifier:(NSString *)identifier playload:(NSDictionary *)json{
+-(void)addTracksToLibraryPlaylists:(NSString *)identifier playload:(NSDictionary *)json{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"playlists"];
     path = [path stringByAppendingPathComponent:identifier];
     path = [path stringByAppendingPathComponent:@"tracks"];
@@ -191,7 +191,91 @@
     [self datataskWithRequest:request completionHandler:nil];
 }
 
+-(void)getRating:(NSArray<NSString *> *)ids byType:(CRating)type callBack:(void (^)(NSDictionary *))handle{
+    NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"ratings"];
+    path = [path stringByAppendingPathComponent:[self subPathForRatingType:type]];
+    if (ids.count == 1) {
+        path = [path stringByAppendingPathComponent:ids.lastObject];
+    }else if (ids.count > 1){
+        path = [path stringByAppendingString:@"?ids="];
+        for (NSString *identifier in ids) {
+            path = [path stringByAppendingString:[NSString stringWithFormat:@"%@,",identifier]];
+        }
+    }
+
+    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
+    [self datataskWithRequest:request completionHandler:^(NSDictionary *json) {
+        if (handle) {
+            handle(json);
+        }
+    }];
+}
+-(void)addRating:(NSString *)identifier byType:(CRating)type value:(int)value callBack:(void (^)(NSDictionary *))handle{
+    NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"ratings"];
+    path = [path stringByAppendingPathComponent:[self subPathForRatingType:type]];
+    path = [path stringByAppendingPathComponent:identifier];
+
+    //请求体
+    NSDictionary *playload = @{@"type":@"rating",@"attributes":@{@"value":[NSNumber numberWithInt:value]}};
+    NSData *data = [NSJSONSerialization dataWithJSONObject:playload options:NSJSONWritingSortedKeys error:nil];
+
+    NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+    [request setHTTPMethod:@"PUT"];
+    [request setHTTPBody:data];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+
+    [self datataskWithRequest:request completionHandler:^(NSDictionary *json) {
+        if (handle) {
+            handle(json);
+        }
+    }];
+}
+
+-(void)deleteRating:(NSString *)identifier byType:(CRating)type{
+    NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"ratings"];
+    path = [path stringByAppendingPathComponent:[self subPathForRatingType:type]];
+    path = [path stringByAppendingPathComponent:identifier];
+
+    NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+    [request setHTTPMethod:@"DELETE"];
+    //无响应体, 成功响应码:204
+    [self datataskWithRequest:request completionHandler:nil];
+}
+
+
+-(void)defaultRecommendationsInCallBack:(void (^)(NSDictionary *))handle{
+    NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"recommendations"];
+
+    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
+    [self datataskWithRequest:request completionHandler:^(NSDictionary *json) {
+        if (handle) {
+            handle(json);
+        }
+    }];
+}
+
 #pragma  mark - helper
+-(NSString*)subPathForRatingType:(CRating) rating{
+    NSString *subPath = @"";
+    switch (rating) {
+        case CRatingAlbums:
+            subPath = @"albums";
+            break;
+        case CRatingPlaylists:
+            subPath = @"playlists";
+            break;
+        case CRatingMusicVideos:
+            subPath = @"music-videos";
+            break;
+        case CRatingSongs:
+            subPath = @"songs";
+            break;
+        case CRatingStations:
+            subPath = @"stations";
+            break;
+    }
+    return subPath;
+}
 -(NSString*)subPathForType:(CLibrary)library{
     NSString *subPath = @"";
     switch (library) {

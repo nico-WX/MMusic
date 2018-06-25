@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-
-
 /**
  resources from a user's Cloud Library
 
@@ -26,7 +24,6 @@ typedef NS_ENUM(NSUInteger, CLibrary){
     CLibraryPlaylists,
     CLibrarySongs
 };
-
 
 /**
  搜索云音乐库类型
@@ -45,7 +42,6 @@ typedef NS_ENUM(NSUInteger, SLibrary){
     SLibraryMusicVideos
 };
 
-
 /**
  添加到音乐库中的资源类型
 
@@ -59,6 +55,23 @@ typedef NS_ENUM(NSUInteger, AddType){
     AddPlaylists,
     AddMusicVideos,
     AddSongs
+};
+
+/**
+ 管理个人CatalogRating 资源类型
+
+ - CRatingAlbums:       专辑
+ - CRatingMusicVideos:  MV
+ - CRatingPlaylists:    播放列表
+ - CRatingSongs:        歌曲
+ - CRatingStations:     电台
+ */
+typedef NS_ENUM(NSUInteger, CRating){
+    CRatingAlbums,
+    CRatingMusicVideos,
+    CRatingPlaylists,
+    CRatingSongs,
+    CRatingStations
 };
 
 
@@ -143,6 +156,45 @@ typedef NS_ENUM(NSUInteger, AddType){
  @param identifier 播放列表ID
  @param json 歌曲json
  */
--(void)addTracksToLibraryPlaylistForIdentifier:(NSString*)identifier playload:(NSDictionary*)json;
+-(void)addTracksToLibraryPlaylists:(NSString*)identifier playload:(NSDictionary*)json;
+
+
+
+/**
+ 获取目录Rating
+
+ @param ids  id数组
+ @param type 资源类型
+ @param handle 数据回调
+ */
+-(void)getRating:(NSArray<NSString*>*)ids byType:(CRating)type callBack:(void(^)(NSDictionary*json))handle;
+
+
+
+/**
+ 添加目录Rating
+
+ @param identifier 目录资源id
+ @param type 资源类型
+ @param value 传入 1或者-1
+ @param handle 数据回调
+ */
+-(void)addRating:(NSString*)identifier byType:(CRating)type value:(int)value callBack:(void(^)(NSDictionary*json))handle;
+
+
+/**
+ 删除Rating
+
+ @param identifier 要删除的资源id
+ @param type 资源类型
+ */
+-(void)deleteRating:(NSString*)identifier byType:(CRating)type;
+
+/**
+ 获取默认推荐
+
+ @param handle 数据回调
+ */
+-(void)defaultRecommendationsInCallBack:(void(^)(NSDictionary*json))handle;
 
 @end

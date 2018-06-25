@@ -96,6 +96,22 @@ static NSString *const cellIdentifier = @"todayCell";
 //    [music.api searchForTerm:@"周" callBack:^(NSDictionary *json) {
 //        Log(@"json=%@",json);
 //    }];
+//    [music.api.library defaultRecommendationsInCallBack:^(NSDictionary *json) {
+//        Log(@"json=%@",json);
+//    }];
+
+//    [music.api.library resource:nil byType:CLibraryPlaylists callBack:^(NSDictionary *json) {
+//        Log(@"json =%@",json);
+//    }];
+
+
+//    NSDictionary *json = @{@"id":@"1125331139",@"type":@"songs"};
+//    [music.api.library addTracksToLibraryPlaylists:@"p.YJXV7bvIl7JlzV" playload:json];
+//    NSDictionary *dict = @{@"type":@"rating",@"attributes":@{@"value":@1}};
+//    NSDictionary *playload = @{@"type":@"rating",@"attributes":@{@"value":@1}};
+    [music.api.library addRating:@"1333861909" byType:CRatingSongs value:-1 callBack:^(NSDictionary *json){
+        Log(@"json=%@",json);
+    }];
 
 }
 
