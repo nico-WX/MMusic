@@ -23,8 +23,9 @@
 
 //model & tool
 
-#import "RequestFactory.h"
-#import "PersonalizedRequestFactory.h"
+#import "MusicKit.h"
+//#import "RequestFactory.h"
+//#import "PersonalizedRequestFactory.h"
 #import "ResponseRoot.h"
 #import "Playlist.h"
 #import "Artwork.h"
@@ -190,7 +191,10 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         [self.prametersQueue setStartItemPlayParameters:[self.prameters objectAtIndex:indexPath.row]];
         [self.playerVC.playerController setQueueWithDescriptor:self.prametersQueue];
         [self.playerVC.playerController prepareToPlay];
+    }else{
+
     }
+
     [self.playerVC showFromViewController:self withSongs:self.songs startItem:selectSong];
 }
 
@@ -262,29 +266,27 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 /**请求数据*/
 - (void) requestDataWithResource:(Resource*) resource{
 
-    NSURLRequest *request;
     if ([self.resource.type isEqualToString:@"library-playlists"]) {
-        request = [[PersonalizedRequestFactory new] fetchLibraryResourceWithType:LibraryResourcePlaylists fromIds:@[self.resource.identifier]];
-    }else{
-        request = [[RequestFactory new] createRequestWithHref:self.resource.href];
-    }
-
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (!error && data) {
-            NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+        [[MusicKit new].api.library resource:@[self.resource.identifier,] byType:CLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
             self.songs = [self serializationJSON:json];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
             });
-        }
-    }];
+        }];
+    }else{
+        NSURLRequest *request = [self createRequestWithHref:self.resource.href];
+        [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+            self.songs = [self serializationJSON:json];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
+        }];
+    }
+
 }
 -(void) loadNextPageDataWithHref:(NSString*) href{
-    NSURLRequest *request = [[RequestFactory new] createRequestWithHref:href];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
-
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+    NSURLRequest *request = [self createRequestWithHref:href];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json =[json valueForKeyPath:@"results.songs"];
 
         //覆盖next url,  增加song
@@ -340,24 +342,15 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
             [hud hideAnimated:YES afterDelay:1.5];
         }];
 
-        PersonalizedRequestFactory *factort = [PersonalizedRequestFactory new];
+        MusicKit *music = [MusicKit new];
         UIAlertAction *notLove = [UIAlertAction actionWithTitle:@"不喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            //DELETE
-            NSURLRequest *request = [factort managerCatalogAndLibraryRatingsWithOperatin:RatingsDeleteOperation
-                                                                           resourcesType:ResourcesPersonalSongType
-                                                                                  andIds:@[songID,]];
-
-            [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            [music.api.library deleteRating:songID byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
                 [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*)response];
             }];
         }];
 
         UIAlertAction *love = [UIAlertAction actionWithTitle:@"喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            //PUT
-            NSURLRequest *request = [factort managerCatalogAndLibraryRatingsWithOperatin:RatingsAddOperation
-                                                                           resourcesType:ResourcesPersonalSongType
-                                                                                  andIds:@[songID,]];
-            [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            [music.api.library addRating:songID byType:CRatingSongs value:1 callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
                 [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*) response];
             }];
         }];

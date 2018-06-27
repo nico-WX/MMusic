@@ -21,7 +21,6 @@
 #import "ResponseRoot.h"
 #import "Resource.h"
 #import "Artwork.h"
-#import "RequestFactory.h"
 
 
 @interface ContentViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UITableViewDelegate,UITableViewDataSource>
@@ -124,10 +123,9 @@ static NSString * const cellID = @"cellReuseIdentifier";
 
 #pragma mark - loadNextPage
 -(void) requestNextPageDataFromHref:(NSString*) href{
-    NSURLRequest *request =  [[RequestFactory new] createRequestWithHref:href];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
-        //{@"results":{@"playlists":{}...}}
+    NSURLRequest *request =  [self createRequestWithHref:href];
+
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
             [obj enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                 ResponseRoot *nextRoot = [ResponseRoot instanceWithDict:obj];

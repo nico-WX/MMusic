@@ -14,7 +14,6 @@
 #import "DetailHeaderView.h"
 #import "ResourceCollectionViewCell.h"
 
-#import "RequestFactory.h"
 
 #import "Relationship.h"
 #import "ResponseRoot.h"
@@ -103,9 +102,8 @@ static NSString *const cellID = @"CollectionViewCellReuseID";
 #pragma mark helper
 /**初次请求数据*/
 -(void) requestData{
-    NSURLRequest *request = [[RequestFactory new] createRequestWithHref:self.resource.href];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+    NSURLRequest *request = [self createRequestWithHref:self.resource.href];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         for (NSDictionary *subJson in [json valueForKey:@"data"]) {
             NSDictionary *rootDict = [subJson valueForKeyPath:@"relationships.playlists"];
 
@@ -128,9 +126,8 @@ static NSString *const cellID = @"CollectionViewCellReuseID";
 -(Resource*) requestResourceFormHref:(NSString*) href{
 
     Resource *re = [Resource new];
-    NSURLRequest *request = [[RequestFactory new] createRequestWithHref:href];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+    NSURLRequest *request = [self createRequestWithHref:href];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         for (NSDictionary *sub in [json valueForKey:@"data"]) {
             Resource *resource = [Resource instanceWithDict:sub];
             re.identifier   = resource.identifier;
@@ -144,9 +141,8 @@ static NSString *const cellID = @"CollectionViewCellReuseID";
 
 /**加载分页*/
 -(void) loadNextPageFromHref:(NSString*)href{
-    NSURLRequest *request = [[RequestFactory new] createRequestWithHref:href];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+    NSURLRequest *request = [self createRequestWithHref:href];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (json.allKeys > 0 ) {
 
             //json  :  @{@"next":@"....",@"data":@[]}

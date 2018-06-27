@@ -10,6 +10,7 @@
 #import <objc/runtime.h>
 
 typedef void (^ActionBlock)(void);
+
 @interface UIButton (BlockButton)
 @property (readonly) NSMutableDictionary *event;
 

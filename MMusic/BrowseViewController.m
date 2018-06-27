@@ -19,7 +19,6 @@
 
 //tool model
 #import "ModelController.h"
-#import "RequestFactory.h"
 #import "ResponseRoot.h"
 #import "Resource.h"
 #import "Artwork.h"
@@ -109,23 +108,19 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
  @param terms 搜索文本
  */
 -(void)requestDataWithTerms:(NSString*) terms{
-    NSURLRequest *request = [RequestFactory.new createSearchWithText:terms];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (!error) {
-            NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
-            self.results = [self serializationJSON:json];
-            //更新UI 滚动内容大小 等
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.modelCtr = [[ModelController alloc] initWithData:self.results];    //覆盖模型控制器
-                CGFloat w = CGRectGetWidth(self.view.bounds) * self.results.count;
-                CGFloat h = CGRectGetHeight(self.scrollView.bounds);
-                [self.scrollView setContentSize:CGSizeMake(w, h)];
-                [self.typesView reloadData];
-                //选中第一个 回滚到初始位置
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-                [self.typesView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
-            });
-        }
+    [[MusicKit new].api searchForTerm:terms callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        self.results = [self serializationJSON:json];
+        //更新UI 滚动内容大小 等
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.modelCtr = [[ModelController alloc] initWithData:self.results];    //覆盖模型控制器
+            CGFloat w = CGRectGetWidth(self.view.bounds) * self.results.count;
+            CGFloat h = CGRectGetHeight(self.scrollView.bounds);
+            [self.scrollView setContentSize:CGSizeMake(w, h)];
+            [self.typesView reloadData];
+            //选中第一个 回滚到初始位置
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            [self.typesView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+        });
     }];
 }
 
@@ -152,9 +147,8 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
  @param href 数据子路径
  */
 -(void) loadNextPageWithHref:(NSString*) href{
-    NSURLRequest *request = [RequestFactory.new createRequestWithHref:(NSString *)href];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+    NSURLRequest *request = [self createRequestWithHref:href];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (json != NULL) {
             NSArray<NSDictionary<NSString*,ResponseRoot*>*> *temp = [self serializationJSON:json];
             //返回的数据  查找对应的对象(通过Key), 添加到对象中

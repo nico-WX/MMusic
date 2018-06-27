@@ -37,10 +37,10 @@
     // Do any additional setup after loading the view.
 
     //由于可能的类型只有: playlists, albums, songs, and music-videos.  生成4个对应的视图控制器
-    _albumsVC       = [[ChartsViewController alloc] initWithChartsType:ChartsAlbumsType];
-    _playlistsVC    = [[ChartsViewController alloc] initWithChartsType:ChartsPlaylistsType];
-    _musicVideosVC  = [[ChartsViewController alloc] initWithChartsType:ChartsMusicVideosType];
-    _songsVC        = [[ChartsViewController alloc] initWithChartsType:ChartsSongsType];
+    _albumsVC       = [[ChartsViewController alloc] initWithChartsType:ChartsAlbums];
+    _playlistsVC    = [[ChartsViewController alloc] initWithChartsType:ChartsPlaylists];
+    _musicVideosVC  = [[ChartsViewController alloc] initWithChartsType:ChartsMusicVideos];
+    _songsVC        = [[ChartsViewController alloc] initWithChartsType:ChartsSongs];
     //分页列表
     _pageList = @[_albumsVC,_playlistsVC,_musicVideosVC,_songsVC];
 

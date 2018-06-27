@@ -21,6 +21,7 @@
 #import "ChartsSectionView.h"
 
 //model and tool
+#import "MusicKit.h"
 #import "Chart.h"
 #import "Resource.h"
 #import "Album.h"
@@ -31,8 +32,6 @@
 
 @interface ChartsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,MPSystemMusicPlayerController,UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic, assign) ChartsType type;
-@property(nonatomic, strong) NSURLRequest *request;
-
 //集合视图(展示albums, playlists, musicvideos 排行榜)
 @property(nonatomic, strong) UICollectionView *collectionView;
 //表视图(展示songs 排行榜)
@@ -61,7 +60,7 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 #pragma mark - init
 -(instancetype)initWithChartsType:(ChartsType)type{
     if (self = [super init]) {
-        _request = [[RequestFactory new] fetchChartsFromType:type];
+       // _request = //[[RequestFactory new] fetchChartsFromType:type];
         _type = type;
     }
     return self;
@@ -74,13 +73,29 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
     self.view.backgroundColor = UIColor.whiteColor;
 
     //添加不同的 subview
-    if (self.type == ChartsSongsType) {
+    if (self.type == ChartsSongs) {
         [self.view addSubview:self.tableView];
     }else{
         [self.view addSubview:self.collectionView];
     }
 
-    [self requestDataFromRequest:self.request];
+    [MusicKit.new.api chartsByType:self.type callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        if (json) {
+            self.results = [self serializationJSON:json];
+            //刷新
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.type == ChartsSongs) {
+                    [self.tableView reloadData];
+                }else{
+                    [self.collectionView reloadData];
+                    [self.collectionView.mj_header endRefreshing];
+                }
+            });
+        }else{
+            //MV 无排行内容  用香港的
+            [self requestHongKongMVData];
+        }
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -96,7 +111,7 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
     CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);
     CGFloat tabH = 0.0f;
     UIEdgeInsets padding = UIEdgeInsetsMake(y+spacing, spacing, tabH, spacing);
-    if (self.type == ChartsSongsType) {
+    if (self.type == ChartsSongs) {
         [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.mas_equalTo(superview).insets(padding);
         }];
@@ -127,7 +142,7 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
     Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
     [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
 
-    if (self.type == ChartsMusicVideosType) {
+    if (self.type == ChartsMusicVideos) {
         cell.artistLabel.text = [resource.attributes valueForKey:@"artistName"];
     }
 
@@ -153,21 +168,21 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 #pragma mark - UICollectionView Delegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     switch (self.type) {
-        case ChartsAlbumsType:
+        case ChartsAlbums:
             [self showAlbumsOrPlaylistsChartsDetailFromIndexPath:indexPath];
             break;
-        case ChartsPlaylistsType:
+        case ChartsPlaylists:
             [self showAlbumsOrPlaylistsChartsDetailFromIndexPath:indexPath];
             break;
             //MV 排行榜 选中跳转应用播放
-        case ChartsMusicVideosType:{
+        case ChartsMusicVideos:{
             MPMusicPlayerPlayParametersQueueDescriptor *queue;
             queue = [self playParametersQueueFromParams:self.playParametersList startAtIndexPath:indexPath];
             [self openToPlayQueueDescriptor:queue];
             //[self openToPlayQueueDescriptor:[self openToPlayMusicVideosAtIndexPath:indexPath]];
         }
             break;
-        case ChartsSongsType:
+        case ChartsSongs:
             break;
 
 //            //歌曲排行榜, 选中直接播放
@@ -218,14 +233,14 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 
     //不同的cell 返回不同的 size
     switch (self.type) {
-        case ChartsAlbumsType:
-        case ChartsPlaylistsType:
+        case ChartsAlbums:
+        case ChartsPlaylists:
              w = (CGRectGetWidth(collectionView.bounds) - spacing*2)/2;
              h = w+28; //28 为cell标题的高度
             return CGSizeMake(w, h);
             break;
 
-        case ChartsMusicVideosType:
+        case ChartsMusicVideos:
             w = CGRectGetWidth(collectionView.bounds);
             h = w*0.75;
             return CGSizeMake(w, h);
@@ -259,24 +274,22 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 
 #pragma mark - 数据请求 和解析
 -(void)requestDataFromRequest:(NSURLRequest*) request{
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (!error && data) {
-            NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
-            if (json) {
-                self.results = [self serializationJSON:json];
-                //刷新
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (self.type == ChartsSongsType) {
-                        [self.tableView reloadData];
-                    }else{
-                        [self.collectionView reloadData];
-                        [self.collectionView.mj_header endRefreshing];
-                    }
-                });
-            }else{
-                //MV 无排行内容  用香港的
-                [self requestHongKongMVData];
-            }
+
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        if (json) {
+            self.results = [self serializationJSON:json];
+            //刷新
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.type == ChartsSongs) {
+                    [self.tableView reloadData];
+                }else{
+                    [self.collectionView reloadData];
+                    [self.collectionView.mj_header endRefreshing];
+                }
+            });
+        }else{
+            //MV 无排行内容  用香港的
+            [self requestHongKongMVData];
         }
     }];
 }
@@ -285,8 +298,7 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 - (void) requestHongKongMVData{
     NSString *path = @"https://api.music.apple.com/v1/catalog/hk/charts?types=music-videos";
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (json) {
             self.results = [self serializationJSON:json];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -300,9 +312,8 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 /**加载下一页数据*/
 -(void) loadNextPage:(NSString*) nextHref{
     if (nextHref != NULL) {
-        NSURLRequest *request = [[RequestFactory new] createRequestWithHref:nextHref];
-        [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            NSDictionary *json =  [self serializationDataWithResponse:response data:data error:error];
+        NSURLRequest *request = [self createRequestWithHref:nextHref];
+        [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
             NSArray<Chart*> *temp = [self serializationJSON:json];
 
             //添加新的数据
@@ -364,12 +375,12 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 
         //注册cell
         switch (self.type) {
-            case ChartsAlbumsType:
-            case ChartsPlaylistsType:
+            case ChartsAlbums:
+            case ChartsPlaylists:
                 [_collectionView registerClass:ResourceCollectionViewCell.class forCellWithReuseIdentifier:cellId];
                 break;
 
-            case ChartsMusicVideosType:
+            case ChartsMusicVideos:
                 [_collectionView registerClass:MusicVideosCollectionCell.class forCellWithReuseIdentifier:cellId];
                 break;
 
@@ -391,7 +402,23 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
         //下拉刷新
         _collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             self.results = nil;
-            [weakSelf requestDataFromRequest:weakSelf.request];
+            [MusicKit.new.api chartsByType:self.type callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+                if (json) {
+                    self.results = [self serializationJSON:json];
+                    //刷新
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (self.type == ChartsSongs) {
+                            [self.tableView reloadData];
+                        }else{
+                            [self.collectionView reloadData];
+                            [self.collectionView.mj_header endRefreshing];
+                        }
+                    });
+                }else{
+                    //MV 无排行内容  用香港的
+                    [self requestHongKongMVData];
+                }
+            }];
         }];
 
     }

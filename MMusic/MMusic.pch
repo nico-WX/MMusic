@@ -20,6 +20,7 @@
 #import "NSString+Hash.h"
 #import "NSObject+Tool.h"
 #import "UIButton+BlockButton.h"
+#import "MusicKit.h"
 
 
 

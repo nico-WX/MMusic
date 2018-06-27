@@ -75,6 +75,9 @@ typedef NS_ENUM(NSUInteger, CRating){
 };
 
 
+
+typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
+
 @interface Library : NSObject
 
 /**
@@ -84,7 +87,7 @@ typedef NS_ENUM(NSUInteger, CRating){
  @param library 库资源类型
  @param handle  数据回调
  */
--(void)resource:(NSArray<NSString*>*)ids byType:(CLibrary)library callBack:(void(^)(NSDictionary*json)) handle;
+-(void)resource:(NSArray<NSString*>*)ids byType:(CLibrary)library callBack:(CallBack)handle;
 
 /**
  获取资源周边相关的资源
@@ -94,7 +97,7 @@ typedef NS_ENUM(NSUInteger, CRating){
  @param name        周边相关名称(如songs 的artistis 等)
  @param handle      数据回调
  */
--(void)relationship:(NSString*)identifier forType:(CLibrary)library byName:(NSString*)name callBacl:(void(^)(NSDictionary*json)) handle;
+-(void)relationship:(NSString*)identifier forType:(CLibrary)library byName:(NSString*)name callBacl:(CallBack) handle;
 
 /**
  搜索云音乐库
@@ -103,43 +106,44 @@ typedef NS_ENUM(NSUInteger, CRating){
  @param library 搜索音乐库资源类型
  @param handle  数据回调
  */
--(void)searchForTerm:(NSString*)term byType:(SLibrary)library callBack:(void(^)(NSDictionary*json))handle;
+-(void)searchForTerm:(NSString*)term byType:(SLibrary)library callBack:(CallBack)handle;
 
 /**
  获取重复播放高的内容
 
  @param handle 数据回调
  */
--(void)heavyRotationContentInCallBack:(void(^)(NSDictionary*json))handle;
+-(void)heavyRotationContentInCallBack:(CallBack)handle;
 
 /**
  最近播放的资源
 
  @param handle 数据回调
  */
--(void)recentlyPlayedInCallBack:(void(^)(NSDictionary*json))handle;
+-(void)recentlyPlayedInCallBack:(CallBack)handle;
 
 /**
  最近播放的无线电台
 
  @param handle 数据回调
  */
--(void)recentStationsInCallBack:(void(^)(NSDictionary*json))handle;
+-(void)recentStationsInCallBack:(CallBack)handle;
 
 /**
  最近添加到音乐库的资源
 
  @param handle 数据回调
  */
--(void)recentlyAddedToLibraryInCallBack:(void(^)(NSDictionary*json))handle;
+-(void)recentlyAddedToLibraryInCallBack:(CallBack)handle;
 
 /**
  添加指定的资源到音乐库
 
  @param ids 资源Ids
  @param type 资源类型
+ @param handle 处理结果
  */
--(void)addResourceToLibraryForIdentifiers:(NSArray<NSString*>*)ids byType:(AddType) type;
+-(void)addResourceToLibraryForIdentifiers:(NSArray<NSString*>*)ids byType:(AddType) type callBack:(CallBack)handle;
 
 
 /**
@@ -147,18 +151,27 @@ typedef NS_ENUM(NSUInteger, CRating){
 
  @param json 请求体字典
  */
--(void)createNewLibraryPlaylistsForJsonPlayload:(NSDictionary*)json callBack:(void(^)(NSDictionary*json))handle;
+-(void)createNewLibraryPlaylistsForJsonPlayload:(NSDictionary*)json callBack:(CallBack)handle;
+
+
+///**
+// 添加歌曲到个人播放列表
+//
+// @param identifier 播放列表ID
+// @param json 歌曲json
+// @param handle 处理结果
+// */
+//-(void)addTracksToLibraryPlaylists:(NSString*)identifier playload:(NSDictionary*)json callBack:(CallBack)handle;
 
 
 /**
  添加歌曲到个人播放列表
 
- @param identifier 播放列表ID
- @param json 歌曲json
+ @param identifier 个人播放列表id
+ @param tracks song 播放参数列表
+ @param handle 处理结果
  */
--(void)addTracksToLibraryPlaylists:(NSString*)identifier playload:(NSDictionary*)json;
-
-
+-(void)addTracksToLibraryPlaylists:(NSString *)identifier tracks:(NSArray<NSDictionary*>*)tracks callBack:(CallBack)handle;
 
 /**
  获取目录Rating
@@ -167,8 +180,7 @@ typedef NS_ENUM(NSUInteger, CRating){
  @param type 资源类型
  @param handle 数据回调
  */
--(void)getRating:(NSArray<NSString*>*)ids byType:(CRating)type callBack:(void(^)(NSDictionary*json))handle;
-
+-(void)getRating:(NSArray<NSString*>*)ids byType:(CRating)type callBack:(CallBack)handle;
 
 
 /**
@@ -179,7 +191,7 @@ typedef NS_ENUM(NSUInteger, CRating){
  @param value 传入 1或者-1
  @param handle 数据回调
  */
--(void)addRating:(NSString*)identifier byType:(CRating)type value:(int)value callBack:(void(^)(NSDictionary*json))handle;
+-(void)addRating:(NSString*)identifier byType:(CRating)type value:(int)value callBack:(CallBack)handle;
 
 
 /**
@@ -187,14 +199,15 @@ typedef NS_ENUM(NSUInteger, CRating){
 
  @param identifier 要删除的资源id
  @param type 资源类型
+ @param handle 处理结果
  */
--(void)deleteRating:(NSString*)identifier byType:(CRating)type;
+-(void)deleteRating:(NSString*)identifier byType:(CRating)type callBack:(CallBack)handle;
 
 /**
  获取默认推荐
 
  @param handle 数据回调
  */
--(void)defaultRecommendationsInCallBack:(void(^)(NSDictionary*json))handle;
+-(void)defaultRecommendationsInCallBack:(CallBack)handle;
 
 @end

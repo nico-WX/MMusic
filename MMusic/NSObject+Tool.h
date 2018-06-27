@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "PersonalizedRequestFactory.h"
 
 @class Album;
 @class Artist;
@@ -25,6 +24,13 @@
 
 @interface NSObject (Tool)
 
+/**
+ 通过子路径创建请求体
+
+ @param href 子路径
+ @return 请求体
+ */
+- (NSURLRequest*)createRequestWithHref:(NSString*) href;
 
 /**
  通过完整的URL路径 生成请求体 并设置请求头
@@ -63,7 +69,7 @@
  @param request 请求对象
  @param handler 返回数据
  */
--(void)dataTaskWithRequest:(NSURLRequest*_Nonnull) request completionHandler:(void(^_Nonnull)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler;
+//-(void)dataTaskWithRequest:(NSURLRequest*_Nonnull) request completionHandler:(void(^_Nonnull)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler;
 
 
 
@@ -73,7 +79,7 @@
  @param request 请求体
  @param block 回调
  */
--(void)datataskWithRequest:(NSURLRequest*)request completionHandler:(void(^)(NSDictionary*json))block;
+-(void)dataTaskWithRequest:(NSURLRequest*)request handler:(void(^)(NSDictionary*json,NSHTTPURLResponse*response))block;
 
 /**
  替换ImageURL 中的Image大小参数 默认屏幕的缩放大小

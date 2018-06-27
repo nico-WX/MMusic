@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RequestFactory.h"
+#import "MusicKit.h"
+
 /**通过不同的排行类型, 实例视图控制器*/
 @interface ChartsViewController : UIViewController
 

@@ -14,16 +14,13 @@
 #import "NSObject+Tool.h"
 #import "Artwork.h"
 #import "Song.h"
-#import "PersonalizedRequestFactory.h"
-#import "RequestFactory.h"
 
 #import "DBTool.h"
 #import "TracksModel.h"
 #import "ArtistsModel.h"
 
 @interface PlayerViewController ()
-/**个人 请求*/
-@property(nonatomic, strong) PersonalizedRequestFactory *factory;
+
 /**播放器UI*/
 @property(nonatomic, strong) PlayerView *playerView;
 
@@ -243,9 +240,7 @@ static PlayerViewController *_instance;
 
         if (song.artistName) {
             //获取艺人 ID  写入数据库, 用来创建艺人列表
-            NSURLRequest *request = [[RequestFactory new] createSearchWithText:song.artistName];
-            [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+            [MusicKit.new.api searchForTerm:song.artistName callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
                 json = [[json valueForKeyPath:@"results.artists.data"] lastObject];
                 artist.identifier = [json valueForKey:@"id"];
                 [DBTool addArtists:artist];
@@ -257,28 +252,18 @@ static PlayerViewController *_instance;
 /**获取歌曲rating 状态, 并设置 开关状态*/
 -(void)heartFromSongIdentifier:(NSString*) identifier{
     if (identifier) {
-        NSURLRequest *request = [[PersonalizedRequestFactory new] managerCatalogAndLibraryRatingsWithOperatin:RatingsGetOperation
-                                                                                                resourcesType:ResourcesPersonalSongType
-                                                                                                       andIds:@[identifier,]];
-
-        [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            if (!error && data ) {
-                NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-                NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
-                BOOL love = (json && res.statusCode==200) ? YES : NO;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.playerView.heartIcon setOn:love animated:YES];
-                });
-            }
+        [MusicKit.new.api.library getRating:@[identifier,] byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+            BOOL love = (json && response.statusCode==200) ? YES : NO;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.playerView.heartIcon setOn:love animated:YES];
+            });
         }];
     }
 }
 
 //通过音乐 id 获取song 对象;
 -(void)songFromIdentifier:(NSString*) identifier{
-    NSURLRequest *request = [[RequestFactory new] fetchResourceFromType:ResourceSongsType andIds:@[identifier,]];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+    [MusicKit.new.api resources:@[identifier,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (json) {
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                 [(NSArray*)obj enumerateObjectsUsingBlock:^(id  _Nonnull songResource, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -298,13 +283,6 @@ static PlayerViewController *_instance;
 }
 
 #pragma mark - getter
-
--(PersonalizedRequestFactory *)factory{
-    if (!_factory) {
-        _factory = [PersonalizedRequestFactory new];
-    }
-    return _factory;
-}
 
 -(MPMusicPlayerController *)playerController{
     if (!_playerController) {
@@ -438,16 +416,8 @@ static PlayerViewController *_instance;
     NSString *identifier = self.playerController.nowPlayingItem.playbackStoreID; //[self.nowPlaySong.playParams objectForKey:@"id"];
     // 查询当前rating状态(不是基于当前按钮状态)  --> 操作
 
-    NSURLRequest *getRating = [self.factory managerCatalogAndLibraryRatingsWithOperatin:RatingsGetOperation
-                                                                     resourcesType:ResourcesPersonalSongType
-                                                                            andIds:@[identifier,]];
-
-    [self dataTaskWithRequest:getRating completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-
-        NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-        //状态码200 为有Rating   非200为没Rating
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
-        if (json && res.statusCode==200) {
+    [MusicKit.new.api.library getRating:@[identifier,] byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        if (json && response.statusCode==200) {
             //当前为喜欢状态
             //取消喜欢 <DELETE>
             [self deleteRatingForSongId:identifier];
@@ -460,13 +430,9 @@ static PlayerViewController *_instance;
 }
 
 -(void) deleteRatingForSongId:(NSString*)identifier{
-    NSURLRequest *request = [self.factory managerCatalogAndLibraryRatingsWithOperatin:RatingsDeleteOperation
-                                                                   resourcesType:ResourcesPersonalSongType
-                                                                          andIds:@[identifier,]];
 
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-        if (!error && res.statusCode/10 == 20) {
+    [MusicKit.new.api.library deleteRating:identifier byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        if (response.statusCode/10 == 20) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playerView.heartIcon setOn:NO animated:YES];
             });
@@ -484,19 +450,24 @@ static PlayerViewController *_instance;
 -(void) addRatingForSongId:(NSString*)song{
 
     //添加rating
-    NSURLRequest *request = [self.factory managerCatalogAndLibraryRatingsWithOperatin:RatingsAddOperation
-                                                                        resourcesType:ResourcesPersonalSongType
-                                                                               andIds:@[song,]];
-
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-        if (!error && res.statusCode/10==20) {
+    [MusicKit.new.api.library addRating:song byType:CRatingSongs value:1 callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        if (response.statusCode/10==20) {
 
             //请求Rating 的默认库播放列表 identifier,
-            [self.factory fetchIdentiferForSearchLibraryType:SearchLibraryPlaylistsType name:@"Rating" usingBlock:^(NSString *identifier) {
+            [MusicKit.new.api.library searchForTerm:@"Rating" byType:SLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
                 NSDictionary *track = @{@"id":song,@"type":@"songs"};
-                [self.factory addTrackToPlaylists:identifier tracks:@[track,]];
+                NSArray *list = [json valueForKeyPath:@"results.library-playlists.data"];
+                NSString *identifier = [list.firstObject valueForKey:@"id"];
+
+                [MusicKit.new.api.library addTracksToLibraryPlaylists:identifier tracks:@[track,] callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+                    Log(@"add track code =%ld",response.statusCode);
+                }];
+
+//                [MusicKit.new.api.library addTracksToLibraryPlaylists:identifier playload:track callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+//
+//                }];
             }];
+
             //更新ui
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playerView.heartIcon setOn:YES animated:YES];

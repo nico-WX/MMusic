@@ -12,7 +12,6 @@
 
 #import "NSObject+Tool.h"
 #import "AuthorizationManager.h"
-#import "PersonalizedRequestFactory.h"
 
 #import "Album.h"
 #import "Artist.h"
@@ -30,21 +29,24 @@ extern NSString *developerTokenExpireNotification;
 extern NSString *userTokenIssueNotification;
 @implementation NSObject (Tool)
 
+-(NSURLRequest *)createRequestWithHref:(NSString *)href{
+    NSString *path = @"https://api.music.apple.com";
+    path = [path stringByAppendingPathComponent:href];
+    return [self createRequestWithURLString:path setupUserToken:NO];
+}
+
 //统一解析响应体,处理异常等.
 -(NSDictionary *)serializationDataWithResponse:(NSURLResponse *)response data:(NSData *)data error:(NSError *)error{
 
-    //NSSearchPathForDirectoriesInDomains(NSCachesDirectory, <#NSSearchPathDomainMask domainMask#>, <#BOOL expandTilde#>)
-
-
     if (error) Log(@"Location Error:%@",error);
-    NSDictionary *dict;
+
+    NSDictionary *json;
     NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
-    Log(@"code=%ld",res.statusCode);
     switch (res.statusCode) {
         case 200:
 
             if (data) {
-                dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+                json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
                 if (error) Log(@"Serialization Error:%@",error);
             }
             break;
@@ -61,11 +63,11 @@ extern NSString *userTokenIssueNotification;
             break;
 
         default:
-            [self showHUDToMainWindowFromText:[NSString stringWithFormat:@"path:%@ code =%ld",res.URL.lastPathComponent,res.statusCode]];
+            //[self showHUDToMainWindowFromText:[NSString stringWithFormat:@"path:%@ code =%ld",res.URL.lastPathComponent,res.statusCode]];
              //Log(@"response info :%@",res);
             break;
     }
-    return dict;
+    return json;
 }
 
 //封装发起任务请求操作,通过block 回调返回数据.
@@ -74,11 +76,11 @@ extern NSString *userTokenIssueNotification;
         if (handler) handler(data,response,error);
     }] resume];
 }
--(void)datataskWithRequest:(NSURLRequest*)request completionHandler:(void (^)(NSDictionary *))block{
+-(void)dataTaskWithRequest:(NSURLRequest*)request handler:(void (^)(NSDictionary *,NSHTTPURLResponse*))block{
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
         if (block) {
-            block(json);
+            block(json,(NSHTTPURLResponse*)response);
         }
     }] resume];
 }
@@ -187,7 +189,9 @@ extern NSString *userTokenIssueNotification;
             [imageView sd_setImageWithURL:url
                                 completed:^(UIImage * _Nullable image, NSError * _Nullable error,
                                             SDImageCacheType cacheType, NSURL * _Nullable imageURL){
+                                    [imageView setNeedsDisplay];
                 if(cache == YES) {
+
                     //判断目标文件夹是否存在
                     NSFileManager *fm = [NSFileManager defaultManager];
                     BOOL isDir = NO;

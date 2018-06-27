@@ -30,8 +30,7 @@
     return self;
 }
 
-
--(void)resources:(NSArray<NSString *> *)ids byType:(Catalog)catalog callBack:(void (^)(NSDictionary *))handle{
+-(void)resources:(NSArray<NSString *> *)ids byType:(Catalog)catalog callBack:(CallBack)handle{
     NSString *subPath = [self subPathForType:catalog];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
     if (ids.count == 1) {
@@ -43,28 +42,28 @@
         }
     }
 
-
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self datataskWithRequest:request completionHandler:^(NSDictionary *json) {
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (handle) {
-            handle(json);
+            handle(json,response);
         }
     }];
 }
--(void)relationship:(NSString *)identifier byType:(Catalog)catalog forName:(NSString *)name callBack:(void (^)(NSDictionary *))handle{
+
+-(void)relationship:(NSString *)identifier byType:(Catalog)catalog forName:(NSString *)name callBack:(CallBack)handle{
     NSString *subPath = [self subPathForType:catalog];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
     path = [path stringByAppendingPathComponent:identifier];
     path = [path stringByAppendingPathComponent:name];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self datataskWithRequest:request completionHandler:^(NSDictionary *json) {
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
         if (handle) {
-            handle(json);
+            handle(json,response);
         }
     }];
 }
--(void)musicVideosByISRC:(NSArray<NSString *> *)ISRCs callBack:(void (^)(NSDictionary *))handle{
+-(void)musicVideosByISRC:(NSArray<NSString *> *)ISRCs callBack:(CallBack)handle{
     NSString *subPath = [self subPathForType:CatalogMusicVideos];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
     path = [path stringByAppendingString:@"?filter[isrc]="];
@@ -73,13 +72,13 @@
     }
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self datataskWithRequest:request completionHandler:^(NSDictionary *json) {
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
         if (handle) {
-            handle(json);
+            handle(json,response);
         }
     }];
 }
--(void)songsByISRC:(NSArray<NSString *> *)ISRCs callBack:(void (^)(NSDictionary *))handle{
+-(void)songsByISRC:(NSArray<NSString *> *)ISRCs callBack:(CallBack)handle{
     NSString *subPath = [self subPathForType:CatalogSongs];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
     path = [path stringByAppendingString:@"?filter[isrc]="];
@@ -88,14 +87,14 @@
     }
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self datataskWithRequest:request completionHandler:^(NSDictionary *json) {
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (handle) {
-            handle(json);
+            handle(json,response);
         }
     }];
 }
 
--(void)chartsByType:(ChartsType)type callBack:(void (^)(NSDictionary *))handle{
+-(void)chartsByType:(ChartsType)type callBack:(CallBack)handle{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"charts?types="];
     switch (type) {
         case ChartsAlbums:
@@ -113,36 +112,35 @@
     }
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self datataskWithRequest:request completionHandler:^(NSDictionary *json) {
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
         if (handle) {
-            handle(json);
+            handle(json,response);
         }
     }];
 }
 
--(void)searchForTerm:(NSString *)term callBack:(void (^)(NSDictionary *))handle{
+-(void)searchForTerm:(NSString *)term callBack:(CallBack)handle{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search?term="];
     path = [path stringByAppendingString:term];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self datataskWithRequest:request completionHandler:^(NSDictionary *json) {
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
         if (handle) {
-            handle(json);
+            handle(json,response);
         }
     }];
 }
--(void)searchHintsForTerm:(NSString *)term callBack:(void (^)(NSDictionary *))handle{
+-(void)searchHintsForTerm:(NSString *)term callBack:(CallBack)handle{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search"];
     path = [path stringByAppendingPathComponent:@"hints?term="];
     path = [path stringByAppendingString:term];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self datataskWithRequest:request completionHandler:^(NSDictionary *json) {
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
         if (handle) {
-            handle(json);
+            handle(json,response);
         }
     }];
-
 }
 
 #pragma mark - helper

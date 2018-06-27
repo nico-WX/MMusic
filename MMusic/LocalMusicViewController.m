@@ -9,9 +9,12 @@
 #import "LocalMusicViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import <StoreKit/StoreKit.h>
+#import <Masonry.h>
 
-@interface LocalMusicViewController ()
+@interface LocalMusicViewController ()<UITableViewDelegate, UITableViewDataSource>
+@property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) NSArray<MPMediaItem*>  *items;
+@property(nonatomic, strong) NSArray<MPMediaQuerySection*> *itemSection;
 @property(nonatomic, strong) MPMediaQuery  *query;
 @property(nonatomic, strong) MPMediaItem  *nowPlayerItem;
 
@@ -22,17 +25,31 @@ static NSString *reuseID = @"localMusicCellIdentifier";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setTitle:@"本地音乐"];
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    [self.tableView registerClass:UITableViewCell.class forCellReuseIdentifier:reuseID];
+    [self setTitle:@"本地歌曲"];
+  //  self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [self.view setBackgroundColor:UIColor.whiteColor];
+    [self.view addSubview:self.tableView];
 
     //读取本地音乐数据
     [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
         if (status == SKCloudServiceAuthorizationStatusAuthorized) {
+
+//            self.itemSection = [MPMediaQuery new].itemSections;
+//            for (MPMediaQuerySection *section in self.itemSection) {
+//                MPMediaQuery *query = [MPMediaQuery new];
+//                MPMediaPropertyPredicate *pre = [MPMediaPropertyPredicate predicateWithValue:section.title forProperty:@"title" comparisonType:MPMediaPredicateComparisonContains];
+//                [query addFilterPredicate:pre];
+//
+//                NSArray *temp = [query items];
+//
+//                for (MPMediaItem *item in temp) {
+//                    Log(@"title =%@",item.title);
+//                }
+//
+//                NSString *name = @"sfasdfas";
+//            }
+
             self.query = [MPMediaQuery songsQuery];
             self.items = [self.query items];
 
@@ -41,11 +58,27 @@ static NSString *reuseID = @"localMusicCellIdentifier";
         }
     }];
 
+    //布局
+    UIView *superview = self.view;
+    typeof(self) weakSelf = self;
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(superview.mas_top).offset(CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame));
+        make.left.mas_equalTo(superview.mas_left);
+        make.right.mas_equalTo(superview.mas_right);
+        CGFloat bottomOffset = CGRectGetHeight(weakSelf.tabBarController.tabBar.frame);
+        make.bottom.mas_equalTo(superview.mas_bottom).offset(-bottomOffset);
+    }];
+
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+
 }
 
 #pragma mark - Table view data source
@@ -58,15 +91,26 @@ static NSString *reuseID = @"localMusicCellIdentifier";
     return self.items.count;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseID forIndexPath:indexPath];
     MPMediaItem *item = [self.items objectAtIndex:indexPath.row];
     [cell.textLabel setText:item.title];
     return cell;
 }
+-(NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView{
+    NSMutableArray *array = [NSMutableArray array];
+    for (MPMediaQuerySection *section in self.itemSection) {
+        [array addObject:section.title];
+    }
+    return array;
+}
+-(NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index{
+    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:YES];
 
-#pragma makr table View delegate
+    return 30;
+}
+
+#pragma mark -table View delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     MPMusicPlayerController *player = [MPMusicPlayerController systemMusicPlayer];
     MPMediaItem *item = [self.items objectAtIndex:indexPath.row];
@@ -81,25 +125,25 @@ static NSString *reuseID = @"localMusicCellIdentifier";
 }
 
 
-/*
-// Override to support conditional editing of the table view.
+
+
+// Overre to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
     return YES;
 }
-*/
 
-/*
+
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }
-*/
+
 
 /*
 // Override to support rearranging the table view.
@@ -126,5 +170,14 @@ static NSString *reuseID = @"localMusicCellIdentifier";
 */
 
 
+-(UITableView *)tableView{
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        [_tableView registerClass:UITableViewCell.class forCellReuseIdentifier:reuseID];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+    }
+    return _tableView;
+}
 
 @end

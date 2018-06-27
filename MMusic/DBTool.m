@@ -79,7 +79,6 @@ static FMDatabase *_db;
         SQL = [NSString stringWithFormat:@"INSERT INTO %@(identifier,name) VALUES('%@','%@');",TRACKS,track.identifier,track.name];
     }
 
-    Log(@"SQL=%@",SQL);
      [_db executeUpdate:SQL];
 }
 
@@ -90,13 +89,13 @@ static FMDatabase *_db;
     FMResultSet *set = [_db  executeQuery:SQLString];
 
     if (!set.next) {
-        Log(@"没有结果  插入数据");
+
         if (artist.identifier && artist.name && artist.image) {
             [self insertData:artist];
             Log(@"插入记录 :%@",artist.name);
         }
     }else{
-        Log(@"有结果");
+        //Log(@"有结果");
     }
 
 }

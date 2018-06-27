@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "Library.h"
 
-
 /**
  目录资源类型
 
@@ -35,7 +34,6 @@ typedef NS_ENUM(NSUInteger, Catalog){
     CatalogAppleCurators
 };
 
-
 /**
  排行榜
 
@@ -51,10 +49,13 @@ typedef NS_ENUM(NSUInteger, ChartsType){
     ChartsMusicVideos
 };
 
+//预定义
+typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
 
 @interface API : NSObject
 /**获取库资源实例*/
 @property(nonatomic, strong) Library *library;
+
 
 /**
  通用获取资源方法
@@ -63,7 +64,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param catalog 资源类型
  @param handle 数据回调
  */
--(void)resources:(NSArray<NSString*>*)ids byType:(Catalog)catalog callBack:(void(^)(NSDictionary* json)) handle;
+-(void)resources:(NSArray<NSString*>*)ids byType:(Catalog)catalog callBack:(CallBack)handle;
 
 /**
  通用获取与id资源有关系的周边资源, 注意:stations 没有周边资源
@@ -73,7 +74,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param name        周边关系(artists,songs 等等)
  @param handle      数据回调
  */
--(void)relationship:(NSString*)identifier byType:(Catalog)catalog forName:(NSString*)name callBack:(void(^)(NSDictionary*json))handle;
+-(void)relationship:(NSString*)identifier byType:(Catalog)catalog forName:(NSString*)name callBack:(CallBack)handle;
 
 /**
  通过ISRC 获取MV
@@ -81,7 +82,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param ISRCs MV编码数组
  @param handle 数据回调
  */
--(void)musicVideosByISRC:(NSArray<NSString*>*)ISRCs callBack:(void(^)(NSDictionary* json))handle;
+-(void)musicVideosByISRC:(NSArray<NSString*>*)ISRCs callBack:(CallBack)handle;
 
 /**
  通过ISRC 获取Song
@@ -89,7 +90,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param ISRCs song编码数组
  @param handle 数据回调
  */
--(void)songsByISRC:(NSArray<NSString*>*)ISRCs callBack:(void(^)(NSDictionary* json))handle;
+-(void)songsByISRC:(NSArray<NSString*>*)ISRCs callBack:(CallBack)handle;
 
 /**
  排行榜数据
@@ -97,10 +98,11 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param type 排行榜类型
  @param handle 数据回调
  */
--(void)chartsByType:(ChartsType)type callBack:(void(^)(NSDictionary*json))handle;
+-(void)chartsByType:(ChartsType)type callBack:(CallBack)handle;
 
 
 //Fetch Genres  未实现
+
 
 
 /**
@@ -109,7 +111,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param term 搜索字段
  @param handle 数据回调
  */
--(void)searchForTerm:(NSString*)term callBack:(void(^)(NSDictionary*json))handle;
+-(void)searchForTerm:(NSString*)term callBack:(CallBack)handle;
 
 
 /**
@@ -118,7 +120,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param term 搜索字段
  @param handle 数据回调
  */
--(void)searchHintsForTerm:(NSString*)term callBack:(void(^)(NSDictionary*json))handle;
+-(void)searchHintsForTerm:(NSString*)term callBack:(CallBack)handle;
 
 
 @end

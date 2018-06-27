@@ -18,10 +18,9 @@
 #import "TodaySectionView.h"
 #import "DetailViewController.h"
 #import "SearchViewController.h"
-
+#import "ResourceCell.h"
 
 #import "MusicKit.h"
-#import "PersonalizedRequestFactory.h"
 #import "Resource.h"
 #import "Artwork.h"
 #import "Playlist.h"
@@ -75,42 +74,16 @@ static NSString *const cellIdentifier = @"todayCell";
     //加载遮罩 (mask)
     [self.collectionView addSubview:self.activityView];
 
-    //test
-    MusicKit *music = [MusicKit new];
-//    [music.api resources:@[@"535790918",] byType:CatalogAlbums callBack:^(NSDictionary *json) {
-//        Log(@"json ===> %@",json);
+//
+//    [[MusicKit new].api resources:@[@"1315876389",] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+//        Log(@"CODE =%ld ,json==%@",response.statusCode, json);
 //    }];
-//    [music.api songsByISRC:@[@"TWK970000106",] callBack:^(NSDictionary *json) {
-//        Log(@"json ===========>>>>> %@",json);
-//    }];
-//    [music.api relationship:@"535791114" byType:CatalogSongs forName:@"albums" callBack:^(NSDictionary *json) {
-//        Log(@"json RElationship ===========>>>>> %@",json);
-//    }];
-//    [music.api.library resource:nil byType:CLibrarySongs callBack:^(NSDictionary *json) {
-//        NSLog(@"json =%@",json);
-//    }];
-//    [music.api.library relationship:@"i.EYVbDrZuVPeVXQ" forType:CLibrarySongs byName:@"albums" callBacl:^(NSDictionary *json) {
-//         NSLog(@"json ==========>%@",json);
+//    [[MusicKit new].api resources:@[@"1315876",] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+//        Log(@"02 CODE =%ld ,json==%@",response.statusCode, json);
 //    }];
 
-//    [music.api searchForTerm:@"周" callBack:^(NSDictionary *json) {
-//        Log(@"json=%@",json);
-//    }];
-//    [music.api.library defaultRecommendationsInCallBack:^(NSDictionary *json) {
-//        Log(@"json=%@",json);
-//    }];
-
-//    [music.api.library resource:nil byType:CLibraryPlaylists callBack:^(NSDictionary *json) {
-//        Log(@"json =%@",json);
-//    }];
-
-
-//    NSDictionary *json = @{@"id":@"1125331139",@"type":@"songs"};
-//    [music.api.library addTracksToLibraryPlaylists:@"p.YJXV7bvIl7JlzV" playload:json];
-//    NSDictionary *dict = @{@"type":@"rating",@"attributes":@{@"value":@1}};
-//    NSDictionary *playload = @{@"type":@"rating",@"attributes":@{@"value":@1}};
-    [music.api.library addRating:@"1333861909" byType:CRatingSongs value:-1 callBack:^(NSDictionary *json){
-        Log(@"json=%@",json);
+    [MusicKit.new.api resources:@[@"300117743",] byType:CatalogArtists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        Log(@"json =%@",json);
     }];
 
 }
@@ -173,38 +146,30 @@ static NSString *const cellIdentifier = @"todayCell";
 
 #pragma  mark - 请求数据 和解析JSON
 - (void)requestData {
-    //个人数据请求
-    PersonalizedRequestFactory *fac = [PersonalizedRequestFactory new];
-    NSURLRequest *request = [fac fetchRecommendationsWithType:FetchDefaultRecommendationsType andIds:@[]];
+    [[MusicKit new].api.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        //数据列表
+        NSMutableArray<NSDictionary<NSString*,NSArray*>*> *array = [NSMutableArray array];
 
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary * json= [self serializationDataWithResponse:response data:data error:error];
-        if (json) {
-
-            //数据列表
-            NSMutableArray<NSDictionary<NSString*,NSArray*>*> *array = [NSMutableArray array];
-
-            for (NSDictionary *subJSON in [json objectForKey:@"data"]) {
-                //获取title
-                NSString *title = [subJSON valueForKeyPath:@"attributes.title.stringForDisplay"];
-                if (!title) {
-                    NSArray *list = [subJSON valueForKeyPath:@"relationships.contents.data"];
-                    title = [list.firstObject valueForKeyPath:@"attributes.curatorName"];
-                }
-
-                NSArray *resources = [self serializationJSON:subJSON];
-                NSDictionary *dict = @{title:resources};
-                [array addObject:dict];
+        for (NSDictionary *subJSON in [json objectForKey:@"data"]) {
+            //获取title
+            NSString *title = [subJSON valueForKeyPath:@"attributes.title.stringForDisplay"];
+            if (!title) {
+                NSArray *list = [subJSON valueForKeyPath:@"relationships.contents.data"];
+                title = [list.firstObject valueForKeyPath:@"attributes.curatorName"];
             }
-            self.allData = array;
-            //刷新UI
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.activityView stopAnimating];
 
-                [self.collectionView reloadData];
-                [self.collectionView.mj_header endRefreshing];
-            });
+            NSArray *resources = [self serializationJSON:subJSON];
+            NSDictionary *dict = @{title:resources};
+            [array addObject:dict];
         }
+        self.allData = array;
+        //刷新UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.activityView stopAnimating];
+
+            [self.collectionView reloadData];
+            [self.collectionView.mj_header endRefreshing];
+        });
     }];
 }
 /**解析JSON 数据*/
@@ -245,15 +210,25 @@ static NSString *const cellIdentifier = @"todayCell";
 
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    ResourceCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-
+//    ResourceCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+//
     NSDictionary<NSString*,NSArray<Resource*>*> *dict = [self.allData objectAtIndex:indexPath.section];
     Resource* resource = [dict.allValues.firstObject objectAtIndex:indexPath.row];
+//
+//    cell.nameLabel.text = [resource.attributes valueForKey:@"name"];
+//    Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
+//    [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
+//
 
-    cell.nameLabel.text = [resource.attributes valueForKey:@"name"];
-    Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
-    [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
-    
+    ResourceCell *cell = (ResourceCell*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    if ([resource.type isEqualToString:@"albums"]) {
+        Album *album = [Album instanceWithResource:resource];
+        cell.album = album;
+    }else{
+        Playlist *playlist = [Playlist instanceWithResource:resource];
+        cell.playlists = playlist;
+    }
+
     return cell;
 }
 
@@ -286,14 +261,14 @@ static NSString *const cellIdentifier = @"todayCell";
     if (!_collectionView) {
         UICollectionViewFlowLayout *layout = UICollectionViewFlowLayout.new;
         layout.scrollDirection =  UICollectionViewScrollDirectionVertical;
-        layout.minimumLineSpacing = miniSpacing;
-        layout.minimumInteritemSpacing = miniSpacing;
 
-        //cell size(提前设置, 请求图片时 需要使用大小参数)
-        CGFloat cellW = CGRectGetWidth(self.view.bounds)-((row+1)*miniSpacing);
-        cellW = cellW/row;                  //单个cell 宽度
-        CGFloat cellH = cellW + 28;         //28 高度标签
-        [layout setItemSize:CGSizeMake(cellW, cellH)];
+        CGFloat cw = CGRectGetWidth(self.view.frame) - 80;
+        CGFloat ch = cw *1.5;
+        [layout setItemSize:CGSizeMake(cw, ch)];
+        [layout setMinimumLineSpacing:20];
+        [layout setMinimumInteritemSpacing:40];
+        [layout setSectionInset:UIEdgeInsetsMake(20, 0, 20, 0)]; //cell 与头尾间距
+        [layout setSectionHeadersPinToVisibleBounds:YES];
 
         //section size
         CGFloat h = 44.0f;
@@ -301,7 +276,8 @@ static NSString *const cellIdentifier = @"todayCell";
         [layout setHeaderReferenceSize:CGSizeMake(w, h)];
 
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
-        [_collectionView registerClass:ResourceCollectionViewCell.class forCellWithReuseIdentifier:cellIdentifier];
+        [_collectionView registerClass:ResourceCell.class forCellWithReuseIdentifier:cellIdentifier];
+        //[_collectionView registerClass:ResourceCollectionViewCell.class forCellWithReuseIdentifier:cellIdentifier];
         //[_collectionView registerClass:AlbumCell.class forCellWithReuseIdentifier:cellIdentifier];
         [_collectionView registerClass:TodaySectionView.class
             forSupplementaryViewOfKind:UICollectionElementKindSectionHeader

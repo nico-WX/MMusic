@@ -11,10 +11,10 @@
 #import "ArtistsViewController.h"
 #import "ArtistsContentViewController.h"
 #import "DetailViewController.h"
-#import "RequestFactory.h"
 #import "Resource.h"
 #import "ResponseRoot.h"
 #import "Artwork.h"
+#import "MusicKit.h"
 
 @interface ArtistsViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>
 
@@ -181,11 +181,8 @@
 
 //请求艺人信息
 -(void) requestFromArtistName:(NSString*) name{
-    NSURLRequest *request = [[RequestFactory new] createSearchWithText:name];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
 
-        json = [json valueForKey:@"results"];
+    [[MusicKit new].api searchForTerm:name callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (json) {
             NSMutableArray<NSDictionary<NSString*,ResponseRoot*>*> *list = [NSMutableArray array];
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
@@ -207,9 +204,9 @@
                 //设置pageView 第一页 (下标0)
                 UIViewController *artistContentVC = [self viewControllerAtIndex:0];
                 [self.pageViewController setViewControllers:@[artistContentVC,]
-                                                    direction:UIPageViewControllerNavigationDirectionForward
-                                                     animated:YES
-                                                   completion:nil];
+                                                  direction:UIPageViewControllerNavigationDirectionForward
+                                                   animated:YES
+                                                 completion:nil];
 
                 //设置分段控制器, 并选出一张图片, 设置到image中
                 for (int i = 0; i < self.results.count; i++) {

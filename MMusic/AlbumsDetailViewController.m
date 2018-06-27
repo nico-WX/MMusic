@@ -17,7 +17,8 @@
 #import "Song.h"
 #import "Artwork.h"
 
-#import "RequestFactory.h"
+#import "MusicKit.h"
+//#import "RequestFactory.h"
 
 @interface AlbumsDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic, strong, readonly) Album    *album;
@@ -90,14 +91,12 @@ static NSString *const cellID = @"cellReuseIDentifier";
 /**请求数据*/
 - (void) requestData{
     NSString *identifier = [self.album.playParams valueForKey:@"id"];
-    NSURLRequest *request = [[RequestFactory new] fetchResourceFromType:ResourceAlbumsType andIds:@[identifier,]];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+
+    [[MusicKit new].api resources:@[identifier,] byType:CatalogAlbums callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         self.songs = [self serializationJSON:json];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
-
     }];
 }
 /**解析返回的JSON 数据*/

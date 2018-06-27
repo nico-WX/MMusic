@@ -19,8 +19,6 @@
 
 #import "CuratorsAndActivitiesViewController.h"
 
-#import "RequestFactory.h"
-
 #import "ResponseRoot.h"
 #import "Resource.h"
 #import "Artwork.h"
@@ -171,10 +169,9 @@ static NSString *const cellID = @"tableCellReuseID";
 #pragma mark - helper
 
 -(void) loadNextPageWithHref:(NSString*) href{
-    NSURLRequest *request = [[RequestFactory new] createRequestWithHref:href];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
+    NSURLRequest *request = [self createRequestWithHref:href];
 
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json objectForKey:@"results"];
         if (json.allKeys.count >0) {
             //枚举当前的 josn

@@ -14,7 +14,7 @@
 #import "ClassifyCell.h"
 
 #import "NSObject+Tool.h"
-#import "RequestFactory.h"
+#import "MusicKit.h"
 
 #import "ResponseRoot.h"
 
@@ -93,11 +93,9 @@ static NSString * const cellID = @"colletionCellReuseId";
 
 #pragma mark - Helper
 -(void) requestDataFromSearchText:(NSString *) searchText{
-    NSURLRequest *request = [[RequestFactory new] createSearchWithText:searchText];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
-        json = [json valueForKey:@"results"];
 
+    [[MusicKit new].api searchForTerm:searchText callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        json = [json valueForKey:@"results"];
         //检查结果返回空结果字典
         if (json.allKeys.count != 0)  {
 

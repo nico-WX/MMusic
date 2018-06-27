@@ -11,7 +11,6 @@
 #import "MyMusicViewController.h"
 #import "LocalMusicViewController.h"
 #import "DetailViewController.h"
-#import "PersonalizedRequestFactory.h"
 
 #import "LibraryPlaylist.h"
 #import "Resource.h"
@@ -45,12 +44,26 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:reuseId];
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addPlaylists)];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+-(void)addPlaylists{
+    UIAlertController *alertCtr = [UIAlertController alertControllerWithTitle:@"新建播放列表" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    [alertCtr addAction:action];
+    
+
+    [alertCtr addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = @"输入播放列表名称";
+    }];
+
+    [self presentViewController:alertCtr animated:YES completion:nil];
 }
 
 #pragma mark - Table view data source
@@ -100,7 +113,7 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
 #pragma mark - Table View Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row == 0 && indexPath.section == 0) {
-        LocalMusicViewController *lmCtr = [[LocalMusicViewController alloc] initWithStyle:UITableViewStylePlain];
+        LocalMusicViewController *lmCtr = [[LocalMusicViewController alloc] init];
         [self.navigationController pushViewController:lmCtr animated:YES];
     }
     if (indexPath.section == 1) {
@@ -112,9 +125,7 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
 
 #pragma mark - 请求所有播放列表
 -(void) requestAllLibraryPlaylist{
-    NSURLRequest *request = [[PersonalizedRequestFactory new] fetchLibraryResourceWithType:LibraryResourcePlaylists fromIds:@[]];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
+    [MusicKit.new.api.library resource:@[] byType:CLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         NSMutableArray<Resource*> *resources = [NSMutableArray array];
         for (NSDictionary *dict in [json valueForKey:@"data"]) {
             [resources addObject:[Resource instanceWithDict:dict]];

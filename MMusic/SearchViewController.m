@@ -9,7 +9,7 @@
 #import <Masonry.h>
 #import "SearchViewController.h"
 #import "ResultsViewController.h"
-#import "RequestFactory.h"
+#import "MusicKit.h"
 
 @interface SearchViewController ()<UISearchBarDelegate,UITableViewDelegate,UITableViewDataSource>
 /**提示视图*/
@@ -89,9 +89,7 @@ static NSString *const cellID = @"cellReuseIdentifier";
     return cell;
 }
 - (void)showHintsFromTerms:(NSString *)term{
-    NSURLRequest *request = [[RequestFactory new] fetchSearchHintsForTerms:term];
-    [self dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *json = [self serializationDataWithResponse:response data:data error:nil];
+    [[MusicKit new].api searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if ([json valueForKeyPath: @"results.terms"]) {
             self->_terms = [json valueForKeyPath:@"results.terms"];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -99,6 +97,7 @@ static NSString *const cellID = @"cellReuseIdentifier";
             });
         }
     }];
+
 }
 
 #pragma mark - UITableView Delegate
