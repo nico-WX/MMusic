@@ -31,6 +31,7 @@ static const CGFloat corner = 8.0f;
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         [self setupSubview];
+        [self setupLayout];
     }
     return self;
 }
@@ -121,12 +122,11 @@ static const CGFloat corner = 8.0f;
 
 }
 
-
-- (void)layoutSubviews{
+-(void)setupLayout{
     UIEdgeInsets padding = UIEdgeInsetsMake(40, 40, 40, 40);
     __weak typeof(self) weakSelf = self;
     //中间层
-    [self.midView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_midView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.mas_top).with.offset(padding.top);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
@@ -134,34 +134,34 @@ static const CGFloat corner = 8.0f;
     }];
 
     //覆盖在中间层上
-    [self.artworkView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_artworkView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(self.midView).insets(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
 
 
     //进度
-    [self.playProgressView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_playProgressView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.artworkView.mas_bottom).offset(20);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
         make.height.mas_equalTo(@44.0f);
     }];
     //song name
-    [self.songNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_songNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.playProgressView.mas_bottom).with.offset(0);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
         make.height.mas_equalTo(@44.0f);
     }];
     //艺人名称
-    [self.artistLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_artistLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.songNameLabel.mas_bottom).with.offset(0);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
         make.height.mas_equalTo(@44.0f);
     }];
     //控制
-    [self.playCtrView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_playCtrView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.artistLabel.mas_bottom).with.offset(padding.top/2);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
@@ -169,12 +169,11 @@ static const CGFloat corner = 8.0f;
     }];
 
     //红心收藏
-    [self.heartIcon mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_heartIcon mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.playCtrView.play.mas_bottom);
         make.centerX.mas_equalTo(weakSelf.playCtrView.play.mas_centerX);
         make.size.mas_equalTo(CGSizeMake(100,100));
     }];
 }
-
 
 @end

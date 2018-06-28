@@ -109,6 +109,9 @@
         case ChartsMusicVideos:
             path = [path stringByAppendingString:@"music-videos"];
             break;
+        case ChartsAll:
+            path = [path stringByAppendingString:@"songs,albums,playlists,music-videos"];
+            break;
     }
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];

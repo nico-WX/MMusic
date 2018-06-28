@@ -28,38 +28,36 @@ NSString * const userTokenUpdatedNotification      = @"userTokenUpdated";
 
 static AuthorizationManager *_instance;
 @implementation AuthorizationManager
+@synthesize developerToken  = _developerToken;
+@synthesize userToken       = _userToken;
+@synthesize storefront      = _storefront;
+
 
 # pragma mark 初始化及单例实现
 -(instancetype)init{
     if (self = [super init]) {
+
         //开发者Token 过期消息 删除旧的developerToken  并请求一个新的
         [[NSNotificationCenter defaultCenter] addObserverForName:developerTokenExpireNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
             //移除过期DeveloperToken
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:developerTokenDefaultsKey];
-            //请求新的developerToken
+
+            //主动请求新的developerToken
             [self requestDeveloperToken];
         }];
 
         //userToken 异常, 可能修改设置或者未订阅服务等
         [[NSNotificationCenter defaultCenter] addObserverForName:userTokenIssueNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:userTokenUserDefaultsKey];
             [self requestUserToken];
         }];
+        //国家区域变化
     }
     return self;
 }
 
--(void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:developerTokenExpireNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:userTokenIssueNotification object:nil];
-}
-
 +(instancetype)shareAuthorizationManager{
-    if (!_instance) {
-        _instance = [[self alloc] init];
-    }
-    return _instance;
+    return [[self alloc] init];
 }
 
 +(instancetype)allocWithZone:(struct _NSZone *)zone{
@@ -96,6 +94,11 @@ static AuthorizationManager *_instance;
     return  MAXFLOAT;
 }
 #endif
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:developerTokenExpireNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:userTokenIssueNotification object:nil];
+}
 
 
 #pragma mark layz

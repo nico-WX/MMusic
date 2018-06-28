@@ -174,7 +174,6 @@ extern NSString *userTokenIssueNotification;
             [hud startAnimating];
             hud.color = UIColor.grayColor;
             [imageView addSubview:hud];
-            //[imageView performSelectorOnMainThread:@selector(addSubview:) withObject:hud waitUntilDone:NO];
 
             //image url
             NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
@@ -191,7 +190,6 @@ extern NSString *userTokenIssueNotification;
                                             SDImageCacheType cacheType, NSURL * _Nullable imageURL){
                                     [imageView setNeedsDisplay];
                 if(cache == YES) {
-
                     //判断目标文件夹是否存在
                     NSFileManager *fm = [NSFileManager defaultManager];
                     BOOL isDir = NO;

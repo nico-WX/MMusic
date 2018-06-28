@@ -46,7 +46,8 @@ typedef NS_ENUM(NSUInteger, ChartsType){
     ChartsAlbums,
     ChartsPlaylists,
     ChartsSongs,
-    ChartsMusicVideos
+    ChartsMusicVideos,
+    ChartsAll
 };
 
 //预定义

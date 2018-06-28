@@ -81,10 +81,10 @@ static NSString *const cellIdentifier = @"todayCell";
 //    [[MusicKit new].api resources:@[@"1315876",] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
 //        Log(@"02 CODE =%ld ,json==%@",response.statusCode, json);
 //    }];
-
-    [MusicKit.new.api resources:@[@"300117743",] byType:CatalogArtists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        Log(@"json =%@",json);
-    }];
+//
+//    [MusicKit.new.api resources:@[@"300117743",] byType:CatalogArtists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+//        Log(@"json =%@",json);
+//    }];
 
 }
 

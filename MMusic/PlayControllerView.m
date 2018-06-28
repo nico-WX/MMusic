@@ -36,11 +36,6 @@
         _play       = [[UIButton alloc] init];
         _next       = [[UIButton alloc] init];
 
-        //按钮 image
-        [_previous setImage:[UIImage imageNamed:@"rewind"] forState:UIControlStateNormal];
-        [_play setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
-        [_next setImage:[UIImage imageNamed:@"forward"] forState:UIControlStateNormal];
-
         //添加辅助层带视图中
         [self addSubview:_preView];
         [self addSubview:_playView];
@@ -88,36 +83,38 @@
         make.right.mas_equalTo(weakSelf.mas_right);
     }];
 
-    //按钮布局
-    CGFloat H = CGRectGetHeight(self.frame);
-    UIView *superview = self.preView;
+
+    CGFloat btnH = CGRectGetHeight(self.frame);
+    CGFloat btnW = btnH;
+    CGSize size = CGSizeMake(btnW, btnH);
+
     [self.previous mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(superview);
-        UIImage *image = [UIImage imageNamed:@"rewind"];
-        CGFloat w = [self aspectRatioWithImage:image] *H;
-        make.size.mas_equalTo(CGSizeMake(w, H));
+        make.size.mas_equalTo(size);
+        make.center.mas_equalTo(weakSelf.preView.center);
     }];
 
-    superview = self.playView;
     [self.play mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(superview);
-        UIImage *image = [UIImage imageNamed:@"play"];
-        CGFloat w = [self aspectRatioWithImage:image] *H ;
-        make.size.mas_equalTo(CGSizeMake(w, H));
+        make.size.mas_equalTo(size);
+        make.center.mas_equalTo(weakSelf.playView.center);
     }];
 
-    superview = self.nextView;
     [self.next mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(superview);
-        CGFloat w = [self aspectRatioWithImage:[UIImage imageNamed:@"forward"]] *H;
-        make.size.mas_equalTo(CGSizeMake(w, H));
+        make.size.mas_equalTo(size);
+        make.center.mas_equalTo(weakSelf.nextView.center);
     }];
 
+
+    //按钮 image
+    [_previous setImage:[UIImage imageNamed:@"rewind"] forState:UIControlStateNormal];
+    [_play setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
+    [_next setImage:[UIImage imageNamed:@"forward"] forState:UIControlStateNormal];
+
+    [_previous setTitleColor:MainColor forState:UIControlStateNormal];
 }
 
-//图片宽高比
--(CGFloat) aspectRatioWithImage:(UIImage*) image{
-    return image.size.width/image.size.height;
-}
+////图片宽高比
+//-(CGFloat) aspectRatioWithImage:(UIImage*) image{
+//    return image.size.width/image.size.height;
+//}
 
 @end

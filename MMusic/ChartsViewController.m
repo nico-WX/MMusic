@@ -21,7 +21,9 @@
 #import "ChartsSectionView.h"
 
 //model and tool
+
 #import "MusicKit.h"
+#import "ResponseRoot.h"
 #import "Chart.h"
 #import "Resource.h"
 #import "Album.h"
@@ -31,7 +33,8 @@
 #import "Artwork.h"
 
 @interface ChartsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,MPSystemMusicPlayerController,UITableViewDelegate,UITableViewDataSource>
-@property(nonatomic, assign) ChartsType type;
+
+
 //集合视图(展示albums, playlists, musicvideos 排行榜)
 @property(nonatomic, strong) UICollectionView *collectionView;
 //表视图(展示songs 排行榜)
@@ -58,10 +61,9 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
 @implementation ChartsViewController
 
 #pragma mark - init
--(instancetype)initWithChartsType:(ChartsType)type{
+-(instancetype)initWithResponseRoot:(ResponseRoot *)root{
     if (self = [super init]) {
-       // _request = //[[RequestFactory new] fetchChartsFromType:type];
-        _type = type;
+        _root = roo;
     }
     return self;
 }
@@ -73,29 +75,13 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
     self.view.backgroundColor = UIColor.whiteColor;
 
     //添加不同的 subview
-    if (self.type == ChartsSongs) {
+
+    Resource *resource = self.root.data.firstObject;
+    if ([resource.type isEqualToString:@"songs"]) {
         [self.view addSubview:self.tableView];
     }else{
         [self.view addSubview:self.collectionView];
     }
-
-    [MusicKit.new.api chartsByType:self.type callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (json) {
-            self.results = [self serializationJSON:json];
-            //刷新
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (self.type == ChartsSongs) {
-                    [self.tableView reloadData];
-                }else{
-                    [self.collectionView reloadData];
-                    [self.collectionView.mj_header endRefreshing];
-                }
-            });
-        }else{
-            //MV 无排行内容  用香港的
-            [self requestHongKongMVData];
-        }
-    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -183,7 +169,9 @@ static NSString *const sectionId = @"colletionSectionReuseIdentifier";
         }
             break;
         case ChartsSongs:
+    
             break;
+
 
 //            //歌曲排行榜, 选中直接播放
 //        case ChartsSongsType:{

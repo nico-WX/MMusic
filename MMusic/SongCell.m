@@ -8,24 +8,27 @@
 
 #import <NAKPlaybackIndicatorView.h>
 #import <Masonry.h>
+
+#import "PlayerViewController.h"
 #import "SongCell.h"
 #import "Song.h"
 
 @interface SongCell()
-@property(nonatomic, readonly) NAKPlaybackIndicatorView *playbackIndicatorView;
-@property(nonatomic, readonly) UILabel *nameLabel;
-@property(nonatomic, readonly) UILabel *artistLabel;
-@property(nonatomic, readonly) UILabel *durationLabel;
+@property(nonatomic, strong) PlayerViewController       *playerVC;
+@property(nonatomic, strong) NAKPlaybackIndicatorView   *playbackIndicatorView;
+@property(nonatomic, strong, readonly) UILabel          *nameLabel;
+@property(nonatomic, strong, readonly) UILabel          *artistLabel;
+@property(nonatomic, strong, readonly) UILabel          *durationLabel;
 @end
 
 @implementation SongCell
 
+
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
 
-        NAKPlaybackIndicatorViewStyle *viewStyle = [NAKPlaybackIndicatorViewStyle iOS10Style];
-        _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:viewStyle];
-        [_playbackIndicatorView setTintColor:MainColor];
+        NAKPlaybackIndicatorViewStyle *style = [NAKPlaybackIndicatorViewStyle iOS10Style];
+        _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
 
         _numberLabel = UILabel.new;
         [_numberLabel setTextAlignment:NSTextAlignmentCenter];
@@ -42,16 +45,23 @@
         [_durationLabel setTextAlignment:NSTextAlignmentCenter];
         [_durationLabel setFont:[UIFont italicSystemFontOfSize:12]];
 
-
         [self.contentView addSubview:_playbackIndicatorView];
         [self.contentView addSubview:_numberLabel];
         [self.contentView addSubview:_nameLabel];
         [self.contentView addSubview:_artistLabel];
         [self.contentView addSubview:_durationLabel];
 
-        [self setNeedsUpdateConstraints];
+        [self setupLayout];
+
+        [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+            [self stateForSong:self.song];
+        }];
+
     }
     return self;
+}
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)prepareForReuse{
@@ -60,11 +70,10 @@
     _nameLabel.text = nil;
     _artistLabel.text = nil;
     _durationLabel.text = nil;
-    self.state = NAKPlaybackIndicatorViewStateStopped;
+    _song = nil;
 }
 
-- (void)setNeedsUpdateConstraints{
-    
+-(void) setupLayout{
     UIEdgeInsets padding = UIEdgeInsetsMake(2, 2, 2, 2);
     NSUInteger timer = 3;
     UIView *superview = self.contentView;
@@ -77,6 +86,7 @@
         CGFloat w = CGRectGetHeight(superview.frame)-(padding.top+padding.bottom);
         make.width.mas_equalTo(w);
     }];
+
     [self.playbackIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(weakSelf.numberLabel).insets(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
@@ -102,29 +112,48 @@
         make.right.mas_equalTo(weakSelf.nameLabel.mas_right);
         make.bottom.mas_equalTo(superview.mas_bottom);
     }];
-
-    [super setNeedsUpdateConstraints];
-
 }
 
 #pragma mark - setter
 -(void)setSong:(Song *)song{
-    _song = song;
+    if (_song != song ) {
+        _song = song;
 
-    //设置歌曲信息
-    self.nameLabel.text = self.song.name;
-    self.artistLabel.text = self.song.artistName;
-    NSTimeInterval duration = self.song.durationInMillis.doubleValue / 1000.0;
-    NSString *durationText = [NSString stringWithFormat:@"%d:%02d",(int32_t)duration/60,(int32_t)duration%60];
-    self.durationLabel.text = durationText;
-}
--(void)setState:(NAKPlaybackIndicatorViewState)state{
-    [self.playbackIndicatorView setState:state];
-    [self.numberLabel setHidden:(state != NAKPlaybackIndicatorViewStateStopped)];
+        //设置歌曲信息
+        self.nameLabel.text = self.song.name;
+        self.artistLabel.text = self.song.artistName;
+        NSTimeInterval duration = self.song.durationInMillis.doubleValue / 1000.0;
+        NSString *durationText = [NSString stringWithFormat:@"%d:%02d",(int32_t)duration/60,(int32_t)duration%60];
+        self.durationLabel.text = durationText;
+        [self stateForSong:_song];
+    }
 }
 
-#pragma mark - getter
--(NAKPlaybackIndicatorViewState)state{
-    return self.playbackIndicatorView.state;
+-(void) stateForSong:(Song*) song{
+    MPMediaItem *item = self.playerVC.playerController.nowPlayingItem;
+    if ([song isEqualToMediaItem:item]) {
+        [self.numberLabel setHidden:YES];
+        switch (self.playerVC.playerController.playbackState) {
+            case MPMusicPlaybackStatePlaying:
+                [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
+                break;
+
+            default:
+                [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
+                break;
+        }
+    }else{
+        [self.numberLabel setHidden:NO];
+        [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
+    }
+
+    [self setNeedsDisplay];
 }
+-(PlayerViewController *)playerVC{
+    if (!_playerVC) {
+        _playerVC = [PlayerViewController sharePlayerViewController];
+    }
+    return _playerVC;
+}
+
 @end

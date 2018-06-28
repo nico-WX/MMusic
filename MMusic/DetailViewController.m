@@ -6,7 +6,6 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 
 //pod /sy
-#import <VBFPopFlatButton.h>
 #import <UIImageView+WebCache.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <MBProgressHUD.h>
@@ -22,10 +21,8 @@
 #import "SongCell.h"
 
 //model & tool
-
 #import "MusicKit.h"
-//#import "RequestFactory.h"
-//#import "PersonalizedRequestFactory.h"
+
 #import "ResponseRoot.h"
 #import "Playlist.h"
 #import "Artwork.h"
@@ -37,11 +34,9 @@
 @interface DetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 /**头视图*/
 @property(nonatomic, strong) DetailHeaderView *header;
-
 //专辑,播放列表等初始数据
 @property(nonatomic, strong) Resource *resource;
-
-//songs 处水花列表数据
+//songs 初始化列表数据
 @property(nonatomic, strong) ResponseRoot *responseRoot;
 
 //播放器视图控制器
@@ -97,6 +92,18 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
             }
         }];
     }
+
+    //播放的item 滚动到中间(或可视范围)
+    [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        for (Song *song in self.songs) {
+            if ([song isEqualToMediaItem:self.playerVC.playerController.nowPlayingItem]) {
+                NSUInteger index = [self.songs indexOfObject:song];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+            }
+        }
+    }];
+
 }
 
 
@@ -109,6 +116,13 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         Artwork *art = [Artwork instanceWithDict:[self.resource.attributes valueForKeyPath:@"artwork"]];
         [self showImageToView:self.header.artworkView withImageURL:art.url cacheToMemory:YES];
     }
+
+    [self.resource .attributes enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([key isEqualToString:@"artwork"]) {
+
+            *stop = YES;
+        }
+    }];
 
     //name
     if ([self.resource.attributes valueForKeyPath:@"name"]) {
@@ -134,15 +148,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 
-    //
-    for (SongCell *cell in [self.tableView visibleCells]) {
-        if (cell.state == NAKPlaybackIndicatorViewStatePlaying) {
-            //从播放器界面返回时, 播放指示器会停留在暂停的状态, (未知BUG)
-            [cell setState:NAKPlaybackIndicatorViewStatePlaying];
-            [cell setSelected:YES animated:YES];
-        }
-    }
-
     UIView *superview = self.view;
     //与父视图大小一致
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -152,6 +157,9 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - UITableViewDataSource
@@ -164,19 +172,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     //song info
     cell.song = [self.songs objectAtIndex:indexPath.row];
     cell.numberLabel.text = [NSString stringWithFormat:@"%02ld",indexPath.row+1];
-    MPMediaItem *nowItem = self.playerVC.playerController.nowPlayingItem;
-
-    //歌曲播放状态
-    if ([cell.song isEqualToMediaItem:nowItem]) {
-        if (self.playerVC.playerController.playbackState == MPMusicPlaybackStatePlaying) {
-            [cell setState:NAKPlaybackIndicatorViewStatePlaying];
-        }else{
-            [cell setState:NAKPlaybackIndicatorViewStatePaused];
-        }
-    }else{
-        [cell setState:NAKPlaybackIndicatorViewStateStopped];
-    }
-
     return cell;
 }
 
@@ -184,18 +179,16 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 #pragma mark - tableView delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //现在播放的项目 和现在选择的项目是同一个, 弹出视图, 不从头播放
-    MPMediaItem *nowItem = self.playerVC.playerController.nowPlayingItem;
-    Song *selectSong = [self.songs objectAtIndex:indexPath.row];
+    MPMediaItem *item = self.playerVC.playerController.nowPlayingItem;
+    Song *song = [self.songs objectAtIndex:indexPath.row];
 
-    if (![selectSong isEqualToMediaItem:nowItem]) {
+    if (![song isEqualToMediaItem:item]) {
         [self.prametersQueue setStartItemPlayParameters:[self.prameters objectAtIndex:indexPath.row]];
         [self.playerVC.playerController setQueueWithDescriptor:self.prametersQueue];
         [self.playerVC.playerController prepareToPlay];
-    }else{
-
     }
+    [self.playerVC showFromViewController:self withSongs:self.songs startItem:song];
 
-    [self.playerVC showFromViewController:self withSongs:self.songs startItem:selectSong];
 }
 
 #pragma mark getter
@@ -204,27 +197,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         _playerVC = PlayerViewController.new;
         //设置 播放队列
         [_playerVC.playerController setQueueWithDescriptor:self.prametersQueue];
-
-        //更新 正在播放项目指示
-        __weak typeof(self) weakSelf = self;
-        _playerVC.nowPlayingItem = ^(MPMediaItem *item) {
-
-            //遍历当前songs 列表, 找到与当前播放的song id相匹配的cell
-            for (Song *song in weakSelf.songs) {
-                NSUInteger row = [weakSelf.songs indexOfObject:song];
-                NSIndexPath *path= [NSIndexPath indexPathForRow:row inSection:0];
-                SongCell *cell = [weakSelf.tableView cellForRowAtIndexPath:path];
-
-                //修改在正在播放的song cell 颜色
-                if ([song isEqualToMediaItem:item]) {
-                    [cell setState:NAKPlaybackIndicatorViewStatePlaying];
-                    [cell setSelected:YES animated:YES];
-                }else{
-                    [cell setState:NAKPlaybackIndicatorViewStateStopped];
-                    [cell setSelected:NO animated:YES];
-                }
-            }
-        };
     }
     return _playerVC;
 }
