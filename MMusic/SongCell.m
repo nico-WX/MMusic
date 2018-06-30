@@ -125,7 +125,7 @@
         NSTimeInterval duration = self.song.durationInMillis.doubleValue / 1000.0;
         NSString *durationText = [NSString stringWithFormat:@"%d:%02d",(int32_t)duration/60,(int32_t)duration%60];
         self.durationLabel.text = durationText;
-        [self stateForSong:_song];
+        [self stateForSong:song];
     }
 }
 
@@ -146,7 +146,6 @@
         [self.numberLabel setHidden:NO];
         [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
     }
-
     [self setNeedsDisplay];
 }
 -(PlayerViewController *)playerVC{

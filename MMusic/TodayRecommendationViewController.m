@@ -13,11 +13,9 @@
 
 #import "TodayRecommendationViewController.h"
 #import "PlayerViewController.h"
-#import "ResourceCollectionViewCell.h"
-#import "AlbumsCollectionCell.h"
-#import "TodaySectionView.h"
 #import "DetailViewController.h"
 #import "SearchViewController.h"
+#import "TodaySectionView.h"
 #import "ResourceCell.h"
 
 #import "MusicKit.h"
@@ -26,8 +24,8 @@
 #import "Playlist.h"
 #import "Album.h"
 
-
 @interface TodayRecommendationViewController()<UICollectionViewDelegate, UICollectionViewDataSource>
+@property(nonatomic, strong) PlayerViewController *playerVC;
 @property(nonatomic, strong) UIButton *playbackViewButton;                      //右上角播放器指示器按钮(占位)
 @property(nonatomic, strong) NAKPlaybackIndicatorView *playbackIndicatorView;   //播放器视图(添加到上面的按钮中)
 @property(nonatomic, strong) UIActivityIndicatorView *activityView;     //内容加载指示器
@@ -38,8 +36,6 @@
 
 @end
 
-static const CGFloat row = 2.0f;
-static const CGFloat miniSpacing = 2.0f;
 
 @implementation TodayRecommendationViewController
 //reuse  identifier
@@ -63,7 +59,6 @@ static NSString *const cellIdentifier = @"todayCell";
     [self.navigationController.navigationBar addSubview:self.searchVC.serachBar];
     [self.view addSubview:self.searchVC.view];
 
-
     //显示播放器视图 按钮,(将播放状态指示器添加到这按钮上)
     [self.playbackViewButton addSubview:self.playbackIndicatorView];
     [self.navigationController.navigationBar addSubview:self.playbackViewButton];
@@ -74,18 +69,19 @@ static NSString *const cellIdentifier = @"todayCell";
     //加载遮罩 (mask)
     [self.collectionView addSubview:self.activityView];
 
-//
-//    [[MusicKit new].api resources:@[@"1315876389",] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-//        Log(@"CODE =%ld ,json==%@",response.statusCode, json);
-//    }];
-//    [[MusicKit new].api resources:@[@"1315876",] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-//        Log(@"02 CODE =%ld ,json==%@",response.statusCode, json);
-//    }];
-//
-//    [MusicKit.new.api resources:@[@"300117743",] byType:CatalogArtists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-//        Log(@"json =%@",json);
-//    }];
+    __weak typeof(self) weakSelf = self;
+    [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        MPMusicPlayerController *player = note.object;
+        switch (player.playbackState) {
+            case MPMusicPlaybackStatePlaying:
+                [weakSelf.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
+                break;
 
+            default:
+                [weakSelf.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
+                break;
+        }
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -95,11 +91,13 @@ static NSString *const cellIdentifier = @"todayCell";
 
 //更新UI
 -(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
     //显示搜搜框(搜索/显示详细时, 会隐藏搜索框)
     [self.searchVC.serachBar setHidden:NO];
 
+
     //更新指示器
-    switch ([PlayerViewController sharePlayerViewController].playerController.playbackState) {
+    switch (self.playerVC.playerController.playbackState) {
         case MPMusicPlaybackStatePaused:
         case MPMusicPlaybackStateStopped:
         case MPMusicPlaybackStateInterrupted:
@@ -136,11 +134,9 @@ static NSString *const cellIdentifier = @"todayCell";
 
     superview = self.view;
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        //计算 导航栏  及 tabBar 高度
-        CGFloat y = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
-        CGFloat tabBatH = CGRectGetHeight(weakSelf.tabBarController.tabBar.frame);
-        UIEdgeInsets insets = UIEdgeInsetsMake(miniSpacing+y, miniSpacing, miniSpacing+tabBatH, miniSpacing);
-        make.edges.mas_equalTo(superview).with.insets(insets);
+        CGFloat topOffset = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
+        CGFloat bottomOffset = CGRectGetHeight(weakSelf.tabBarController.tabBar.frame);
+        make.edges.mas_equalTo(superview).insets(UIEdgeInsetsMake(topOffset, 0, bottomOffset, 0));
     }];
 }
 
@@ -166,6 +162,8 @@ static NSString *const cellIdentifier = @"todayCell";
         //刷新UI
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.activityView stopAnimating];
+            [self.activityView removeFromSuperview];
+            self.activityView = nil;
 
             [self.collectionView reloadData];
             [self.collectionView.mj_header endRefreshing];
@@ -203,22 +201,15 @@ static NSString *const cellIdentifier = @"todayCell";
     return self.allData.count;
 }
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-
     NSArray *array = [self.allData objectAtIndex:section].allValues.firstObject;
     return  array.count;
 }
 
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-//    ResourceCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-//
+
     NSDictionary<NSString*,NSArray<Resource*>*> *dict = [self.allData objectAtIndex:indexPath.section];
     Resource* resource = [dict.allValues.firstObject objectAtIndex:indexPath.row];
-//
-//    cell.nameLabel.text = [resource.attributes valueForKey:@"name"];
-//    Artwork *artwork = [Artwork instanceWithDict:[resource.attributes valueForKey:@"artwork"]];
-//    [self showImageToView:cell.artworkView withImageURL:artwork.url cacheToMemory:YES];
-//
 
     ResourceCell *cell = (ResourceCell*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     if ([resource.type isEqualToString:@"albums"]) {
@@ -228,7 +219,6 @@ static NSString *const cellIdentifier = @"todayCell";
         Playlist *playlist = [Playlist instanceWithResource:resource];
         cell.playlists = playlist;
     }
-
     return cell;
 }
 
@@ -277,8 +267,6 @@ static NSString *const cellIdentifier = @"todayCell";
 
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         [_collectionView registerClass:ResourceCell.class forCellWithReuseIdentifier:cellIdentifier];
-        //[_collectionView registerClass:ResourceCollectionViewCell.class forCellWithReuseIdentifier:cellIdentifier];
-        //[_collectionView registerClass:AlbumCell.class forCellWithReuseIdentifier:cellIdentifier];
         [_collectionView registerClass:TodaySectionView.class
             forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:sectionIdentifier];
@@ -305,20 +293,29 @@ static NSString *const cellIdentifier = @"todayCell";
     return _activityView;
 }
 
-
 -(UIButton *)playbackViewButton{
     if (!_playbackViewButton) {
         _playbackViewButton = [[UIButton alloc] init];
-
         //事件处理回调
         [_playbackViewButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-            [self presentViewController:[PlayerViewController sharePlayerViewController] animated:YES completion:nil];
+            PlayerViewController *playerVC = [PlayerViewController sharePlayerViewController];
+            [self presentViewController:playerVC animated:YES completion:nil];
         }];
     }
     return _playbackViewButton;
 }
 -(NAKPlaybackIndicatorView *)playbackIndicatorView{
-    return [PlayerViewController sharePlayerViewController].playbackIndicatorView;
+    if (!_playbackIndicatorView) {
+        NAKPlaybackIndicatorViewStyle *style = [NAKPlaybackIndicatorViewStyle iOS10Style];
+        _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
+        [_playbackIndicatorView setUserInteractionEnabled:NO];
+    }
+    return _playbackIndicatorView;
 }
-
+-(PlayerViewController *)playerVC{
+    if (!_playerVC) {
+        _playerVC = [PlayerViewController sharePlayerViewController];
+    }
+    return _playerVC;
+}
 @end

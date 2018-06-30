@@ -9,19 +9,15 @@
 #import "PlayerView.h"
 #import "PlayProgressView.h"
 #import "PlayControllerView.h"
-
 #import <Masonry.h>
 
 //统一圆角半径
 static const CGFloat corner = 8.0f;
-
 @interface PlayerView()
 //播放进度信息
 @property(nonatomic, strong) PlayProgressView *playProgressView;
-
 //播放控制视图
 @property(nonatomic ,strong) PlayControllerView *playCtrView;
-
 /**设置专辑阴影辅助视图*/
 @property(nonatomic, strong) UIView *midView;
 @end
@@ -50,8 +46,6 @@ static const CGFloat corner = 8.0f;
         [view.layer setShadowRadius:corner];
         [view.layer setShadowOffset:CGSizeMake(3, 6)];
         [view.layer setShadowColor:UIColor.grayColor.CGColor];
-
-        [self addSubview:view];
         view;
     });
 
@@ -61,8 +55,6 @@ static const CGFloat corner = 8.0f;
         imageView.layer.cornerRadius = corner;
         imageView.layer.masksToBounds = YES;
         imageView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
-
-        [_midView addSubview:imageView];
         imageView;
     });
 
@@ -73,8 +65,6 @@ static const CGFloat corner = 8.0f;
         _durationTime = view.durationTime;
         _progressView = view.progressSlider;
         [_playCtrView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
-
-        [self addSubview:view];
         view;
     });
 
@@ -83,8 +73,6 @@ static const CGFloat corner = 8.0f;
         UILabel *label = [[UILabel alloc] init];
         [label setTextAlignment:NSTextAlignmentCenter];
         [label setFont:[UIFont systemFontOfSize:30]];
-
-        [self addSubview:label];
         label;
     });
 
@@ -95,7 +83,6 @@ static const CGFloat corner = 8.0f;
         [label setFont:[UIFont systemFontOfSize:20]];
         [label setTextColor:[UIColor grayColor]];
 
-        [self addSubview:label];
         label;
     });
 
@@ -105,15 +92,24 @@ static const CGFloat corner = 8.0f;
         _previous   = playCtr.previous;
         _play       = playCtr.play;
         _next       = playCtr.next;
-
-        [self addSubview:playCtr];
         playCtr;
     });
 
     //红心开关
-    _heartIcon = [LOTAnimatedSwitch switchNamed:@"TwitterHeart"];
-    [_heartIcon setContentMode:UIViewContentModeScaleToFill];
-    [_heartIcon setTransform:CGAffineTransformMakeScale(2, 2)];
+    _heartIcon = ({
+        LOTAnimatedSwitch *icon = [LOTAnimatedSwitch switchNamed:@"TwitterHeart"];
+        [icon setContentMode:UIViewContentModeScaleToFill];
+        [icon setTransform:CGAffineTransformMakeScale(2, 2)];
+        icon;
+    });
+
+    //add subView
+    [self addSubview:_midView];
+    [_midView addSubview:_artworkView];
+    [self addSubview:_playProgressView];
+    [self addSubview:_songNameLabel];
+    [self addSubview:_artistLabel];
+    [self addSubview:_playCtrView];
     [self insertSubview:_heartIcon belowSubview:_playCtrView];
 
     //循环按钮
@@ -135,30 +131,30 @@ static const CGFloat corner = 8.0f;
 
     //覆盖在中间层上
     [_artworkView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(self.midView).insets(UIEdgeInsetsMake(0, 0, 0, 0));
+        make.edges.mas_equalTo(weakSelf.midView).insets(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
 
-
+    CGFloat h = 44.0f;
     //进度
     [_playProgressView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.artworkView.mas_bottom).offset(20);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
-        make.height.mas_equalTo(@44.0f);
+        make.height.mas_equalTo(h);
     }];
     //song name
     [_songNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.playProgressView.mas_bottom).with.offset(0);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
-        make.height.mas_equalTo(@44.0f);
+        make.height.mas_equalTo(h);
     }];
     //艺人名称
     [_artistLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.songNameLabel.mas_bottom).with.offset(0);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
-        make.height.mas_equalTo(@44.0f);
+        make.height.mas_equalTo(h);
     }];
     //控制
     [_playCtrView mas_makeConstraints:^(MASConstraintMaker *make) {

@@ -35,6 +35,7 @@
     if (ids) {
         if (ids.count == 1) {
             path = [path stringByAppendingPathComponent:ids.lastObject];
+            path = [path stringByAppendingString:@"?include=tracks"];
         }
         if (ids.count > 1) {
             path = [path stringByAppendingString:@"?ids="];
@@ -44,7 +45,9 @@
         }
     }
 
+
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
+    //Log(@"header %@",request.allHTTPHeaderFields);
     [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
         if (handle) {
             handle(json,response);
@@ -171,7 +174,9 @@
 
     //没有响应体 , 成功响应码:202
     [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        
+        if (handle) {
+            handle(json,response);
+        }
     }];
 }
 
@@ -190,23 +195,6 @@
     }];
 }
 
-//-(void)addTracksToLibraryPlaylists:(NSString *)identifier playload:(NSDictionary *)json callBack:(CallBack)handle{
-//    NSString *path = [self.rootPath stringByAppendingPathComponent:@"playlists"];
-//    path = [path stringByAppendingPathComponent:identifier];
-//    path = [path stringByAppendingPathComponent:@"tracks"];
-//    NSData *data = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingSortedKeys error:nil];
-//
-//    NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
-//    [request setHTTPMethod:@"POST"];
-//    [request setHTTPBody:data];
-//    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-//    //无响应体,  响应码:204
-//    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-//        if (handle) {
-//            handle(json,response);
-//        }
-//    }];
-//}
 
 -(void)addTracksToLibraryPlaylists:(NSString *)identifier tracks:(NSArray<NSDictionary *> *)tracks callBack:(CallBack)handle{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"playlists"];

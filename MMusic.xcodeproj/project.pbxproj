@@ -89,7 +89,6 @@
 		3BC3324820A04E490080D1B9 /* ContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC3324720A04E490080D1B9 /* ContentViewController.m */; };
 		3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */; };
 		3BD2FD9220A5C7FF00DB7F9C /* ChartsSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD2FD9120A5C7FE00DB7F9C /* ChartsSectionView.m */; };
-		3BDE8FF020E39DB000C962F7 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDE8FEF20E39DB000C962F7 /* Player.m */; };
 		3BDFC19820B5A90D0045B33A /* ResultsArtistsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFC19720B5A90C0045B33A /* ResultsArtistsCell.m */; };
 		3BDFC19B20B5A93F0045B33A /* ResultsMusicVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFC19A20B5A93F0045B33A /* ResultsMusicVideoCell.m */; };
 		3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB6120820A4700D85021 /* PlayControllerView.m */; };
@@ -367,8 +366,6 @@
 		3BC4DF5A206E761100CDE7C1 /* ChartsPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsPageViewController.m; sourceTree = "<group>"; };
 		3BD2FD9020A5C7FE00DB7F9C /* ChartsSectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsSectionView.h; sourceTree = "<group>"; };
 		3BD2FD9120A5C7FE00DB7F9C /* ChartsSectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsSectionView.m; sourceTree = "<group>"; };
-		3BDE8FEE20E39DB000C962F7 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
-		3BDE8FEF20E39DB000C962F7 /* Player.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		3BDFC19620B5A90C0045B33A /* ResultsArtistsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsArtistsCell.h; sourceTree = "<group>"; };
 		3BDFC19720B5A90C0045B33A /* ResultsArtistsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsArtistsCell.m; sourceTree = "<group>"; };
 		3BDFC19920B5A93F0045B33A /* ResultsMusicVideoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsMusicVideoCell.h; sourceTree = "<group>"; };
@@ -447,8 +444,6 @@
 		3B3D998620553CEB000F2E9E /* PlayerViewController */ = {
 			isa = PBXGroup;
 			children = (
-				3BDE8FEE20E39DB000C962F7 /* Player.h */,
-				3BDE8FEF20E39DB000C962F7 /* Player.m */,
 				3B3D998220553CD4000F2E9E /* PlayerViewController.h */,
 				3B3D998320553CD4000F2E9E /* PlayerViewController.m */,
 				3B3D9987205540A0000F2E9E /* PlayerView.h */,
@@ -1132,7 +1127,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BC3324520A04AE70080D1B9 /* ModelController.m in Sources */,
-				3BDE8FF020E39DB000C962F7 /* Player.m in Sources */,
 				3B9AA9071FB47C1200720085 /* Song.m in Sources */,
 				3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */,
 				3BD2FD9220A5C7FF00DB7F9C /* ChartsSectionView.m in Sources */,

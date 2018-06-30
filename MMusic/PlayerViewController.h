@@ -13,20 +13,17 @@
 @class Song;
 
 @interface PlayerViewController : UIViewController
-//播放状态指示器
-@property(nonatomic, strong, readonly) NAKPlaybackIndicatorView *playbackIndicatorView;
-
 /**播放器*/
 @property(nonatomic, strong) MPMusicPlayerController *playerController;
-/**正在播放的歌曲*/
-@property(nonatomic, strong) Song *nowPlaySong;
-/**向外传递正在播放的Item*/
-@property(nonatomic, strong) void(^nowPlayingItem)(MPMediaItem *item);
 /**单例*/
 +(instancetype)sharePlayerViewController;
-/**显示播放控制器*/
--(void)showFromViewController:(UIViewController *)vc withSongs:(NSArray<Song*>*) songs startItem:(Song*)startSong;
 
--(instancetype)initWithTrackArray:(NSArray<Song*>*) trackArray startIndex:(NSUInteger) startIndex;
-
+/**播放音乐*/
+-(void)playSongs:(NSArray<Song*>*)songs startIndex:(NSUInteger) startIndex;
+/**插入歌曲下一首播放*/
+-(void)insertSongAtNextItem:(Song*)song;
+/**插入播放列表最后播放*/
+-(void)insertSongAtEndItem:(Song *)song;
+/**跳转到Music App 播放MV*/
+-(void)playMusicVideos:(NSArray<MusicVideo*>*)mvs startIndex:(NSUInteger) startIndex;
 @end

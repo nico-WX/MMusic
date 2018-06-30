@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "MusicKit.h"
+#import "Chart.h"
 
 /**通过不同的排行类型, 实例视图控制器*/
 @interface ChartsViewController : UIViewController
-@property(nonatomic, strong,readonly) ResponseRoot *root;
+@property(nonatomic, strong,readonly) Chart *chart;
 
--(instancetype)initWithResponseRoot:(ResponseRoot*) root;
+-(instancetype)initWithChart:(Chart*) chart;
 @end

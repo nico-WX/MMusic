@@ -10,23 +10,14 @@
 
 #import "ChartsPageViewController.h"
 #import "ChartsViewController.h"
-#import "ResponseRoot.h"
+
+#import "Chart.h"
 
 @interface ChartsPageViewController ()<UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>
 //分页视图控制器
 @property(nonatomic, strong) UIPageViewController *pageViewController;
 //排行榜结果
-@property(nonatomic, strong) NSArray<NSDictionary<NSString*,ResponseRoot*>*> *results;
-
-//子控制器数组
-//@property(nonatomic, strong) NSArray<UIViewController*> *pageList;
-
-//子控制器
-@property(nonatomic, strong) ChartsViewController *albumsVC;
-@property(nonatomic, strong) ChartsViewController *playlistsVC;
-@property(nonatomic, strong) ChartsViewController *musicVideosVC;
-@property(nonatomic, strong) ChartsViewController *songsVC;
-
+@property(nonatomic, strong) NSArray<Chart*> *results;
 @end
 
 //排行榜视图
@@ -49,22 +40,23 @@
     [MusicKit.new.api chartsByType:ChartsAll callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];
         if (json) {
-            NSMutableArray<NSDictionary<NSString*, ResponseRoot*> *> *array = [NSMutableArray array];
-            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-                ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
-                [array addObject:@{key:root}];
+            NSMutableArray<Chart*> *array = [NSMutableArray array];
+            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull subObjArray, BOOL * _Nonnull stop) {
+                [subObjArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    [array addObject:[Chart instanceWithDict:obj]];
+                }];
             }];
             self.results = array;
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 //设置第一个页
                 UIViewController *vc = [self viewControllerAtIndex:0];
+                self.title = vc.title;
                 [self.pageViewController setViewControllers:@[vc,]
                                                   direction:UIPageViewControllerNavigationDirectionForward
                                                    animated:YES
                                                  completion:nil];
             });
-
         }
     }];
 
@@ -75,35 +67,30 @@
     // Dispose of any resources that can be recreated.
 }
 
-//-(void)viewWillAppear:(BOOL)animated{
-//    [super viewWillAppear:animated];
-//    for (UIView * view in self.pageViewController.view.subviews) {
-//        if ([view isKindOfClass:[UIPageControl class]]) {
-//            self.pageCtr = (UIPageControl*)view;
-//            self.pageCtr.currentPageIndicatorTintColor = UIColor.greenColor;
-//            self.pageCtr.pageIndicatorTintColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
-//        }
-//    }
-//}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    for (UIView * view in self.pageViewController.view.subviews) {
+        if ([view isKindOfClass:[UIPageControl class]]) {
+            UIPageControl *pageCtr = (UIPageControl*)view;
+            pageCtr.currentPageIndicatorTintColor = UIColor.greenColor;
+            pageCtr.pageIndicatorTintColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
+        }
+    }
+}
 
 -(UIViewController*)viewControllerAtIndex:(NSUInteger)index;{
-    NSDictionary<NSString*,ResponseRoot*> *dict = [self.results objectAtIndex:index];
-    NSString *title = dict.allKeys.firstObject;
-    ResponseRoot *root = dict.allValues.firstObject;
-
-    ChartsViewController *vc = [[ChartsViewController alloc] initWithResponseRoot:root];
-    vc.title = title;
+    Chart *chart = [self.results objectAtIndex:index];
+    ChartsViewController *vc = [[ChartsViewController alloc] initWithChart:chart];
+    vc.title = chart.name;
     return vc;
 }
 -(NSUInteger)indexOfViewController:(ChartsViewController*) viewController{
     __block NSUInteger index = 0;
-    for (NSDictionary<NSString*,ResponseRoot*> *dict in self.results) {
-        [dict.allValues enumerateObjectsUsingBlock:^(ResponseRoot * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (obj == viewController.root) {
-                index = idx;
-            }
-        }];
-    }
+    [self.results enumerateObjectsUsingBlock:^(Chart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj == viewController.chart) {
+            index = idx;
+        }
+    }];
     return index;
 }
 
@@ -141,6 +128,17 @@
 
     return [self viewControllerAtIndex:index];
 }
+-(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed{
 
+    if (finished) {
+        if (completed) {
+            UIViewController *currentVC = pageViewController.viewControllers[0];
+            self.title = currentVC.title;
+        }
+    }
+}
+-(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers{
+
+}
 
 @end
