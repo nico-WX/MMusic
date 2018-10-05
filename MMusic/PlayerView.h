@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <VBFPopFlatButton.h>
-#import <Lottie/Lottie.h>
+#import "MySwitch.h"
 
 /**播放器视图*/
 @interface PlayerView : UIView
@@ -29,7 +28,7 @@
 /**下一首*/
 @property(nonatomic, strong,readonly)UIButton *next;
 /**喜爱按钮*/
-@property(nonatomic, strong,readonly)LOTAnimatedSwitch *heartIcon;
+@property(nonatomic, strong,readonly)MySwitch *heartIcon;
 /**循环模式*/
 @property(nonatomic, strong,readonly)UIButton *repeat;
 @end

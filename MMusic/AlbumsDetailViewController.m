@@ -58,7 +58,7 @@ static NSString *const cellID = @"cellReuseIDentifier";
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-
+    [super viewWillAppear:animated];
     __weak typeof(self) weakSelf = self;
     UIView *superview = self.view;
 

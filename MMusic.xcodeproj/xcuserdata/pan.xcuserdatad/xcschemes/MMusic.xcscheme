@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3BAADF4D20B2C75B00C82F4B"
+               BlueprintIdentifier = "3B555EF320E2225500AFF9A2"
                BuildableName = "MMusicTests.xctest"
                BlueprintName = "MMusicTests"
                ReferencedContainer = "container:MMusic.xcodeproj">

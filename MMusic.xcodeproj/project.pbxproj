@@ -16,8 +16,6 @@
 		3B3D998420553CD4000F2E9E /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D998320553CD4000F2E9E /* PlayerViewController.m */; };
 		3B3D9989205540A0000F2E9E /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9988205540A0000F2E9E /* PlayerView.m */; };
 		3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D99E9205E990F000F2E9E /* NSString+Hash.m */; };
-		3B3D99F8205EE0A0000F2E9E /* love-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B3D99F5205EE09D000F2E9E /* love-gray.png */; };
-		3B3D99FA205EE0A0000F2E9E /* love-red.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B3D99F7205EE0A0000F2E9E /* love-red.png */; };
 		3B408EDC20B6A8600057E323 /* ArtistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EDB20B6A8600057E323 /* ArtistsViewController.m */; };
 		3B408EEB20B6E7D70057E323 /* ArtistsContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */; };
 		3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D988020BA8A2600139BE0 /* DBTool.m */; };
@@ -39,6 +37,8 @@
 		3B555EF720E2225600AFF9A2 /* MMusicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B555EF620E2225600AFF9A2 /* MMusicTests.m */; };
 		3B555EFE20E2225F00AFF9A2 /* MusicKitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B555EEE20E2218F00AFF9A2 /* MusicKitTest.m */; };
 		3B555F4220E2FEC700AFF9A2 /* ResourceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B555F4120E2FEC700AFF9A2 /* ResourceCell.m */; };
+		3B5D746B2164F6B000D16C4E /* ResourceCell_V2.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5D746A2164F6B000D16C4E /* ResourceCell_V2.m */; };
+		3B64D0EE20ECE76200D831FE /* MySwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64D0EC20ECE76200D831FE /* MySwitch.m */; };
 		3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895820A9968C000C3403 /* LibraryAlbum.m */; };
 		3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895B20A998B6000C3403 /* LibraryMusicVideo.m */; };
 		3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895E20A99AA5000C3403 /* LibraryPlaylist.m */; };
@@ -94,6 +94,8 @@
 		3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB6120820A4700D85021 /* PlayControllerView.m */; };
 		3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB672082219900D85021 /* PlayProgressView.m */; };
 		3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */; };
+		3BFB704E2109BA6F002B3A06 /* APIRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BFB704D2109BA6F002B3A06 /* APIRoot.m */; };
+		3BFB707C210C4B6D002B3A06 /* JSONKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BFB707B210C4B6D002B3A06 /* JSONKey.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,13 +119,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = C3CF30A619B876FEB53E87E48B997873;
 			remoteInfo = AFNetworking;
-		};
-		3BDCA71520B461B6000F0CFD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6254C233084B047383E1858A64CD5A05;
-			remoteInfo = "lottie-ios";
 		};
 		3BDCA71720B461B6000F0CFD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -167,26 +162,12 @@
 			remoteGlobalIDString = A95EE4ADC2EF3F9C928ECCCCCF29FF7D;
 			remoteInfo = "Pods-MMusic";
 		};
-		3BDCA72320B461B6000F0CFD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E8FD4DDC4B88D7D68016BC659D1D8E14;
-			remoteInfo = pop;
-		};
 		3BDCA72520B461B6000F0CFD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D93F03694BDB65063854817EA8623CC0;
 			remoteInfo = SDWebImage;
-		};
-		3BDCA72720B461B6000F0CFD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3B219FDF20AC60D1005675BA /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EEB46F1C49BCFD5AC1E9FDC5D31C105F;
-			remoteInfo = VBFPopFlatButton;
 		};
 		3BDCA72920B461B6000F0CFD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -214,8 +195,6 @@
 		3B3D9988205540A0000F2E9E /* PlayerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerView.m; sourceTree = "<group>"; };
 		3B3D99E8205E990D000F2E9E /* NSString+Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hash.h"; sourceTree = "<group>"; };
 		3B3D99E9205E990F000F2E9E /* NSString+Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hash.m"; sourceTree = "<group>"; };
-		3B3D99F5205EE09D000F2E9E /* love-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "love-gray.png"; sourceTree = "<group>"; };
-		3B3D99F7205EE0A0000F2E9E /* love-red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "love-red.png"; sourceTree = "<group>"; };
 		3B408EDA20B6A8600057E323 /* ArtistsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArtistsViewController.h; sourceTree = "<group>"; };
 		3B408EDB20B6A8600057E323 /* ArtistsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArtistsViewController.m; sourceTree = "<group>"; };
 		3B408EE920B6E7D70057E323 /* ArtistsContentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArtistsContentViewController.h; sourceTree = "<group>"; };
@@ -259,6 +238,10 @@
 		3B555EF820E2225600AFF9A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3B555F4020E2FEC700AFF9A2 /* ResourceCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceCell.h; sourceTree = "<group>"; };
 		3B555F4120E2FEC700AFF9A2 /* ResourceCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResourceCell.m; sourceTree = "<group>"; };
+		3B5D74692164F6B000D16C4E /* ResourceCell_V2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceCell_V2.h; sourceTree = "<group>"; };
+		3B5D746A2164F6B000D16C4E /* ResourceCell_V2.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResourceCell_V2.m; sourceTree = "<group>"; };
+		3B64D0EC20ECE76200D831FE /* MySwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MySwitch.m; sourceTree = "<group>"; };
+		3B64D0ED20ECE76200D831FE /* MySwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MySwitch.h; sourceTree = "<group>"; };
 		3B69895720A9968C000C3403 /* LibraryAlbum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryAlbum.h; sourceTree = "<group>"; };
 		3B69895820A9968C000C3403 /* LibraryAlbum.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibraryAlbum.m; sourceTree = "<group>"; };
 		3B69895A20A998B6000C3403 /* LibraryMusicVideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryMusicVideo.h; sourceTree = "<group>"; };
@@ -376,6 +359,10 @@
 		3BDFCB672082219900D85021 /* PlayProgressView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayProgressView.m; sourceTree = "<group>"; };
 		3BDFCBD1208634CD00D85021 /* UIButton+BlockButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIButton+BlockButton.h"; sourceTree = "<group>"; };
 		3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIButton+BlockButton.m"; sourceTree = "<group>"; };
+		3BFB704C2109BA6F002B3A06 /* APIRoot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APIRoot.h; sourceTree = "<group>"; };
+		3BFB704D2109BA6F002B3A06 /* APIRoot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APIRoot.m; sourceTree = "<group>"; };
+		3BFB707A210C4B6D002B3A06 /* JSONKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSONKey.h; sourceTree = "<group>"; };
+		3BFB707B210C4B6D002B3A06 /* JSONKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JSONKey.m; sourceTree = "<group>"; };
 		914C9E31CA7BED805770445B /* Pods-MMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MMusic.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MMusic/Pods-MMusic.debug.xcconfig"; sourceTree = "<group>"; };
 		B50B155B334DAF7591C6EA42 /* libPods-MMusic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MMusic.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -424,16 +411,6 @@
 				3BB991F020CFF027002A6BA1 /* Search */,
 				3B23AC731FF236A800F0A9CA /* TodayRecommendationViewController.h */,
 				3B23AC741FF236A800F0A9CA /* TodayRecommendationViewController.m */,
-				3B4D98A920BD61F600139BE0 /* CuratorsAndActivitiesViewController.h */,
-				3B4D98AA20BD61F600139BE0 /* CuratorsAndActivitiesViewController.m */,
-				3B408EDA20B6A8600057E323 /* ArtistsViewController.h */,
-				3B408EDB20B6A8600057E323 /* ArtistsViewController.m */,
-				3B408EE920B6E7D70057E323 /* ArtistsContentViewController.h */,
-				3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */,
-				3B4D98EF20C0213F00139BE0 /* ArtistsContentTableView.h */,
-				3B4D98F020C0213F00139BE0 /* ArtistsContentTableView.m */,
-				3B4D98F520C162EF00139BE0 /* ArtistsInfoView.h */,
-				3B4D98F620C162EF00139BE0 /* ArtistsInfoView.m */,
 				3B8799572052BBC300EE9D2A /* DetailViewController.h */,
 				3B8799582052BBC300EE9D2A /* DetailViewController.m */,
 				3B469ADB1FF2462C0035E138 /* View */,
@@ -444,6 +421,8 @@
 		3B3D998620553CEB000F2E9E /* PlayerViewController */ = {
 			isa = PBXGroup;
 			children = (
+				3B64D0ED20ECE76200D831FE /* MySwitch.h */,
+				3B64D0EC20ECE76200D831FE /* MySwitch.m */,
 				3B3D998220553CD4000F2E9E /* PlayerViewController.h */,
 				3B3D998320553CD4000F2E9E /* PlayerViewController.m */,
 				3B3D9987205540A0000F2E9E /* PlayerView.h */,
@@ -454,15 +433,6 @@
 				3BDFCB6120820A4700D85021 /* PlayControllerView.m */,
 			);
 			name = PlayerViewController;
-			sourceTree = "<group>";
-		};
-		3B3D99FF205EE625000F2E9E /* ImageSource */ = {
-			isa = PBXGroup;
-			children = (
-				3B3D99F7205EE0A0000F2E9E /* love-red.png */,
-				3B3D99F5205EE09D000F2E9E /* love-gray.png */,
-			);
-			name = ImageSource;
 			sourceTree = "<group>";
 		};
 		3B44056E20BA89B30085FDAB /* DBTool */ = {
@@ -540,7 +510,7 @@
 			path = MMusicTests;
 			sourceTree = "<group>";
 		};
-		3B69895620A995EA000C3403 /* Library */ = {
+		3B69895620A995EA000C3403 /* Library Resource */ = {
 			isa = PBXGroup;
 			children = (
 				3B69895720A9968C000C3403 /* LibraryAlbum.h */,
@@ -552,7 +522,7 @@
 				3B69896020A99DDC000C3403 /* LibrarySong.h */,
 				3B69896120A99DDC000C3403 /* LibrarySong.m */,
 			);
-			name = Library;
+			name = "Library Resource";
 			sourceTree = "<group>";
 		};
 		3B78629D2060F3CA00E9A26A /* Charts */ = {
@@ -611,7 +581,6 @@
 				3B9AA8C61FB450B600720085 /* MyMusic */,
 				3B9AA8CC1FB452AA00720085 /* Model */,
 				3B9AA8CB1FB4512B00720085 /* Support */,
-				3B44056E20BA89B30085FDAB /* DBTool */,
 				3B9AA8BE1FB4503200720085 /* Tool */,
 			);
 			path = MMusic;
@@ -620,14 +589,19 @@
 		3B9AA8BE1FB4503200720085 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				3B44056E20BA89B30085FDAB /* DBTool */,
 				3B9AA9141FB588AF00720085 /* AuthorizationManager.h */,
 				3B9AA9151FB588AF00720085 /* AuthorizationManager.m */,
 				3B555EE520E0C23800AFF9A2 /* MusicKit.h */,
 				3B555EE620E0C23800AFF9A2 /* MusicKit.m */,
+				3BFB704C2109BA6F002B3A06 /* APIRoot.h */,
+				3BFB704D2109BA6F002B3A06 /* APIRoot.m */,
 				3B555EE820E0C25100AFF9A2 /* API.h */,
 				3B555EE920E0C25100AFF9A2 /* API.m */,
 				3B555EEB20E0EDAF00AFF9A2 /* Library.h */,
 				3B555EEC20E0EDAF00AFF9A2 /* Library.m */,
+				3BFB707A210C4B6D002B3A06 /* JSONKey.h */,
+				3BFB707B210C4B6D002B3A06 /* JSONKey.m */,
 				3B5371FC1FDBF50B009AFE47 /* NSObject+Tool.h */,
 				3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */,
 				3B3D99E8205E990D000F2E9E /* NSString+Hash.h */,
@@ -669,7 +643,6 @@
 			isa = PBXGroup;
 			children = (
 				3B09CB922098A0BA00294851 /* TwitterHeart.json */,
-				3B3D99FF205EE625000F2E9E /* ImageSource */,
 				3B9AA86A1FB04B5700720085 /* AppDelegate.h */,
 				3B9AA86B1FB04B5700720085 /* AppDelegate.m */,
 				3B9AA8791FB04B5700720085 /* main.m */,
@@ -687,7 +660,6 @@
 			isa = PBXGroup;
 			children = (
 				3B9AA8DD1FB4619500720085 /* Resource Object */,
-				3B69895620A995EA000C3403 /* Library */,
 				3B9AA8DC1FB4618300720085 /* CoreObject */,
 			);
 			name = Model;
@@ -715,13 +687,14 @@
 			children = (
 				3B9AA8ED1FB46F9300720085 /* Chart.h */,
 				3B9AA8EE1FB46F9300720085 /* Chart.m */,
+				3B9B268820D54CB100881199 /* Catalog Resource */,
+				3B69895620A995EA000C3403 /* Library Resource */,
 				3B9B268920D5550D00881199 /* Attribute Object */,
-				3B9B268820D54CB100881199 /* Resource */,
 			);
 			name = "Resource Object";
 			sourceTree = "<group>";
 		};
-		3B9B268820D54CB100881199 /* Resource */ = {
+		3B9B268820D54CB100881199 /* Catalog Resource */ = {
 			isa = PBXGroup;
 			children = (
 				3B9AA8DE1FB461CD00720085 /* Activities.h */,
@@ -749,7 +722,7 @@
 				3B9AA9021FB47A6C00720085 /* Recommendation.h */,
 				3B9AA9031FB47A6C00720085 /* Recommendation.m */,
 			);
-			name = Resource;
+			name = "Catalog Resource";
 			sourceTree = "<group>";
 		};
 		3B9B268920D5550D00881199 /* Attribute Object */ = {
@@ -806,6 +779,16 @@
 				3BB731E0207BAF7E00DC629B /* ResultsViewController.m */,
 				3BAAE01720B4211B00C82F4B /* ResultsContentViewController.h */,
 				3BAAE01820B4211B00C82F4B /* ResultsContentViewController.m */,
+				3B4D98A920BD61F600139BE0 /* CuratorsAndActivitiesViewController.h */,
+				3B4D98AA20BD61F600139BE0 /* CuratorsAndActivitiesViewController.m */,
+				3B408EDA20B6A8600057E323 /* ArtistsViewController.h */,
+				3B408EDB20B6A8600057E323 /* ArtistsViewController.m */,
+				3B408EE920B6E7D70057E323 /* ArtistsContentViewController.h */,
+				3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */,
+				3B4D98EF20C0213F00139BE0 /* ArtistsContentTableView.h */,
+				3B4D98F020C0213F00139BE0 /* ArtistsContentTableView.m */,
+				3B4D98F520C162EF00139BE0 /* ArtistsInfoView.h */,
+				3B4D98F620C162EF00139BE0 /* ArtistsInfoView.m */,
 			);
 			name = Search;
 			sourceTree = "<group>";
@@ -815,16 +798,13 @@
 			children = (
 				3BDCA71420B461B6000F0CFD /* libAFNetworking.a */,
 				3B44057D20BA89B30085FDAB /* libFMDB.a */,
-				3BDCA71620B461B6000F0CFD /* liblottie-ios.a */,
 				3BDCA71820B461B6000F0CFD /* libMasonry.a */,
 				3BDCA71A20B461B6000F0CFD /* libMBProgressHUD.a */,
 				3BDCA71C20B461B6000F0CFD /* libMJExtension.a */,
 				3BDCA71E20B461B6000F0CFD /* libMJRefresh.a */,
 				3BDCA72020B461B6000F0CFD /* libNAKPlaybackIndicatorView.a */,
 				3BDCA72220B461B6000F0CFD /* libPods-MMusic.a */,
-				3BDCA72420B461B6000F0CFD /* libpop.a */,
 				3BDCA72620B461B6000F0CFD /* libSDWebImage.a */,
-				3BDCA72820B461B6000F0CFD /* libVBFPopFlatButton.a */,
 				3BDCA72A20B461B6000F0CFD /* libYTPageController.a */,
 			);
 			name = Products;
@@ -841,6 +821,8 @@
 				3B9B269820D6877E00881199 /* MusicVideosCollectionCell.m */,
 				3B555F4020E2FEC700AFF9A2 /* ResourceCell.h */,
 				3B555F4120E2FEC700AFF9A2 /* ResourceCell.m */,
+				3B5D74692164F6B000D16C4E /* ResourceCell_V2.h */,
+				3B5D746A2164F6B000D16C4E /* ResourceCell_V2.m */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -962,13 +944,6 @@
 			remoteRef = 3BDCA71320B461B6000F0CFD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BDCA71620B461B6000F0CFD /* liblottie-ios.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "liblottie-ios.a";
-			remoteRef = 3BDCA71520B461B6000F0CFD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		3BDCA71820B461B6000F0CFD /* libMasonry.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1011,25 +986,11 @@
 			remoteRef = 3BDCA72120B461B6000F0CFD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BDCA72420B461B6000F0CFD /* libpop.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libpop.a;
-			remoteRef = 3BDCA72320B461B6000F0CFD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		3BDCA72620B461B6000F0CFD /* libSDWebImage.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libSDWebImage.a;
 			remoteRef = 3BDCA72520B461B6000F0CFD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		3BDCA72820B461B6000F0CFD /* libVBFPopFlatButton.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libVBFPopFlatButton.a;
-			remoteRef = 3BDCA72720B461B6000F0CFD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		3BDCA72A20B461B6000F0CFD /* libYTPageController.a */ = {
@@ -1053,10 +1014,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B3D99F8205EE0A0000F2E9E /* love-gray.png in Resources */,
 				3B9AA8771FB04B5700720085 /* LaunchScreen.storyboard in Resources */,
 				3B09CB932098A0BA00294851 /* TwitterHeart.json in Resources */,
-				3B3D99FA205EE0A0000F2E9E /* love-red.png in Resources */,
 				3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */,
 				3B9AA8741FB04B5700720085 /* Assets.xcassets in Resources */,
 				3B9AA8721FB04B5700720085 /* Main.storyboard in Resources */,
@@ -1130,6 +1089,7 @@
 				3B9AA9071FB47C1200720085 /* Song.m in Sources */,
 				3BC4DF5B206E761100CDE7C1 /* ChartsPageViewController.m in Sources */,
 				3BD2FD9220A5C7FF00DB7F9C /* ChartsSectionView.m in Sources */,
+				3B5D746B2164F6B000D16C4E /* ResourceCell_V2.m in Sources */,
 				3BDFC19820B5A90D0045B33A /* ResultsArtistsCell.m in Sources */,
 				3B9AA8DB1FB4535400720085 /* Error.m in Sources */,
 				3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */,
@@ -1141,12 +1101,15 @@
 				3B9AA8D61FB452FF00720085 /* Relationship.m in Sources */,
 				3B9AA8E31FB463E800720085 /* Album.m in Sources */,
 				3B9AA9011FB479B700720085 /* Preview.m in Sources */,
+				3B64D0EE20ECE76200D831FE /* MySwitch.m in Sources */,
 				3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */,
 				3B408EEB20B6E7D70057E323 /* ArtistsContentViewController.m in Sources */,
 				3B9AA90A1FB47D6B00720085 /* Station.m in Sources */,
 				3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */,
 				3B4D98A120BD40B100139BE0 /* AlbumsDetailViewController.m in Sources */,
 				3B9AA9041FB47A6C00720085 /* Recommendation.m in Sources */,
+				3BFB704E2109BA6F002B3A06 /* APIRoot.m in Sources */,
+				3BFB707C210C4B6D002B3A06 /* JSONKey.m in Sources */,
 				3B4D989720BAC71200139BE0 /* TracksModel.m in Sources */,
 				3BAAE01920B4211B00C82F4B /* ResultsContentViewController.m in Sources */,
 				3B9AA8EF1FB46F9300720085 /* Chart.m in Sources */,
@@ -1390,9 +1353,9 @@
 				INFOPLIST_FILE = MMusic/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = music.com.HelloMusic;
+				PRODUCT_BUNDLE_IDENTIFIER = com.music.HelloMusic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1408,9 +1371,9 @@
 				INFOPLIST_FILE = MMusic/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = music.com.HelloMusic;
+				PRODUCT_BUNDLE_IDENTIFIER = com.music.HelloMusic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

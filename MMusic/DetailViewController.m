@@ -5,7 +5,7 @@
 //  Created by Magician on 2018/3/9.
 //  Copyright © 2018年 com.😈. All rights reserved.
 
-//pod /sy
+//Frameworks
 #import <UIImageView+WebCache.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <MBProgressHUD.h>
@@ -20,9 +20,7 @@
 #import "DetailHeaderView.h"
 #import "SongCell.h"
 
-//model & tool
-#import "MusicKit.h"
-
+//model
 #import "ResponseRoot.h"
 #import "Playlist.h"
 #import "Artwork.h"
@@ -30,6 +28,7 @@
 #import "Song.h"
 #import "EditorialNotes.h"
 #import "Resource.h"
+
 
 @interface DetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 /**头视图*/
@@ -42,9 +41,12 @@
 @property(nonatomic, strong) PlayerViewController *playerVC;
 //data 数据在请求数据方法中 初始化
 @property(nonatomic, strong) NSArray<Song*> *songs;
+
 @end
 
+
 @implementation DetailViewController
+
 @synthesize tableView = _tableView;
 static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
@@ -54,6 +56,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     }
     return self;
 }
+
 -(instancetype)initWithResponseRoot:(ResponseRoot *)responseRoot{
     if (self = [super init]) {
         _responseRoot = responseRoot;
@@ -66,6 +69,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
     [self.view addSubview:self.tableView];
 
+    //resource  类型
     if (self.resource) {
         [self requestDataWithResource:self.resource];
         //通过播放列表等 初始化, 有头部
@@ -90,6 +94,8 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
     //播放的item 滚动到中间(或可视范围)
     [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+
+
         for (Song *song in self.songs) {
             if ([song isEqualToMediaItem:self.playerVC.playerController.nowPlayingItem]) {
                 NSUInteger index = [self.songs indexOfObject:song];
@@ -98,8 +104,6 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
             }
         }
     }];
-
-
 }
 
 
@@ -157,6 +161,10 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
 
 #pragma mark - UITableViewDataSource
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return 1;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.songs.count;
 }
@@ -165,6 +173,12 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     cell.song = [self.songs objectAtIndex:indexPath.row];
     cell.numberLabel.text = [NSString stringWithFormat:@"%02ld",indexPath.row+1];
     return cell;
+}
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    UILabel *label = UILabel.new;
+    [label setText:@"section"];
+    
+    return label;
 }
 
 #pragma mark - tableView delegate
@@ -188,6 +202,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         _tableView.dataSource = self;
         _tableView.delegate = self;
         [_tableView setRowHeight:44.0f];
+        [_tableView setSectionHeaderHeight:44.0f];
 
         UILongPressGestureRecognizer *longGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureActive:)];
         [_tableView addGestureRecognizer:longGR];

@@ -49,22 +49,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>VBFPopFlatButton.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>YTPageController.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>lottie-ios.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>pop.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

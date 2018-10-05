@@ -2,13 +2,14 @@
 //  API.h
 //  MMusic
 //
-//  Created by Magician on 2018/6/25.
-//  Copyright © 2018年 com.😈. All rights reserved.
+// 
 //
 
 #import <Foundation/Foundation.h>
+#import "APIRoot.h"
 #import "Library.h"
 
+#pragma mark - 枚举
 /**
  目录资源类型
 
@@ -50,54 +51,54 @@ typedef NS_ENUM(NSUInteger, ChartsType){
     ChartsAll
 };
 
-//预定义
-typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
 
-@interface API : NSObject
+@interface API : APIRoot
+
+#pragma mark - 个人请求实例
 /**获取库资源实例*/
 @property(nonatomic, strong) Library *library;
 
-
+#pragma mark - 实例方法
 /**
- 通用获取资源方法
+ 通过资源标识获取目录资源
 
- @param ids 资源id
+ @param ids     资源标识
  @param catalog 资源类型
- @param handle 数据回调
+ @param handle  数据回调
  */
 -(void)resources:(NSArray<NSString*>*)ids byType:(Catalog)catalog callBack:(CallBack)handle;
 
 /**
- 通用获取与id资源有关系的周边资源, 注意:stations 没有周边资源
+ 获取与目录资源标识相关的资源(如某个艺人的专辑,单曲等), 注意:stations 没有周边资源
 
  @param identifier  目标id
  @param catalog     目标类型
- @param name        周边关系(artists,songs 等等)
+ @param name        周边关系(如专辑的 artists,songs 等等)
  @param handle      数据回调
  */
 -(void)relationship:(NSString*)identifier byType:(Catalog)catalog forName:(NSString*)name callBack:(CallBack)handle;
 
 /**
- 通过ISRC 获取MV
+ 通过ISRC(国际录音编码) 获取MV
 
- @param ISRCs MV编码数组
- @param handle 数据回调
+ @param ISRCs   MV录音编码列表
+ @param handle  数据回调
  */
 -(void)musicVideosByISRC:(NSArray<NSString*>*)ISRCs callBack:(CallBack)handle;
 
 /**
  通过ISRC 获取Song
 
- @param ISRCs song编码数组
- @param handle 数据回调
+ @param ISRCs   song编码列表
+ @param handle  数据回调
  */
 -(void)songsByISRC:(NSArray<NSString*>*)ISRCs callBack:(CallBack)handle;
 
 /**
- 排行榜数据
+ 当前地区的排行榜数据
 
- @param type 排行榜类型
- @param handle 数据回调
+ @param type    排行榜类型
+ @param handle  数据回调
  */
 -(void)chartsByType:(ChartsType)type callBack:(CallBack)handle;
 
@@ -109,17 +110,16 @@ typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
 /**
  搜索目录资源
 
- @param term 搜索字段
- @param handle 数据回调
+ @param term    搜索字段
+ @param handle  数据回调
  */
 -(void)searchForTerm:(NSString*)term callBack:(CallBack)handle;
-
 
 /**
  搜索字段提示
 
- @param term 搜索字段
- @param handle 数据回调
+ @param term    搜索提示关键字段
+ @param handle  数据回调
  */
 -(void)searchHintsForTerm:(NSString*)term callBack:(CallBack)handle;
 

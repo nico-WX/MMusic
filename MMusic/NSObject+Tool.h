@@ -22,6 +22,35 @@
 @class ResponseRoot;
 @class MPMusicPlayerPlayParametersQueueDescriptor;
 
+
+//统一的请求结果处理回调 声明
+typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
+
+///// Keys related to the `Response Root` JSON object in the Apple Music API.
+//struct ResponseRootJSONKeys {
+//    static NSString* data = @"data";
+//    static NSString* results = @"results";
+//};
+//
+
+///// Keys related to the `Resource` JSON object in the Apple Music API.
+//struct ResourceJSONKeys {
+//    static NSString* identifier = @"id";
+//
+//    static NSString* attributes = @"attributes";
+//
+//    static NSString* type = @"type";
+//};
+//
+/// The various keys needed for parsing a JSON response from the Apple Music Web Service.
+//struct ResourceTypeJSONKeys {
+//    static NSString* songs = @"songs";
+//
+//    static NSString* albums = @"albums";
+//};
+
+
+
 @interface NSObject (Tool)
 
 /**
@@ -43,16 +72,6 @@
 
 
 /**
- 设置请求体中的 请求头信息
-
- @param request 请求体
- @param setupUserToken 是否需要设置用户令牌
- */
--(void)setupAuthorizationWithRequest:(NSMutableURLRequest *_Nonnull)request setupUserToken:(BOOL) setupUserToken;
-
-
-
-/**
 统一处理响应头信息,解析响应体 并返回字典(如果有返回)
 
  @param response 响应体
@@ -64,22 +83,12 @@
 
 
 /**
- 发起任务请求
-
- @param request 请求对象
- @param handler 返回数据
- */
-//-(void)dataTaskWithRequest:(NSURLRequest*_Nonnull) request completionHandler:(void(^_Nonnull)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler;
-
-
-
-/**
  请求直接返回 json数据
 
  @param request 请求体
- @param block 回调
+ @param handle 回调
  */
--(void)dataTaskWithRequest:(NSURLRequest*)request handler:(void(^)(NSDictionary*json,NSHTTPURLResponse*response))block;
+-(void)dataTaskWithRequest:(NSURLRequest*)request handler:(CallBack) handle;
 
 /**
  替换ImageURL 中的Image大小参数 默认屏幕的缩放大小
@@ -139,7 +148,6 @@
  @param cache 是否缓存到沙盒
  */
 -(void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL) cache;
-
 
 
 /**

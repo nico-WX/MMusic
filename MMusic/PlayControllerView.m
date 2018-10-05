@@ -8,7 +8,7 @@
 
 #import "PlayControllerView.h"
 #import <Masonry.h>
-#import <VBFPopFlatButton.h>
+
 
 @interface PlayControllerView()
 //中间辅助层
@@ -46,19 +46,28 @@
         [_playView addSubview:_play];
         [_nextView addSubview:_next];
 
-        //按钮颜色
-        _previous.tintColor = _play.tintColor = _next.tintColor = MainColor;
+        //按钮 image
+        [_previous setImage:[UIImage imageNamed:@"rewind"] forState:UIControlStateNormal];
+        [_play setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
+        [_next setImage:[UIImage imageNamed:@"forward"] forState:UIControlStateNormal];
 
     }
     return self;
 }
 
+-(void)layoutSubviews{
+    [super layoutSubviews];
 
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+    //不再多次添加约束
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self setupLayout];
+    });
+}
 
+-(void) setupLayout{
     //平分宽度, 等高
-    CGFloat w = CGRectGetWidth(rect)/3;
+    CGFloat w = CGRectGetWidth(self.frame)/3;
     __weak typeof(self) weakSelf = self;
 
     //布局中间层
@@ -83,7 +92,7 @@
         make.right.mas_equalTo(weakSelf.mas_right);
     }];
 
-
+    //按钮
     CGFloat btnH = CGRectGetHeight(self.frame);
     CGFloat btnW = btnH;
     CGSize size = CGSizeMake(btnW, btnH);
@@ -102,19 +111,6 @@
         make.size.mas_equalTo(size);
         make.center.mas_equalTo(weakSelf.nextView.center);
     }];
-
-
-    //按钮 image
-    [_previous setImage:[UIImage imageNamed:@"rewind"] forState:UIControlStateNormal];
-    [_play setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
-    [_next setImage:[UIImage imageNamed:@"forward"] forState:UIControlStateNormal];
-
-    [_previous setTitleColor:MainColor forState:UIControlStateNormal];
 }
-
-////图片宽高比
-//-(CGFloat) aspectRatioWithImage:(UIImage*) image{
-//    return image.size.width/image.size.height;
-//}
 
 @end

@@ -8,11 +8,21 @@
 
 #import "MusicKit.h"
 
+static MusicKit* _instance;
 @implementation MusicKit
 -(instancetype)init{
     if (self = [super init]) {
         _api = [[API alloc] init];
     }
     return self;
+}
++(instancetype)allocWithZone:(struct _NSZone *)zone{
+    if (!_instance) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            _instance = [super allocWithZone:zone];
+        });
+    }
+    return _instance;
 }
 @end

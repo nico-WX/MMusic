@@ -79,7 +79,9 @@ static FMDatabase *_db;
         SQL = [NSString stringWithFormat:@"INSERT INTO %@(identifier,name) VALUES('%@','%@');",TRACKS,track.identifier,track.name];
     }
 
-     [_db executeUpdate:SQL];
+    if (SQL) {
+         [_db executeUpdate:SQL];
+    }
 }
 
 
@@ -112,7 +114,9 @@ static FMDatabase *_db;
         deleteSQL = [NSString stringWithFormat:@"DELETE FROM %@ WHERE identifier='%@';",TRACKS,track.identifier];
 
     }
-    [_db executeUpdate:deleteSQL];
+    if (deleteSQL) {
+        [_db executeUpdate:deleteSQL];
+    }
 }
 
 

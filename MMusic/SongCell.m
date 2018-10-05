@@ -53,10 +53,14 @@
 
         [self setupLayout];
 
+        //播放项目改变  修改播放指示cell
         [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
             [self stateForSong:self.song];
         }];
-
+        //播放状态改变, 修改指示状态
+        [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+            [self stateForSong:self.song];
+        }];
     }
     return self;
 }
@@ -71,6 +75,7 @@
     _artistLabel.text = nil;
     _durationLabel.text = nil;
     _song = nil;
+
 }
 
 -(void) setupLayout{

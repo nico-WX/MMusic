@@ -76,100 +76,61 @@ static PlayerViewController *_instance;
 #pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
-
 }
+
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self updateUIForNowPlayItem:self.playerController.nowPlayingItem];
+    [self updateCurrentItemMetadata];
 }
 
 - (void)dealloc{
     [self.playerController endGeneratingPlaybackNotifications];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];    
 }
 
+
 #pragma mark - 更新UI信息
--(void)updateUIForNowPlayItem:(MPMediaItem*) item{
+-(void)updateCurrentItemMetadata{
+    MPMediaItem *nowPlayingItem = self.playerController.nowPlayingItem;
+    if (nowPlayingItem) {
+        //播放的时候, 有可能在播放第三方音乐, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
+        self.playerView.heartIcon.enabled = nowPlayingItem.playbackStoreID ? YES  : NO;
+        [self heartFromSongIdentifier:nowPlayingItem.playbackStoreID];
 
+        int duration = nowPlayingItem.playbackDuration;
+        NSString *durationString = [NSString stringWithFormat:@"%02d:%02d",duration/60,duration%60];
+        [self.playerView.durationTime setText:durationString];
+        [self.playerView.songNameLabel setText:nowPlayingItem.title];
+        [self.playerView.artistLabel setText:nowPlayingItem.artist];
 
-
-    //主线程更新
-    dispatch_async(dispatch_get_main_queue(), ^{
-
-        /**
-         1.判断当前有没有加载Song 对象, 如果没有, 页面信息从系统获取
-         2.0 : 如果没有,从系统获取页面信息
-         2.1 : 从系统获取时, 需要识别是否为Apple版权的音乐,还是第三方添加的,Apple版权音乐直接通过ID获取Song 对象,更新信息
-         2.2 : 第三方音乐直接获取数据,更新信息
-         2.3 : (未完成: 第三方音乐, 通过音乐名称,和艺人, 在Apple 目录中搜索, 返回Song 对象)
-         */
-
-        //匹配数组中的song
-        Song *song = [self songWithNowPlayingItem:item];
-        if (!song) {
-            //没有从当前数组中匹配到,可能是:(当前没有设置songs,或者当前没有播放,也可能是第三方音乐);
-            if (item){
-                //有Identifier 属于AppleMusic版权库音乐 请求Song对象
-                NSString *identifier = item.playbackStoreID;
-                Log(@"identi =%@",identifier);
-                Log(@"id =%d",item.isCloudItem);
-
-
-                if ((identifier) && (![identifier isEqualToString:@"0"])) { //有时为"0"
-                    [self.playerView.heartIcon setEnabled:YES];
-                    [MusicKit.new.api resources:@[identifier,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-                        if (json && response.statusCode == 200) {
-                            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-                                NSMutableArray<Song*> *temp = [NSMutableArray array];
-                                [(NSArray*)obj enumerateObjectsUsingBlock:^(id  _Nonnull songResource, NSUInteger idx, BOOL * _Nonnull stop) {
-                                    [temp addObject:[Song instanceWithDict:[songResource objectForKey:@"attributes"]]];
-                                }];
-                                //添加到数组中
-                                self.songs = self.songs ? [self.songs arrayByAddingObjectsFromArray:temp] : temp;
-                                [self updateUIForNowPlayItem:item];
-                            }];
-                        }
-                    }];
-
-                }else{
-                    //第三方音乐
-                    [self.playerView.heartIcon setOn:NO animated:YES];  //开关ON
-                    [self.playerView.heartIcon setEnabled:NO];          //关闭开关交互, 不能添加喜欢
-                    //[self showHUDToMainWindowFromText:@"正在播放第三方音乐"];
-
-
-                    int duration = item.playbackDuration;
-                    NSString *durationString = [NSString stringWithFormat:@"%02d:%02d",duration/60,duration%60];
-                    [self.playerView.durationTime setText:durationString];
-                    [self.playerView.songNameLabel setText:item.title];
-                    [self.playerView.artistLabel setText:item.artist];
-
-                    // 第三方音乐可以从内部获取专辑封面
-                    CGSize size = self.playerView.artworkView.bounds.size;
-                    [self.playerView.artworkView setImage:[item.artwork imageWithSize:size]];
-                }
-            }else{
-                //没有在播放
-                [self showHUDToMainWindowFromText:@"系统播放器没有加载音乐"];
-                [self.playerView.heartIcon setEnabled:NO];
-                return ;
-            }
+        UIImage *image  = [nowPlayingItem.artwork imageWithSize:self.playerView.artworkView.bounds.size];
+        if (image) {
+             [self.playerView.artworkView setImage:image];
         }else{
-            //数组中有song
-            [self.playerView.songNameLabel setText:song.name];
-            [self.playerView.artistLabel setText:song.artistName];
-            int duration = song.durationInMillis.intValue/1000;//秒
-            NSString *durationStr = [NSString stringWithFormat:@"%02d:%02d",duration/60,duration%60];
-            [self.playerView.durationTime setText: durationStr];
-            [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
-            //红心开关 状态查询,设置
-            [self.playerView.heartIcon setEnabled:YES];
-            [self heartFromSongIdentifier:[song.playParams objectForKey:@"id"]];
-            //收集艺人信息, 填充艺人列表数据
-            [self addArtistsToDataBaseFromSong:song];
+            //清除旧数据
+            self.playerView.artworkView.image = nil;
+            if (nowPlayingItem.playbackStoreID) {
+                [MusicKit.new.api resources:@[nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+                    json = [[[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
+                    Song *song = [Song instanceWithDict:json];
+                    [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
+                }];
+            }else{
+                for (Song *song in _songs ) {
+                    if ([song isEqualToMediaItem:nowPlayingItem]) {
+                        [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
+                    }
+                }
+            }
         }
-    });
+    }else{
+        [self.playerView.heartIcon setEnabled:NO];
+        self.playerView.artworkView.image = nil;
+        self.playerView.songNameLabel.text = @"当前无歌曲播放";
+        self.playerView.artistLabel.text = @"";
+    }
+
 }
 
 #pragma mark - MPSystemMusicPlayerController
@@ -186,13 +147,11 @@ static PlayerViewController *_instance;
 
 #pragma mark - Instance Method
 -(void)playSongs:(NSArray<Song *> *)songs startIndex:(NSUInteger)startIndex{
-     self.songs = songs;
+    [self setSongs:songs];
 
-    //当前开始的与正在播放的比对
+    //当前开始的song 与正在播放的item 是否为同一个
     Song *song = [self.songs objectAtIndex:startIndex];
-    if ([song isEqualToMediaItem:self.playerController.nowPlayingItem]) {
-        //选中的正在播放中, 不处理
-    }else{
+    if (![song isEqualToMediaItem:self.playerController.nowPlayingItem]) {
         MPMusicPlayerPlayParameters *parameter = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
         [self.parametersQueue setStartItemPlayParameters:parameter];
         [self.playerController setQueueWithDescriptor:self.parametersQueue];
@@ -233,44 +192,14 @@ static PlayerViewController *_instance;
 }
 
 #pragma mark - Helper
-/**查找当前队列中匹配的song*/
--(nullable Song*)songWithNowPlayingItem:(MPMediaItem*)item{
-    for (Song *song in self.songs) {
-        if ([song isEqualToMediaItem:item]) {
-            return song;
-        }
-    }
-    return nil;
-}
-
-/**存储艺人信息 , 添加到数据库, 创建艺人列表*/
--(void)addArtistsToDataBaseFromSong:(Song*) song{
-        if (song.artistName) {
-            [MusicKit.new.api searchForTerm:song.artistName callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-                json = [[json valueForKeyPath:@"results.artists.data"] firstObject];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    ArtistsModel *artist = [ArtistsModel new];
-                    artist.identifier = [json valueForKey:@"id"];
-                    artist.name = song.artistName;
-
-                    UIImage *image = self.playerView.artworkView.image;
-                    if (!image) {
-                        image = [self imageFromURL:song.artwork.url withImageSize:self.playerView.artworkView.frame.size];
-                    }
-                    artist.image = image;
-                    [DBTool addArtists:artist];
-                });
-            }];
-        }
-}
-
-/**获取歌曲rating 状态, 并设置 开关状态*/
+/**获取歌曲rating 状态, 并设置 红心开关状态*/
 -(void)heartFromSongIdentifier:(NSString*) identifier{
     if (identifier) {
         [MusicKit.new.api.library getRating:@[identifier,] byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-            BOOL love = (json && response.statusCode==200) ? YES : NO;
+            BOOL like = (json && response.statusCode==200) ? YES : NO;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.playerView.heartIcon setOn:love animated:YES];
+                [self.playerView.heartIcon setEnabled:YES];
+                [self.playerView.heartIcon setOn:like];
             });
         }];
     }
@@ -305,7 +234,7 @@ static PlayerViewController *_instance;
         __weak typeof(self) weakSelf = self;
         // 监听播放项目改变
         [center addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-            [weakSelf updateUIForNowPlayItem:weakSelf.playerController.nowPlayingItem];
+            [weakSelf updateCurrentItemMetadata];
         }];
 
         //播放状态;
@@ -335,16 +264,14 @@ static PlayerViewController *_instance;
     return _playerView;
 }
 
-/** 定时获取当前播放时间*/
+/** 定时获取当前播放时间, 更新UI播放进度*/
 - (NSTimer *)timer{
     if (!_timer) {
         __weak typeof(self) weakSelf = self;
         _timer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
             //当前播放时间
-            NSTimeInterval current = self->_playerController.currentPlaybackTime;//秒 self->
-            int min = (int)current/60;
-            int sec = (int)current%60;
-            weakSelf.playerView.currentTime.text = [NSString stringWithFormat:@"%.2d:%.2d",min,sec];
+            int current = (double)weakSelf.playerController.currentPlaybackTime;
+            weakSelf.playerView.currentTime.text = [NSString stringWithFormat:@"%.2d:%.2d",current/60,current%60];
 
             //更新进度条
             NSTimeInterval duration = weakSelf.playerController.nowPlayingItem.playbackDuration; //秒
@@ -362,12 +289,14 @@ static PlayerViewController *_instance;
 
         NSMutableArray<MPMusicPlayerPlayParameters*> *array = [NSMutableArray array];
         for (Song *song  in songs) {
-            [array addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams]];
+            MPMusicPlayerPlayParameters *paramter = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
+            if (paramter != nil) {
+                 [array addObject:paramter];
+            }
         }
         self.parametersQueue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:array];
     }
 }
-
 
 #pragma mark - Button Action
 /**下滑手势*/
@@ -377,13 +306,9 @@ static PlayerViewController *_instance;
 
 //进度条拖拽事件
 - (void)sliderChange:(UISlider*) slider{
-    NSTimeInterval duration = self.playerController.nowPlayingItem.playbackDuration; //秒
-    NSTimeInterval current = duration * slider.value;
+    NSTimeInterval duration = self.playerController.nowPlayingItem.playbackDuration;    //总时长
+    NSTimeInterval current = duration * slider.value;                                   //拖拽时长
     [self.playerController setCurrentPlaybackTime:current];
-
-    int min = (int)current/60;
-    int sec = (int)current%60;
-    self.playerView.currentTime.text = [NSString stringWithFormat:@"%.2d:%.2d",min,sec];
 }
 
 //上一首
@@ -395,11 +320,9 @@ static PlayerViewController *_instance;
 //播放或暂停
 - (void)playOrPause:(UIButton*) button{
     [self animationButton:button];
-
     switch (self.playerController.playbackState) {
         case MPMusicPlaybackStatePlaying:
             [self.playerController pause];
-            //[self.timer invalidate];
             [button setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
             break;
 
@@ -435,36 +358,33 @@ static PlayerViewController *_instance;
     }];
 }
 
-//红心按钮 添加喜欢或者取消喜欢
-- (void)changeLove:(LOTAnimatedSwitch*) heart{
+//红心按钮 添加喜欢或者删除喜欢
+- (void)changeLove:(MySwitch*) heart{
 
-    NSString *identifier = self.playerController.nowPlayingItem.playbackStoreID; //[self.nowPlaySong.playParams objectForKey:@"id"];
+    NSString *identifier = self.playerController.nowPlayingItem.playbackStoreID;
     // 查询当前rating状态(不是基于当前按钮状态)  --> 操作
     [MusicKit.new.api.library getRating:@[identifier,] byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (json && response.statusCode==200) {
-            //当前为喜欢状态
-            //取消喜欢 <DELETE>
-            [self deleteRatingForSongId:identifier];
-        }else{
-            //当前没有添加为喜欢
-            //添加喜欢 <PUT>
-            //[self addRatingForSongId:identifier];
-            [self addResourceToLibrary:identifier];
-        }
+        (json && response.statusCode==200) ? [self deleteRatingForSongId:identifier] : [self addRatingForSongId:identifier];
+//
+//        if (json && response.statusCode==200) {
+//            //当前为喜欢状态 /取消喜欢
+//            [self deleteRatingForSongId:identifier];
+//        }else{
+//            //当前没有添加为喜欢/添加喜欢
+//            [self addRatingForSongId:identifier];
+//        }
     }];
 }
 
 -(void) deleteRatingForSongId:(NSString*)identifier{
-
     [MusicKit.new.api.library deleteRating:identifier byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (response.statusCode/10 == 20) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.playerView.heartIcon setOn:NO animated:YES];
+                [self.playerView.heartIcon setOn:NO];
             });
         }
     }];
 }
-
 
 /**添加到播放列表中,
  0.添加rating, 成功后,执行添加到库播放列表中
@@ -473,11 +393,9 @@ static PlayerViewController *_instance;
  3.存储到数据库中
  */
 -(void) addRatingForSongId:(NSString*)song{
-
     //添加rating
     [MusicKit.new.api.library addRating:song byType:CRatingSongs value:1 callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (response.statusCode/10==20) {
-
             //请求Rating 的默认库播放列表 identifier,
             [MusicKit.new.api.library searchForTerm:@"Rating" byType:SLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
                 NSDictionary *track = @{@"id":song,@"type":@"songs"};
@@ -485,22 +403,22 @@ static PlayerViewController *_instance;
                 NSString *identifier = [list.firstObject valueForKey:@"id"];
 
                 [MusicKit.new.api.library addTracksToLibraryPlaylists:identifier tracks:@[track,] callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-                    //
+
                 }];
             }];
             //更新ui
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.playerView.heartIcon setOn:YES animated:YES];
+                [self.playerView.heartIcon setOn:YES];
             });
         }
     }];
 }
 -(void)addResourceToLibrary:(NSString*) identifier{
     [MusicKit.new.api.library addResourceToLibraryForIdentifiers:@[identifier,] byType:AddSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        Log(@"res =%ld",response.statusCode);
+
         //更新ui
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.playerView.heartIcon setOn:YES animated:YES];
+            [self.playerView.heartIcon setOn:YES];
         });
     }];
 }

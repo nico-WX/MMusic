@@ -19,9 +19,7 @@
 
 #import "AuthorizationManager.h"
 
-@interface AppDelegate ()<SKCloudServiceSetupViewControllerDelegate>
-@property(nonatomic, strong) AuthorizationManager *auth;
-@property(nonatomic, strong) SKCloudServiceSetupViewController *subscriptionVC;
+@interface AppDelegate ()
 @end
 
 @implementation AppDelegate
@@ -33,11 +31,10 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 
     //定时锁屏
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
-
+    //[[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
     //检查授权
-    [self checkAuthorization];
+    AuthorizationManager *auth = AuthorizationManager.shareManager;
 
     //tabBar
     UITabBarController *barCtr = [[UITabBarController alloc] init];
@@ -57,7 +54,7 @@
     [chartVC setTitle:@"排行榜"];
     UINavigationController *chartNav = [[UINavigationController alloc] initWithRootViewController:chartVC];
 
-    //搜索
+    //浏览
     BrowseViewController *browseVC = BrowseViewController.new;
     browseVC.title = @"浏览";
     UINavigationController *browseNav = [[UINavigationController alloc] initWithRootViewController:browseVC];
@@ -75,80 +72,16 @@
     [barCtr addChildViewController:mmusicNavCtr];
 
     //设置item 图标
-    [todayNavCtr.tabBarItem setImage:[UIImage imageNamed:@"心"]];
+    [todayNavCtr.tabBarItem setImage:[UIImage imageNamed:@"推荐"]];
     [chartNav.tabBarItem setImage:[UIImage imageNamed:@"Chart"]];
-    [browseNav.tabBarItem setImage:[UIImage imageNamed:@"B"]];
+    [browseNav.tabBarItem setImage:[UIImage imageNamed:@"browse"]];
     [mmusicNavCtr.tabBarItem setImage:[UIImage imageNamed:@"Library"]];
     //[musicNav.tabBarItem setImage:[UIImage imageNamed:@"music"]];
 
-    //[barCtr setSelectedIndex:2];
-
+    
     [self.window setRootViewController:barCtr];
     [self.window makeKeyAndVisible];    //显示
     return YES;
-}
-
-//检查授权
--(void)checkAuthorization{
-    //验证用户授权状态
-    [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
-        switch (status) {
-                //授权获取音乐资料库
-            case SKCloudServiceAuthorizationStatusAuthorized:{
-                //检查用户订阅状态
-                [[SKCloudServiceController new] requestCapabilitiesWithCompletionHandler:^(SKCloudServiceCapability capabilities, NSError * _Nullable error) {
-
-                    if (capabilities == SKCloudServiceCapabilityNone) {
-                        //没有订阅 显示订阅视图
-                        [self showSubscriptionView];
-                    }else{
-                        //已订阅 请求基本的userToken  等
-                        self.auth = [AuthorizationManager shareAuthorizationManager];
-                        //Log(@"user =%@",self.auth.userToken);
-                    }
-                }];
-            }
-                break;
-
-            case SKCloudServiceAuthorizationStatusDenied:{
-                //拒绝授权
-                [self showHUDToMainWindowFromText:@"用户拒绝获取音乐库信息,请手动开启"];
-            }
-                break;
-            case SKCloudServiceAuthorizationStatusRestricted:
-                //重置
-                break;
-            case SKCloudServiceAuthorizationStatusNotDetermined:
-                //未决定
-                break;
-        }
-
-    }];
-}
-
-//显示订阅视图
--(void) showSubscriptionView{
-
-    self.subscriptionVC = [[SKCloudServiceSetupViewController alloc] init];
-    self.subscriptionVC.delegate = self;
-    //页面设置
-    NSDictionary *dict = @{SKCloudServiceSetupOptionsMessageIdentifierKey:SKCloudServiceSetupMessageIdentifierJoin,
-                           SKCloudServiceSetupOptionsActionKey : SKCloudServiceSetupActionSubscribe
-                           };
-
-    [self.subscriptionVC loadWithOptions:dict completionHandler:^(BOOL result, NSError * _Nullable error) {
-        if (result) {
-            //隐藏导航栏
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.window addSubview:self.subscriptionVC.view];
-            });
-        }
-    }];
-}
-
-#pragma mark - SKCloudServiceSetupViewControllerDelegate
--(void)cloudServiceSetupViewControllerDidDismiss:(SKCloudServiceSetupViewController *)cloudServiceSetupViewController{
-    [cloudServiceSetupViewController.view removeFromSuperview];
 }
 
 @end

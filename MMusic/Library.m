@@ -10,25 +10,31 @@
 #import "AuthorizationManager.h"
 
 @interface Library()
-@property(nonatomic, strong) NSString *rootPath;
 @end
 
+static Library* _instance;
 @implementation Library
+
++(instancetype)allocWithZone:(struct _NSZone *)zone{
+    if (!_instance) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            _instance = [super allocWithZone:zone];
+        });
+    }
+    return _instance;
+}
 
 -(instancetype)init{
     if (self = [super init]) {
-        _rootPath = @"https://api.music.apple.com";
-        _rootPath = [_rootPath stringByAppendingPathComponent:@"v1"];
-        _rootPath = [_rootPath stringByAppendingPathComponent:@"me"];
-        _rootPath = [_rootPath stringByAppendingPathComponent:@"library"];
+        self.rootPath = [self.rootPath stringByAppendingPathComponent:@"me"];
+        self.rootPath = [self.rootPath stringByAppendingPathComponent:@"library"];
     }
     return self;
 }
 
 
--(void)resource:(NSArray<NSString *> *)ids
-         byType:(CLibrary)library
-       callBack:(CallBack)handle{
+-(void)resource:(NSArray<NSString *> *)ids byType:(CLibrary)library callBack:(CallBack)handle{
 
     NSString *subPath = [self subPathForType:library];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
@@ -45,19 +51,11 @@
         }
     }
 
-
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
     //Log(@"header %@",request.allHTTPHeaderFields);
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
--(void)relationship:(NSString *)identifier
-            forType:(CLibrary)library
-             byName:(NSString *)name
-           callBacl:(CallBack)handle{
+-(void)relationship:(NSString *)identifier forType:(CLibrary)library byName:(NSString *)name callBacl:(CallBack)handle{
 
     NSString *subPath = [self subPathForType:library];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
@@ -65,16 +63,10 @@
     path = [path stringByAppendingPathComponent:name];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)searchForTerm:(NSString *)term
-              byType:(SLibrary)library
-            callBack:(CallBack)handle{
+-(void)searchForTerm:(NSString *)term byType:(SLibrary)library callBack:(CallBack)handle{
 
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search?term="];
     path = [path stringByAppendingString:term];
@@ -98,11 +90,7 @@
     }
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 -(void)heavyRotationContentInCallBack:(CallBack)handle{
@@ -110,11 +98,7 @@
     path = [path stringByAppendingPathComponent:@"heavy-rotation"];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 -(void)recentlyPlayedInCallBack:(CallBack)handle{
@@ -122,32 +106,20 @@
     path = [path stringByAppendingPathComponent:@"played"];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 -(void)recentStationsInCallBack:(CallBack)handle{
     NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"recent"];
     path = [path stringByAppendingPathComponent:@"radio-stations"];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 -(void)recentlyAddedToLibraryInCallBack:(CallBack)handle{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"recently-added"];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 -(void)addResourceToLibraryForIdentifiers:(NSArray<NSString *> *)ids byType:(AddType)type callBack:(CallBack)handle{
     NSString *path = [self.rootPath stringByAppendingString:@"?ids"];
@@ -173,11 +145,7 @@
     [request setHTTPMethod:@"POST"];
 
     //没有响应体 , 成功响应码:202
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 -(void)createNewLibraryPlaylistsForJsonPlayload:(NSDictionary *)json callBack:(CallBack)handle{
@@ -188,11 +156,8 @@
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:bodyData];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 
@@ -208,11 +173,7 @@
     [request setHTTPBody:data];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     //无响应体,  响应码:204
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 
@@ -229,11 +190,7 @@
     }
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 -(void)addRating:(NSString *)identifier byType:(CRating)type value:(int)value callBack:(CallBack)handle{
     NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"ratings"];
@@ -249,11 +206,7 @@
     [request setHTTPBody:data];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 -(void)deleteRating:(NSString *)identifier byType:(CRating)type callBack:(CallBack)handle{
@@ -263,24 +216,16 @@
 
     NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
     [request setHTTPMethod:@"DELETE"];
+
     //无响应体, 成功响应码:204
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 
 -(void)defaultRecommendationsInCallBack:(CallBack)handle{
     NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"recommendations"];
-
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 #pragma  mark - helper

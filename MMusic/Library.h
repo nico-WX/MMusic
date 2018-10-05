@@ -7,11 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "APIRoot.h"
 
 /**
- resources from a user's Cloud Library
+ 用户云库资源类型
 
- - CLibraryAlbums:  用户云音乐库专辑
+ - CLibraryAlbums:      用户云音乐库专辑
  - CLibraryArtists:     用户云音乐库艺人
  - CLibraryMusicVideos: 用户云音乐库MV
  - CLibraryPlaylists:   用户云音乐库播放列表
@@ -26,7 +27,7 @@ typedef NS_ENUM(NSUInteger, CLibrary){
 };
 
 /**
- 搜索云音乐库类型
+ 搜索云音乐库资源类型
 
  - SLibrarySongs:       云音乐库歌曲
  - SLibraryAlbums:      云音乐库专辑
@@ -75,15 +76,12 @@ typedef NS_ENUM(NSUInteger, CRating){
 };
 
 
-
-typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
-
-@interface Library : NSObject
+@interface Library : APIRoot
 
 /**
- 通用获取用户云音乐库资源方法, 传空ids获取所有库资源
+ 通过标识获取个人资料库资源, 空的资源标识默认获取全部资源
 
- @param ids     库资源id
+ @param ids     资源标识列表
  @param library 库资源类型
  @param handle  数据回调
  */
@@ -145,7 +143,6 @@ typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  */
 -(void)addResourceToLibraryForIdentifiers:(NSArray<NSString*>*)ids byType:(AddType) type callBack:(CallBack)handle;
 
-
 /**
  创建新的音乐库播放列表
 
@@ -154,22 +151,12 @@ typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
 -(void)createNewLibraryPlaylistsForJsonPlayload:(NSDictionary*)json callBack:(CallBack)handle;
 
 
-///**
-// 添加歌曲到个人播放列表
-//
-// @param identifier 播放列表ID
-// @param json 歌曲json
-// @param handle 处理结果
-// */
-//-(void)addTracksToLibraryPlaylists:(NSString*)identifier playload:(NSDictionary*)json callBack:(CallBack)handle;
-
-
 /**
  添加歌曲到个人播放列表
 
- @param identifier 个人播放列表id
- @param tracks song 播放参数列表
- @param handle 处理结果
+ @param identifier  个人播放列表id
+ @param tracks      song 播放参数字典列表
+ @param handle      处理结果
  */
 -(void)addTracksToLibraryPlaylists:(NSString *)identifier tracks:(NSArray<NSDictionary*>*)tracks callBack:(CallBack)handle;
 
@@ -181,7 +168,6 @@ typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param handle 数据回调
  */
 -(void)getRating:(NSArray<NSString*>*)ids byType:(CRating)type callBack:(CallBack)handle;
-
 
 /**
  添加目录Rating

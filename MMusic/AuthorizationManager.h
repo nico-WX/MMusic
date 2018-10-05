@@ -10,7 +10,7 @@
 
 /**授权处理*/
 @interface AuthorizationManager : NSObject<NSCopying,NSMutableCopying>
-/**地区代码*/
+/**地区商店代码*/
 @property(nonatomic, copy, readonly) NSString *storefront;
 /**开发者令牌*/
 @property(nonatomic, copy, readonly) NSString *developerToken;
@@ -18,5 +18,5 @@
 @property(nonatomic, copy, readonly) NSString *userToken;
 
 /**单例*/
-+(instancetype) shareAuthorizationManager;
++(instancetype) shareManager;
 @end

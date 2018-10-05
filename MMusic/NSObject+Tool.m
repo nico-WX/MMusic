@@ -29,6 +29,8 @@ extern NSString *developerTokenExpireNotification;
 extern NSString *userTokenIssueNotification;
 @implementation NSObject (Tool)
 
+
+
 -(NSURLRequest *)createRequestWithHref:(NSString *)href{
     NSString *path = @"https://api.music.apple.com";
     path = [path stringByAppendingPathComponent:href];
@@ -38,7 +40,7 @@ extern NSString *userTokenIssueNotification;
 //统一解析响应体,处理异常等.
 -(NSDictionary *)serializationDataWithResponse:(NSURLResponse *)response data:(NSData *)data error:(NSError *)error{
 
-    if (error) Log(@"Location Error:%@",error);
+    if (error) Log(@"Location Error:%@",error.localizedDescription);
 
     NSDictionary *json;
     NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
@@ -53,13 +55,15 @@ extern NSString *userTokenIssueNotification;
         case 401:
             //开发者Token 问题
             //Log(@"授权过期");
-            [self showHUDToMainWindowFromText:@"开发者令牌授权过期"];
+
             [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenExpireNotification object:nil];
+            [self showHUDToMainWindowFromText:@"开发者令牌授权过期"];
             break;
         case 403:
             //userToken 问题
-            [self showHUDToMainWindowFromText:@"用户令牌授权过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:userTokenIssueNotification object:nil];
+            [self showHUDToMainWindowFromText:@"用户令牌授权过期"];
+
             break;
 
         default:
@@ -71,19 +75,16 @@ extern NSString *userTokenIssueNotification;
 }
 
 //封装发起任务请求操作,通过block 回调返回数据.
--(void)dataTaskWithRequest:(NSURLRequest*) request completionHandler:(void(^)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)) handler{
-    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
-        if (handler) handler(data,response,error);
-    }] resume];
-}
--(void)dataTaskWithRequest:(NSURLRequest*)request handler:(void (^)(NSDictionary *,NSHTTPURLResponse*))block{
+-(void)dataTaskWithRequest:(NSURLRequest*)request handler:(CallBack) handle{
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        //统一处理返回的数据,响应体等,不管是否有回调, 在解析中都处理请求结果.
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
-        if (block) {
-            block(json,(NSHTTPURLResponse*)response);
+        if (handle) {
+            handle(json,(NSHTTPURLResponse*)response);
         }
     }] resume];
 }
+
 
 //替换封面URL中的占位字符串,
 -(NSString *)stringReplacingOfString:(NSString *)target height:(int)height width:(int)width{
@@ -96,45 +97,32 @@ extern NSString *userTokenIssueNotification;
     return target;
 }
 
-/**设置请求头*/
--(void)setupAuthorizationWithRequest:(NSMutableURLRequest *)request setupUserToken:(BOOL)needSetupUserToken{
-
-    //设置开发者Token 请求头
-    NSString *developerToken = [AuthorizationManager shareAuthorizationManager].developerToken;
-    if (developerToken) {
-        developerToken = [NSString stringWithFormat:@"Bearer %@",developerToken];
-        [request setValue:developerToken forHTTPHeaderField:@"Authorization"];
-    }else{
-        [self showHUDToMainWindowFromText:@"无法获得开发者Token"];
-    }
-
-    //个性化请求 设置UserToken 请求头
-    if (needSetupUserToken == YES) {
-        NSString *userToken = [AuthorizationManager shareAuthorizationManager].userToken;
-        if (userToken){
-            [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];
-        }else{
-            [self showHUDToMainWindowFromText:@"无法获得用户令牌"];
-        }
-    }
-}
 
 /**通过urlString 生成请求体 并设置请求头*/
 -(NSURLRequest*) createRequestWithURLString:(NSString*) urlString setupUserToken:(BOOL) setupUserToken{
-    //转换URL中文及空格 (有二次转码问题)
-    //urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    //urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];//转换URL中文及空格 (有二次转码问题)
 
-    //转码方法2
-    //移除 '%' 防止将%编码成25
+    //移除 '%' 防止将'%' 重复编码成25
     urlString = [urlString stringByRemovingPercentEncoding];
     urlString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+
     //设置请求头
-    [self setupAuthorizationWithRequest:request setupUserToken:setupUserToken];
+    NSString *devToken = AuthorizationManager.shareManager.developerToken;
+    if (devToken) {
+        devToken = [NSString stringWithFormat:@"Bearer %@",devToken];
+        [request setValue:devToken forHTTPHeaderField:@"Authorization"];
+    }else
+        [self showHUDToMainWindowFromText:@"无法获得开发者Token"];
 
-    //Log(@"header %@",request.allHTTPHeaderFields);
-
+    if (YES == setupUserToken) {
+        NSString *userToken = AuthorizationManager.shareManager.userToken;
+        if (userToken) {
+            [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];
+        }else
+            [self showHUDToMainWindowFromText:@"无法获得用户令牌"];
+    }
     return request;
 }
 
@@ -143,10 +131,8 @@ extern NSString *userTokenIssueNotification;
     dispatch_async(dispatch_get_main_queue(), ^{
         //cell 重用时,上次没加载完成的hud 未能隐藏, 遍历删除
         for (UIView *view in imageView.subviews) {
-            if ([view isKindOfClass:UIActivityIndicatorView.class]) {
-                UIActivityIndicatorView *hud = (UIActivityIndicatorView*) view;
-                [hud stopAnimating];
-            }
+            if ([view isKindOfClass:UIActivityIndicatorView.class])
+                [view removeFromSuperview];
         }
 
         //获取视图宽高, 设置请求图片大小
@@ -185,10 +171,10 @@ extern NSString *userTokenIssueNotification;
             }
 
             NSURL *url = [NSURL URLWithString:urlStr];
-            [imageView sd_setImageWithURL:url
-                                completed:^(UIImage * _Nullable image, NSError * _Nullable error,
-                                            SDImageCacheType cacheType, NSURL * _Nullable imageURL){
-                                    [imageView setNeedsDisplay];
+            [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL){
+                [imageView setNeedsDisplay];
+                [hud stopAnimating];
+                [hud setHidden:YES];
                 if(cache == YES) {
                     //判断目标文件夹是否存在
                     NSFileManager *fm = [NSFileManager defaultManager];
@@ -201,7 +187,6 @@ extern NSString *userTokenIssueNotification;
                     //存储文件
                     BOOL sucess = [fm createFileAtPath:path contents:UIImagePNGRepresentation(image) attributes:nil];
                     if (sucess == NO) [fm removeItemAtPath:path error:nil];
-                    [hud stopAnimating];
                 }
             }];
         }
@@ -265,7 +250,6 @@ extern NSString *userTokenIssueNotification;
     return convertedColor;
 }
 
-
 - (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueFromParams:(NSArray<NSDictionary *> *)playParamses
                                                                       startAtIndexPath:(NSIndexPath *)indexPath{
     NSMutableArray *list = NSMutableArray.new;
@@ -299,20 +283,17 @@ extern NSString *userTokenIssueNotification;
         [hud setRemoveFromSuperViewOnHide:YES];
         [hud.label setText:text];
         [hud setMode:MBProgressHUDModeCustomView];
-        [hud hideAnimated:YES afterDelay:3.0f];
+        [hud hideAnimated:YES afterDelay:2.0f];
         //不接收事件
         [hud setUserInteractionEnabled:NO];
     });
 }
 
 
-
 -(UIImage *)imageFromURL:(NSString *)url withImageSize:(CGSize)imageSize{
-
     NSString *path = IMAGE_PATH_FOR_URL(url);
     UIImage *image = [UIImage imageWithContentsOfFile:path];
     if (!image) {
-
         NSString *imagePath = [self stringReplacingOfString:url height:imageSize.height width:imageSize.width];
         NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
         image = [UIImage imageWithData:data];

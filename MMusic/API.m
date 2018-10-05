@@ -1,34 +1,39 @@
-//
-//  API.m
-//  MMusic
-//
-//  Created by Magician on 2018/6/25.
-//  Copyright © 2018年 com.😈. All rights reserved.
-//
+
+
+/**
+ 不用用户Token即可访问的接口
+ */
 
 #import "API.h"
 #import "AuthorizationManager.h"
 
 @interface API()
-@property(nonatomic, strong) NSString *rootPath;
-
+//@property(nonatomic, strong)NSString *root;
 @end
 
+static API* _instance;
 @implementation API
 
 -(instancetype)init{
     if (self =[super init]) {
         _library = [[Library alloc] init];
 
-        _rootPath = @"https://api.music.apple.com";
-        _rootPath = [_rootPath stringByAppendingPathComponent:@"v1"];
-        _rootPath = [_rootPath stringByAppendingPathComponent:@"catalog"];
-
-        NSString *storeFront = [AuthorizationManager shareAuthorizationManager].storefront;
-        _rootPath = [_rootPath stringByAppendingPathComponent:storeFront];
+        self.rootPath = [self.rootPath stringByAppendingPathComponent:@"catalog"];
+        NSString *storeFront = [AuthorizationManager shareManager].storefront;
+        self.rootPath = [self.rootPath stringByAppendingPathComponent:storeFront];
     }
     return self;
 }
++(instancetype)allocWithZone:(struct _NSZone *)zone{
+    if (!_instance) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            _instance = [super allocWithZone:zone];
+        });
+    }
+    return _instance;
+}
+
 
 -(void)resources:(NSArray<NSString *> *)ids byType:(Catalog)catalog callBack:(CallBack)handle{
     NSString *subPath = [self subPathForType:catalog];
@@ -43,11 +48,7 @@
     }
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 -(void)relationship:(NSString *)identifier byType:(Catalog)catalog forName:(NSString *)name callBack:(CallBack)handle{
@@ -57,11 +58,7 @@
     path = [path stringByAppendingPathComponent:name];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 -(void)musicVideosByISRC:(NSArray<NSString *> *)ISRCs callBack:(CallBack)handle{
     NSString *subPath = [self subPathForType:CatalogMusicVideos];
@@ -72,11 +69,7 @@
     }
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 -(void)songsByISRC:(NSArray<NSString *> *)ISRCs callBack:(CallBack)handle{
     NSString *subPath = [self subPathForType:CatalogSongs];
@@ -87,11 +80,7 @@
     }
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 -(void)chartsByType:(ChartsType)type callBack:(CallBack)handle{
@@ -115,11 +104,7 @@
     }
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 
 -(void)searchForTerm:(NSString *)term callBack:(CallBack)handle{
@@ -127,11 +112,7 @@
     path = [path stringByAppendingString:term];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
 }
 -(void)searchHintsForTerm:(NSString *)term callBack:(CallBack)handle{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search"];
@@ -139,16 +120,13 @@
     path = [path stringByAppendingString:term];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json,NSHTTPURLResponse* response) {
-        if (handle) {
-            handle(json,response);
-        }
-    }];
+    [self dataTaskWithRequest:request handler:handle];
+
+
 }
 
+
 #pragma mark - helper
-
-
 //不同的类型,返回不同的子路径
 -(NSString*)subPathForType:(Catalog) catalog{
     NSString *subPath = @"";
@@ -183,6 +161,7 @@
     }
     return subPath;
 }
+
 
 
 @end

@@ -16,7 +16,7 @@
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        //默认无色, 无法显示阴影
+        //默认全透明, 无法显示阴影
         [self setBackgroundColor:UIColor.whiteColor];
         [self.layer setShadowColor:UIColor.lightGrayColor.CGColor];
         [self.layer setShadowOffset:CGSizeMake(5, 10)];
