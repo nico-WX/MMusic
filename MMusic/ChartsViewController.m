@@ -17,7 +17,7 @@
 #import "MusicKit.h"
 #import "Resource.h"
 
-@interface ChartsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
+@interface ChartsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 @property(nonatomic, strong) NSArray<Chart*> *rowData;
 @property(nonatomic, strong) UICollectionView *rowCollectionView; //每一行cell中包含一个视图控制器,及一个title
 
@@ -43,6 +43,14 @@ static NSString *const reuseID = @"cellReuseIdentifier";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+-(void)viewDidLayoutSubviews{
+
+
+    [self.rowCollectionView setContentInset:UIEdgeInsetsMake(10, 4, 10, 4)];
+
+    [super viewDidLayoutSubviews];
+}
+
 
 - (void)requestData{
     __weak typeof(self) weakSelf = self;
@@ -87,19 +95,24 @@ static NSString *const reuseID = @"cellReuseIdentifier";
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     ChartCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseID forIndexPath:indexPath];
     cell.chart = [self.rowData objectAtIndex:indexPath.row];
+    cell.navigationController = self.navigationController ;
     return cell;
 }
 
 
 #pragma mark <UICollectonViewDelegate>
 
+#pragma mark <UICollectionViewDelegateFlowLayout>
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+    CGFloat w = CGRectGetWidth(collectionView.bounds)-(collectionView.contentInset.left+collectionView.contentInset.right);
+    CGFloat h = 300;
+    return CGSizeMake(w, h);
+}
+
 #pragma mark layz Load
 - (UICollectionView *)rowCollectionView{
     if (!_rowCollectionView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-        CGFloat w = CGRectGetWidth(self.view.bounds);
-        CGFloat h = 300.0;
-        [layout setItemSize:CGSizeMake(w, h)];
         [layout setMinimumLineSpacing:20];
 
         _rowCollectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];

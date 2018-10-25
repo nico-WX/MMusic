@@ -24,13 +24,16 @@
 
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:[UIFont systemFontOfSize:22.0]];
+        [_titleLabel setTextColor:MainColor];
         _chartsViewController = [[ChartsSubViewController alloc] init];
 
         [self.contentView addSubview:_titleLabel];
         [self.contentView addSubview:_chartsViewController.view];
 
-        [self.layer setBorderWidth:0.3];
-        [self.layer setBorderColor:UIColor.grayColor.CGColor];
+
+        [self.layer setShadowOffset:CGSizeMake(5, 10)];
+        [self.layer setShadowOpacity:0.7];
+        [self.layer setShadowColor:UIColor.grayColor.CGColor];
 
     }
     return self;
@@ -62,6 +65,12 @@
 
         _titleLabel.text = chart.name;
         _chartsViewController.chart = chart;
+    }
+}
+- (void)setNavigationController:(UINavigationController *)navigationController{
+    if (_chartsViewController) {
+        //传递导航控制器,
+        _chartsViewController.mainNavigatonController = navigationController;
     }
 }
 

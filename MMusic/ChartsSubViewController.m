@@ -8,6 +8,8 @@
 #import <Masonry.h>
 
 #import "ChartsSubViewController.h"
+#import "DetailViewController.h"
+
 #import "Chart.h"
 #import "ResourceCell_V2.h"
 #import "Album.h"
@@ -43,11 +45,23 @@ static NSString * const reuseIdentifier = @"Cell";
     ResourceCell_V2 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
 
     Resource *resource = [self.chart.data objectAtIndex: indexPath.row];
+    
+
+
     Album *album = [Album instanceWithResource:resource];
     cell.album = album;
 
     return cell;
 }
+
+#pragma mark <UICollectionViewDelegate>
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    Resource *resource = [self.chart.data objectAtIndex:indexPath.row];
+    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:resource];
+    [self.mainNavigatonController pushViewController:detailVC animated:YES];
+}
+
+#pragma mark <UICollectionViewDelegateFlowLayout>
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
     CGFloat h = CGRectGetHeight(collectionView.frame);
     CGFloat w = h-(h*0.2);
@@ -80,7 +94,6 @@ static NSString * const reuseIdentifier = @"Cell";
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.collectionView reloadData];
         });
-
     }
 }
 @end
