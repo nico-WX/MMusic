@@ -2,7 +2,6 @@
 //  DetailViewController.m
 //  MMusic
 //
-//  Created by Magician on 2018/3/9.
 //  Copyright © 2018年 com.😈. All rights reserved.
 
 //Frameworks
@@ -174,12 +173,12 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     cell.numberLabel.text = [NSString stringWithFormat:@"%02ld",indexPath.row+1];
     return cell;
 }
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    UILabel *label = UILabel.new;
-    [label setText:@"section"];
-    
-    return label;
-}
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+//    UILabel *label = UILabel.new;
+//    [label setText:@"section"];
+//    
+//    return label;
+//}
 
 #pragma mark - tableView delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

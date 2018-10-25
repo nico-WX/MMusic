@@ -75,7 +75,7 @@ extern NSString *userTokenIssueNotification;
 }
 
 //封装发起任务请求操作,通过block 回调返回数据.
--(void)dataTaskWithRequest:(NSURLRequest*)request handler:(CallBack) handle{
+-(void)dataTaskWithRequest:(NSURLRequest*)request handler:(RequestCallBack) handle{
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         //统一处理返回的数据,响应体等,不管是否有回调, 在解析中都处理请求结果.
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
@@ -87,13 +87,15 @@ extern NSString *userTokenIssueNotification;
 
 
 //替换封面URL中的占位字符串,
--(NSString *)stringReplacingOfString:(NSString *)target height:(int)height width:(int)width{
-    //像素倍数
-    CGFloat times = [UIScreen mainScreen].scale;
-    NSString *w = [NSString stringWithFormat:@"%d",(int)((CGFloat)width * times)];
-    NSString *h = [NSString stringWithFormat:@"%d",(int)((CGFloat)height * times)]; //注意占位不能是浮点数, 只能是整数, 不然报CFNetwork 385错误
+-(NSString *)stringReplacingOfString:(NSString *)target height:(CGFloat)height width:(CGFloat)width{
+    //之前返回的图片像素太低了
+    CGFloat times =1; //[UIScreen mainScreen].scale;
+    NSString *w = [NSString stringWithFormat:@"%d",(int)(width * times)];
+    NSString *h = [NSString stringWithFormat:@"%d",(int)(height * times)]; //注意占位不能是浮点数, 只能是整数, 不然报CFNetwork 385错误
     target = [target stringByReplacingOccurrencesOfString:@"{h}" withString:h];
     target = [target stringByReplacingOccurrencesOfString:@"{w}" withString:w];
+
+    //NSLog(@"path=%@",target);
     return target;
 }
 
@@ -172,6 +174,9 @@ extern NSString *userTokenIssueNotification;
 
             NSURL *url = [NSURL URLWithString:urlStr];
             [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL){
+
+
+
                 [imageView setNeedsDisplay];
                 [hud stopAnimating];
                 [hud setHidden:YES];

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -13,11 +13,11 @@
             buildForProfiling = "YES"
             buildForArchiving = "YES">
             <BuildableReference
-               BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'C8A945B746D9C6D1A3A2075165E099A9'
-               BlueprintName = 'NAKPlaybackIndicatorView'
-               ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libNAKPlaybackIndicatorView.a'>
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2B720EB3A3B8252E1416C13220EB01EA"
+               BlueprintName = "NAKPlaybackIndicatorView"
+               ReferencedContainer = "container:Pods.xcodeproj"
+               BuildableName = "libNAKPlaybackIndicatorView.a">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

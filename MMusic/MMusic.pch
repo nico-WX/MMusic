@@ -27,7 +27,7 @@
 /**Artwork 目录*/
 #define ARTWORK_IMAGE_PATH [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"artwork"]
 
-/**封面图片地址*/
+/**封面图片地址, 图片名称使用url MD5摘要命名*/
 #define IMAGE_PATH_FOR_URL(urlString) [[ARTWORK_IMAGE_PATH stringByAppendingPathComponent:[(urlString) md5String]] stringByAppendingString:@".png"]
 
 /**DB 目录*/

@@ -35,7 +35,7 @@ static API* _instance;
 }
 
 
--(void)resources:(NSArray<NSString *> *)ids byType:(Catalog)catalog callBack:(CallBack)handle{
+-(void)resources:(NSArray<NSString *> *)ids byType:(Catalog)catalog callBack:(RequestCallBack)handle{
     NSString *subPath = [self subPathForType:catalog];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
     if (ids.count == 1) {
@@ -51,7 +51,7 @@ static API* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)relationship:(NSString *)identifier byType:(Catalog)catalog forName:(NSString *)name callBack:(CallBack)handle{
+-(void)relationship:(NSString *)identifier byType:(Catalog)catalog forName:(NSString *)name callBack:(RequestCallBack)handle{
     NSString *subPath = [self subPathForType:catalog];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
     path = [path stringByAppendingPathComponent:identifier];
@@ -60,7 +60,7 @@ static API* _instance;
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)musicVideosByISRC:(NSArray<NSString *> *)ISRCs callBack:(CallBack)handle{
+-(void)musicVideosByISRC:(NSArray<NSString *> *)ISRCs callBack:(RequestCallBack)handle{
     NSString *subPath = [self subPathForType:CatalogMusicVideos];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
     path = [path stringByAppendingString:@"?filter[isrc]="];
@@ -71,7 +71,7 @@ static API* _instance;
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)songsByISRC:(NSArray<NSString *> *)ISRCs callBack:(CallBack)handle{
+-(void)songsByISRC:(NSArray<NSString *> *)ISRCs callBack:(RequestCallBack)handle{
     NSString *subPath = [self subPathForType:CatalogSongs];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
     path = [path stringByAppendingString:@"?filter[isrc]="];
@@ -83,7 +83,7 @@ static API* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)chartsByType:(ChartsType)type callBack:(CallBack)handle{
+-(void)chartsByType:(ChartsType)type callBack:(RequestCallBack)handle{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"charts?types="];
     switch (type) {
         case ChartsAlbums:
@@ -107,14 +107,14 @@ static API* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)searchForTerm:(NSString *)term callBack:(CallBack)handle{
+-(void)searchForTerm:(NSString *)term callBack:(RequestCallBack)handle{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search?term="];
     path = [path stringByAppendingString:term];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)searchHintsForTerm:(NSString *)term callBack:(CallBack)handle{
+-(void)searchHintsForTerm:(NSString *)term callBack:(RequestCallBack)handle{
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search"];
     path = [path stringByAppendingPathComponent:@"hints?term="];
     path = [path stringByAppendingString:term];

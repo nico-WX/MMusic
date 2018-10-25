@@ -23,33 +23,8 @@
 @class MPMusicPlayerPlayParametersQueueDescriptor;
 
 
-//统一的请求结果处理回调 声明
-typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
-
-///// Keys related to the `Response Root` JSON object in the Apple Music API.
-//struct ResponseRootJSONKeys {
-//    static NSString* data = @"data";
-//    static NSString* results = @"results";
-//};
-//
-
-///// Keys related to the `Resource` JSON object in the Apple Music API.
-//struct ResourceJSONKeys {
-//    static NSString* identifier = @"id";
-//
-//    static NSString* attributes = @"attributes";
-//
-//    static NSString* type = @"type";
-//};
-//
-/// The various keys needed for parsing a JSON response from the Apple Music Web Service.
-//struct ResourceTypeJSONKeys {
-//    static NSString* songs = @"songs";
-//
-//    static NSString* albums = @"albums";
-//};
-
-
+/**统一的请求结果处理回调 */
+typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
 
 @interface NSObject (Tool)
 
@@ -83,12 +58,12 @@ typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
 
 
 /**
- 请求直接返回 json数据
+ 封装数据请求 通过回调返回json数据
 
  @param request 请求体
  @param handle 回调
  */
--(void)dataTaskWithRequest:(NSURLRequest*)request handler:(CallBack) handle;
+-(void)dataTaskWithRequest:(NSURLRequest*)request handler:(RequestCallBack) handle;
 
 /**
  替换ImageURL 中的Image大小参数 默认屏幕的缩放大小
@@ -98,7 +73,7 @@ typedef void(^CallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param width 图片宽度
  @return 替换后的请求路径
  */
--(NSString*_Nonnull) stringReplacingOfString:(NSString*_Nonnull) target height:(int) height width:(int) width;
+-(NSString*_Nonnull) stringReplacingOfString:(NSString*_Nonnull) target height:(CGFloat) height width:(CGFloat) width;
 
 
 /**

@@ -12,7 +12,7 @@
 @interface Chart : MMObject
 /**排行榜名称*/
 @property(nonatomic, copy) NSString *name;
-/**排行榜Identifier*/
+/**排行榜类型*/
 @property(nonatomic, copy) NSString *chart;
 /**排行榜URL*/
 @property(nonatomic, copy) NSString *href;

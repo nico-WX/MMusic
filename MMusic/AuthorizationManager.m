@@ -44,7 +44,7 @@ static AuthorizationManager* _instance;
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:developerTokenKey];
 
             //主动请求新的developerToken
-           // [self requestDeveloperToken];
+           [self requestDeveloperToken];
         }];
 
 

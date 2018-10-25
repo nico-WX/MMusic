@@ -66,7 +66,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param catalog 资源类型
  @param handle  数据回调
  */
--(void)resources:(NSArray<NSString*>*)ids byType:(Catalog)catalog callBack:(CallBack)handle;
+-(void)resources:(NSArray<NSString*>*)ids byType:(Catalog)catalog callBack:(RequestCallBack)handle;
 
 /**
  获取与目录资源标识相关的资源(如某个艺人的专辑,单曲等), 注意:stations 没有周边资源
@@ -76,7 +76,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param name        周边关系(如专辑的 artists,songs 等等)
  @param handle      数据回调
  */
--(void)relationship:(NSString*)identifier byType:(Catalog)catalog forName:(NSString*)name callBack:(CallBack)handle;
+-(void)relationship:(NSString*)identifier byType:(Catalog)catalog forName:(NSString*)name callBack:(RequestCallBack)handle;
 
 /**
  通过ISRC(国际录音编码) 获取MV
@@ -84,7 +84,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param ISRCs   MV录音编码列表
  @param handle  数据回调
  */
--(void)musicVideosByISRC:(NSArray<NSString*>*)ISRCs callBack:(CallBack)handle;
+-(void)musicVideosByISRC:(NSArray<NSString*>*)ISRCs callBack:(RequestCallBack)handle;
 
 /**
  通过ISRC 获取Song
@@ -92,7 +92,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param ISRCs   song编码列表
  @param handle  数据回调
  */
--(void)songsByISRC:(NSArray<NSString*>*)ISRCs callBack:(CallBack)handle;
+-(void)songsByISRC:(NSArray<NSString*>*)ISRCs callBack:(RequestCallBack)handle;
 
 /**
  当前地区的排行榜数据
@@ -100,7 +100,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param type    排行榜类型
  @param handle  数据回调
  */
--(void)chartsByType:(ChartsType)type callBack:(CallBack)handle;
+-(void)chartsByType:(ChartsType)type callBack:(RequestCallBack)handle;
 
 
 //Fetch Genres  未实现
@@ -113,7 +113,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param term    搜索字段
  @param handle  数据回调
  */
--(void)searchForTerm:(NSString*)term callBack:(CallBack)handle;
+-(void)searchForTerm:(NSString*)term callBack:(RequestCallBack)handle;
 
 /**
  搜索字段提示
@@ -121,7 +121,7 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param term    搜索提示关键字段
  @param handle  数据回调
  */
--(void)searchHintsForTerm:(NSString*)term callBack:(CallBack)handle;
+-(void)searchHintsForTerm:(NSString*)term callBack:(RequestCallBack)handle;
 
 
 @end

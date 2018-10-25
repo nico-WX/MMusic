@@ -12,7 +12,5 @@
 
 /**通过不同的排行类型, 实例视图控制器*/
 @interface ChartsViewController : UIViewController
-@property(nonatomic, strong,readonly) Chart *chart;
-
--(instancetype)initWithChart:(Chart*) chart;
+//@property(nonatomic, strong,readonly) Chart *chart;
 @end

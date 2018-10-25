@@ -23,20 +23,20 @@
         [self.contentView addSubview:_titleLabel];
 
         //set
-        //默认全透明, 无法显示阴影
-        [self setBackgroundColor:UIColor.whiteColor];
+        //默认全透明, 无法显示阴影  , 设置颜色通道透明
+        [self setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
         [self.layer setShadowColor:UIColor.lightGrayColor.CGColor];
         [self.layer setShadowOffset:CGSizeMake(5, 10)];
-        [self.layer setShadowOpacity:0.7];
+        [self.layer setShadowOpacity:0.8];
         [self.layer setShadowRadius:8];
 
         //text
-        [self.titleLabel setTextAlignment:NSTextAlignmentCenter];
-        [self.titleLabel setAdjustsFontSizeToFitWidth:YES];         //调整字体
+        [_titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [_titleLabel setAdjustsFontSizeToFitWidth:YES];         //调整字体
 
         //layout
         UIView *superView = self.contentView;
-        typeof(self) weakSelf = self;
+        __weak typeof(self) weakSelf = self;
         [_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(superView.mas_left);
             make.top.mas_equalTo(superView.mas_top);
@@ -55,6 +55,7 @@
 }
 
 
+
 -(void)prepareForReuse{
     _imageView.image = NULL;
     _titleLabel.text = NULL;
@@ -67,8 +68,8 @@
 
         self.titleLabel.text = album.name;
 
-        Artwork *artwork = album.artwork;
-        [self showImageToView:self.imageView withImageURL:artwork.url cacheToMemory:YES];
+        //Artwork *artwork = album.artwork;
+        [self showImageToView:self.imageView withImageURL:album.artwork.url cacheToMemory:YES];
     }
 }
 -(void)setPlaylists:(Playlist *)playlists{
@@ -76,8 +77,8 @@
         _playlists = playlists;
 
         self.titleLabel.text = playlists.name;
-        Artwork *artwork = playlists.artwork;
-        [self showImageToView:self.imageView withImageURL:artwork.url cacheToMemory:YES];
+        //Artwork *artwork = playlists.artwork;
+        [self showImageToView:self.imageView withImageURL:playlists.artwork.url cacheToMemory:YES];
     }
 }
 @end

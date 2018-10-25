@@ -16,28 +16,33 @@
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        self.artworkView = UIImageView.new;
-        self.nameLabel = UILabel.new;
-        self.desc = UITextView.new;
-        [self addSubview:self.artworkView];
-        [self addSubview:self.nameLabel];
-        [self addSubview:self.desc];
+        _artworkView = UIImageView.new;
+        _nameLabel = UILabel.new;
+        _desc = UITextView.new;
 
-        self.nameLabel.font = [UIFont systemFontOfSize:28.0];
-        self.desc.textColor = UIColor.grayColor;
-        self.desc.editable  = NO;
+
+        _nameLabel.font = [UIFont systemFontOfSize:28.0];
+        _desc.textColor = UIColor.grayColor;
+        _desc.editable  = NO;
 
         UIColor *color = [UIColor colorWithRed:0.95 green:0.95 blue:0.98 alpha:0.98];
-        self.artworkView.backgroundColor = color;
-        self.nameLabel.backgroundColor = color;
-        self.desc.backgroundColor = color;
+        _artworkView.backgroundColor = color;
+        _nameLabel.backgroundColor = color;
+        _desc.backgroundColor = color;
+
+        [self setBackgroundColor:UIColor.whiteColor];
+        //add subView
+        [self addSubview:_artworkView];
+        [self addSubview:_nameLabel];
+        [self addSubview:_desc];
+        //layout
+        [self layout];
     }
     return self;
 }
 
-- (void)drawRect:(CGRect)rect {
+- (void) layout{
     // Drawing code
-    [self setBackgroundColor:UIColor.whiteColor];
     __weak typeof(self) weakSelf = self;
     UIEdgeInsets padding = UIEdgeInsetsMake(5, 5, 5, 5);
     [self.artworkView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -62,5 +67,11 @@
     }];
 }
 
+//
+//
+//- (void)drawRect:(CGRect)rect {
+//
+//}
+//
 
 @end

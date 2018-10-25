@@ -85,7 +85,9 @@ static PlayerViewController *_instance;
 }
 
 - (void)dealloc{
-    [self.playerController endGeneratingPlaybackNotifications];
+
+    [_timer invalidate];
+    [_playerController endGeneratingPlaybackNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];    
 }
 
@@ -105,11 +107,14 @@ static PlayerViewController *_instance;
         [self.playerView.artistLabel setText:nowPlayingItem.artist];
 
         UIImage *image  = [nowPlayingItem.artwork imageWithSize:self.playerView.artworkView.bounds.size];
+        NSLog(@"artwork =%@",nowPlayingItem.artwork);
+        NSLog(@"image=%@",image);
         if (image) {
-             [self.playerView.artworkView setImage:image];
+            [self.playerView.artworkView setImage:image];
+            NSLog(@"image-2=%@",image);
         }else{
             //清除旧数据
-            self.playerView.artworkView.image = nil;
+            //self.playerView.artworkView.image = nil;
             if (nowPlayingItem.playbackStoreID) {
                 [MusicKit.new.api resources:@[nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
                     json = [[[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
