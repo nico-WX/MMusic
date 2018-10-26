@@ -26,7 +26,6 @@
 static NSString *const reuseID = @"cellReuseIdentifier";
 @implementation ChartsViewController
 
-#pragma mark - init
 
 #pragma mark - cycle
 - (void)viewDidLoad {
@@ -36,6 +35,13 @@ static NSString *const reuseID = @"cellReuseIdentifier";
 
     [self.view addSubview:self.rowCollectionView];
     [self requestData];
+}
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+
+    if (!self.rowCollectionView) {
+        
+    }
 
 }
 
@@ -44,10 +50,7 @@ static NSString *const reuseID = @"cellReuseIdentifier";
     // Dispose of any resources that can be recreated.
 }
 -(void)viewDidLayoutSubviews{
-
-
     [self.rowCollectionView setContentInset:UIEdgeInsetsMake(10, 4, 10, 4)];
-
     [super viewDidLayoutSubviews];
 }
 
@@ -60,19 +63,21 @@ static NSString *const reuseID = @"cellReuseIdentifier";
             NSMutableArray<Chart*> *chartArray = [NSMutableArray array];
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
 
-                //值为数组
+                //每一个Key 对应数组,如{@"albums":[{Chart},]}
                 NSArray *tempArray = (NSArray*) obj;
                 [tempArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                     Chart *chart = [Chart instanceWithDict:(NSDictionary*)obj];
                     [chartArray addObject:chart];
                 }];
-
             }];
             weakSelf.rowData = chartArray;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.rowCollectionView reloadData];
-
             });
+        }
+        //没有MV数据, 请求香港地区数据
+        if (![json valueForKey:@"music-videos"]) {
+            [self requestHongKongMVData];
         }
     }];
 }
@@ -81,9 +86,23 @@ static NSString *const reuseID = @"cellReuseIdentifier";
 - (void) requestHongKongMVData{
     NSString *path = @"https://api.music.apple.com/v1/catalog/hk/charts?types=music-videos";
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
+    __weak typeof(self) weakSelf = self;
     [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        json = [json valueForKey:@"results"];
         if (json) {
-
+            NSMutableArray<Chart*> *chartArray = [NSMutableArray array];
+            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+                NSArray *tempArray = (NSArray*)obj;
+                [tempArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    Chart *chart = [Chart instanceWithDict:(NSDictionary*)obj];
+                    [chartArray addObject:chart];
+                }];
+            }];
+            [chartArray addObjectsFromArray:weakSelf.rowData];
+            weakSelf.rowData = chartArray;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.rowCollectionView reloadData];
+            });
         }
     }];
 }
@@ -98,7 +117,6 @@ static NSString *const reuseID = @"cellReuseIdentifier";
     cell.navigationController = self.navigationController ;
     return cell;
 }
-
 
 #pragma mark <UICollectonViewDelegate>
 

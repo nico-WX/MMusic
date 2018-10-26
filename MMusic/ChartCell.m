@@ -56,7 +56,6 @@
         make.bottom.mas_equalTo(superView.mas_bottom);
     }];
 
-
     [super layoutSubviews];
 }
 - (void)setChart:(Chart *)chart{

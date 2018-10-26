@@ -25,12 +25,10 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self.view addSubview:self.collectionView];
 }
 
 - (void)viewDidLayoutSubviews{
-
     [self.collectionView setFrame:self.view.bounds];
     [super viewDidLayoutSubviews];
 }
@@ -45,7 +43,18 @@ static NSString * const reuseIdentifier = @"Cell";
     ResourceCell_V2 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
 
     Resource *resource = [self.chart.data objectAtIndex: indexPath.row];
-    
+    if ([resource.type isEqualToString:@"albums"]) {
+
+    }
+    if ([resource.type isEqualToString:@"playlists"]) {
+
+    }
+    if ([resource.type isEqualToString:@"songs"]) {
+
+    }
+    if ([resource.type isEqualToString:@"music-videos"]) {
+
+    }
 
 
     Album *album = [Album instanceWithResource:resource];

@@ -8,6 +8,7 @@
 #import <MBProgressHUD.h>
 #import <StoreKit/StoreKit.h>
 
+
 #import "AppDelegate.h"
 
 //Controller
@@ -34,7 +35,7 @@
     //[[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
     //检查授权
-    AuthorizationManager *auth = AuthorizationManager.shareManager;
+    //AuthorizationManager *auth = AuthorizationManager.shareManager;
 
     //tabBar
     UITabBarController *barCtr = [[UITabBarController alloc] init];
@@ -72,7 +73,7 @@
     [barCtr addChildViewController:mmusicNavCtr];
 
     //设置item 图标
-    [todayNavCtr.tabBarItem setImage:[UIImage imageNamed:@"推荐"]];
+    [todayNavCtr.tabBarItem setImage:[UIImage imageNamed:@"recom"]];
     [chartNav.tabBarItem setImage:[UIImage imageNamed:@"Chart"]];
     [browseNav.tabBarItem setImage:[UIImage imageNamed:@"browse"]];
     [mmusicNavCtr.tabBarItem setImage:[UIImage imageNamed:@"Library"]];
