@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class Chart;
 @interface ChartsSubViewController : UIViewController
+- (instancetype)initWithChart:(Chart*) chart;
 @property(nonatomic, weak) UINavigationController *mainNavigatonController;
 @property(nonatomic, strong) Chart *chart;
 

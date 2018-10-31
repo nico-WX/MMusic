@@ -1,15 +1,15 @@
 //
-//  MusicVideosCollectionCell.m
+//  MusicVideosCell.m
 //  MMusic
 //
 //  Created by Magician on 2018/6/17.
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "MusicVideosCollectionCell.h"
+#import "MusicVideosCell.h"
 #import <Masonry.h>
 
-@implementation MusicVideosCollectionCell
+@implementation MusicVideosCell
 
 -(void)drawRect:(CGRect)rect{
     UIView *superview = self.contentView;

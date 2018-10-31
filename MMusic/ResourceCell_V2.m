@@ -67,8 +67,6 @@
         _album = album;
 
         self.titleLabel.text = album.name;
-
-        //Artwork *artwork = album.artwork;
         [self showImageToView:self.imageView withImageURL:album.artwork.url cacheToMemory:YES];
     }
 }
@@ -77,7 +75,6 @@
         _playlists = playlists;
 
         self.titleLabel.text = playlists.name;
-        //Artwork *artwork = playlists.artwork;
         [self showImageToView:self.imageView withImageURL:playlists.artwork.url cacheToMemory:YES];
     }
 }

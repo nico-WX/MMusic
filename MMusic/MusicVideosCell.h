@@ -1,5 +1,5 @@
 //
-//  MusicVideosCollectionCell.h
+//  MusicVideosCell.h
 //  MMusic
 //
 //  Created by Magician on 2018/6/17.
@@ -8,6 +8,6 @@
 
 #import "ResourceCollectionViewCell.h"
 
-@interface MusicVideosCollectionCell : ResourceCollectionViewCell
+@interface MusicVideosCell : ResourceCollectionViewCell
 
 @end

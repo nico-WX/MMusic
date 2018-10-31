@@ -1,5 +1,5 @@
 //
-//  ChartsViewController.h
+//  ChartsMainViewController.h
 //  MMusic
 //
 //  Created by Magician on 2018/4/24.
@@ -11,6 +11,5 @@
 #import "Chart.h"
 
 /**通过不同的排行类型, 实例视图控制器*/
-@interface ChartsViewController : UIViewController
-//@property(nonatomic, strong,readonly) Chart *chart;
+@interface ChartsMainViewController : UIViewController
 @end

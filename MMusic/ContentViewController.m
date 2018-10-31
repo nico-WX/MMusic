@@ -14,7 +14,7 @@
 #import "DetailViewController.h"
 
 //view
-#import "MusicVideosCollectionCell.h"
+#import "MusicVideosCell.h"
 #import "SongCell.h"
 
 //model
@@ -197,7 +197,7 @@ static NSString * const cellID = @"cellReuseIdentifier";
         CGRect rect = self.view.frame;
 
         if([type isEqualToString:@"music-videos"]){
-            [_collectionView registerClass:MusicVideosCollectionCell.class forCellWithReuseIdentifier:cellID];
+            [_collectionView registerClass:MusicVideosCell.class forCellWithReuseIdentifier:cellID];
             w = CGRectGetWidth(rect);
             h = w*0.75;
         }else{

@@ -1,5 +1,5 @@
 //
-//  ChartsViewController.m
+//  ChartsMainViewController.m
 //  MMusic
 //
 //  Copyright © 2018年 com.😈. All rights reserved.
@@ -8,23 +8,23 @@
 #import <MJRefresh.h>
 
 //Controller
-#import "ChartsViewController.h"
+#import "ChartsMainViewController.h"
 
 //view  and cell
-#import "ChartCell.h"
+#import "ChartsMainCell.h"
 
 //model and tool
 #import "MusicKit.h"
 #import "Resource.h"
 
-@interface ChartsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
+@interface ChartsMainViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 @property(nonatomic, strong) NSArray<Chart*> *rowData;
 @property(nonatomic, strong) UICollectionView *rowCollectionView; //每一行cell中包含一个视图控制器,及一个title
 
 @end
 
 static NSString *const reuseID = @"cellReuseIdentifier";
-@implementation ChartsViewController
+@implementation ChartsMainViewController
 
 
 #pragma mark - cycle
@@ -38,11 +38,6 @@ static NSString *const reuseID = @"cellReuseIdentifier";
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-
-    if (!self.rowCollectionView) {
-        
-    }
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -50,10 +45,9 @@ static NSString *const reuseID = @"cellReuseIdentifier";
     // Dispose of any resources that can be recreated.
 }
 -(void)viewDidLayoutSubviews{
-    [self.rowCollectionView setContentInset:UIEdgeInsetsMake(10, 4, 10, 4)];
+    [self.rowCollectionView setContentInset:UIEdgeInsetsMake(4, 4, 10, 4)];
     [super viewDidLayoutSubviews];
 }
-
 
 - (void)requestData{
     __weak typeof(self) weakSelf = self;
@@ -112,7 +106,7 @@ static NSString *const reuseID = @"cellReuseIdentifier";
     return self.rowData.count;
 }
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    ChartCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseID forIndexPath:indexPath];
+    ChartsMainCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseID forIndexPath:indexPath];
     cell.chart = [self.rowData objectAtIndex:indexPath.row];
     cell.navigationController = self.navigationController ;
     return cell;
@@ -134,7 +128,7 @@ static NSString *const reuseID = @"cellReuseIdentifier";
         [layout setMinimumLineSpacing:20];
 
         _rowCollectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
-        [_rowCollectionView registerClass:[ChartCell class] forCellWithReuseIdentifier:reuseID];
+        [_rowCollectionView registerClass:[ChartsMainCell class] forCellWithReuseIdentifier:reuseID];
         [_rowCollectionView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
 
         _rowCollectionView.delegate = self;

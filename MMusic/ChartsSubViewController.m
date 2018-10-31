@@ -23,9 +23,38 @@ static NSString * const reuseIdentifier = @"Cell";
 @implementation ChartsSubViewController
 
 
+- (instancetype)initWithChart:(Chart *)chart{
+    if (self = [super init]) {
+        _chart = chart;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     [self.view addSubview:self.collectionView];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+
+    //songs & MV 更改布局
+    NSString *type = [self.chart.data firstObject].type;
+    NSLog(@"type=%@",type);
+
+    NSLog(@"self.chart=%@",self.chart);
+    if ([type isEqualToString:@"songs"]) {
+
+    }
+    if ([type isEqualToString:@"music-videos"]) {
+        NSLog(@"type=>>>>%@",type);
+        UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+        CGFloat h = CGRectGetHeight(self.collectionView.frame);
+        CGFloat w = h*1.4;
+        [layout setItemSize:CGSizeMake(w, h)];
+        [self.collectionView setCollectionViewLayout:layout animated:YES];
+    }
 }
 
 - (void)viewDidLayoutSubviews{
@@ -84,7 +113,6 @@ static NSString * const reuseIdentifier = @"Cell";
     if (!_collectionView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         [layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
-
 
         UICollectionView *view = [[UICollectionView alloc]  initWithFrame:self.view.bounds collectionViewLayout:layout];
         [view setDataSource:self];
