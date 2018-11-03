@@ -76,7 +76,7 @@
 		3B9AA9071FB47C1200720085 /* Song.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA9061FB47C1200720085 /* Song.m */; };
 		3B9AA90A1FB47D6B00720085 /* Station.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA9091FB47D6B00720085 /* Station.m */; };
 		3B9AA90D1FB47E0700720085 /* Storefront.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA90C1FB47E0700720085 /* Storefront.m */; };
-		3B9AA9161FB588AF00720085 /* AuthorizationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA9151FB588AF00720085 /* AuthorizationManager.m */; };
+		3B9AA9161FB588AF00720085 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA9151FB588AF00720085 /* AuthManager.m */; };
 		3B9B269320D65EEA00881199 /* ResourceCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9B269220D65EEA00881199 /* ResourceCollectionViewCell.m */; };
 		3B9B269620D65F4F00881199 /* AlbumsCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9B269520D65F4F00881199 /* AlbumsCollectionCell.m */; };
 		3B9B269920D6877E00881199 /* MusicVideosCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9B269820D6877E00881199 /* MusicVideosCell.m */; };
@@ -315,8 +315,8 @@
 		3B9AA9091FB47D6B00720085 /* Station.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Station.m; sourceTree = "<group>"; };
 		3B9AA90B1FB47E0700720085 /* Storefront.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Storefront.h; sourceTree = "<group>"; };
 		3B9AA90C1FB47E0700720085 /* Storefront.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Storefront.m; sourceTree = "<group>"; };
-		3B9AA9141FB588AF00720085 /* AuthorizationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthorizationManager.h; sourceTree = "<group>"; };
-		3B9AA9151FB588AF00720085 /* AuthorizationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthorizationManager.m; sourceTree = "<group>"; };
+		3B9AA9141FB588AF00720085 /* AuthManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthManager.h; sourceTree = "<group>"; };
+		3B9AA9151FB588AF00720085 /* AuthManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthManager.m; sourceTree = "<group>"; };
 		3B9B269120D65EEA00881199 /* ResourceCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceCollectionViewCell.h; sourceTree = "<group>"; };
 		3B9B269220D65EEA00881199 /* ResourceCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResourceCollectionViewCell.m; sourceTree = "<group>"; };
 		3B9B269420D65F4F00881199 /* AlbumsCollectionCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AlbumsCollectionCell.h; sourceTree = "<group>"; };
@@ -595,8 +595,8 @@
 			isa = PBXGroup;
 			children = (
 				3B44056E20BA89B30085FDAB /* DBTool */,
-				3B9AA9141FB588AF00720085 /* AuthorizationManager.h */,
-				3B9AA9151FB588AF00720085 /* AuthorizationManager.m */,
+				3B9AA9141FB588AF00720085 /* AuthManager.h */,
+				3B9AA9151FB588AF00720085 /* AuthManager.m */,
 				3B555EE520E0C23800AFF9A2 /* MusicKit.h */,
 				3B555EE620E0C23800AFF9A2 /* MusicKit.m */,
 				3BFB704C2109BA6F002B3A06 /* APIRoot.h */,
@@ -1174,7 +1174,7 @@
 				3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */,
 				3B2D6EFB2091F69200E1B22C /* ScreeningViewController.m in Sources */,
 				3B4E3AD6208F46B90042498C /* ChartsMainViewController.m in Sources */,
-				3B9AA9161FB588AF00720085 /* AuthorizationManager.m in Sources */,
+				3B9AA9161FB588AF00720085 /* AuthManager.m in Sources */,
 				3B555EEA20E0C25100AFF9A2 /* API.m in Sources */,
 				3B8799612053DC4600EE9D2A /* DetailHeaderView.m in Sources */,
 				3B9B269920D6877E00881199 /* MusicVideosCell.m in Sources */,
