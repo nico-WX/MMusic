@@ -7,7 +7,7 @@
 //
 
 #import "Library.h"
-#import "AuthorizationManager.h"
+#import "AuthManager.h"
 
 @interface Library()
 @end

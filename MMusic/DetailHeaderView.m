@@ -16,27 +16,26 @@
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        _artworkView = UIImageView.new;
-        _nameLabel = UILabel.new;
-        _desc = UITextView.new;
 
+        _artworkView    = UIImageView.new;
+        _nameLabel      = UILabel.new;
+        _desc           = UITextView.new;
 
         _nameLabel.font = [UIFont systemFontOfSize:28.0];
+        [_nameLabel setAdjustsFontSizeToFitWidth:YES];
         _desc.textColor = UIColor.grayColor;
         _desc.editable  = NO;
 
         UIColor *color = [UIColor colorWithRed:0.95 green:0.95 blue:0.98 alpha:0.98];
-        _artworkView.backgroundColor = color;
-        _nameLabel.backgroundColor = color;
-        _desc.backgroundColor = color;
+        [_artworkView setBackgroundColor:color];
+        [_nameLabel setBackgroundColor:color];
+        [_desc setBackgroundColor:color];
 
-        [self setBackgroundColor:UIColor.whiteColor];
+        [self setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
         //add subView
         [self addSubview:_artworkView];
         [self addSubview:_nameLabel];
         [self addSubview:_desc];
-        //layout
-        [self layout];
     }
     return self;
 }
@@ -48,15 +47,18 @@
     [self.artworkView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.mas_top).with.offset(padding.top);
         make.left.mas_equalTo(weakSelf.mas_left).with.offset(padding.left);
-        make.bottom.mas_equalTo(weakSelf.mas_bottom).with.offset(-padding.bottom);
-        make.width.equalTo(weakSelf.mas_height).with.offset(-padding.top*2);
+        make.width.height.mas_equalTo(@66.0);
     }];
+
+    [self.artworkView.layer setCornerRadius:33.0];
+    [self.artworkView.layer setMasksToBounds:YES];
+
 
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.mas_top).with.offset(padding.top);
         make.left.mas_equalTo(weakSelf.artworkView.mas_right).with.offset(padding.left);
         make.right.mas_equalTo(weakSelf.mas_right).with.offset(-padding.right);
-        make.height.mas_equalTo(44);
+        //make.height.mas_equalTo(66);
     }];
 
     [self.desc mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -67,11 +69,11 @@
     }];
 }
 
-//
-//
-//- (void)drawRect:(CGRect)rect {
-//
-//}
-//
+
+- (void)layoutSubviews{
+    [self layout];
+
+    [super layoutSubviews];
+}
 
 @end

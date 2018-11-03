@@ -5,7 +5,7 @@
  */
 
 #import "API.h"
-#import "AuthorizationManager.h"
+#import "AuthManager.h"
 
 @interface API()
 //@property(nonatomic, strong)NSString *root;
@@ -14,17 +14,17 @@
 static API* _instance;
 @implementation API
 
--(instancetype)init{
+- (instancetype)init{
     if (self =[super init]) {
         _library = [[Library alloc] init];
 
         self.rootPath = [self.rootPath stringByAppendingPathComponent:@"catalog"];
-        NSString *storeFront = [AuthorizationManager shareManager].storefront;
+        NSString *storeFront = [AuthManager shareManager].storefront;
         self.rootPath = [self.rootPath stringByAppendingPathComponent:storeFront];
     }
     return self;
 }
-+(instancetype)allocWithZone:(struct _NSZone *)zone{
++ (instancetype)allocWithZone:(struct _NSZone *)zone{
     if (!_instance) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -34,10 +34,10 @@ static API* _instance;
     return _instance;
 }
 
-
--(void)resources:(NSArray<NSString *> *)ids byType:(Catalog)catalog callBack:(RequestCallBack)handle{
-    NSString *subPath = [self subPathForType:catalog];
-    NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
+- (void)resources:(NSArray<NSString *> *)ids byType:(ResourceType)catalog callBack:(RequestCallBack)handle {
+    NSString *component = [self pathComponentForType:catalog];
+    NSString *path = [self.rootPath stringByAppendingPathComponent:component];
+    //拼接方式
     if (ids.count == 1) {
         path = [path stringByAppendingPathComponent:ids.lastObject];
     }else{
@@ -51,17 +51,18 @@ static API* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)relationship:(NSString *)identifier byType:(Catalog)catalog forName:(NSString *)name callBack:(RequestCallBack)handle{
-    NSString *subPath = [self subPathForType:catalog];
-    NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
+- (void)relationship:(NSString *)identifier byType:(ResourceType)catalog forName:(NSString *)name callBack:(RequestCallBack)handle {
+    NSString *component = [self pathComponentForType:catalog];
+    NSString *path = [self.rootPath stringByAppendingPathComponent:component];
     path = [path stringByAppendingPathComponent:identifier];
     path = [path stringByAppendingPathComponent:name];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)musicVideosByISRC:(NSArray<NSString *> *)ISRCs callBack:(RequestCallBack)handle{
-    NSString *subPath = [self subPathForType:CatalogMusicVideos];
+
+- (void)musicVideosByISRC:(NSArray<NSString *> *)ISRCs callBack:(RequestCallBack)handle {
+    NSString *subPath = [self pathComponentForType:CatalogMusicVideos];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
     path = [path stringByAppendingString:@"?filter[isrc]="];
     for (NSString *isrc in ISRCs) {
@@ -71,8 +72,8 @@ static API* _instance;
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)songsByISRC:(NSArray<NSString *> *)ISRCs callBack:(RequestCallBack)handle{
-    NSString *subPath = [self subPathForType:CatalogSongs];
+- (void)songsByISRC:(NSArray<NSString *> *)ISRCs callBack:(RequestCallBack)handle {
+    NSString *subPath = [self pathComponentForType:CatalogSongs];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
     path = [path stringByAppendingString:@"?filter[isrc]="];
     for (NSString *isrc in ISRCs) {
@@ -83,7 +84,7 @@ static API* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)chartsByType:(ChartsType)type callBack:(RequestCallBack)handle{
+- (void)chartsByType:(ChartsType)type callBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"charts?types="];
     switch (type) {
         case ChartsAlbums:
@@ -107,28 +108,27 @@ static API* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)searchForTerm:(NSString *)term callBack:(RequestCallBack)handle{
+- (void)searchForTerm:(NSString *)term callBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search?term="];
     path = [path stringByAppendingString:term];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)searchHintsForTerm:(NSString *)term callBack:(RequestCallBack)handle{
+
+- (void)searchHintsForTerm:(NSString *)term callBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search"];
     path = [path stringByAppendingPathComponent:@"hints?term="];
     path = [path stringByAppendingString:term];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
-
-
 }
 
 
 #pragma mark - helper
 //不同的类型,返回不同的子路径
--(NSString*)subPathForType:(Catalog) catalog{
+- (NSString*)pathComponentForType:(ResourceType)catalog {
     NSString *subPath = @"";
     switch (catalog) {
         case CatalogAlbums:

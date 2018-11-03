@@ -9,6 +9,7 @@
 #import "MusicKit.h"
 
 static MusicKit* _instance;
+
 @implementation MusicKit
 -(instancetype)init{
     if (self = [super init]) {
@@ -17,12 +18,10 @@ static MusicKit* _instance;
     return self;
 }
 +(instancetype)allocWithZone:(struct _NSZone *)zone{
-    if (!_instance) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            _instance = [super allocWithZone:zone];
-        });
-    }
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _instance = [[super allocWithZone:zone] init];
+    });
     return _instance;
 }
 @end

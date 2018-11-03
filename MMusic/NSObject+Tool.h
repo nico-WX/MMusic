@@ -34,7 +34,7 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param href 子路径
  @return 请求体
  */
-- (NSURLRequest*)createRequestWithHref:(NSString*) href;
+- (NSURLRequest*)createRequestWithHref:(NSString*)href;
 
 /**
  通过完整的URL路径 生成请求体 并设置请求头
@@ -43,7 +43,7 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param setupUserToken  是否需要设置用户令牌
  @return                请求体
  */
--(NSURLRequest*_Nonnull) createRequestWithURLString:(NSString*_Nonnull) urlString setupUserToken:(BOOL) setupUserToken;
+- (NSURLRequest*_Nonnull)createRequestWithURLString:(NSString*_Nonnull)urlString setupUserToken:(BOOL)setupUserToken;
 
 
 /**
@@ -54,7 +54,7 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param error 错误信息
  @return Json 字典
  */
-- (NSDictionary*_Nullable) serializationDataWithResponse:(NSURLResponse* _Nullable ) response data:(NSData*_Nullable) data error:(NSError*_Nullable) error;
+- (NSDictionary*_Nullable)serializationDataWithResponse:(NSURLResponse* _Nullable )response data:(NSData*_Nullable)data error:(NSError*_Nullable)error;
 
 
 /**
@@ -63,7 +63,7 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param request 请求体
  @param handle 回调
  */
--(void)dataTaskWithRequest:(NSURLRequest*)request handler:(RequestCallBack) handle;
+- (void)dataTaskWithRequest:(NSURLRequest*)request handler:(RequestCallBack)handle;
 
 /**
  替换ImageURL 中的Image大小参数 默认屏幕的缩放大小
@@ -73,26 +73,7 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param width 图片宽度
  @return 替换后的请求路径
  */
--(NSString*_Nonnull) stringReplacingOfString:(NSString*_Nonnull) target height:(CGFloat) height width:(CGFloat) width;
-
-
-/**
-16进制颜色转换 RGBA
-
- @param hexString 16进制颜色字符串
- @param alpha 透明通道
- @return RGB 颜色
- */
-+(UIColor*)colorWithHexString:(NSString*) hexString alpha:(CGFloat) alpha;
-
-
-/**
- 补色
-
- @param mainColor 主要颜色
- @return 补色
- */
-+ (UIColor *)oppositeColorOf:(UIColor *)mainColor;
+- (NSString*_Nonnull)stringReplacingOfString:(NSString*_Nonnull)target height:(CGFloat)height width:(CGFloat)width;
 
 
 /**
@@ -102,7 +83,7 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param indexPath 开始播放位置
  @return 播放队列
  */
--(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueFromParams:(NSArray<NSDictionary*>*) playParamses startAtIndexPath:(NSIndexPath*) indexPath;
+- (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueFromParams:(NSArray<NSDictionary*>*)playParamses startAtIndexPath:(NSIndexPath*)indexPath;
 
 
 /**
@@ -112,7 +93,7 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param index 开始播放音乐下标
  @return 播放队列
  */
--(MPMusicPlayerPlayParametersQueueDescriptor*) playParametersQueueFromSongs:(NSArray<Song*>*) songs startPlayIndex:(NSUInteger) index;
+- (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueFromSongs:(NSArray<Song*>*)songs startPlayIndex:(NSUInteger)index;
 
 
 /**
@@ -122,7 +103,7 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param url 图片路径
  @param cache 是否缓存到沙盒
  */
--(void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL) cache;
+- (void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL)cache;
 
 
 /**
@@ -132,14 +113,14 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param imageSize 图片大小
  @return 图片
  */
--(UIImage*)imageFromURL:(NSString*) url withImageSize:(CGSize) imageSize;
+- (UIImage*)imageFromURL:(NSString*)url withImageSize:(CGSize)imageSize;
 
 /**
  主屏幕显示提示信息
 
 @param text 显示的文本信息
  */
--(void)showHUDToMainWindowFromText:(NSString*) text;
+- (void)showHUDToMainWindowFromText:(NSString*)text;
 
 
 

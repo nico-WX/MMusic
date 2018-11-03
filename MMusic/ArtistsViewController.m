@@ -169,7 +169,8 @@
     NSString *title = dict.allKeys.lastObject ;
     ResponseRoot *root = dict.allValues.lastObject;
     if ([title isEqualToString:@"songs"]) {
-        DetailViewController *detail = [[DetailViewController alloc] initWithResponseRoot:root];
+        DetailViewController *detail = [[DetailViewController alloc] init];  //[[DetailViewController alloc] initWithResponseRoot:root];
+
         return detail;
 
     }else{

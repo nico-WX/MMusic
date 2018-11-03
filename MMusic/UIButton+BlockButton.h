@@ -11,8 +11,8 @@
 
 typedef void (^ActionBlock)(void);
 
-@interface UIButton (BlockButton)
-@property (readonly) NSMutableDictionary *event;
+@interface UIButton(BlockButton)
 
-- (void) handleControlEvent:(UIControlEvents)controlEvent withBlock:(ActionBlock)action;
+@property (readonly) NSMutableDictionary *event;
+- (void)handleControlEvent:(UIControlEvents)controlEvent withBlock:(ActionBlock)action;
 @end

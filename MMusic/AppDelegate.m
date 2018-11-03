@@ -18,7 +18,7 @@
 #import "BrowseViewController.h"
 #import "SearchViewController.h"
 
-#import "AuthorizationManager.h"
+#import "AuthManager.h"
 
 @interface AppDelegate ()
 @end
@@ -35,7 +35,7 @@
     //[[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
     //检查授权
-    //AuthorizationManager *auth = AuthorizationManager.shareManager;
+    //AuthManager *auth = AuthManager.shareManager;
 
     //tabBar
     UITabBarController *barCtr = [[UITabBarController alloc] init];

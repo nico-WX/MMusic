@@ -1,0 +1,4 @@
+Documentation set was installed to Xcode!
+
+Path: /Users/pan/Library/Developer/Shared/Documentation/DocSets/com.mmusic.mmusic.mmusic.docset
+Time: 2018-11-03 12:47:30 +0000

@@ -30,6 +30,7 @@
 
 
 @interface DetailViewController ()<UITableViewDelegate,UITableViewDataSource>
+@property(nonatomic, strong,readonly) UITableView *tableView;
 /**头视图*/
 @property(nonatomic, strong) DetailHeaderView *header;
 //专辑,播放列表等初始数据
