@@ -97,7 +97,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
 
         for (Song *song in self.songs) {
-            if ([song isEqualToMediaItem:self.playerVC.playerController.nowPlayingItem]) {
+            if ([song isEqualToMediaItem:MainPlayer.nowPlayingItem]) {
                 NSUInteger index = [self.songs indexOfObject:song];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
@@ -117,7 +117,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         make.edges.mas_equalTo(superview).insets(UIEdgeInsetsZero);
     }];
     //从其他视图返回时 cell的播放指示器不动
-    MPMediaItem *item = self.playerVC.playerController.nowPlayingItem;
+    MPMediaItem *item = MainPlayer.nowPlayingItem;
     for (Song *song in self.songs) {
         if ([song isEqualToMediaItem:item]) {
             NSUInteger index = [self.songs indexOfObject:song];

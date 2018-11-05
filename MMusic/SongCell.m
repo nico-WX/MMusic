@@ -14,7 +14,7 @@
 #import "Song.h"
 
 @interface SongCell()
-@property(nonatomic, strong) PlayerContentViewController       *playerVC;
+
 @property(nonatomic, strong) NAKPlaybackIndicatorView   *playbackIndicatorView;
 @property(nonatomic, strong, readonly) UILabel          *nameLabel;
 @property(nonatomic, strong, readonly) UILabel          *artistLabel;
@@ -135,10 +135,10 @@
 }
 
 -(void) stateForSong:(Song*) song{
-    MPMediaItem *item = self.playerVC.playerController.nowPlayingItem;
+    MPMediaItem *item = MainPlayer.nowPlayingItem;
     if ([song isEqualToMediaItem:item]) {
         [self.numberLabel setHidden:YES];
-        switch (self.playerVC.playerController.playbackState) {
+        switch (MainPlayer.playbackState) {
             case MPMusicPlaybackStatePlaying:
                 [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
                 break;
@@ -153,11 +153,6 @@
     }
     [self setNeedsDisplay];
 }
--(PlayerContentViewController *)playerVC{
-    if (!_playerVC) {
-        _playerVC = [PlayerContentViewController sharePlayerViewController];
-    }
-    return _playerVC;
-}
+
 
 @end

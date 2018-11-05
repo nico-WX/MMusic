@@ -14,7 +14,6 @@
 
 /**专辑封面*/
 @property(nonatomic, strong,readonly) UIImageView *artworkView;
-
 /**歌曲名称*/
 @property(nonatomic, strong,readonly)UILabel *songNameLabel;
 /**艺人名 或者 专辑信息*/

@@ -70,7 +70,6 @@
     UINavigationController *browseNav = [[UINavigationController alloc] initWithRootViewController:browseVC];
 
     //添加控制器
-    //[barCtr addChildViewController:todayNavCtr];
     [barCtr addChildViewController:todayCVC];
     [barCtr addChildViewController:chartNav];
     [barCtr addChildViewController:browseNav];
@@ -81,7 +80,7 @@
     [chartNav.tabBarItem setImage:[UIImage imageNamed:@"Chart"]];
     [browseNav.tabBarItem setImage:[UIImage imageNamed:@"browse"]];
     [mmusicNavCtr.tabBarItem setImage:[UIImage imageNamed:@"Library"]];
-    //[musicNav.tabBarItem setImage:[UIImage imageNamed:@"music"]];
+
     
 
     [self.window makeKeyAndVisible];    //显示

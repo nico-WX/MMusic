@@ -59,7 +59,6 @@ static PlayerContentViewController *_instance;
     if (self = [super init]) {
         //不在viewDidLoad 中添加
         [self.view addSubview:self.playerView];
-     
     }
     return self;
 }
@@ -82,15 +81,14 @@ static PlayerContentViewController *_instance;
 }
 
 - (void)dealloc{
-
-    [_playerController endGeneratingPlaybackNotifications];
+    [MainPlayer endGeneratingPlaybackNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];    
 }
 
 
 #pragma mark - 更新UI信息
 -(void)updateCurrentItemMetadata{
-    MPMediaItem *nowPlayingItem = self.playerController.nowPlayingItem;
+    MPMediaItem *nowPlayingItem = MainPlayer.nowPlayingItem;
     if (nowPlayingItem) {
         //播放的时候, 有可能在播放第三方音乐, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
         self.playerView.heartIcon.enabled = nowPlayingItem.playbackStoreID ? YES  : NO;
@@ -134,8 +132,8 @@ static PlayerContentViewController *_instance;
     NSURL *url = [NSURL URLWithString:@"Music:prefs:root=MUSIC"];
     if ([app canOpenURL:url]) {
         [app openURL:url options:@{} completionHandler:^(BOOL success) {
-            [self.playerController setQueueWithDescriptor:queueDescriptor];
-            [self.playerController play];
+            [MainPlayer setQueueWithDescriptor:queueDescriptor];
+            [MainPlayer play];
         }];
     }
 }
@@ -146,20 +144,20 @@ static PlayerContentViewController *_instance;
 
     //当前开始的song 与正在播放的item 是否为同一个
     Song *song = [self.songs objectAtIndex:startIndex];
-    if (![song isEqualToMediaItem:self.playerController.nowPlayingItem]) {
+    if (![song isEqualToMediaItem:MainPlayer.nowPlayingItem]) {
         MPMusicPlayerPlayParameters *parameter = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
         [self.parametersQueue setStartItemPlayParameters:parameter];
-        [self.playerController setQueueWithDescriptor:self.parametersQueue];
-        [self.playerController play];
+        [MainPlayer setQueueWithDescriptor:self.parametersQueue];
+        [MainPlayer play];
     }
 }
 -(void)insertSongAtNextItem:(Song *)song{
     MPMusicPlayerPlayParameters *parameter = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
     MPMusicPlayerPlayParametersQueueDescriptor *queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[parameter,]];
-    [self.playerController prependQueueDescriptor:queue];
+    [MainPlayer prependQueueDescriptor:queue];
 
     NSMutableArray<Song*> *array = [NSMutableArray arrayWithArray:self.songs];
-    NSUInteger index = self.playerController.indexOfNowPlayingItem;
+    NSUInteger index = MainPlayer.indexOfNowPlayingItem;
     //数据添加到指定位置
     if (self.songs.count >= index) {
         [array insertObject:song atIndex:++index]; //当前播放下标后面
@@ -169,7 +167,7 @@ static PlayerContentViewController *_instance;
 -(void)insertSongAtEndItem:(Song *)song{
     MPMusicPlayerPlayParameters *parameter = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
     MPMusicPlayerPlayParametersQueueDescriptor *queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[parameter,]];
-    [self.playerController appendQueueDescriptor:queue];
+    [MainPlayer appendQueueDescriptor:queue];
 
     //插入添加数据
     if (self.songs.count > 0) {
@@ -202,23 +200,7 @@ static PlayerContentViewController *_instance;
 
 #pragma mark - getter
 
--(MPMusicPlayerController *)playerController{
-    if (!_playerController) {
-        _playerController = [MPMusicPlayerController systemMusicPlayer];
-        [_playerController beginGeneratingPlaybackNotifications];       //开启消息
 
-
-        //注册通知
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        __weak typeof(self) weakSelf = self;
-        // 监听播放项目改变
-        [center addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-            [weakSelf updateCurrentItemMetadata];
-        }];
-
-    }
-    return _playerController;
-}
 
 -(PlayerView *)playerView{
     if (!_playerView) {
@@ -226,11 +208,6 @@ static PlayerContentViewController *_instance;
 
         //事件绑定
         [_playerView.heartIcon addTarget:self action:@selector(changeLove:) forControlEvents:UIControlEventTouchUpInside];
-
-//        //下滑隐藏控制器 手势
-//        UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(closeViewController)];
-//        [gesture setDirection:UISwipeGestureRecognizerDirectionDown];
-//        [_playerView addGestureRecognizer:gesture];
     }
     return _playerView;
 }
@@ -279,7 +256,7 @@ static PlayerContentViewController *_instance;
 //红心按钮 添加喜欢或者删除喜欢
 - (void)changeLove:(MySwitch*) heart{
 
-    NSString *identifier = self.playerController.nowPlayingItem.playbackStoreID;
+    NSString *identifier = MainPlayer.nowPlayingItem.playbackStoreID;
     // 查询当前rating状态(不是基于当前按钮状态)  --> 操作
     [MusicKit.new.api.library getRating:@[identifier,] byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         (json && response.statusCode==200) ? [self deleteRatingForSongId:identifier] : [self addRatingForSongId:identifier];
