@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+//拆分代码 事件内部通过处理
 /**播放器控制按钮*/
 @interface PlayControllerView : UIView
 

@@ -54,7 +54,7 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param error 错误信息
  @return Json 字典
  */
-- (NSDictionary*_Nullable)serializationDataWithResponse:(NSURLResponse* _Nullable )response data:(NSData*_Nullable)data error:(NSError*_Nullable)error;
+- (NSDictionary*_Nullable)serializationDataWithResponse:(NSURLResponse* _Nullable)response data:(NSData*_Nullable)data error:(NSError*_Nullable)error;
 
 
 /**

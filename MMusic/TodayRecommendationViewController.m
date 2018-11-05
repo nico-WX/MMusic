@@ -2,22 +2,19 @@
 //  TodayCollectionViewController.m
 //  MMusic
 //
-//  Created by Magician on 2017/12/26.
+
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
 //frameworks
-#import <MediaPlayer/MediaPlayer.h>
-#import <NAKPlaybackIndicatorView.h>
+
 #import <UIImageView+WebCache.h>
 #import <MJRefresh.h>
 #import <Masonry.h>
 
 //controller
 #import "TodayRecommendationViewController.h"
-#import "PlayerViewController.h"
 #import "DetailViewController.h"
-#import "SearchViewController.h"
 
 //view
 #import "TodaySectionView.h"
@@ -31,16 +28,10 @@
 #import "Playlist.h"
 #import "Album.h"
 
-//other
-#import "JSONKey.h"
-
-@interface TodayRecommendationViewController()<UICollectionViewDelegate, UICollectionViewDataSource>
+@interface TodayRecommendationViewController()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDataSourcePrefetching>
 @property(nonatomic, strong) UIButton *playbackViewButton;                      //右上角播放器指示器按钮(占位)
-@property(nonatomic, strong) NAKPlaybackIndicatorView *playbackIndicatorView;   //播放器视图(添加到上面的按钮中)
 @property(nonatomic, strong) UIActivityIndicatorView *activityView;     //内容加载指示器
 @property(nonatomic, strong) UICollectionView *collectionView;          //内容ui
-@property(nonatomic, strong) SearchViewController *searchVC;            //搜索控制器
-
 
 //json 结构
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *allData;
@@ -58,28 +49,10 @@ static NSString *const cellIdentifier = @"todayCell";
 
     self.view.backgroundColor = UIColor.whiteColor;
     [self requestData];
-    [self setupNavigationSubview];
 
-
-    //推荐内容
-    [self.view insertSubview:self.collectionView belowSubview:self.searchVC.view];
-
-    //加载遮罩 (mask)
+    [self.view addSubview:self.collectionView];
+    //数据加载指示器
     [self.collectionView addSubview:self.activityView];
-
-    __weak typeof(self) weakSelf = self;
-    [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-        MPMusicPlayerController *player = note.object;
-        switch (player.playbackState) {
-            case MPMusicPlaybackStatePlaying:
-                [weakSelf.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
-                break;
-
-            default:
-                [weakSelf.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
-                break;
-        }
-    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -87,88 +60,13 @@ static NSString *const cellIdentifier = @"todayCell";
     // Dispose of any resources that can be recreated.
 }
 
-//更新UI
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    //显示搜索栏(进入搜索结果时会隐藏)
-    [self.searchVC.serachBar setHidden:NO];
-
-    //更新指示器
-    PlayerViewController *playerVC = [PlayerViewController sharePlayerViewController];
-    switch (playerVC.playerController.playbackState) {
-        case MPMusicPlaybackStatePaused:
-        case MPMusicPlaybackStateStopped:
-        case MPMusicPlaybackStateInterrupted:
-            [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
-            break;
-
-            //播放,快进退
-        default:
-            [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
-            break;
-    }
-}
-
-//调整集合视图
-- (void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-
-    //layout collectionView
-    __weak typeof(self) weakSelf = self;
-    UIView *superview = self.view;
-    [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        CGFloat topOffset = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
-        CGFloat bottomOffset = CGRectGetHeight(weakSelf.tabBarController.tabBar.frame);
-        make.edges.mas_equalTo(superview).insets(UIEdgeInsetsMake(topOffset, 0, bottomOffset, 0));
-    }];
-}
-
-#pragma mark - 设置导航栏子视图
-- (void)setupNavigationSubview{
-
-    /**
-     1.添加搜索栏到导航栏
-     2.添加搜索控制器视图到视图中, 高度为0 隐藏在导航栏下方
-     */
-    //搜索栏
-    self.searchVC = SearchViewController.new;
-    [self addChildViewController:self.searchVC];
-    [self.navigationController.navigationBar addSubview:self.searchVC.serachBar];
-    [self.view addSubview:self.searchVC.view];
-
-    //播放状态视图覆盖在按钮上,按钮响应弹出播放器界面事件
-    [self.playbackViewButton addSubview:self.playbackIndicatorView];
-    [self.navigationController.navigationBar addSubview:self.playbackViewButton];
-
-
-    //layout
-    __weak typeof(self) weakSelf = self;
-    UIView *superview = self.navigationController.navigationBar;
-    //左右偏移,搜索栏居中
-    [self.searchVC.serachBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superview).with.insets(UIEdgeInsetsMake(0, 60, 0, 60));
-    }];
-
-    [self.playbackViewButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superview.mas_top);
-        make.bottom.mas_equalTo(superview.mas_bottom);
-        make.left.mas_equalTo(weakSelf.searchVC.serachBar.mas_right).offset(8);
-        make.right.mas_equalTo(superview.mas_right).offset(-8);
-    }];
-
-    superview = self.playbackViewButton;
-    [self.playbackIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superview).insets(UIEdgeInsetsZero);
-    }];
-}
-
 #pragma  mark - 请求数据 和解析JSON
 - (void)requestData {
 
     [MusicKit.new.api.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         //数据临时集合 [{@"section title":[data]},...]
+        
         NSMutableArray<NSDictionary<NSString*,NSArray*>*> *array = [NSMutableArray array];
-
         for (NSDictionary *subJSON in [json objectForKey:@"data"]) {
             //获取 section title
             NSString *title = [subJSON valueForKeyPath:@"attributes.title.stringForDisplay"];
@@ -226,13 +124,12 @@ static NSString *const cellIdentifier = @"todayCell";
     return self.allData.count;
 }
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    NSArray *array = [self.allData objectAtIndex:section].allValues.firstObject;
+    NSArray *array = [self.allData objectAtIndex:section].allValues.firstObject; //节数据
     return  array.count;
 }
 
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-
     //data
     NSDictionary<NSString*,NSArray<Resource*>*> *dict = [self.allData objectAtIndex:indexPath.section];
     Resource* resource = [dict.allValues.firstObject objectAtIndex:indexPath.row];
@@ -267,11 +164,12 @@ static NSString *const cellIdentifier = @"todayCell";
 
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    Resource *obj = [[[self.allData objectAtIndex:indexPath.section] allValues].firstObject objectAtIndex:indexPath.row];
-    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:obj];
-    //隐藏搜索栏, 返回时显示
-    [self.searchVC.serachBar setHidden:YES];
-    [self.navigationController pushViewController:detailVC animated:YES];
+
+}
+
+#pragma mark - UICollectionViewDataSourcePrefetching  预取数据
+- (void)collectionView:(UICollectionView *)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths{
+
 }
 
 #pragma mark - getter
@@ -282,15 +180,13 @@ static NSString *const cellIdentifier = @"todayCell";
 
         //两列
         CGFloat spacing = 8.0f;
-        CGFloat cw = CGRectGetWidth(self.view.frame) - spacing*3;
-        cw /= 2;
+        CGFloat cw = (CGRectGetWidth(self.view.frame) - spacing*3)/2;
         CGFloat ch = cw+32;
         [layout setItemSize:CGSizeMake(cw, ch)];
 
         [layout setMinimumLineSpacing:spacing*2];
         [layout setMinimumInteritemSpacing:spacing];
-        [layout setSectionInset:UIEdgeInsetsMake(spacing, spacing, spacing, spacing)]; //cell 与头尾间距
-        //[layout setSectionHeadersPinToVisibleBounds:YES];
+        [layout setSectionInset:UIEdgeInsetsMake(0, spacing, spacing, spacing)]; //cell 与头尾间距
 
         //section size
         CGFloat h = 44.0f;
@@ -311,6 +207,8 @@ static NSString *const cellIdentifier = @"todayCell";
         _collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             [self requestData];
         }];
+        //
+        [_collectionView.mj_header setIgnoredScrollViewContentInsetTop:20];
     }
     return _collectionView;
 }
@@ -323,26 +221,6 @@ static NSString *const cellIdentifier = @"todayCell";
         [_activityView startAnimating];
     }
     return _activityView;
-}
-
--(UIButton *)playbackViewButton{
-    if (!_playbackViewButton) {
-        _playbackViewButton = [[UIButton alloc] init];
-        //事件处理回调
-        [_playbackViewButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-            PlayerViewController *playerVC = [PlayerViewController sharePlayerViewController];
-            [self presentViewController:playerVC animated:YES completion:nil];
-        }];
-    }
-    return _playbackViewButton;
-}
--(NAKPlaybackIndicatorView *)playbackIndicatorView{
-    if (!_playbackIndicatorView) {
-        NAKPlaybackIndicatorViewStyle *style = [NAKPlaybackIndicatorViewStyle iOS10Style];
-        _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
-        [_playbackIndicatorView setUserInteractionEnabled:NO];
-    }
-    return _playbackIndicatorView;
 }
 
 @end

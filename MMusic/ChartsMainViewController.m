@@ -36,7 +36,7 @@ static NSString *const reuseID = @"cellReuseIdentifier";
     [self.view addSubview:self.rowCollectionView];
     [self requestData];
 }
--(void)viewDidAppear:(BOOL)animated{
+-(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 
@@ -44,12 +44,12 @@ static NSString *const reuseID = @"cellReuseIdentifier";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
--(void)viewDidLayoutSubviews{
+- (void)viewDidLayoutSubviews {
     [self.rowCollectionView setContentInset:UIEdgeInsetsMake(4, 4, 10, 4)];
     [super viewDidLayoutSubviews];
 }
 
-- (void)requestData{
+- (void)requestData {
     __weak typeof(self) weakSelf = self;
     [MusicKit.new.api chartsByType:ChartsAll callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];
@@ -77,7 +77,7 @@ static NSString *const reuseID = @"cellReuseIdentifier";
 }
 
 //内地无MV 排行数据, 请求香港地区
-- (void) requestHongKongMVData{
+- (void) requestHongKongMVData {
     NSString *path = @"https://api.music.apple.com/v1/catalog/hk/charts?types=music-videos";
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     __weak typeof(self) weakSelf = self;
@@ -102,10 +102,10 @@ static NSString *const reuseID = @"cellReuseIdentifier";
 }
 
 #pragma mark <UICollectionViewDataSource>
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.rowData.count;
 }
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ChartsMainCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseID forIndexPath:indexPath];
     cell.chart = [self.rowData objectAtIndex:indexPath.row];
     cell.navigationController = self.navigationController ;
@@ -115,14 +115,14 @@ static NSString *const reuseID = @"cellReuseIdentifier";
 #pragma mark <UICollectonViewDelegate>
 
 #pragma mark <UICollectionViewDelegateFlowLayout>
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat w = CGRectGetWidth(collectionView.bounds)-(collectionView.contentInset.left+collectionView.contentInset.right);
     CGFloat h = 300;
     return CGSizeMake(w, h);
 }
 
 #pragma mark layz Load
-- (UICollectionView *)rowCollectionView{
+- (UICollectionView *)rowCollectionView {
     if (!_rowCollectionView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         [layout setMinimumLineSpacing:20];

@@ -55,6 +55,8 @@
         [self addSubview:_progressSlider];
         [self addSubview:_durationTime];
 
+        
+
        // [self layout];
     }
     return self;

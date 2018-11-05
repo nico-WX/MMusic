@@ -27,8 +27,10 @@
 
         _chartsViewController = [[ChartsSubViewController alloc] init];
 
+        NSLog(@"add befor");
         [self.contentView addSubview:_titleLabel];
         [self.contentView addSubview:_chartsViewController.view];
+        NSLog(@"addto view ed");
 
         [self.layer setShadowOffset:CGSizeMake(5, 10)];
         [self.layer setShadowOpacity:0.7];
@@ -63,10 +65,8 @@
 - (void)setChart:(Chart *)chart{
     if (_chart != chart) {
         _chart = chart;
-
         _titleLabel.text = chart.name;
         //_chartsViewController = [[ChartsSubViewController alloc] initWithChart:chart];
-
         _chartsViewController.chart = chart;
     }
 }

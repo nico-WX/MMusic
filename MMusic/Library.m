@@ -15,7 +15,7 @@
 static Library* _instance;
 @implementation Library
 
-+(instancetype)allocWithZone:(struct _NSZone *)zone{
++ (instancetype)allocWithZone:(struct _NSZone *)zone{
     if (!_instance) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -25,7 +25,7 @@ static Library* _instance;
     return _instance;
 }
 
--(instancetype)init{
+- (instancetype)init{
     if (self = [super init]) {
         self.rootPath = [self.rootPath stringByAppendingPathComponent:@"me"];
         self.rootPath = [self.rootPath stringByAppendingPathComponent:@"library"];
@@ -34,7 +34,7 @@ static Library* _instance;
 }
 
 
--(void)resource:(NSArray<NSString *> *)ids byType:(CLibrary)library callBack:(RequestCallBack)handle{
+- (void)resource:(NSArray<NSString *> *)ids byType:(CLibrary)library callBack:(RequestCallBack)handle {
 
     NSString *subPath = [self subPathForType:library];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
@@ -55,7 +55,8 @@ static Library* _instance;
     //Log(@"header %@",request.allHTTPHeaderFields);
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)relationship:(NSString *)identifier forType:(CLibrary)library byName:(NSString *)name callBacl:(RequestCallBack)handle{
+
+- (void)relationship:(NSString *)identifier forType:(CLibrary)library byName:(NSString *)name callBacl:(RequestCallBack)handle {
 
     NSString *subPath = [self subPathForType:library];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
@@ -66,7 +67,7 @@ static Library* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)searchForTerm:(NSString *)term byType:(SLibrary)library callBack:(RequestCallBack)handle{
+- (void)searchForTerm:(NSString *)term byType:(SLibrary)library callBack:(RequestCallBack)handle {
 
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"search?term="];
     path = [path stringByAppendingString:term];
@@ -93,7 +94,7 @@ static Library* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)heavyRotationContentInCallBack:(RequestCallBack)handle{
+- (void)heavyRotationContentInCallBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"history"];
     path = [path stringByAppendingPathComponent:@"heavy-rotation"];
 
@@ -101,27 +102,30 @@ static Library* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)recentlyPlayedInCallBack:(RequestCallBack)handle{
+- (void)recentlyPlayedInCallBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"recent"];
     path = [path stringByAppendingPathComponent:@"played"];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)recentStationsInCallBack:(RequestCallBack)handle{
+
+- (void)recentStationsInCallBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"recent"];
     path = [path stringByAppendingPathComponent:@"radio-stations"];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)recentlyAddedToLibraryInCallBack:(RequestCallBack)handle{
+
+- (void)recentlyAddedToLibraryInCallBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"recently-added"];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)addResourceToLibraryForIdentifiers:(NSArray<NSString *> *)ids byType:(AddType)type callBack:(RequestCallBack)handle{
+
+- (void)addResourceToLibraryForIdentifiers:(NSArray<NSString *> *)ids byType:(AddType)type callBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByAppendingString:@"?ids"];
     switch (type) {
         case AddAlbums:
@@ -148,7 +152,7 @@ static Library* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)createNewLibraryPlaylistsForJsonPlayload:(NSDictionary *)json callBack:(RequestCallBack)handle{
+- (void)createNewLibraryPlaylistsForJsonPlayload:(NSDictionary *)json callBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"playlists"];
     NSData *bodyData = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingSortedKeys error:nil];
 
@@ -161,7 +165,7 @@ static Library* _instance;
 }
 
 
--(void)addTracksToLibraryPlaylists:(NSString *)identifier tracks:(NSArray<NSDictionary *> *)tracks callBack:(RequestCallBack)handle{
+- (void)addTracksToLibraryPlaylists:(NSString *)identifier tracks:(NSArray<NSDictionary *> *)tracks callBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByAppendingPathComponent:@"playlists"];
     path = [path stringByAppendingPathComponent:identifier];
     path = [path stringByAppendingPathComponent:@"tracks"];
@@ -177,7 +181,7 @@ static Library* _instance;
 }
 
 
--(void)getRating:(NSArray<NSString *> *)ids byType:(CRating)type callBack:(RequestCallBack)handle{
+- (void)getRating:(NSArray<NSString *> *)ids byType:(CRating)type callBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"ratings"];
     path = [path stringByAppendingPathComponent:[self subPathForRatingType:type]];
     if (ids.count == 1) {
@@ -192,7 +196,8 @@ static Library* _instance;
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:handle];
 }
--(void)addRating:(NSString *)identifier byType:(CRating)type value:(int)value callBack:(RequestCallBack)handle{
+
+- (void)addRating:(NSString *)identifier byType:(CRating)type value:(int)value callBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"ratings"];
     path = [path stringByAppendingPathComponent:[self subPathForRatingType:type]];
     path = [path stringByAppendingPathComponent:identifier];
@@ -209,7 +214,7 @@ static Library* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
--(void)deleteRating:(NSString *)identifier byType:(CRating)type callBack:(RequestCallBack)handle{
+- (void)deleteRating:(NSString *)identifier byType:(CRating)type callBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"ratings"];
     path = [path stringByAppendingPathComponent:[self subPathForRatingType:type]];
     path = [path stringByAppendingPathComponent:identifier];
@@ -222,14 +227,14 @@ static Library* _instance;
 }
 
 
--(void)defaultRecommendationsInCallBack:(RequestCallBack)handle{
+- (void)defaultRecommendationsInCallBack:(RequestCallBack)handle {
     NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"recommendations"];
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:handle];
 }
 
 #pragma  mark - helper
--(NSString*)subPathForRatingType:(CRating) rating{
+- (NSString*)subPathForRatingType:(CRating)rating {
     NSString *subPath = @"";
     switch (rating) {
         case CRatingAlbums:
@@ -250,7 +255,7 @@ static Library* _instance;
     }
     return subPath;
 }
--(NSString*)subPathForType:(CLibrary)library{
+- (NSString*)subPathForType:(CLibrary)library {
     NSString *subPath = @"";
     switch (library) {
         case CLibraryAlbums:

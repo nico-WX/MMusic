@@ -107,11 +107,8 @@ static PlayerViewController *_instance;
         [self.playerView.artistLabel setText:nowPlayingItem.artist];
 
         UIImage *image  = [nowPlayingItem.artwork imageWithSize:self.playerView.artworkView.bounds.size];
-        NSLog(@"artwork =%@",nowPlayingItem.artwork);
-        NSLog(@"image=%@",image);
         if (image) {
             [self.playerView.artworkView setImage:image];
-            NSLog(@"image-2=%@",image);
         }else{
             //清除旧数据
             //self.playerView.artworkView.image = nil;
@@ -210,29 +207,13 @@ static PlayerViewController *_instance;
     }
 }
 
--(void)playButtonStateForPlaybackState:(MPMusicPlaybackState) state{
-    switch (state) {
-        case MPMusicPlaybackStatePaused:
-        case MPMusicPlaybackStateStopped:
-        case MPMusicPlaybackStateInterrupted:
-            [self.playerView.play setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
-            break;
-
-        case MPMusicPlaybackStatePlaying:
-        case MPMusicPlaybackStateSeekingForward:
-        case MPMusicPlaybackStateSeekingBackward:
-            [self.playerView.play setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
-            break;
-    }
-}
-
 #pragma mark - getter
 
 -(MPMusicPlayerController *)playerController{
     if (!_playerController) {
         _playerController = [MPMusicPlayerController systemMusicPlayer];
         [_playerController beginGeneratingPlaybackNotifications];       //开启消息
-        [self playButtonStateForPlaybackState:_playerController.playbackState];
+
 
         //注册通知
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -242,10 +223,6 @@ static PlayerViewController *_instance;
             [weakSelf updateCurrentItemMetadata];
         }];
 
-        //播放状态;
-        [center addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-            [weakSelf playButtonStateForPlaybackState:weakSelf.playerController.playbackState];
-        }];
     }
     return _playerController;
 }
@@ -256,15 +233,13 @@ static PlayerViewController *_instance;
 
         //事件绑定
         [_playerView.progressView addTarget:self action:@selector(sliderChange:) forControlEvents:UIControlEventValueChanged];
-        [_playerView.previous addTarget:self action:@selector(previous:) forControlEvents:UIControlEventTouchUpInside];
-        [_playerView.play addTarget:self action:@selector(playOrPause:) forControlEvents:UIControlEventTouchUpInside];
-        [_playerView.next addTarget:self action:@selector(next:) forControlEvents:UIControlEventTouchUpInside];
+        
         [_playerView.heartIcon addTarget:self action:@selector(changeLove:) forControlEvents:UIControlEventTouchUpInside];
 
-        //下滑隐藏控制器 手势
-        UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(closeViewController)];
-        [gesture setDirection:UISwipeGestureRecognizerDirectionDown];
-        [_playerView addGestureRecognizer:gesture];
+//        //下滑隐藏控制器 手势
+//        UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(closeViewController)];
+//        [gesture setDirection:UISwipeGestureRecognizerDirectionDown];
+//        [_playerView addGestureRecognizer:gesture];
     }
     return _playerView;
 }
@@ -306,7 +281,9 @@ static PlayerViewController *_instance;
 #pragma mark - Button Action
 /**下滑手势*/
 -(void) closeViewController{
+    NSLog(@"dis");
     [self dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 //进度条拖拽事件
@@ -314,40 +291,6 @@ static PlayerViewController *_instance;
     NSTimeInterval duration = self.playerController.nowPlayingItem.playbackDuration;    //总时长
     NSTimeInterval current = duration * slider.value;                                   //拖拽时长
     [self.playerController setCurrentPlaybackTime:current];
-}
-
-//上一首
-- (void)previous:(UIButton*) button{
-    [self.playerController skipToPreviousItem];
-    [self animationButton:button];
-}
-
-//播放或暂停
-- (void)playOrPause:(UIButton*) button{
-    [self animationButton:button];
-    switch (self.playerController.playbackState) {
-        case MPMusicPlaybackStatePlaying:
-            [self.playerController pause];
-            [button setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
-            break;
-
-        case MPMusicPlaybackStatePaused:
-        case MPMusicPlaybackStateStopped:
-        case MPMusicPlaybackStateInterrupted:
-            [self.timer fire];
-            [self.playerController play];
-            [button setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
-            break;
-
-            default:
-            break;
-    }
-}
-
-//下一首
--(void)next:(UIButton*) button{
-    [self.playerController skipToNextItem];
-    [self animationButton:button];
 }
 
 -(void) animationButton:(UIButton*) sender{

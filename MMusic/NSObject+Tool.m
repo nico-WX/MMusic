@@ -30,15 +30,14 @@ extern NSString *const userTokenIssueNotification;
 @implementation NSObject (Tool)
 
 
-
--(NSURLRequest *)createRequestWithHref:(NSString *)href{
+- (NSURLRequest *)createRequestWithHref:(NSString *)href {
     NSString *path = @"https://api.music.apple.com";
     path = [path stringByAppendingPathComponent:href];
     return [self createRequestWithURLString:path setupUserToken:NO];
 }
 
 //统一解析响应体,处理异常等.
--(NSDictionary *)serializationDataWithResponse:(NSURLResponse *)response data:(NSData *)data error:(NSError *)error{
+- (NSDictionary *)serializationDataWithResponse:(NSURLResponse *)response data:(NSData *)data error:(NSError *)error {
 
     if (error) Log(@"Location Error:%@",error.localizedDescription);
 
@@ -75,7 +74,7 @@ extern NSString *const userTokenIssueNotification;
 }
 
 //封装发起任务请求操作,通过block 回调返回数据.
--(void)dataTaskWithRequest:(NSURLRequest*)request handler:(RequestCallBack) handle{
+- (void)dataTaskWithRequest:(NSURLRequest*)request handler:(RequestCallBack)handle {
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         //统一处理返回的数据,响应体等,不管是否有回调, 在解析中都处理请求结果.
         NSDictionary *json = [self serializationDataWithResponse:response data:data error:error];
@@ -87,7 +86,7 @@ extern NSString *const userTokenIssueNotification;
 
 
 //替换封面URL中的占位字符串,
--(NSString *)stringReplacingOfString:(NSString *)target height:(CGFloat)height width:(CGFloat)width{
+- (NSString*)stringReplacingOfString:(NSString *)target height:(CGFloat)height width:(CGFloat)width {
     //之前返回的图片像素太低了
     CGFloat times =1; //[UIScreen mainScreen].scale;
     NSString *w = [NSString stringWithFormat:@"%d",(int)(width * times)];
@@ -101,7 +100,7 @@ extern NSString *const userTokenIssueNotification;
 
 
 /**通过urlString 生成请求体 并设置请求头*/
--(NSURLRequest*) createRequestWithURLString:(NSString*) urlString setupUserToken:(BOOL) setupUserToken{
+- (NSURLRequest*)createRequestWithURLString:(NSString*)urlString setupUserToken:(BOOL)setupUserToken {
     //urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];//转换URL中文及空格 (有二次转码问题)
 
     //移除 '%' 防止将'%' 重复编码成25
@@ -129,7 +128,7 @@ extern NSString *const userTokenIssueNotification;
 }
 
 
--(void)showImageToView:(UIImageView *)imageView withImageURL:(NSString *)url cacheToMemory:(BOOL)cache{
+- (void)showImageToView:(UIImageView *)imageView withImageURL:(NSString *)url cacheToMemory:(BOOL)cache {
     dispatch_async(dispatch_get_main_queue(), ^{
         //cell 重用时,上次没加载完成的hud 未能隐藏, 遍历删除
         for (UIView *view in imageView.subviews) {
@@ -200,7 +199,7 @@ extern NSString *const userTokenIssueNotification;
 
 
 - (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueFromParams:(NSArray<NSDictionary *> *)playParamses
-                                                                      startAtIndexPath:(NSIndexPath *)indexPath{
+                                                                      startAtIndexPath:(NSIndexPath *)indexPath {
     NSMutableArray *list = NSMutableArray.new;
     for (NSDictionary * playParams in playParamses) {
         MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:playParams];
@@ -211,7 +210,7 @@ extern NSString *const userTokenIssueNotification;
     return queue;
 }
 
--(MPMusicPlayerPlayParametersQueueDescriptor *)playParametersQueueFromSongs:(NSArray<Song *> *)songs startPlayIndex:(NSUInteger)index{
+- (MPMusicPlayerPlayParametersQueueDescriptor *)playParametersQueueFromSongs:(NSArray<Song *> *)songs startPlayIndex:(NSUInteger)index {
     NSMutableArray<MPMusicPlayerPlayParameters*> *list = [NSMutableArray array];
     for (Song *song in songs) {
         if (song.playParams) {
@@ -225,7 +224,7 @@ extern NSString *const userTokenIssueNotification;
     return queue;
 }
 
-- (void)showHUDToMainWindowFromText:(NSString *)text{
+- (void)showHUDToMainWindowFromText:(NSString *)text {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIView *view = [[UIApplication sharedApplication].delegate window];
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
@@ -239,7 +238,7 @@ extern NSString *const userTokenIssueNotification;
 }
 
 
--(UIImage *)imageFromURL:(NSString *)url withImageSize:(CGSize)imageSize{
+- (UIImage *)imageFromURL:(NSString *)url withImageSize:(CGSize)imageSize {
     NSString *path = IMAGE_PATH_FOR_URL(url);
     UIImage *image = [UIImage imageWithContentsOfFile:path];
     if (!image) {
@@ -251,9 +250,3 @@ extern NSString *const userTokenIssueNotification;
 }
 
 @end
-
-
-
-
-
-

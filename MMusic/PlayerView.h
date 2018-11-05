@@ -11,6 +11,7 @@
 
 /**播放器视图*/
 @interface PlayerView : UIView
+
 /**专辑封面*/
 @property(nonatomic, strong,readonly) UIImageView *artworkView;
 /**播放进度信息*/

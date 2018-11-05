@@ -22,39 +22,15 @@
 static NSString * const reuseIdentifier = @"Cell";
 @implementation ChartsSubViewController
 
-
-- (instancetype)initWithChart:(Chart *)chart{
-    if (self = [super init]) {
-        _chart = chart;
-    }
-    return self;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    NSLog(@"did load");
     [self.view addSubview:self.collectionView];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-
-    //songs & MV 更改布局
-    NSString *type = [self.chart.data firstObject].type;
-    NSLog(@"type=%@",type);
-
-    NSLog(@"self.chart=%@",self.chart);
-    if ([type isEqualToString:@"songs"]) {
-
-    }
-    if ([type isEqualToString:@"music-videos"]) {
-        NSLog(@"type=>>>>%@",type);
-        UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-        CGFloat h = CGRectGetHeight(self.collectionView.frame);
-        CGFloat w = h*1.4;
-        [layout setItemSize:CGSizeMake(w, h)];
-        [self.collectionView setCollectionViewLayout:layout animated:YES];
-    }
 }
 
 - (void)viewDidLayoutSubviews{
@@ -82,7 +58,7 @@ static NSString * const reuseIdentifier = @"Cell";
 
     }
     if ([resource.type isEqualToString:@"music-videos"]) {
-
+        NSLog(@"mv");
     }
 
 
@@ -101,8 +77,20 @@ static NSString * const reuseIdentifier = @"Cell";
 
 #pragma mark <UICollectionViewDelegateFlowLayout>
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    CGFloat h = CGRectGetHeight(collectionView.frame);
-    CGFloat w = h-(h*0.2);
+
+    CGFloat w,h;
+    h = CGRectGetHeight(collectionView.frame);
+
+    NSString *type = self.chart.data.firstObject.type;
+    if ([type isEqualToString:@"music-videos"]) {
+        w = h+(h*0.3);
+        return CGSizeMake(w, h);
+    }
+    if ([type isEqualToString:@"songs"]) {
+
+    }
+
+    w = h-(h*0.2);
     return CGSizeMake(w, h);
 }
 

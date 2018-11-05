@@ -27,6 +27,7 @@ static const CGFloat corner = 8.0f;
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
+        [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.3]];
         [self setupSubview];
         [self setupLayout];
     }
@@ -35,8 +36,7 @@ static const CGFloat corner = 8.0f;
 
 //添加子控件
 - (void) setupSubview{
-    [self setBackgroundColor:UIColor.whiteColor];
-
+    
     //辅助层
     _midView = ({
         UIView *view = UIView.new;
@@ -117,7 +117,7 @@ static const CGFloat corner = 8.0f;
 }
 
 -(void)setupLayout{
-    Log(@">>>>>>>");
+
     //边距
     UIEdgeInsets padding = UIEdgeInsetsMake(40, 40, 40, 40);
     //进度条视图高度

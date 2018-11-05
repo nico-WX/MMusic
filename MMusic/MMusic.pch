@@ -36,6 +36,8 @@
 /**主题颜色*/
 #define MainColor ([UIColor colorWithHue:0.968 saturation:0.827 brightness:1.000 alpha:1.000])
 
+/**共用音乐播放器*/
+#define MainPlayer ([MPMusicPlayerController systemMusicPlayer])
     //end __OBJC__
     #endif
 #endif /* MMusic_pch */

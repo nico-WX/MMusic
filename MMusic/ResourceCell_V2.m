@@ -54,6 +54,18 @@
     return self;
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+
+    [UIView animateWithDuration:0.3 animations:^{
+        [self setTransform:CGAffineTransformMakeScale(0.9, 0.9)];
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.3 animations:^{
+            [self setTransform:CGAffineTransformIdentity];
+        }];
+    }];
+    
+    [super touchesBegan:touches withEvent:event];
+}
 
 
 -(void)prepareForReuse{

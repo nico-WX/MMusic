@@ -8,109 +8,110 @@
 
 #import "PlayControllerView.h"
 #import <Masonry.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 
 @interface PlayControllerView()
-//中间辅助层
-@property(nonatomic, strong)UIView *preView;
-@property(nonatomic, strong)UIView *playView;
-@property(nonatomic, strong)UIView *nextView;
 @end
 
 @implementation PlayControllerView
 
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = UIColor.whiteColor;
-        /**
-         1.辅助层直接添加到 self中, 平分布局;
-         2.按钮添加到辅助层中,居中布局
-         */
-        //辅助层
-        _preView = UIView.new;
-        _playView = UIView.new;
-        _nextView = UIView.new;
-
         //按钮
         _previous   = [[UIButton alloc] init];
         _play       = [[UIButton alloc] init];
         _next       = [[UIButton alloc] init];
 
-        //添加辅助层带视图中
-        [self addSubview:_preView];
-        [self addSubview:_playView];
-        [self addSubview:_nextView];
+        //绑定按钮事件
+        [_previous addTarget:self action:@selector(previousButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [_play addTarget:self action:@selector(playButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [_next addTarget:self action:@selector(nextButtonClick:) forControlEvents:UIControlEventTouchUpInside];
 
         //按钮添加到辅层
-        [_preView addSubview:_previous];
-        [_playView addSubview:_play];
-        [_nextView addSubview:_next];
+        [self addSubview:_previous];
+        [self addSubview:_play];
+        [self addSubview:_next];
 
-        //按钮 image
-        [_previous setImage:[UIImage imageNamed:@"rewind"] forState:UIControlStateNormal];
-        [_play setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
-        [_next setImage:[UIImage imageNamed:@"forward"] forState:UIControlStateNormal];
+        [self updateWithState:MainPlayer.playbackState];
+        [_previous setImage:[UIImage imageNamed:@"nowPlaying_prev"] forState:UIControlStateNormal];
+        [_next setImage:[UIImage imageNamed:@"nowPlaying_next"] forState:UIControlStateNormal];
 
+        [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            [self updateWithState:MainPlayer.playbackState];
+        }];
     }
     return self;
 }
 
--(void)layoutSubviews{
-    [super layoutSubviews];
-
-    //不再多次添加约束
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        [self setupLayout];
-    });
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil];
 }
 
--(void) setupLayout{
-    //平分宽度, 等高
-    CGFloat w = CGRectGetWidth(self.frame)/3;
-    __weak typeof(self) weakSelf = self;
+- (void)layoutSubviews{
+    CGFloat centerX = CGRectGetMidX(self.bounds);
+    CGFloat centerY = CGRectGetMidY(self.bounds);
+    NSLog(@"center Y=%f",centerY);
 
-    //布局中间层
-    [self.preView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.mas_top);
-        make.left.mas_equalTo(weakSelf.mas_left);
-        make.bottom.mas_equalTo(weakSelf.mas_bottom);
-        make.width.mas_equalTo(w);
-    }];
+    //按钮size
+    CGFloat h = CGRectGetHeight(self.bounds);
+    CGFloat w = h;
 
-    [self.playView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.mas_top);
-        make.left.mas_equalTo(weakSelf.preView.mas_right);
-        make.bottom.mas_equalTo(weakSelf.mas_bottom);
-        make.width.mas_equalTo(w);
-    }];
+    CGFloat y = centerY - h/2;
+    CGFloat pre_x = centerX/2 - w/2;
+    CGFloat play_x = centerX - w/2;
+    CGFloat next_x = centerX+(centerX/2) - w/3;
 
-    [self.nextView  mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.mas_top);
-        make.left.mas_equalTo(weakSelf.playView.mas_right);
-        make.bottom.mas_equalTo(weakSelf.mas_bottom);
-        make.right.mas_equalTo(weakSelf.mas_right);
-    }];
+    CGRect preFrame = CGRectMake(pre_x, y, w, h);
+    CGRect playFrame = CGRectMake(play_x, y, w, h);
+    CGRect nextFrame = CGRectMake(next_x, y, w, h);
 
-    //按钮
-    CGFloat btnH = CGRectGetHeight(self.frame);
-    CGFloat btnW = btnH;
-    CGSize size = CGSizeMake(btnW, btnH);
+    [self.previous setFrame:preFrame];
+    [self.play setFrame:playFrame];
+    [self.next setFrame:nextFrame];
 
-    [self.previous mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(size);
-        make.center.mas_equalTo(weakSelf.preView.center);
-    }];
+    [super layoutSubviews];
+}
 
-    [self.play mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(size);
-        make.center.mas_equalTo(weakSelf.playView.center);
-    }];
 
-    [self.next mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(size);
-        make.center.mas_equalTo(weakSelf.nextView.center);
-    }];
+- (void)updateWithState:(MPMusicPlaybackState)state {
+    switch (state) {
+        case MPMusicPlaybackStatePlaying:
+            [_play setImage:[UIImage imageNamed:@"nowPlaying_pause"] forState:UIControlStateNormal];
+            break;
+            
+        case MPMusicPlaybackStateStopped:
+        case MPMusicPlaybackStatePaused:
+        case MPMusicPlaybackStateInterrupted:
+            [_play setImage:[UIImage imageNamed:@"nowPlaying_play"] forState:UIControlStateNormal];
+            break;
+
+        default:
+            break;
+    }
+}
+
+# pragma mark - button action
+- (void)previousButtonClick:(UIButton*)button {
+    [MainPlayer skipToPreviousItem];
+}
+- (void)playButtonClick:(UIButton*)button {
+
+    switch (MainPlayer.playbackState) {
+        case MPMusicPlaybackStateInterrupted:
+        case MPMusicPlaybackStatePaused:
+        case MPMusicPlaybackStateStopped:
+            [MainPlayer play];
+            break;
+        case MPMusicPlaybackStatePlaying:
+            [MainPlayer pause];
+            break;
+        default:
+            break;
+    }
+}
+- (void)nextButtonClick:(UIButton*)button {
+    [MainPlayer skipToNextItem];
 }
 
 @end
