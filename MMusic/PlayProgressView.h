@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+//拆分代码  
 @interface PlayProgressView : UIView
 /**已经播放的时间*/
 @property(nonatomic, strong, readonly) UILabel *currentTime;

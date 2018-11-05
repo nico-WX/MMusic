@@ -7,7 +7,12 @@
 //
 
 #import "PlayProgressView.h"
+#import <MediaPlayer/MediaPlayer.h>
 #import <Masonry.h>
+
+@interface PlayProgressView()
+@property(nonatomic, strong) NSTimer *timer;
+@end
 
 @implementation PlayProgressView
 
@@ -31,6 +36,7 @@
 
         //progress
         _progressSlider = UISlider.new;
+        [_progressSlider addTarget:self action:@selector(sliderChange:) forControlEvents:UIControlEventValueChanged];
         //正常状态 滑块样式
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
         view.backgroundColor = UIColor.grayColor;
@@ -55,9 +61,7 @@
         [self addSubview:_progressSlider];
         [self addSubview:_durationTime];
 
-        
-
-       // [self layout];
+        [self.timer fire];
     }
     return self;
 }
@@ -77,36 +81,41 @@
     return image;
 }
 - (void)layoutSubviews{
+
+    CGFloat h = CGRectGetHeight(self.bounds);
+    CGFloat labelW = h*1.5;
+
+    CGRect currentLabFrame = CGRectMake(0, 0, labelW, h);
+    CGRect progressFrame = CGRectMake(CGRectGetMaxX(currentLabFrame), 0, CGRectGetWidth(self.bounds)-(labelW*2), h);
+    CGRect durationLabFrame = CGRectMake(CGRectGetMaxX(progressFrame), 0, labelW, h);
+
+    [self.currentTime setFrame:currentLabFrame];
+    [self.progressSlider setFrame:progressFrame];
+    [self.durationTime setFrame:durationLabFrame];
+
     [super layoutSubviews];
-
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        [self layout];
-    });
-
 }
 
--(void)layout{
-    __weak typeof(self) weakSelf = self;
-    CGFloat height = CGRectGetHeight(self.bounds);
-    [self.currentTime mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.mas_top);
-        make.left.mas_equalTo(weakSelf.mas_left);
-        make.size.mas_equalTo(CGSizeMake(height,height));
-    }];
+- (NSTimer *)timer{
+    if (!_timer) {
+        _timer = [NSTimer scheduledTimerWithTimeInterval:2.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+            NSTimeInterval current = (CGFloat)MainPlayer.currentPlaybackTime;
+            NSTimeInterval duration = MainPlayer.nowPlayingItem.playbackDuration; //秒
 
-    [self.progressSlider mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.mas_top);
-        make.left.mas_equalTo(weakSelf.currentTime.mas_right);
-        CGFloat w = CGRectGetWidth(weakSelf.bounds) - height*2;
-        make.size.mas_equalTo(CGSizeMake(w, height));
-    }];
-
-    [self.durationTime mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.mas_top);
-        make.right.mas_equalTo(weakSelf.mas_right);
-        make.size.mas_equalTo(CGSizeMake(height, height));
-    }];
+            self.currentTime.text = [NSString stringWithFormat:@"%.2d:%.2d",((int)current)/60,((int)current)%60];
+            //更新进度条
+            CGFloat value = (current/duration);
+            [self.progressSlider setValue:value animated:YES];
+            [self.durationTime setText:[NSString stringWithFormat:@"%.2d:%.2d",((int)duration)/60,((int)duration)%60]];
+        }];
+    }
+    return _timer;
 }
 
+    //进度条拖拽事件
+- (void)sliderChange:(UISlider*) slider{
+    NSTimeInterval duration = MainPlayer.nowPlayingItem.playbackDuration;    //总时长
+    NSTimeInterval current = duration * slider.value;                        //拖拽时长
+    [MainPlayer setCurrentPlaybackTime:current];
+}
 @end

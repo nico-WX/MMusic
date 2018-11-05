@@ -18,7 +18,7 @@
 #import "Song.h"
 
 
-#import "PlayerViewController.h"
+#import "PlayerContentViewController.h"
 
 @interface ArtistsContentViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic, strong) ArtistsContentTableView *tableView;

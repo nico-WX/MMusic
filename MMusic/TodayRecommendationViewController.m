@@ -47,6 +47,7 @@ static NSString *const cellIdentifier = @"todayCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+
     self.view.backgroundColor = UIColor.whiteColor;
     [self requestData];
 
@@ -58,6 +59,9 @@ static NSString *const cellIdentifier = @"todayCell";
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+- (BOOL)prefersStatusBarHidden{
+    return YES;
 }
 
 #pragma  mark - 请求数据 和解析JSON

@@ -13,7 +13,7 @@
 
 //vc
 #import "DetailViewController.h"
-#import "PlayerViewController.h"
+#import "PlayerContentViewController.h"
 
 //view
 #import "DetailHeaderView.h"
@@ -38,7 +38,7 @@
 //songs 初始化列表数据
 @property(nonatomic, strong) ResponseRoot *responseRoot;
 //播放器视图控制器
-@property(nonatomic, strong) PlayerViewController *playerVC;
+@property(nonatomic, strong) PlayerContentViewController *playerVC;
 //data 数据在请求数据方法中 初始化
 @property(nonatomic, strong) NSArray<Song*> *songs;
 
@@ -188,9 +188,9 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 }
 
 #pragma mark getter
--(PlayerViewController *)playerVC{
+-(PlayerContentViewController *)playerVC{
     if (!_playerVC) {
-        _playerVC = [PlayerViewController sharePlayerViewController];
+        _playerVC = [PlayerContentViewController sharePlayerViewController];
     }
     return _playerVC;
 }

@@ -62,9 +62,6 @@ static const CGFloat corner = 8.0f;
     //播放进度 及时长
     _playProgressView = ({
         PlayProgressView *view = PlayProgressView.new;
-        _currentTime = view.currentTime;
-        _durationTime = view.durationTime;
-        _progressView = view.progressSlider;
         [_playCtrView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
         view;
     });
@@ -88,14 +85,9 @@ static const CGFloat corner = 8.0f;
     });
 
     //播放控制
-    _playCtrView = ({
-        PlayControllerView *playCtr = PlayControllerView.new;
-        _previous   = playCtr.previous;
-        _play       = playCtr.play;
-        _next       = playCtr.next;
-        playCtr;
-    });
+    _playCtrView = PlayControllerView.new;
 
+    
     //红心开关  需要先确认size
     _heartIcon = [[MySwitch alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
 

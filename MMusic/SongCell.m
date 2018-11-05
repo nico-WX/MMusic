@@ -9,12 +9,12 @@
 #import <NAKPlaybackIndicatorView.h>
 #import <Masonry.h>
 
-#import "PlayerViewController.h"
+#import "PlayerContentViewController.h"
 #import "SongCell.h"
 #import "Song.h"
 
 @interface SongCell()
-@property(nonatomic, strong) PlayerViewController       *playerVC;
+@property(nonatomic, strong) PlayerContentViewController       *playerVC;
 @property(nonatomic, strong) NAKPlaybackIndicatorView   *playbackIndicatorView;
 @property(nonatomic, strong, readonly) UILabel          *nameLabel;
 @property(nonatomic, strong, readonly) UILabel          *artistLabel;
@@ -153,9 +153,9 @@
     }
     [self setNeedsDisplay];
 }
--(PlayerViewController *)playerVC{
+-(PlayerContentViewController *)playerVC{
     if (!_playerVC) {
-        _playerVC = [PlayerViewController sharePlayerViewController];
+        _playerVC = [PlayerContentViewController sharePlayerViewController];
     }
     return _playerVC;
 }
