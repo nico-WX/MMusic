@@ -185,7 +185,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 #pragma mark - tableView delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [MainPlayer playSongs:self.songs startIndex:indexPath.row];
-    [self presentViewController:self.playerVC animated:YES completion:nil];
+    //[self presentViewController:self.playerVC animated:YES completion:nil];
 }
 
 #pragma mark getter

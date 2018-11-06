@@ -96,9 +96,10 @@
 # pragma mark - button action
 - (void)previousButtonClick:(UIButton*)button {
     [MainPlayer skipToPreviousItem];
+    [self animationButton:button];
 }
 - (void)playButtonClick:(UIButton*)button {
-
+    [self animationButton:button];
     switch (MainPlayer.playbackState) {
         case MPMusicPlaybackStateInterrupted:
         case MPMusicPlaybackStatePaused:
@@ -114,6 +115,21 @@
 }
 - (void)nextButtonClick:(UIButton*)button {
     [MainPlayer skipToNextItem];
+    [self animationButton:button];
+}
+
+#pragma mark - button animation
+- (void)animationButton:(UIButton*)sender{
+    [UIView animateWithDuration:0.2 animations:^{
+        [sender setTransform:CGAffineTransformMakeScale(0.88, 0.88)];
+    } completion:^(BOOL finished) {
+        if (finished) {
+            //恢复
+            [UIView animateWithDuration:0.2 animations:^{
+                [sender setTransform:CGAffineTransformIdentity];
+            }];
+        }
+    }];
 }
 
 @end

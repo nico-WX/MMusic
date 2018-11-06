@@ -14,17 +14,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 增加播放资源对象功能 (从NowPlayingViewController 中剥离这部分功能)
 @interface MPMusicPlayerController (ResourcePlaying)
+@property(nonatomic, readonly)NSArray<Song*> *songLists;
+@property(nonatomic, readonly)NSArray<MusicVideo*> *musicVideos;
+
 
 /**播放音乐, 并设置起始播放音乐*/
 - (void)playSongs:(NSArray<Song*>*)songs startIndex:(NSUInteger)startIndex;
-/**插入歌曲下一首播放*/
+/**下一首播放*/
 - (void)insertSongAtNextItem:(Song*)song;
-/**插入播放列表最后播放*/
+/**播放列表最后播放*/
 - (void)insertSongAtEndItem:(Song *)song;
-
 /**当前播放的音乐*/
-- (Song*)nowPlaySong;
-
+- (Song*)nowPlayingSong;
 /**播放MV*/
 - (void)playMusicVideos:(NSArray<MusicVideo*>*)mvs startIndex:(NSUInteger)startIndex;
 @end

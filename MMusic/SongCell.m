@@ -8,6 +8,7 @@
 
 #import <NAKPlaybackIndicatorView.h>
 #import <Masonry.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 #import "NowPlayingViewController.h"
 #import "SongCell.h"

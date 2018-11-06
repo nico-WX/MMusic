@@ -1,5 +1,5 @@
 //
-//  PlayerView.h
+//  NowPlayingView.h
 //  MMusic
 //
 //  Created by Magician on 2018/3/11.
@@ -10,7 +10,7 @@
 #import "MySwitch.h"
 
 /**播放器视图*/
-@interface PlayerView : UIView
+@interface NowPlayingView : UIView
 
 /**专辑封面*/
 @property(nonatomic, strong,readonly) UIImageView *artworkView;

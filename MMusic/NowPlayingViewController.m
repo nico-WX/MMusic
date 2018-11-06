@@ -7,27 +7,25 @@
 //
 
 #import <Masonry.h>
+#import <MediaPlayer/MediaPlayer.h>
 
+#import "MPMusicPlayerController+ResourcePlaying.h"
 #import "NowPlayingViewController.h"
-#import "PlayerView.h"
+#import "NowPlayingView.h"
 
-#import "NSObject+Tool.h"
+
 #import "Artwork.h"
 #import "Song.h"
 #import "MusicVideo.h"
 
+//data
 #import "DBTool.h"
 #import "TracksModel.h"
 #import "ArtistsModel.h"
 
 @interface NowPlayingViewController ()
 /**播放器UI*/
-@property(nonatomic, strong) PlayerView *playerView;
-
-/**歌曲列表*/
-@property(nonatomic, strong) NSArray<Song*> *songs;
-/**播放队列*/
-@property(nonatomic, strong)MPMusicPlayerPlayParametersQueueDescriptor *parametersQueue;
+@property(nonatomic, strong) NowPlayingView *playerView;
 @end
 
 
@@ -55,13 +53,7 @@ static NowPlayingViewController *_instance;
     });
     return _instance;
 }
--(instancetype)init{
-    if (self = [super init]) {
-        //不在viewDidLoad 中添加
-        [self.view addSubview:self.playerView];
-    }
-    return self;
-}
+
 -(id)copyWithZone:(NSZone *)zone{
     return _instance;
 }
@@ -72,16 +64,21 @@ static NowPlayingViewController *_instance;
 #pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    //替换view
+    self.view = self.playerView;
 }
 
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self updateCurrentItemMetadata];
+    //[self updateCurrentItemMetadata];
+
+
+
 }
 
 - (void)dealloc{
-    [MainPlayer endGeneratingPlaybackNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];    
 }
 
@@ -110,7 +107,7 @@ static NowPlayingViewController *_instance;
                     [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
                 }];
             }else{
-                for (Song *song in _songs ) {
+                for (Song *song in MainPlayer.songLists ) {
                     if ([song isEqualToMediaItem:nowPlayingItem]) {
                         [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
                     }
@@ -145,9 +142,9 @@ static NowPlayingViewController *_instance;
 
 
 
--(PlayerView *)playerView{
+-(NowPlayingView *)playerView{
     if (!_playerView) {
-        _playerView = [[PlayerView alloc] initWithFrame:self.view.bounds];
+        _playerView = [[NowPlayingView alloc] initWithFrame:self.view.bounds];
 
         //事件绑定
         [_playerView.heartIcon addTarget:self action:@selector(changeLove:) forControlEvents:UIControlEventTouchUpInside];
@@ -157,28 +154,6 @@ static NowPlayingViewController *_instance;
 
 
 #pragma mark - Button Action
-/**下滑手势*/
--(void) closeViewController{
-    NSLog(@"dis");
-    [self dismissViewControllerAnimated:YES completion:nil];
-
-}
-
-
-
--(void) animationButton:(UIButton*) sender{
-    [UIView animateWithDuration:0.2 animations:^{
-        [sender setTransform:CGAffineTransformMakeScale(0.88, 0.88)];
-    } completion:^(BOOL finished) {
-        if (finished) {
-            //恢复
-            [UIView animateWithDuration:0.2 animations:^{
-                [sender setTransform:CGAffineTransformIdentity];
-            }];
-        }
-    }];
-}
-
 //红心按钮 添加喜欢或者删除喜欢
 - (void)changeLove:(MySwitch*) heart{
 
@@ -234,8 +209,11 @@ static NowPlayingViewController *_instance;
         }
     }];
 }
+
 -(void)addResourceToLibrary:(NSString*) identifier{
-    [MusicKit.new.api.library addResourceToLibraryForIdentifiers:@[identifier,] byType:AddSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+    [MusicKit.new.api.library addResourceToLibraryForIdentifiers:@[identifier,]
+                                                          byType:AddSongs
+                                                        callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
 
         //更新ui
         dispatch_async(dispatch_get_main_queue(), ^{

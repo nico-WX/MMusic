@@ -1,12 +1,12 @@
 //
-//  PlayerView.m
+//  NowPlayingView.m
 //  MMusic
 //
 //  Created by Magician on 2018/3/11.
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "PlayerView.h"
+#import "NowPlayingView.h"
 #import "PlayProgressView.h"
 #import "PlayControllerView.h"
 #import <Masonry.h>
@@ -14,7 +14,7 @@
 
 //统一圆角半径
 static const CGFloat corner = 8.0f;
-@interface PlayerView()
+@interface NowPlayingView()
 //播放进度信息
 @property(nonatomic, strong) PlayProgressView *playProgressView;
 //播放控制视图
@@ -24,7 +24,7 @@ static const CGFloat corner = 8.0f;
 
 @end
 
-@implementation PlayerView
+@implementation NowPlayingView
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {

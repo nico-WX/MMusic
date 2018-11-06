@@ -45,7 +45,11 @@
         [self.visualEffectView addGestureRecognizer:downSwip];
     }
 
+    //播放状态改变
+
 }
+
+
 
 // 手势处理
 - (void)handleGestureEvent:(UIGestureRecognizer*)gesture {
@@ -70,12 +74,14 @@
                 [self.visualEffectView setFrame:self->bottomStatusRect];
             }completion:^(BOOL finished) {
                 [self.playerVC.view removeFromSuperview];
+                
             } ];
         }
     }
 }
 - (void)viewDidAppear:(BOOL)animated{
 
+    NSLog(@"appear");
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
 

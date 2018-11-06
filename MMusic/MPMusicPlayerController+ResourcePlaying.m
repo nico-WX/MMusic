@@ -13,8 +13,6 @@
 #import "MusicVideo.h"
 
 @interface MPMusicPlayerController()<MPSystemMusicPlayerController>
-@property(nonatomic, strong)NSArray<Song*> *songLists;
-@property(nonatomic, strong)NSArray<MusicVideo*> *musicVideos;
 @property(nonatomic, strong)MPMusicPlayerPlayParametersQueueDescriptor *parametersQueue;
 @end
 
@@ -39,7 +37,7 @@
     [array addObject:song];
     self.songLists = array;
 
-    //添加到当前播放item 后面
+    //添加到当前播放队列后面
     MPMusicPlayerPlayParameters *prameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
     MPMusicPlayerPlayParametersQueueDescriptor *queue;
     queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[prameters,]];
@@ -54,14 +52,14 @@
     [array insertObject:song atIndex:index+1];
     self.songLists = array;
 
-    //添加到最后
+    //添加到当前播放Item 后面
     MPMusicPlayerPlayParameters *prameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
     MPMusicPlayerPlayParametersQueueDescriptor *queue;
     queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[prameters,]];
     [self prependQueueDescriptor:queue];
 }
 
-- (Song *)nowPlaySong{
+- (Song *)nowPlayingSong{
     Song *nowSong;
     for (Song *song in self.songLists) {
         if ([song isEqualToMediaItem:self.nowPlayingItem]) {
@@ -95,7 +93,7 @@
 }
 
 
-#pragma mark - 关联分类添加的属性对象
+#pragma mark - 关联属性对象
 - (void)setSongLists:(NSArray<Song *> *)songLists{
     objc_setAssociatedObject(self, @selector(songLists), songLists, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }

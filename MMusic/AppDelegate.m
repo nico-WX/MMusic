@@ -7,6 +7,7 @@
 //
 #import <MBProgressHUD.h>
 #import <StoreKit/StoreKit.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 #import "AppDelegate.h"
 
@@ -80,10 +81,16 @@
     [browseNav.tabBarItem setImage:[UIImage imageNamed:@"browse"]];
     [mmusicNavCtr.tabBarItem setImage:[UIImage imageNamed:@"Library"]];
 
-    
+
+    [MainPlayer beginGeneratingPlaybackNotifications];
+
 
     [self.window makeKeyAndVisible];    //显示
     return YES;
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application{
+    [MainPlayer endGeneratingPlaybackNotifications];
 }
 
 @end

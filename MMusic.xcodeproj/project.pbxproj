@@ -14,7 +14,7 @@
 		3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFC2091F6D400E1B22C /* screening.plist */; };
 		3B3D9981205512FA000F2E9E /* SongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9980205512FA000F2E9E /* SongCell.m */; };
 		3B3D998420553CD4000F2E9E /* NowPlayingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D998320553CD4000F2E9E /* NowPlayingViewController.m */; };
-		3B3D9989205540A0000F2E9E /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9988205540A0000F2E9E /* PlayerView.m */; };
+		3B3D9989205540A0000F2E9E /* NowPlayingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9988205540A0000F2E9E /* NowPlayingView.m */; };
 		3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D99E9205E990F000F2E9E /* NSString+Hash.m */; };
 		3B408EDC20B6A8600057E323 /* ArtistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EDB20B6A8600057E323 /* ArtistsViewController.m */; };
 		3B408EEB20B6E7D70057E323 /* ArtistsContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */; };
@@ -197,8 +197,8 @@
 		3B3D9980205512FA000F2E9E /* SongCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SongCell.m; sourceTree = "<group>"; };
 		3B3D998220553CD4000F2E9E /* NowPlayingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NowPlayingViewController.h; sourceTree = "<group>"; };
 		3B3D998320553CD4000F2E9E /* NowPlayingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NowPlayingViewController.m; sourceTree = "<group>"; };
-		3B3D9987205540A0000F2E9E /* PlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
-		3B3D9988205540A0000F2E9E /* PlayerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerView.m; sourceTree = "<group>"; };
+		3B3D9987205540A0000F2E9E /* NowPlayingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NowPlayingView.h; sourceTree = "<group>"; };
+		3B3D9988205540A0000F2E9E /* NowPlayingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NowPlayingView.m; sourceTree = "<group>"; };
 		3B3D99E8205E990D000F2E9E /* NSString+Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hash.h"; sourceTree = "<group>"; };
 		3B3D99E9205E990F000F2E9E /* NSString+Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hash.m"; sourceTree = "<group>"; };
 		3B408EDA20B6A8600057E323 /* ArtistsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArtistsViewController.h; sourceTree = "<group>"; };
@@ -453,8 +453,8 @@
 				3B4DDC402191BE0D00F70547 /* MPMusicPlayerController+ResourcePlaying.m */,
 				3B64D0ED20ECE76200D831FE /* MySwitch.h */,
 				3B64D0EC20ECE76200D831FE /* MySwitch.m */,
-				3B3D9987205540A0000F2E9E /* PlayerView.h */,
-				3B3D9988205540A0000F2E9E /* PlayerView.m */,
+				3B3D9987205540A0000F2E9E /* NowPlayingView.h */,
+				3B3D9988205540A0000F2E9E /* NowPlayingView.m */,
 				3BDFCB662082219900D85021 /* PlayProgressView.h */,
 				3BDFCB672082219900D85021 /* PlayProgressView.m */,
 				3BDFCB6020820A4700D85021 /* PlayControllerView.h */,
@@ -1177,7 +1177,7 @@
 				3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */,
 				3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */,
 				3BC33211209CA3220080D1B9 /* ScreeningCell.m in Sources */,
-				3B3D9989205540A0000F2E9E /* PlayerView.m in Sources */,
+				3B3D9989205540A0000F2E9E /* NowPlayingView.m in Sources */,
 				3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */,
 				3B9AA8F51FB4719A00720085 /* MusicVideo.m in Sources */,
 				3BC33214209CA5ED0080D1B9 /* ScreeningSection.m in Sources */,
