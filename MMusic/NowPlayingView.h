@@ -11,7 +11,6 @@
 
 /**播放器视图*/
 @interface NowPlayingView : UIView
-
 /**专辑封面*/
 @property(nonatomic, strong,readonly) UIImageView *artworkView;
 /**歌曲名称*/

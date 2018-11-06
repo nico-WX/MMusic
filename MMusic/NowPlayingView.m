@@ -44,6 +44,8 @@ static const CGFloat corner = 8.0f;
 - (void)updateSongInfoWithItem:(MPMediaItem*)item {
     self.songNameLabel.text = item.title;
     self.artistLabel.text = item.artist;
+    CGSize size = self.artworkView.frame.size;
+    //self.artworkView.image = [item.artwork imageWithSize:size];
 }
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil];
@@ -75,11 +77,7 @@ static const CGFloat corner = 8.0f;
     });
 
     //播放进度 及时长
-    _playProgressView = ({
-        PlayProgressView *view = PlayProgressView.new;
-        //[_playCtrView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
-        view;
-    });
+    _playProgressView = PlayProgressView.new;
 
     //歌曲名称
     _songNameLabel = ({
@@ -121,6 +119,11 @@ static const CGFloat corner = 8.0f;
 //    _repeat = UIButton.new;
 //    [self addSubview:_repeat];
 
+}
+
+- (void)layoutSubviews{
+
+    [super layoutSubviews];
 }
 
 -(void)setupLayout{

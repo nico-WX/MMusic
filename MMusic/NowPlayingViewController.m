@@ -67,15 +67,18 @@ static NowPlayingViewController *_instance;
 
     //替换view
     self.view = self.playerView;
+    [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
+                                                      object:nil
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification * _Nonnull note) {
+                                                      [self updateCurrentItemMetadata];
+    }];
 }
 
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    //[self updateCurrentItemMetadata];
-
-
-
+    [self updateCurrentItemMetadata];
 }
 
 - (void)dealloc{
@@ -86,40 +89,49 @@ static NowPlayingViewController *_instance;
 #pragma mark - 更新UI信息
 -(void)updateCurrentItemMetadata{
     MPMediaItem *nowPlayingItem = MainPlayer.nowPlayingItem;
-    if (nowPlayingItem) {
-        //播放的时候, 有可能在播放第三方音乐, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
-        self.playerView.heartIcon.enabled = nowPlayingItem.playbackStoreID ? YES  : NO;
-        [self heartFromSongIdentifier:nowPlayingItem.playbackStoreID];
 
-        [self.playerView.songNameLabel setText:nowPlayingItem.title];
-        [self.playerView.artistLabel setText:nowPlayingItem.artist];
-
-        UIImage *image  = [nowPlayingItem.artwork imageWithSize:self.playerView.artworkView.bounds.size];
-        if (image) {
-            [self.playerView.artworkView setImage:image];
-        }else{
-            //清除旧数据
-            //self.playerView.artworkView.image = nil;
-            if (nowPlayingItem.playbackStoreID) {
-                [MusicKit.new.api resources:@[nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-                    json = [[[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
-                    Song *song = [Song instanceWithDict:json];
-                    [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
-                }];
-            }else{
-                for (Song *song in MainPlayer.songLists ) {
-                    if ([song isEqualToMediaItem:nowPlayingItem]) {
-                        [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
-                    }
-                }
-            }
-        }
-    }else{
+    if (!MainPlayer.nowPlayingItem) {
         [self.playerView.heartIcon setEnabled:NO];
         self.playerView.artworkView.image = nil;
         self.playerView.songNameLabel.text = @"当前无歌曲播放";
-        self.playerView.artistLabel.text = @"";
+        self.playerView.artistLabel.text = @"-- --";
+        return;
     }
+
+
+
+    //播放的时候, 有可能在播放第三方音乐, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
+    self.playerView.heartIcon.enabled = nowPlayingItem.playbackStoreID ? YES  : NO;
+    //红心状态
+    [self heartFromSongIdentifier:nowPlayingItem.playbackStoreID];
+
+    [self.playerView.songNameLabel setText:nowPlayingItem.title];
+    [self.playerView.artistLabel setText:nowPlayingItem.artist];
+
+    UIImage *image  = [nowPlayingItem.artwork imageWithSize:self.playerView.artworkView.bounds.size];
+    if (image) {
+        [self.playerView.artworkView setImage:image];
+    }else{
+        //清除旧数据
+        //self.playerView.artworkView.image = nil;
+        if (nowPlayingItem.playbackStoreID) {
+            [MusicKit.new.api resources:@[nowPlayingItem.playbackStoreID]
+                                 byType:CatalogSongs
+                               callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+
+                json = [[[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
+                Song *song = [Song instanceWithDict:json];
+                [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
+            }];
+        }else{
+            for (Song *song in MainPlayer.songLists ) {
+                if ([song isEqualToMediaItem:nowPlayingItem]) {
+                    [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
+                }
+            }
+        }
+    }
+
 
 }
 
