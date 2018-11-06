@@ -10,5 +10,4 @@
 
 @interface MySwitch : UIControl
 @property(nonatomic,getter=isOn) BOOL on;
-
 @end

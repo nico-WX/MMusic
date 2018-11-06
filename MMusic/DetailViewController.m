@@ -13,7 +13,8 @@
 
 //vc
 #import "DetailViewController.h"
-#import "PlayerContentViewController.h"
+#import "NowPlayingViewController.h"
+#import "MPMusicPlayerController+ResourcePlaying.h"
 
 //view
 #import "DetailHeaderView.h"
@@ -38,7 +39,7 @@
 //songs 初始化列表数据
 @property(nonatomic, strong) ResponseRoot *responseRoot;
 //播放器视图控制器
-@property(nonatomic, strong) PlayerContentViewController *playerVC;
+@property(nonatomic, strong) NowPlayingViewController *playerVC;
 //data 数据在请求数据方法中 初始化
 @property(nonatomic, strong) NSArray<Song*> *songs;
 
@@ -183,14 +184,14 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
 #pragma mark - tableView delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.playerVC playSongs:self.songs startIndex:indexPath.row];
+    [MainPlayer playSongs:self.songs startIndex:indexPath.row];
     [self presentViewController:self.playerVC animated:YES completion:nil];
 }
 
 #pragma mark getter
--(PlayerContentViewController *)playerVC{
+-(NowPlayingViewController *)playerVC{
     if (!_playerVC) {
-        _playerVC = [PlayerContentViewController sharePlayerViewController];
+        _playerVC = [NowPlayingViewController sharePlayerViewController];
     }
     return _playerVC;
 }
@@ -285,7 +286,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
         //下一首
         UIAlertAction *nextPlay = [UIAlertAction actionWithTitle:@"下一首播放" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self.playerVC insertSongAtNextItem:song];
+            [MainPlayer insertSongAtNextItem:song];
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
             hud.mode = MBProgressHUDModeCustomView;
             hud.label.text = @"OK";

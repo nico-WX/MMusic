@@ -49,9 +49,11 @@
 }
 
 - (void)layoutSubviews{
+
+    NSLog(@"layout");
+
     CGFloat centerX = CGRectGetMidX(self.bounds);
     CGFloat centerY = CGRectGetMidY(self.bounds);
-    NSLog(@"center Y=%f",centerY);
 
     //按钮size
     CGFloat h = CGRectGetHeight(self.bounds);

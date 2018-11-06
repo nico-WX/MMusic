@@ -10,6 +10,7 @@
 #import "PlayProgressView.h"
 #import "PlayControllerView.h"
 #import <Masonry.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 //统一圆角半径
 static const CGFloat corner = 8.0f;
@@ -27,15 +28,29 @@ static const CGFloat corner = 8.0f;
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.3]];
+        [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
         [self setupSubview];
         [self setupLayout];
+
+        [self updateSongInfoWithItem:MainPlayer.nowPlayingItem];
+        //通知更新
+        [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            [self updateSongInfoWithItem:MainPlayer.nowPlayingItem];
+        }];
     }
     return self;
 }
 
+- (void)updateSongInfoWithItem:(MPMediaItem*)item {
+    self.songNameLabel.text = item.title;
+    self.artistLabel.text = item.artist;
+}
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil];
+}
+
 //添加子控件
-- (void) setupSubview{
+- (void)setupSubview {
     
     //辅助层
     _midView = ({
@@ -62,7 +77,7 @@ static const CGFloat corner = 8.0f;
     //播放进度 及时长
     _playProgressView = ({
         PlayProgressView *view = PlayProgressView.new;
-        [_playCtrView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
+        //[_playCtrView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
         view;
     });
 
@@ -103,8 +118,8 @@ static const CGFloat corner = 8.0f;
     [self addSubview:_heartIcon];
 
     //循环按钮
-    _repeat = UIButton.new;
-    [self addSubview:_repeat];
+//    _repeat = UIButton.new;
+//    [self addSubview:_repeat];
 
 }
 
@@ -113,7 +128,7 @@ static const CGFloat corner = 8.0f;
     //边距
     UIEdgeInsets padding = UIEdgeInsetsMake(40, 40, 40, 40);
     //进度条视图高度
-    CGFloat processViewHeight = 44.0f;
+    CGFloat processViewHeight = 40.0f;
 
     __weak typeof(self) weakSelf = self;
     //中间层

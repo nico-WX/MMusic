@@ -9,7 +9,7 @@
 #import <NAKPlaybackIndicatorView.h>
 #import <Masonry.h>
 
-#import "PlayerContentViewController.h"
+#import "NowPlayingViewController.h"
 #import "SongCell.h"
 #import "Song.h"
 

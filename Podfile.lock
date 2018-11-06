@@ -22,7 +22,7 @@ PODS:
   - MJExtension (3.0.15.1)
   - MJRefresh (3.1.15.7)
   - NAKPlaybackIndicatorView (0.1.1)
-  - Reveal-SDK (18)
+  - Reveal-SDK (19)
   - SDWebImage (4.4.2):
     - SDWebImage/Core (= 4.4.2)
   - SDWebImage/Core (4.4.2)
@@ -61,7 +61,7 @@ SPEC CHECKSUMS:
   MJExtension: 19bc33ce2eee2d319760f5622562cf581a6ff756
   MJRefresh: 697f8ec75ebdbe9207767bb682cf0f51b0d8a41f
   NAKPlaybackIndicatorView: f1468937ae3828ef6e9a50feda0781fdfa67dce8
-  Reveal-SDK: cce79388da3fd0bbb6ae19d769b906cfc3a33a89
+  Reveal-SDK: 9f0d2c6c12eb7507921e5454ac165b7aa21140a4
   SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
   YTPageController: a42ed15972066e66ff7c8d769c214c11f27d483b
 

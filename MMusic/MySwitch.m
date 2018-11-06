@@ -14,10 +14,10 @@
 
 @implementation MySwitch
 
--(instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
 
-        [self setBackgroundColor:UIColor.whiteColor];
+        [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
         [self setOn:NO];
 
         _imageView = [[UIImageView alloc] initWithFrame:self.bounds];
@@ -28,11 +28,18 @@
     return self;
 }
 
--(void) change{
-    //取反赋值
+- (void)layoutSubviews {
+    [_imageView setFrame:self.bounds];
+    [super layoutSubviews];
+}
+
+- (void)change {
+    //值取反传递给形参
     [self setOn:!_on];
 }
--(void)setOn:(BOOL)on{
+
+- (void)setOn:(BOOL)on {
+    //形参值与 原始值比较
     if (_on != on) {
         _on = on;
         [self animationButton:self];
@@ -42,7 +49,7 @@
 }
 
 //简单的缩小-->恢复原始状态
--(void) animationButton:(MySwitch*) sender{
+- (void)animationButton:(MySwitch*)sender {
     [UIView animateWithDuration:0.2 animations:^{
         [sender setTransform:CGAffineTransformMakeScale(0.8, 0.8)];
     } completion:^(BOOL finished) {
@@ -54,6 +61,5 @@
         }
     }];
 }
-
 
 @end

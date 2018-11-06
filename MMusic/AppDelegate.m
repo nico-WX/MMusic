@@ -18,12 +18,12 @@
 
 
 //
-#import "PlayerViewController.h"
+#import "PopupViewController.h"
 
 #import "AuthManager.h"
 
 @interface AppDelegate ()
-@property(nonatomic, strong) PlayerViewController *pvc;
+@property(nonatomic, strong) PopupViewController *pvc;
 @end
 
 @implementation AppDelegate
@@ -31,7 +31,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
 
-    //[application setStatusBarHidden:YES];
 
     //主窗口
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -45,10 +44,10 @@
 
 
     //悬浮窗口
-    PlayerViewController *pvc = [[PlayerViewController alloc] init];
+    PopupViewController *pvc = [[PopupViewController alloc] init];
     self.pvc = pvc;
     [barCtr.view addSubview:pvc.view];
-    
+
 
     //
     MyMusicViewController  *mmusicVC =[[MyMusicViewController alloc] initWithStyle:UITableViewStylePlain];
