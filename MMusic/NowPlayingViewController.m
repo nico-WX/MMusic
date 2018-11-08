@@ -13,7 +13,6 @@
 #import "NowPlayingViewController.h"
 #import "NowPlayingView.h"
 
-
 #import "Artwork.h"
 #import "Song.h"
 #import "MusicVideo.h"
@@ -24,7 +23,6 @@
 #import "ArtistsModel.h"
 
 @interface NowPlayingViewController ()
-/**播放器UI*/
 @property(nonatomic, strong) NowPlayingView *playerView;
 @end
 
@@ -76,6 +74,7 @@ static NowPlayingViewController *_instance;
 }
 
 
+
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [self updateCurrentItemMetadata];
@@ -99,39 +98,41 @@ static NowPlayingViewController *_instance;
     }
 
 
+    {
+        //播放的时候, 有可能在播放第三方音乐, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
+        self.playerView.heartIcon.enabled = nowPlayingItem.playbackStoreID ? YES  : NO;
+        //红心状态
+        [self heartFromSongIdentifier:nowPlayingItem.playbackStoreID];
 
-    //播放的时候, 有可能在播放第三方音乐, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
-    self.playerView.heartIcon.enabled = nowPlayingItem.playbackStoreID ? YES  : NO;
-    //红心状态
-    [self heartFromSongIdentifier:nowPlayingItem.playbackStoreID];
+        [self.playerView.songNameLabel setText:nowPlayingItem.title];
+        [self.playerView.artistLabel setText:nowPlayingItem.artist];
 
-    [self.playerView.songNameLabel setText:nowPlayingItem.title];
-    [self.playerView.artistLabel setText:nowPlayingItem.artist];
-
-    UIImage *image  = [nowPlayingItem.artwork imageWithSize:self.playerView.artworkView.bounds.size];
-    if (image) {
-        [self.playerView.artworkView setImage:image];
-    }else{
-        //清除旧数据
-        //self.playerView.artworkView.image = nil;
-        if (nowPlayingItem.playbackStoreID) {
-            [MusicKit.new.api resources:@[nowPlayingItem.playbackStoreID]
-                                 byType:CatalogSongs
-                               callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-
-                json = [[[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
-                Song *song = [Song instanceWithDict:json];
-                [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
-            }];
-        }else{
-            for (Song *song in MainPlayer.songLists ) {
-                if ([song isEqualToMediaItem:nowPlayingItem]) {
-                    [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
-                }
-            }
+        UIImage *image  = [nowPlayingItem.artwork imageWithSize:self.playerView.artworkView.bounds.size];
+        if (image) {
+            [self.playerView.artworkView setImage:image];
+            //提前return
+            return;
         }
     }
 
+    //清除旧数据
+    //self.playerView.artworkView.image = nil;
+    if (nowPlayingItem.playbackStoreID) {
+        [MusicKit.new.api resources:@[nowPlayingItem.playbackStoreID]
+                             byType:CatalogSongs
+                           callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+
+            json = [[[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
+            Song *song = [Song instanceWithDict:json];
+            [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
+        }];
+    }else{
+        for (Song *song in MainPlayer.songLists ) {
+            if ([song isEqualToMediaItem:nowPlayingItem]) {
+                [self showImageToView:self.playerView.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
+            }
+        }
+    }
 
 }
 
@@ -232,6 +233,10 @@ static NowPlayingViewController *_instance;
             [self.playerView.heartIcon setOn:YES];
         });
     }];
+}
+
+- (UIImage *)artworkImage{
+    return self.playerView.artworkView.image;
 }
 
 @end

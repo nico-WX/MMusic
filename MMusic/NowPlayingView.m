@@ -45,7 +45,7 @@ static const CGFloat corner = 8.0f;
     self.songNameLabel.text = item.title;
     self.artistLabel.text = item.artist;
     CGSize size = self.artworkView.frame.size;
-    //self.artworkView.image = [item.artwork imageWithSize:size];
+    self.artworkView.image = [item.artwork imageWithSize:size];
 }
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil];
@@ -122,7 +122,7 @@ static const CGFloat corner = 8.0f;
 }
 
 - (void)layoutSubviews{
-
+    NSLog(@"************ la");
     [super layoutSubviews];
 }
 

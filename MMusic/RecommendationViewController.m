@@ -13,7 +13,7 @@
 #import <Masonry.h>
 
 //controller
-#import "TodayRecommendationViewController.h"
+#import "RecommendationViewController.h"
 #import "DetailViewController.h"
 
 //view
@@ -22,14 +22,17 @@
 #import "ResourceCell_V2.h"
 
 //model
-#import "MusicKit.h"
 #import "Resource.h"
 #import "Artwork.h"
 #import "Playlist.h"
 #import "Album.h"
 
-@interface TodayRecommendationViewController()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDataSourcePrefetching>
-@property(nonatomic, strong) UIButton *playbackViewButton;                      //右上角播放器指示器按钮(占位)
+
+#import "DataStoreKit.h"
+
+@interface RecommendationViewController()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching>
+
+
 @property(nonatomic, strong) UIActivityIndicatorView *activityView;     //内容加载指示器
 @property(nonatomic, strong) UICollectionView *collectionView;          //内容ui
 
@@ -38,56 +41,42 @@
 @end
 
 
-@implementation TodayRecommendationViewController
+@implementation RecommendationViewController
 //reuse  identifier
 static NSString *const sectionIdentifier = @"sectionView";
-static NSString *const cellIdentifier = @"todayCell";
+static NSString *const cellIdentifier = @"resourceCell";
 
 #pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-
     self.view.backgroundColor = UIColor.whiteColor;
-    [self requestData];
-
     [self.view addSubview:self.collectionView];
+
     //数据加载指示器
     [self.collectionView addSubview:self.activityView];
+
+    [self requestData];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (BOOL)prefersStatusBarHidden{
+- (BOOL)prefersStatusBarHidden {
     return YES;
 }
 
 #pragma  mark - 请求数据 和解析JSON
 - (void)requestData {
 
-    [MusicKit.new.api.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        //数据临时集合 [{@"section title":[data]},...]
-        
-        NSMutableArray<NSDictionary<NSString*,NSArray*>*> *array = [NSMutableArray array];
-        for (NSDictionary *subJSON in [json objectForKey:@"data"]) {
-            //获取 section title
-            NSString *title = [subJSON valueForKeyPath:@"attributes.title.stringForDisplay"];
-            if (!title) {
-                //部分情况下无显示名称, 向下获取歌单维护者
-                NSArray *list = [subJSON valueForKeyPath:@"relationships.contents.data"];
-                title = [list.firstObject valueForKeyPath:@"attributes.curatorName"];
-            }
-
-            NSArray *resources = [self serializationJSON:subJSON];
-            NSDictionary *dict = @{title:resources};
-            [array addObject:dict];
-        }
-        self.allData = array;
-        //刷新UI
+    //加载数据
+    [DataStore.new requestDefaultRecommendationWithCompletion:^(NSArray<NSDictionary<NSString *,NSArray<Resource *> *> *> * _Nonnull array) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            //[self.activityView stopAnimating];
+
+            self.allData = array;
+
+            [self.activityView stopAnimating];
             [self.activityView removeFromSuperview];
             self.activityView = nil;
 
@@ -97,46 +86,20 @@ static NSString *const cellIdentifier = @"todayCell";
     }];
 }
 
-/**解析JSON 数据的嵌套*/
--(NSArray<Resource*>*) serializationJSON:(NSDictionary*) json{
-    NSMutableArray<Resource*> *sectionList = [NSMutableArray array];  //section数据临时集合
-    json = [json objectForKey:@"relationships"];
-    NSDictionary *contents = [json objectForKey:@"contents"];  //如果这里有内容, 则不是组推荐,递归调用解析即可解析<组推荐json结构>
-    if (contents) {
-        //非组推荐
-        for (NSDictionary *sourceDict in [contents objectForKey:@"data"]) {
-            Resource *resouce = [Resource instanceWithDict:sourceDict];
-            [sectionList addObject:resouce];
-        }
-    }else{
-        //组推荐
-        NSDictionary *recommendations = [json objectForKey:@"recommendations"];
-        if (recommendations) {
-            for (NSDictionary *subJSON  in [recommendations objectForKey:@"data"]) {
-                //递归
-                NSArray *temp =[self serializationJSON: subJSON];
-                //数据添加
-                [sectionList addObjectsFromArray:temp];
-            }
-        }
-    }
-    return sectionList;
-}
-
 #pragma mark - <UICollectionViewDataSource>
--(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return self.allData.count;
 }
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    NSArray *array = [self.allData objectAtIndex:section].allValues.firstObject; //节数据
-    return  array.count;
+    return  [self.allData objectAtIndex:section].allValues.firstObject.count;
 }
 
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    //data
-    NSDictionary<NSString*,NSArray<Resource*>*> *dict = [self.allData objectAtIndex:indexPath.section];
-    Resource* resource = [dict.allValues.firstObject objectAtIndex:indexPath.row];
+
+    NSDictionary<NSString*,NSArray<Resource*>*> *dict = [self.allData objectAtIndex:indexPath.section]; //节数据
+    Resource* resource = [dict.allValues.firstObject objectAtIndex:indexPath.row];                      //row数据
 
     //dequeue cell
     ResourceCell_V2 *cell;
@@ -207,12 +170,11 @@ static NSString *const cellIdentifier = @"todayCell";
         _collectionView.dataSource = self;
         _collectionView.delegate  = self;
 
-        //刷新
+        //绑定下拉刷新 事件
         _collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             [self requestData];
         }];
-        //
-        [_collectionView.mj_header setIgnoredScrollViewContentInsetTop:20];
+        [_collectionView.mj_header setIgnoredScrollViewContentInsetTop:20]; //调整顶部距离
     }
     return _collectionView;
 }

@@ -14,7 +14,7 @@
 #import "ChartsMainCell.h"
 
 //model and tool
-#import "MusicKit.h"
+#import "DataStoreKit.h"
 #import "Resource.h"
 
 @interface ChartsMainViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
@@ -23,7 +23,7 @@
 
 @end
 
-static NSString *const reuseID = @"cellReuseIdentifier";
+static NSString *const reuseID = @"chartCell";
 @implementation ChartsMainViewController
 
 
@@ -36,9 +36,8 @@ static NSString *const reuseID = @"cellReuseIdentifier";
     [self.view addSubview:self.rowCollectionView];
     [self requestData];
 }
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -50,54 +49,11 @@ static NSString *const reuseID = @"cellReuseIdentifier";
 }
 
 - (void)requestData {
-    __weak typeof(self) weakSelf = self;
-    [MusicKit.new.api chartsByType:ChartsAll callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        json = [json valueForKey:@"results"];
-        if (json) {
-            NSMutableArray<Chart*> *chartArray = [NSMutableArray array];
-            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-
-                //每一个Key 对应数组,如{@"albums":[{Chart},]}
-                NSArray *tempArray = (NSArray*) obj;
-                [tempArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    Chart *chart = [Chart instanceWithDict:(NSDictionary*)obj];
-                    [chartArray addObject:chart];
-                }];
-            }];
-            weakSelf.rowData = chartArray;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.rowCollectionView reloadData];
-            });
-        }
-        //没有MV数据, 请求香港地区数据
-        if (![json valueForKey:@"music-videos"]) {
-            [self requestHongKongMVData];
-        }
-    }];
-}
-
-//内地无MV 排行数据, 请求香港地区
-- (void) requestHongKongMVData {
-    NSString *path = @"https://api.music.apple.com/v1/catalog/hk/charts?types=music-videos";
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    __weak typeof(self) weakSelf = self;
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        json = [json valueForKey:@"results"];
-        if (json) {
-            NSMutableArray<Chart*> *chartArray = [NSMutableArray array];
-            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-                NSArray *tempArray = (NSArray*)obj;
-                [tempArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    Chart *chart = [Chart instanceWithDict:(NSDictionary*)obj];
-                    [chartArray addObject:chart];
-                }];
-            }];
-            [chartArray addObjectsFromArray:weakSelf.rowData];
-            weakSelf.rowData = chartArray;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.rowCollectionView reloadData];
-            });
-        }
+    [DataStore.new requestAllCharts:^(NSArray<Chart *> * _Nonnull chartArray) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.rowData = chartArray;
+            [self.rowCollectionView reloadData];
+        });
     }];
 }
 
@@ -108,7 +64,7 @@ static NSString *const reuseID = @"cellReuseIdentifier";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ChartsMainCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseID forIndexPath:indexPath];
     cell.chart = [self.rowData objectAtIndex:indexPath.row];
-    cell.navigationController = self.navigationController ;
+    cell.navigationController = self.navigationController ; //传递导航控制器
     return cell;
 }
 

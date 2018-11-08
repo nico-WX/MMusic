@@ -60,12 +60,20 @@
 }
 
 - (Song *)nowPlayingSong{
-    Song *nowSong;
+    __block Song *nowSong ;
     for (Song *song in self.songLists) {
         if ([song isEqualToMediaItem:self.nowPlayingItem]) {
             nowSong = song;
         }
     }
+
+    if (!nowSong) {
+        [MusicKit.new.api resources:@[self.nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+            json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
+            nowSong = [Song instanceWithDict:json];
+        }];
+    }
+
     return nowSong;
 }
 
@@ -114,4 +122,6 @@
 - (MPMusicPlayerPlayParametersQueueDescriptor *)parametersQueue{
     return objc_getAssociatedObject(self, _cmd);
 }
+
+
 @end

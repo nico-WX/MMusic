@@ -12,19 +12,19 @@
 #import "AppDelegate.h"
 
 //Controller
+#import "MMTabBarController.h"
 #import "MyMusicViewController.h"
-#import "TodayRecommendationViewController.h"
+#import "RecommendationViewController.h"
 #import "ChartsMainViewController.h"
 #import "BrowseViewController.h"
 
 
-//
-#import "PopupViewController.h"
+
 
 #import "AuthManager.h"
 
 @interface AppDelegate ()
-@property(nonatomic, strong) PopupViewController *pvc;
+
 @end
 
 @implementation AppDelegate
@@ -40,14 +40,14 @@
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
     //tabBar
-    UITabBarController *barCtr = [[UITabBarController alloc] init];
+    MMTabBarController *barCtr = [[MMTabBarController alloc] init];
     [self.window setRootViewController:barCtr];
 
 
-    //悬浮窗口
-    PopupViewController *pvc = [[PopupViewController alloc] init];
-    self.pvc = pvc;
-    [barCtr.view addSubview:pvc.view];
+//    //悬浮窗口
+//    PopupViewController *pvc = [[PopupViewController alloc] init];
+//    self.pvc = pvc;
+//    [barCtr.view addSubview:pvc.view];
 
 
     //
@@ -56,7 +56,7 @@
     [mmusicVC setTitle:@"我的音乐"];
 
     //今日推荐
-    TodayRecommendationViewController *todayCVC = [[TodayRecommendationViewController alloc] init];
+    RecommendationViewController *todayCVC = [[RecommendationViewController alloc] init];
     [todayCVC setTitle:@"今日推荐"];
 
     //排行榜
@@ -81,9 +81,7 @@
     [browseNav.tabBarItem setImage:[UIImage imageNamed:@"browse"]];
     [mmusicNavCtr.tabBarItem setImage:[UIImage imageNamed:@"Library"]];
 
-
     [MainPlayer beginGeneratingPlaybackNotifications];
-
 
     [self.window makeKeyAndVisible];    //显示
     return YES;

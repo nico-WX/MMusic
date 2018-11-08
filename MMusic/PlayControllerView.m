@@ -12,6 +12,7 @@
 
 
 @interface PlayControllerView()
+@property(nonatomic, strong) UIStackView *stackView;
 @end
 
 @implementation PlayControllerView
@@ -23,16 +24,22 @@
         _play       = [[UIButton alloc] init];
         _next       = [[UIButton alloc] init];
 
+
+        //栈视图管理 按钮
+        _stackView = [[UIStackView alloc] initWithArrangedSubviews:@[_previous,_play,_next]];
+        [_stackView setAxis:UILayoutConstraintAxisHorizontal];
+        [_stackView setAlignment:UIStackViewAlignmentCenter];
+        [_stackView setDistribution:UIStackViewDistributionFillEqually];
+        [self addSubview:_stackView];
+
+
         //绑定按钮事件
         [_previous addTarget:self action:@selector(previousButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         [_play addTarget:self action:@selector(playButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         [_next addTarget:self action:@selector(nextButtonClick:) forControlEvents:UIControlEventTouchUpInside];
 
-        //按钮添加到辅层
-        [self addSubview:_previous];
-        [self addSubview:_play];
-        [self addSubview:_next];
 
+        // update
         [self updateWithState:MainPlayer.playbackState];
         [_previous setImage:[UIImage imageNamed:@"nowPlaying_prev"] forState:UIControlStateNormal];
         [_next setImage:[UIImage imageNamed:@"nowPlaying_next"] forState:UIControlStateNormal];
@@ -50,27 +57,28 @@
 
 - (void)layoutSubviews{
 
-    NSLog(@"layout");
+    [self.stackView setFrame:self.bounds];
 
-    CGFloat centerX = CGRectGetMidX(self.bounds);
-    CGFloat centerY = CGRectGetMidY(self.bounds);
 
-    //按钮size
-    CGFloat h = CGRectGetHeight(self.bounds);
-    CGFloat w = h;
-
-    CGFloat y = centerY - h/2;
-    CGFloat pre_x = centerX/2 - w/2;
-    CGFloat play_x = centerX - w/2;
-    CGFloat next_x = centerX+(centerX/2) - w/3;
-
-    CGRect preFrame = CGRectMake(pre_x, y, w, h);
-    CGRect playFrame = CGRectMake(play_x, y, w, h);
-    CGRect nextFrame = CGRectMake(next_x, y, w, h);
-
-    [self.previous setFrame:preFrame];
-    [self.play setFrame:playFrame];
-    [self.next setFrame:nextFrame];
+//    CGFloat centerX = CGRectGetMidX(self.bounds);
+//    CGFloat centerY = CGRectGetMidY(self.bounds);
+//
+//    //按钮size
+//    CGFloat h = CGRectGetHeight(self.bounds);
+//    CGFloat w = h;
+//
+//    CGFloat y = centerY - h/2;
+//    CGFloat pre_x = centerX/2 - w/2;
+//    CGFloat play_x = centerX - w/2;
+//    CGFloat next_x = centerX+(centerX/2) - w/3;
+//
+//    CGRect preFrame = CGRectMake(pre_x, y, w, h);
+//    CGRect playFrame = CGRectMake(play_x, y, w, h);
+//    CGRect nextFrame = CGRectMake(next_x, y, w, h);
+//
+//    [self.previous setFrame:preFrame];
+//    [self.play setFrame:playFrame];
+//    [self.next setFrame:nextFrame];
 
     [super layoutSubviews];
 }
