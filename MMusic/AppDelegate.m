@@ -13,12 +13,13 @@
 
 //Controller
 #import "MMTabBarController.h"
-#import "MyMusicViewController.h"
+
 #import "RecommendationViewController.h"
 #import "ChartsMainViewController.h"
+#import "MyMusicViewController.h"
 #import "BrowseViewController.h"
-
-
+#import "PopupViewController.h"
+#import "NowPlayingViewController.h"
 
 
 #import "AuthManager.h"
@@ -39,18 +40,17 @@
     //定时锁屏
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
 
+
     //tabBar
-    MMTabBarController *barCtr = [[MMTabBarController alloc] init];
-    [self.window setRootViewController:barCtr];
+    MMTabBarController *rootVC = [[MMTabBarController alloc] init];
+    [self.window setRootViewController:rootVC];
 
+    //悬浮窗口  及打开状态 窗口
+    PopupViewController *pvc = [[PopupViewController alloc] init];
+    [rootVC addPopupViewController:pvc];
+    [rootVC addOpenViewController:[NowPlayingViewController sharePlayerViewController]];
 
-//    //悬浮窗口
-//    PopupViewController *pvc = [[PopupViewController alloc] init];
-//    self.pvc = pvc;
-//    [barCtr.view addSubview:pvc.view];
-
-
-    //
+    
     MyMusicViewController  *mmusicVC =[[MyMusicViewController alloc] initWithStyle:UITableViewStylePlain];
     UINavigationController *mmusicNavCtr = [[UINavigationController alloc] initWithRootViewController:mmusicVC];
     [mmusicVC setTitle:@"我的音乐"];
@@ -66,14 +66,14 @@
 
     //浏览
     BrowseViewController *browseVC = BrowseViewController.new;
-    browseVC.title = @"浏览";
+    [browseVC setTitle:@"浏览"];
     UINavigationController *browseNav = [[UINavigationController alloc] initWithRootViewController:browseVC];
 
     //添加控制器
-    [barCtr addChildViewController:todayCVC];
-    [barCtr addChildViewController:chartNav];
-    [barCtr addChildViewController:browseNav];
-    [barCtr addChildViewController:mmusicNavCtr];
+    [rootVC addChildViewController:todayCVC];
+    [rootVC addChildViewController:chartNav];
+    [rootVC addChildViewController:browseNav];
+    [rootVC addChildViewController:mmusicNavCtr];
 
     //设置item 图标
     [todayCVC.tabBarItem setImage:[UIImage imageNamed:@"recom"]];
@@ -86,6 +86,7 @@
     [self.window makeKeyAndVisible];    //显示
     return YES;
 }
+
 
 - (void)applicationWillTerminate:(UIApplication *)application{
     [MainPlayer endGeneratingPlaybackNotifications];

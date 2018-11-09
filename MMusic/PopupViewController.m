@@ -67,18 +67,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil];
 }
 
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-
-    //  --- > ??
-//    if (!self.imageView.image) {
-//        [MusicKit.new.api resources:@[MainPlayer.nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-//            json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
-//            Song *song = [Song instanceWithDict:json];
-//            [self showImageToView:self.imageView withImageURL:song.artwork.url cacheToMemory:NO];
-//        }];
-//    }
-}
 
 - (void)viewDidLayoutSubviews{
 

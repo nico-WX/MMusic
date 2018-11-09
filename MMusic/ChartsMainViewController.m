@@ -34,19 +34,15 @@ static NSString *const reuseID = @"chartCell";
     self.view.backgroundColor = UIColor.whiteColor;
 
     [self.view addSubview:self.rowCollectionView];
+    [self.rowCollectionView setContentInset:UIEdgeInsetsMake(4, 4, 10, 4)];
     [self requestData];
 }
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (void)viewDidLayoutSubviews {
-    [self.rowCollectionView setContentInset:UIEdgeInsetsMake(4, 4, 10, 4)];
-    [super viewDidLayoutSubviews];
-}
+
 
 - (void)requestData {
     [DataStore.new requestAllCharts:^(NSArray<Chart *> * _Nonnull chartArray) {

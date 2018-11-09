@@ -172,8 +172,11 @@ static NSString *const cellIdentifier = @"resourceCell";
 
         //绑定下拉刷新 事件
         _collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+            UIImpactFeedbackGenerator *impact = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
+            [impact impactOccurred];
             [self requestData];
         }];
+
         [_collectionView.mj_header setIgnoredScrollViewContentInsetTop:20]; //调整顶部距离
     }
     return _collectionView;

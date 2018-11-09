@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class Chart;
 typedef void(^AllChartsDataCallBak)(NSArray<Chart*>* chartArray);
+
 @interface DataStore (Charts)
 - (void)requestAllCharts:(AllChartsDataCallBak)callBack;
 @end

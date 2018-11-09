@@ -1,8 +1,8 @@
 //
 //  MMTabBarController.h
-//  MMusic
+//  ScrollPage
 //
-//  Created by 🐙怪兽 on 2018/11/6.
+//  Created by 🐙怪兽 on 2018/11/8.
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
@@ -11,6 +11,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MMTabBarController : UITabBarController
+- (void)addPopupViewController:(UIViewController*)popupViewController;
+- (void)addOpenViewController:(UIViewController*)openViewController;
 @end
 
 NS_ASSUME_NONNULL_END
