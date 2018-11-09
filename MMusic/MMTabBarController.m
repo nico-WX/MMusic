@@ -25,6 +25,8 @@
 
     [self.tabBar setHidden:YES];
 
+
+
     self.impactFeedback = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
 
     self.popupFrame = ({
@@ -71,6 +73,15 @@
         [self.visualEffectView addGestureRecognizer:upSwipe];
         [self.visualEffectView addGestureRecognizer:downSwipe];
     });
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    if (CGRectGetHeight(self.tabBar.frame) > 49) {
+        self.popupFrame = CGRectOffset(self.popupFrame, 0, -34); //34 为home indicator 
+        [self.visualEffectView setFrame:self.popupFrame];
+    }
 }
 
 - (void)handleSwipeGesture:(UISwipeGestureRecognizer*)swipeGesture {
