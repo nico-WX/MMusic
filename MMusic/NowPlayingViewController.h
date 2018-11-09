@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MMTabBarController.h"
 
 
 //播放控制 及 info 更新  子控件事件拆分在各自的视图中, 信息统一通过MainPlayer 获取
-@interface NowPlayingViewController : UIViewController
+@interface NowPlayingViewController : UIViewController<MMTabbarControllerPopupDelegate>
 @property(nonatomic, readonly) UIImage *artworkImage;
 /**播放器UI*/
 //@property(nonatomic, strong) NowPlayingView *playerView;

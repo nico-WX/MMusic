@@ -1,6 +1,5 @@
 //
 //  MMTabBarController.m
-
 //
 //  Created by 🐙怪兽 on 2018/11/8.
 //  Copyright © 2018 com.😈. All rights reserved.
@@ -8,10 +7,8 @@
 
 #import "MMTabBarController.h"
 
-
 @interface MMTabBarController ()
-@property(nonatomic, strong)UIViewController *popupViewController;
-@property(nonatomic, strong)UIViewController *openViewController;
+@property(nonatomic, strong)UIViewController<MMTabbarControllerPopupDelegate> *popupViewController;
 @property(nonatomic, strong)UIVisualEffectView *visualEffectView;
 
 @property(nonatomic, assign)CGRect popupFrame;
@@ -25,8 +22,6 @@
 
     [self.tabBar setHidden:YES];
 
-
-
     self.impactFeedback = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
 
     self.popupFrame = ({
@@ -35,6 +30,7 @@
         CGFloat w = CGRectGetWidth(self.view.frame)-(spacing*2);
         CGFloat h = 55.0f;
         CGFloat y = CGRectGetMaxY(self.view.frame)-(h+spacing);
+
         CGRectMake(x, y, w, h);
     });
 
@@ -49,7 +45,7 @@
 
     [self.view addSubview:self.visualEffectView];
 
-    
+
     //手势
     ({
         UISwipeGestureRecognizer *rightSwipe = [UISwipeGestureRecognizer new];
@@ -75,23 +71,28 @@
     });
 }
 
-- (void)viewDidAppear:(BOOL)animated {
+
+- (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 
     if (CGRectGetHeight(self.tabBar.frame) > 49) {
-        self.popupFrame = CGRectOffset(self.popupFrame, 0, -34); //34 为home indicator 
+        self.popupFrame = CGRectOffset(self.popupFrame, 0, - 34);  //标准为 34 点
         [self.visualEffectView setFrame:self.popupFrame];
     }
 }
 
+
 - (void)handleSwipeGesture:(UISwipeGestureRecognizer*)swipeGesture {
 
+    //打开popupView 时, 拦截左右切换VC 手势(判断 当前popupView 高度)
+    CGFloat oh = CGRectGetHeight(self.popupViewController.view.frame);
+    CGFloat ch = CGRectGetHeight(self.popupFrame);
 
-    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionRight) {
+    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionRight && oh <= ch) {
         [self previousViewController];
     }
 
-    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionLeft) {
+    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionLeft  && oh <= ch) {
         [self nextViewController];
     }
     if (swipeGesture.direction & UISwipeGestureRecognizerDirectionUp) {
@@ -123,14 +124,11 @@
 
     [self.impactFeedback impactOccurred];
     CGRect newFrame = [UIScreen mainScreen].bounds;
-
     [UIView animateWithDuration:1.0 delay:0.0 usingSpringWithDamping:0.5 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.visualEffectView.frame = newFrame;
-        self.popupViewController.view.alpha = 0.0;
-        self.openViewController.view.alpha  = 1.0;
-    } completion:^(BOOL finished) {
-
-    }];
+        self.popupViewController.view.frame = self.visualEffectView.contentView.bounds;//newFrame;
+        [self.popupViewController mmTabBarControllerDidOpenPopupWithBounds:newFrame];
+    } completion:nil];
 
 }
 - (void)closePopupViewController{
@@ -138,21 +136,13 @@
     [self.impactFeedback impactOccurred];
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.5 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.visualEffectView.frame = self.popupFrame;
-        self.openViewController.view.alpha  = 0.0;
-        self.popupViewController.view.alpha = 1.0;
-    } completion:^(BOOL finished) {
-
-    }];
-
+        self.popupViewController.view.frame = self.visualEffectView.contentView.bounds;//self.popupFrame;
+        [self.popupViewController mmTabBarControllerDidClosePopupWithBounds:self.popupFrame];
+    } completion:nil];
 }
 
 
-- (void)addOpenViewController:(UIViewController *)openViewController{
-    self.openViewController = openViewController;
-    self.openViewController.view.alpha = 0;
-    [self.visualEffectView.contentView addSubview:self.openViewController.view];
-}
-- (void)addPopupViewController:(UIViewController *)popupViewController{
+- (void)addPopupViewController:(UIViewController<MMTabbarControllerPopupDelegate> *)popupViewController{
     self.popupViewController = popupViewController;
     self.popupViewController.view.frame = self.visualEffectView.bounds;
     [self.visualEffectView.contentView addSubview:self.popupViewController.view];

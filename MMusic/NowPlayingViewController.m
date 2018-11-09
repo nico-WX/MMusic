@@ -12,6 +12,7 @@
 #import "MPMusicPlayerController+ResourcePlaying.h"
 #import "NowPlayingViewController.h"
 #import "NowPlayingView.h"
+#import "PlayProgressView.h"
 
 #import "Artwork.h"
 #import "Song.h"
@@ -23,6 +24,17 @@
 #import "ArtistsModel.h"
 
 @interface NowPlayingViewController ()
+@property(nonatomic, strong)UIImageView *artworkView;
+@property(nonatomic, strong)PlayProgressView *playProgressView;
+@property(nonatomic, strong)UILabel *songNameLabel;
+@property(nonatomic, strong)UILabel *artistLabel;
+@property(nonatomic, strong)UIButton *previousButton;
+@property(nonatomic, strong)UIButton *playButton;
+@property(nonatomic, strong)UIButton *nextButton;
+@property(nonatomic, strong)MySwitch *heartSwitch;
+
+// g更改页面布局
+
 @property(nonatomic, strong) NowPlayingView *playerView;
 @end
 
@@ -31,17 +43,31 @@ static NowPlayingViewController *_instance;
 
 @implementation NowPlayingViewController
 
+- (instancetype)init{
+    if (self =[super init]) {
+        _artworkView        = [UIImageView new];
+        _playProgressView   = [PlayProgressView new];
+        _songNameLabel      = [UILabel new];
+        _artistLabel        = [UILabel new];
+        _previousButton     = [UIButton new];
+        _playButton         = [UIButton new];
+        _nextButton         = [UIButton new];
+        _heartSwitch        = [MySwitch new];
+
+
+    }
+    return self;
+}
+
 #pragma mark - 初始化 / 单例
-+ (instancetype)sharePlayerViewController{
++ (instancetype)sharePlayerViewController {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        if (!_instance) {
-            _instance = [[self alloc] init];
-        }
+        _instance = [[self alloc] init];
     });
     return _instance;
 }
-+(instancetype)allocWithZone:(struct _NSZone *)zone{
++ (instancetype)allocWithZone:(struct _NSZone *)zone {
     //防止同时访问
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -51,11 +77,10 @@ static NowPlayingViewController *_instance;
     });
     return _instance;
 }
-
--(id)copyWithZone:(NSZone *)zone{
+- (id)copyWithZone:(NSZone *)zone{
     return _instance;
 }
--(id)mutableCopyWithZone:(NSZone *)zone{
+- (id)mutableCopyWithZone:(NSZone *)zone{
     return _instance;
 }
 
@@ -72,7 +97,6 @@ static NowPlayingViewController *_instance;
                                                       [self updateCurrentItemMetadata];
     }];
 }
-
 
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -96,7 +120,6 @@ static NowPlayingViewController *_instance;
         self.playerView.artistLabel.text = @"-- --";
         return;
     }
-
 
     {
         //播放的时候, 有可能在播放第三方音乐, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
@@ -136,6 +159,16 @@ static NowPlayingViewController *_instance;
 
 }
 
+
+#pragma mark - <MMTabbarControllerPopupDelegate>
+- (void)mmTabBarControllerDidClosePopupWithBounds:(CGRect)bounds {
+    //关闭状态布局
+    NSLog(@"close => self.frame=%@",NSStringFromCGRect(self.view.frame));
+}
+- (void)mmTabBarControllerDidOpenPopupWithBounds:(CGRect)bounds {
+    //打开状态布局
+     NSLog(@"open => self.frame=%@",NSStringFromCGRect(self.view.frame));
+}
 
 #pragma mark - Helper
 /**获取歌曲rating 状态, 并设置 红心开关状态*/

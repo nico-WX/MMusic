@@ -18,7 +18,6 @@
 #import "ChartsMainViewController.h"
 #import "MyMusicViewController.h"
 #import "BrowseViewController.h"
-#import "PopupViewController.h"
 #import "NowPlayingViewController.h"
 
 
@@ -45,11 +44,11 @@
     MMTabBarController *rootVC = [[MMTabBarController alloc] init];
     [self.window setRootViewController:rootVC];
 
-    //悬浮窗口  及打开状态 窗口
-    PopupViewController *pvc = [[PopupViewController alloc] init];
-    [rootVC addPopupViewController:pvc];
-    [rootVC addOpenViewController:[NowPlayingViewController sharePlayerViewController]];
+    //悬浮窗口添加
+    [rootVC addPopupViewController:[NowPlayingViewController sharePlayerViewController]];
 
+
+    
     
     MyMusicViewController  *mmusicVC =[[MyMusicViewController alloc] initWithStyle:UITableViewStylePlain];
     UINavigationController *mmusicNavCtr = [[UINavigationController alloc] initWithRootViewController:mmusicVC];
