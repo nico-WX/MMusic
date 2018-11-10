@@ -58,7 +58,7 @@
 		3B98EC9C21872A5B009A4B6B /* ChartsSubCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B98EC9B21872A5B009A4B6B /* ChartsSubCell.m */; };
 		3B9A371C219700E6000CB6B4 /* NowPlayingViewController+Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A3719219700E6000CB6B4 /* NowPlayingViewController+Layout.m */; };
 		3B9A371D219700E6000CB6B4 /* NowPlayingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A371B219700E6000CB6B4 /* NowPlayingViewController.m */; };
-		3B9A3732219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A3731219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.m */; };
+		3B9A3732219715F0000CB6B4 /* NowPlayingViewController+UpdateUIState.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A3731219715F0000CB6B4 /* NowPlayingViewController+UpdateUIState.m */; };
 		3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA86B1FB04B5700720085 /* AppDelegate.m */; };
 		3B9AA8721FB04B5700720085 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B9AA8701FB04B5700720085 /* Main.storyboard */; };
 		3B9AA8741FB04B5700720085 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9AA8731FB04B5700720085 /* Assets.xcassets */; };
@@ -292,8 +292,8 @@
 		3B9A3719219700E6000CB6B4 /* NowPlayingViewController+Layout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NowPlayingViewController+Layout.m"; sourceTree = "<group>"; };
 		3B9A371A219700E6000CB6B4 /* NowPlayingViewController+Layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NowPlayingViewController+Layout.h"; sourceTree = "<group>"; };
 		3B9A371B219700E6000CB6B4 /* NowPlayingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NowPlayingViewController.m; sourceTree = "<group>"; };
-		3B9A3730219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NowPlayingViewController+UpdateButtonState.h"; sourceTree = "<group>"; };
-		3B9A3731219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NowPlayingViewController+UpdateButtonState.m"; sourceTree = "<group>"; };
+		3B9A3730219715F0000CB6B4 /* NowPlayingViewController+UpdateUIState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NowPlayingViewController+UpdateUIState.h"; sourceTree = "<group>"; };
+		3B9A3731219715F0000CB6B4 /* NowPlayingViewController+UpdateUIState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NowPlayingViewController+UpdateUIState.m"; sourceTree = "<group>"; };
 		3B9AA8671FB04B5700720085 /* MMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B9AA86A1FB04B5700720085 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3B9AA86B1FB04B5700720085 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -460,8 +460,8 @@
 				3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */,
 				3B9A3718219700E6000CB6B4 /* NowPlayingViewController.h */,
 				3B9A371B219700E6000CB6B4 /* NowPlayingViewController.m */,
-				3B9A3730219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.h */,
-				3B9A3731219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.m */,
+				3B9A3730219715F0000CB6B4 /* NowPlayingViewController+UpdateUIState.h */,
+				3B9A3731219715F0000CB6B4 /* NowPlayingViewController+UpdateUIState.m */,
 				3B9A371A219700E6000CB6B4 /* NowPlayingViewController+Layout.h */,
 				3B9A3719219700E6000CB6B4 /* NowPlayingViewController+Layout.m */,
 				3B4DDC5C2192C5D700F70547 /* MPMediaItemArtwork+Exchange.h */,
@@ -1196,7 +1196,7 @@
 				3B87992E204FF7E000EE9D2A /* TodaySectionView.m in Sources */,
 				3BAAE02D20B45A9A00C82F4B /* ResultsCell.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
-				3B9A3732219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.m in Sources */,
+				3B9A3732219715F0000CB6B4 /* NowPlayingViewController+UpdateUIState.m in Sources */,
 				3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */,
 				3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */,
 				3B4DDD51219441B800F70547 /* DataStore+Search.m in Sources */,
