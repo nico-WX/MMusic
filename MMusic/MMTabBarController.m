@@ -127,7 +127,9 @@
     [UIView animateWithDuration:1.0 delay:0.0 usingSpringWithDamping:0.5 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.visualEffectView.frame = newFrame;
         self.popupViewController.view.frame = self.visualEffectView.contentView.bounds;//newFrame;
-        [self.popupViewController mmTabBarControllerDidOpenPopupWithBounds:newFrame];
+        if ([self.popupViewController respondsToSelector:@selector(mmTabBarControllerDidOpenPopupWithBounds:)]) {
+            [self.popupViewController mmTabBarControllerDidOpenPopupWithBounds:newFrame];
+        }
     } completion:nil];
 
 }
@@ -137,7 +139,9 @@
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.5 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.visualEffectView.frame = self.popupFrame;
         self.popupViewController.view.frame = self.visualEffectView.contentView.bounds;//self.popupFrame;
-        [self.popupViewController mmTabBarControllerDidClosePopupWithBounds:self.popupFrame];
+        if ([self.popupViewController respondsToSelector:@selector(mmTabBarControllerDidClosePopupWithBounds:)]) {
+            [self.popupViewController mmTabBarControllerDidClosePopupWithBounds:self.popupFrame];
+        }
     } completion:nil];
 }
 

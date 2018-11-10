@@ -1,21 +1,31 @@
 //
-//  NowPlayingViewController.h
-//  MMusic
+//  RedViewController.h
+//  ScrollPage
 //
-//  Created by Magician on 2018/3/11.
-//  Copyright © 2018年 com.😈. All rights reserved.
+//  Created by 🐙怪兽 on 2018/11/8.
+//  Copyright © 2018 com.😈. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "MMTabBarController.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
-//播放控制 及 info 更新  子控件事件拆分在各自的视图中, 信息统一通过MainPlayer 获取
+@class PlayProgressView;
+@class MySwitch;
 @interface NowPlayingViewController : UIViewController<MMTabbarControllerPopupDelegate>
-@property(nonatomic, readonly) UIImage *artworkImage;
-/**播放器UI*/
-//@property(nonatomic, strong) NowPlayingView *playerView;
+@property(nonatomic, strong)UIImageView *artworkView;
+@property(nonatomic, strong)PlayProgressView *playProgressView;
+@property(nonatomic, strong)UILabel *songNameLabel;
+@property(nonatomic, strong)UILabel *artistLabel;
+@property(nonatomic, strong)UIButton *previousButton;
+@property(nonatomic, strong)UIButton *playButton;
+@property(nonatomic, strong)UIButton *nextButton;
+@property(nonatomic, strong)MySwitch *heartSwitch;
 
-/**单例*/
+
 + (instancetype)sharePlayerViewController;
+
 @end
+
+NS_ASSUME_NONNULL_END

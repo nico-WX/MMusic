@@ -12,7 +12,6 @@
 		3B2D6EFB2091F69200E1B22C /* ScreeningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFA2091F69200E1B22C /* ScreeningViewController.m */; };
 		3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFC2091F6D400E1B22C /* screening.plist */; };
 		3B3D9981205512FA000F2E9E /* SongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9980205512FA000F2E9E /* SongCell.m */; };
-		3B3D998420553CD4000F2E9E /* NowPlayingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D998320553CD4000F2E9E /* NowPlayingViewController.m */; };
 		3B3D9989205540A0000F2E9E /* NowPlayingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9988205540A0000F2E9E /* NowPlayingView.m */; };
 		3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D99E9205E990F000F2E9E /* NSString+Hash.m */; };
 		3B408EDC20B6A8600057E323 /* ArtistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EDB20B6A8600057E323 /* ArtistsViewController.m */; };
@@ -57,6 +56,9 @@
 		3B9226212180896800A0CB96 /* ChartsSubViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9226202180896800A0CB96 /* ChartsSubViewController.m */; };
 		3B92AFA22181BFA60016CE46 /* ChartsMainCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B92AFA12181BFA60016CE46 /* ChartsMainCell.m */; };
 		3B98EC9C21872A5B009A4B6B /* ChartsSubCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B98EC9B21872A5B009A4B6B /* ChartsSubCell.m */; };
+		3B9A371C219700E6000CB6B4 /* NowPlayingViewController+Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A3719219700E6000CB6B4 /* NowPlayingViewController+Layout.m */; };
+		3B9A371D219700E6000CB6B4 /* NowPlayingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A371B219700E6000CB6B4 /* NowPlayingViewController.m */; };
+		3B9A3732219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A3731219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.m */; };
 		3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA86B1FB04B5700720085 /* AppDelegate.m */; };
 		3B9AA8721FB04B5700720085 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B9AA8701FB04B5700720085 /* Main.storyboard */; };
 		3B9AA8741FB04B5700720085 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9AA8731FB04B5700720085 /* Assets.xcassets */; };
@@ -196,8 +198,6 @@
 		3B2D6EFC2091F6D400E1B22C /* screening.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = screening.plist; sourceTree = "<group>"; };
 		3B3D997F205512FA000F2E9E /* SongCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SongCell.h; sourceTree = "<group>"; };
 		3B3D9980205512FA000F2E9E /* SongCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SongCell.m; sourceTree = "<group>"; };
-		3B3D998220553CD4000F2E9E /* NowPlayingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NowPlayingViewController.h; sourceTree = "<group>"; };
-		3B3D998320553CD4000F2E9E /* NowPlayingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NowPlayingViewController.m; sourceTree = "<group>"; };
 		3B3D9987205540A0000F2E9E /* NowPlayingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NowPlayingView.h; sourceTree = "<group>"; };
 		3B3D9988205540A0000F2E9E /* NowPlayingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NowPlayingView.m; sourceTree = "<group>"; };
 		3B3D99E8205E990D000F2E9E /* NSString+Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hash.h"; sourceTree = "<group>"; };
@@ -288,6 +288,12 @@
 		3B92AFA12181BFA60016CE46 /* ChartsMainCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsMainCell.m; sourceTree = "<group>"; };
 		3B98EC9A21872A5B009A4B6B /* ChartsSubCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsSubCell.h; sourceTree = "<group>"; };
 		3B98EC9B21872A5B009A4B6B /* ChartsSubCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsSubCell.m; sourceTree = "<group>"; };
+		3B9A3718219700E6000CB6B4 /* NowPlayingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NowPlayingViewController.h; sourceTree = "<group>"; };
+		3B9A3719219700E6000CB6B4 /* NowPlayingViewController+Layout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NowPlayingViewController+Layout.m"; sourceTree = "<group>"; };
+		3B9A371A219700E6000CB6B4 /* NowPlayingViewController+Layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NowPlayingViewController+Layout.h"; sourceTree = "<group>"; };
+		3B9A371B219700E6000CB6B4 /* NowPlayingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NowPlayingViewController.m; sourceTree = "<group>"; };
+		3B9A3730219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NowPlayingViewController+UpdateButtonState.h"; sourceTree = "<group>"; };
+		3B9A3731219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NowPlayingViewController+UpdateButtonState.m"; sourceTree = "<group>"; };
 		3B9AA8671FB04B5700720085 /* MMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B9AA86A1FB04B5700720085 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3B9AA86B1FB04B5700720085 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -452,8 +458,12 @@
 				3B4DDC602193127500F70547 /* NowPlayingView */,
 				3B66A22D2195CCDC00F7DC9E /* MMTabBarController.h */,
 				3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */,
-				3B3D998220553CD4000F2E9E /* NowPlayingViewController.h */,
-				3B3D998320553CD4000F2E9E /* NowPlayingViewController.m */,
+				3B9A3718219700E6000CB6B4 /* NowPlayingViewController.h */,
+				3B9A371B219700E6000CB6B4 /* NowPlayingViewController.m */,
+				3B9A3730219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.h */,
+				3B9A3731219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.m */,
+				3B9A371A219700E6000CB6B4 /* NowPlayingViewController+Layout.h */,
+				3B9A3719219700E6000CB6B4 /* NowPlayingViewController+Layout.m */,
 				3B4DDC5C2192C5D700F70547 /* MPMediaItemArtwork+Exchange.h */,
 				3B4DDC5D2192C5D700F70547 /* MPMediaItemArtwork+Exchange.m */,
 				3B4DDC3F2191BE0D00F70547 /* MPMusicPlayerController+ResourcePlaying.h */,
@@ -1186,6 +1196,7 @@
 				3B87992E204FF7E000EE9D2A /* TodaySectionView.m in Sources */,
 				3BAAE02D20B45A9A00C82F4B /* ResultsCell.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
+				3B9A3732219715F0000CB6B4 /* NowPlayingViewController+UpdateButtonState.m in Sources */,
 				3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */,
 				3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */,
 				3B4DDD51219441B800F70547 /* DataStore+Search.m in Sources */,
@@ -1210,6 +1221,7 @@
 				3BC33211209CA3220080D1B9 /* ScreeningCell.m in Sources */,
 				3B3D9989205540A0000F2E9E /* NowPlayingView.m in Sources */,
 				3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */,
+				3B9A371D219700E6000CB6B4 /* NowPlayingViewController.m in Sources */,
 				3B9AA8F51FB4719A00720085 /* MusicVideo.m in Sources */,
 				3BC33214209CA5ED0080D1B9 /* ScreeningSection.m in Sources */,
 				3B4D98AB20BD61F600139BE0 /* CuratorsAndActivitiesViewController.m in Sources */,
@@ -1220,7 +1232,6 @@
 				3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */,
 				3B9AA8FE1FB478C700720085 /* PlayParameters.m in Sources */,
 				3B4D98F720C162EF00139BE0 /* ArtistsInfoView.m in Sources */,
-				3B3D998420553CD4000F2E9E /* NowPlayingViewController.m in Sources */,
 				3B69896220A99DDC000C3403 /* LibrarySong.m in Sources */,
 				3B4D98A520BD42EC00139BE0 /* AlbumsSongCell.m in Sources */,
 				3B9AA8891FB2E06C00720085 /* MyMusicViewController.m in Sources */,
@@ -1228,6 +1239,7 @@
 				3B98EC9C21872A5B009A4B6B /* ChartsSubCell.m in Sources */,
 				3B4D98F120C0214000139BE0 /* ArtistsContentTableView.m in Sources */,
 				3B9AA8821FB04BC400720085 /* LocalMusicViewController.m in Sources */,
+				3B9A371C219700E6000CB6B4 /* NowPlayingViewController+Layout.m in Sources */,
 				3BC3324820A04E490080D1B9 /* ContentViewController.m in Sources */,
 				3B9B269320D65EEA00881199 /* ResourceCollectionViewCell.m in Sources */,
 				3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */,

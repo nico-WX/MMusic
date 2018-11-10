@@ -13,11 +13,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**改变布局*/
 @protocol MMTabbarControllerPopupDelegate <NSObject>
 
-@required
-
+@optional
 /**最小化窗口时调用, bounds 为最小化的窗口bounds 调整布局*/
 - (void)mmTabBarControllerDidClosePopupWithBounds:(CGRect)bounds;
-
 /**最大化窗口时调用 bounds 为最大化的窗口bounds 调整布局*/
 - (void)mmTabBarControllerDidOpenPopupWithBounds:(CGRect)bounds;
 @end
