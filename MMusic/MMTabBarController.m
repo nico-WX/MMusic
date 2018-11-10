@@ -38,8 +38,11 @@
         UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
         UIVisualEffectView *view = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
         view.frame = self.popupFrame;
-        [view.layer setCornerRadius:8.0f];
+        [view.layer setCornerRadius:6.0f];
         [view.layer setMasksToBounds:YES];
+        [view.layer setBorderWidth:1];
+
+        [view.layer setBorderColor:[UIColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:0.2].CGColor];
         view;
     });
 

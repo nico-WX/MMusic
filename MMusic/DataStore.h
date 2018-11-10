@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark < Recommendations >                        == DataStore+Recommendations
 
-#pragma mark < Ratings >
+#pragma mark < Ratings >                                == DataStore+Rating
 @end
 
 NS_ASSUME_NONNULL_END

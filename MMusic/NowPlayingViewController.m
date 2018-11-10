@@ -41,6 +41,9 @@ static NowPlayingViewController *_instance;
         _nextButton         = [UIButton new];
         _heartSwitch        = [MMSwitch new];
 
+        _heartSwitch.frame = CGRectMake(200, 200, 30, 30); //偏移, 不要在 x=0 y=0 没约束前会出现在左上角
+        _playProgressView.frame = CGRectMake(200, 200, 30, 30);
+
         [self.view addSubview:_heartSwitch];
         [self.view addSubview:_artworkView];
         [self.view addSubview:_playProgressView];

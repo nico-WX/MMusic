@@ -164,12 +164,13 @@
         make.height.mas_equalTo(h);
     }];
 
+    CGFloat heartW = 35.0f;
     [self.heartSwitch mas_remakeConstraints:^(MASConstraintMaker *make) {
-        CGFloat heartOffset = CGRectGetMidX(weakSelf.playButton.frame) - h/2; //左边偏移
+        CGFloat heartOffset = CGRectGetMidX(weakSelf.playButton.frame) - heartW/2; //左边偏移
         make.top.mas_equalTo(weakSelf.playButton.mas_bottom).offset(padding.top/2);
         make.left.mas_equalTo(superView).offset(heartOffset);
-        make.width.mas_equalTo(h);
-        make.height.mas_equalTo(h);
+        make.width.mas_equalTo(heartW);
+        make.height.mas_equalTo(heartW);
     }];
 
 }
