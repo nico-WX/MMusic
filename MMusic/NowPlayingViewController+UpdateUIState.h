@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class NowPlayingViewController;
 
 @interface NowPlayingViewController (UpdateUIState)
+- (void)addButtonActivation;
 - (void)updateButton;
 @end
 

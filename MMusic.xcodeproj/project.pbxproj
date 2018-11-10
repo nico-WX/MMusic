@@ -12,7 +12,6 @@
 		3B2D6EFB2091F69200E1B22C /* ScreeningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFA2091F69200E1B22C /* ScreeningViewController.m */; };
 		3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFC2091F6D400E1B22C /* screening.plist */; };
 		3B3D9981205512FA000F2E9E /* SongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9980205512FA000F2E9E /* SongCell.m */; };
-		3B3D9989205540A0000F2E9E /* NowPlayingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9988205540A0000F2E9E /* NowPlayingView.m */; };
 		3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D99E9205E990F000F2E9E /* NSString+Hash.m */; };
 		3B408EDC20B6A8600057E323 /* ArtistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EDB20B6A8600057E323 /* ArtistsViewController.m */; };
 		3B408EEB20B6E7D70057E323 /* ArtistsContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B408EEA20B6E7D70057E323 /* ArtistsContentViewController.m */; };
@@ -44,7 +43,7 @@
 		3B58446C218EDCCA00488BE5 /* MyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B58446B218EDCCA00488BE5 /* MyCell.m */; };
 		3B58446F218EE1F100488BE5 /* ScaleTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B58446E218EE1F100488BE5 /* ScaleTransitionAnimator.m */; };
 		3B5D746B2164F6B000D16C4E /* ResourceCell_V2.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5D746A2164F6B000D16C4E /* ResourceCell_V2.m */; };
-		3B64D0EE20ECE76200D831FE /* MySwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64D0EC20ECE76200D831FE /* MySwitch.m */; };
+		3B64D0EE20ECE76200D831FE /* MMSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64D0EC20ECE76200D831FE /* MMSwitch.m */; };
 		3B66A22E2195CCDC00F7DC9E /* MMTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */; };
 		3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895820A9968C000C3403 /* LibraryAlbum.m */; };
 		3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895B20A998B6000C3403 /* LibraryMusicVideo.m */; };
@@ -102,7 +101,6 @@
 		3BC3324820A04E490080D1B9 /* ContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC3324720A04E490080D1B9 /* ContentViewController.m */; };
 		3BDFC19820B5A90D0045B33A /* ResultsArtistsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFC19720B5A90C0045B33A /* ResultsArtistsCell.m */; };
 		3BDFC19B20B5A93F0045B33A /* ResultsMusicVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFC19A20B5A93F0045B33A /* ResultsMusicVideoCell.m */; };
-		3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB6120820A4700D85021 /* PlayControllerView.m */; };
 		3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB672082219900D85021 /* PlayProgressView.m */; };
 		3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */; };
 		3BFB704E2109BA6F002B3A06 /* APIRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BFB704D2109BA6F002B3A06 /* APIRoot.m */; };
@@ -198,8 +196,6 @@
 		3B2D6EFC2091F6D400E1B22C /* screening.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = screening.plist; sourceTree = "<group>"; };
 		3B3D997F205512FA000F2E9E /* SongCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SongCell.h; sourceTree = "<group>"; };
 		3B3D9980205512FA000F2E9E /* SongCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SongCell.m; sourceTree = "<group>"; };
-		3B3D9987205540A0000F2E9E /* NowPlayingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NowPlayingView.h; sourceTree = "<group>"; };
-		3B3D9988205540A0000F2E9E /* NowPlayingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NowPlayingView.m; sourceTree = "<group>"; };
 		3B3D99E8205E990D000F2E9E /* NSString+Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hash.h"; sourceTree = "<group>"; };
 		3B3D99E9205E990F000F2E9E /* NSString+Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hash.m"; sourceTree = "<group>"; };
 		3B408EDA20B6A8600057E323 /* ArtistsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArtistsViewController.h; sourceTree = "<group>"; };
@@ -264,8 +260,8 @@
 		3B58446E218EE1F100488BE5 /* ScaleTransitionAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScaleTransitionAnimator.m; sourceTree = "<group>"; };
 		3B5D74692164F6B000D16C4E /* ResourceCell_V2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceCell_V2.h; sourceTree = "<group>"; };
 		3B5D746A2164F6B000D16C4E /* ResourceCell_V2.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResourceCell_V2.m; sourceTree = "<group>"; };
-		3B64D0EC20ECE76200D831FE /* MySwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MySwitch.m; sourceTree = "<group>"; };
-		3B64D0ED20ECE76200D831FE /* MySwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MySwitch.h; sourceTree = "<group>"; };
+		3B64D0EC20ECE76200D831FE /* MMSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMSwitch.m; sourceTree = "<group>"; };
+		3B64D0ED20ECE76200D831FE /* MMSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMSwitch.h; sourceTree = "<group>"; };
 		3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMTabBarController.m; sourceTree = "<group>"; };
 		3B66A22D2195CCDC00F7DC9E /* MMTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMTabBarController.h; sourceTree = "<group>"; };
 		3B69895720A9968C000C3403 /* LibraryAlbum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryAlbum.h; sourceTree = "<group>"; };
@@ -387,8 +383,6 @@
 		3BDFC19720B5A90C0045B33A /* ResultsArtistsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsArtistsCell.m; sourceTree = "<group>"; };
 		3BDFC19920B5A93F0045B33A /* ResultsMusicVideoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResultsMusicVideoCell.h; sourceTree = "<group>"; };
 		3BDFC19A20B5A93F0045B33A /* ResultsMusicVideoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultsMusicVideoCell.m; sourceTree = "<group>"; };
-		3BDFCB6020820A4700D85021 /* PlayControllerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayControllerView.h; sourceTree = "<group>"; };
-		3BDFCB6120820A4700D85021 /* PlayControllerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayControllerView.m; sourceTree = "<group>"; };
 		3BDFCB662082219900D85021 /* PlayProgressView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayProgressView.h; sourceTree = "<group>"; };
 		3BDFCB672082219900D85021 /* PlayProgressView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayProgressView.m; sourceTree = "<group>"; };
 		3BDFCBD1208634CD00D85021 /* UIButton+BlockButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIButton+BlockButton.h"; sourceTree = "<group>"; };
@@ -530,14 +524,10 @@
 		3B4DDC602193127500F70547 /* NowPlayingView */ = {
 			isa = PBXGroup;
 			children = (
-				3B64D0ED20ECE76200D831FE /* MySwitch.h */,
-				3B64D0EC20ECE76200D831FE /* MySwitch.m */,
-				3B3D9987205540A0000F2E9E /* NowPlayingView.h */,
-				3B3D9988205540A0000F2E9E /* NowPlayingView.m */,
+				3B64D0ED20ECE76200D831FE /* MMSwitch.h */,
+				3B64D0EC20ECE76200D831FE /* MMSwitch.m */,
 				3BDFCB662082219900D85021 /* PlayProgressView.h */,
 				3BDFCB672082219900D85021 /* PlayProgressView.m */,
-				3BDFCB6020820A4700D85021 /* PlayControllerView.h */,
-				3BDFCB6120820A4700D85021 /* PlayControllerView.m */,
 			);
 			name = NowPlayingView;
 			sourceTree = "<group>";
@@ -1178,8 +1168,7 @@
 				3B9AA8D61FB452FF00720085 /* Relationship.m in Sources */,
 				3B9AA8E31FB463E800720085 /* Album.m in Sources */,
 				3B9AA9011FB479B700720085 /* Preview.m in Sources */,
-				3B64D0EE20ECE76200D831FE /* MySwitch.m in Sources */,
-				3BDFCB6220820A4700D85021 /* PlayControllerView.m in Sources */,
+				3B64D0EE20ECE76200D831FE /* MMSwitch.m in Sources */,
 				3B408EEB20B6E7D70057E323 /* ArtistsContentViewController.m in Sources */,
 				3B9AA90A1FB47D6B00720085 /* Station.m in Sources */,
 				3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */,
@@ -1219,7 +1208,6 @@
 				3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */,
 				3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */,
 				3BC33211209CA3220080D1B9 /* ScreeningCell.m in Sources */,
-				3B3D9989205540A0000F2E9E /* NowPlayingView.m in Sources */,
 				3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */,
 				3B9A371D219700E6000CB6B4 /* NowPlayingViewController.m in Sources */,
 				3B9AA8F51FB4719A00720085 /* MusicVideo.m in Sources */,

@@ -12,7 +12,7 @@
 #import "MPMusicPlayerController+ResourcePlaying.h"
 
 #import "PlayProgressView.h"
-#import "MySwitch.h"
+#import "MMSwitch.h"
 
 #import "Artwork.h"
 #import "Song.h"
@@ -39,7 +39,7 @@ static NowPlayingViewController *_instance;
         _previousButton     = [UIButton new];
         _playButton         = [UIButton new];
         _nextButton         = [UIButton new];
-        _heartSwitch        = [MySwitch new];
+        _heartSwitch        = [MMSwitch new];
 
         [self.view addSubview:_heartSwitch];
         [self.view addSubview:_artworkView];
@@ -50,8 +50,9 @@ static NowPlayingViewController *_instance;
         [self.view addSubview:_playButton];
         [self.view addSubview:_nextButton];
 
-        
-        [_songNameLabel setFont:[UIFont systemFontOfSize:24]];
+        //绑定播放按钮事件
+        [self addButtonActivation];
+
         [_songNameLabel setAdjustsFontSizeToFitWidth:YES];
         [_artistLabel setTextColor:UIColor.grayColor];
 
@@ -97,7 +98,7 @@ static NowPlayingViewController *_instance;
         [self.heartSwitch setEnabled:NO];
         self.artworkView.image = nil;
         self.songNameLabel.text = @"当前无歌曲播放";
-        self.artistLabel.text = @"-- --";
+        //self.artistLabel.text = @"-- --";
         return;
     }
 
@@ -152,7 +153,7 @@ static NowPlayingViewController *_instance;
     }
 }
 //红心按钮 添加喜欢或者删除喜欢
-- (void)changeLove:(MySwitch*) heart{
+- (void)changeLove:(MMSwitch*) heart{
 
     NSString *identifier = MainPlayer.nowPlayingItem.playbackStoreID;
     // 查询当前rating状态(不是基于当前按钮状态)  --> 操作
@@ -218,20 +219,5 @@ static NowPlayingViewController *_instance;
                                                             });
                                                         }];
 }
-
-
-
-
-
-//- (void)popupViewDidOpenWithBounds:(CGRect)bounds{
-//    NSLog(@">>>>>>>>>> open");
-//    //[self openStateLayout];
-//}
-//
-//- (void)popupViewDidCloseWithBounds:(CGRect)bounds{
-//    NSLog(@">>>>> close");
-//   // [self popupStateLayout];
-//}
-
 
 @end

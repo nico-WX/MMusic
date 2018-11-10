@@ -1,5 +1,5 @@
 //
-//  MySwitch.h
+//  MMSwitch.h
 //  CustomSwitch
 //
 //  Created by Magician on 2018/7/4.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MySwitch : UIControl
+@interface MMSwitch : UIControl
 @property(nonatomic,getter=isOn) BOOL on;
 @end

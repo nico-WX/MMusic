@@ -1,18 +1,18 @@
 //
-//  MySwitch.m
+//  MMSwitch.m
 //  CustomSwitch
 //
 //  Created by Magician on 2018/7/4.
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "MySwitch.h"
+#import "MMSwitch.h"
 
-@interface MySwitch()
+@interface MMSwitch()
 @property(nonatomic, strong) UIImageView *imageView;
 @end
 
-@implementation MySwitch
+@implementation MMSwitch
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -49,7 +49,7 @@
 }
 
 //简单的缩小-->恢复原始状态
-- (void)animationButton:(MySwitch*)sender {
+- (void)animationButton:(MMSwitch*)sender {
     [UIView animateWithDuration:0.2 animations:^{
         [sender setTransform:CGAffineTransformMakeScale(0.8, 0.8)];
     } completion:^(BOOL finished) {

@@ -13,7 +13,7 @@
 #import "NowPlayingViewController+Layout.h"
 #import "NowPlayingViewController+UpdateUIState.h"
 #import "PlayProgressView.h"
-#import "MySwitch.h"
+#import "MMSwitch.h"
 
 @implementation NowPlayingViewController (Layout)
 
