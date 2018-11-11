@@ -124,7 +124,7 @@ static NowPlayingViewController *_instance;
 
     //清除旧数据
     if (nowPlayingItem.playbackStoreID) {
-        [MusicKit.new.api resources:@[nowPlayingItem.playbackStoreID]
+        [MusicKit.new.catalog resources:@[nowPlayingItem.playbackStoreID]
                              byType:CatalogSongs
                            callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
 
@@ -146,8 +146,9 @@ static NowPlayingViewController *_instance;
 /**获取歌曲rating 状态, 并设置 红心开关状态*/
 -(void)heartFromSongIdentifier:(NSString*) identifier{
     if (identifier) {
-        [MusicKit.new.api.library getRating:@[identifier,] byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-            BOOL like = (json && response.statusCode==200) ? YES : NO;
+        [MusicKit.new.library requestRatingForCatalogWith:identifier type:RTCatalogSongs responseHandle:^(NSDictionary *json, NSHTTPURLResponse *response) {
+            NSInteger code = response.statusCode/100;
+            BOOL like = (json && code ==2) ? YES : NO;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.heartSwitch setEnabled:YES];
                 [self.heartSwitch setOn:like];
@@ -156,71 +157,22 @@ static NowPlayingViewController *_instance;
     }
 }
 //红心按钮 添加喜欢或者删除喜欢
-- (void)changeLove:(MMSwitch*) heart{
+- (void)changeLove:(MMSwitch*)heart {
+    //NSString *identifier = MainPlayer.nowPlayingItem.playbackStoreID;
 
-    NSString *identifier = MainPlayer.nowPlayingItem.playbackStoreID;
-    // 查询当前rating状态(不是基于当前按钮状态)  --> 操作
-    [MusicKit.new.api.library getRating:@[identifier,] byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        (json && response.statusCode==200) ? [self deleteRatingForSongId:identifier] : [self addRatingForSongId:identifier];
-        //
-        //        if (json && response.statusCode==200) {
-        //            //当前为喜欢状态 /取消喜欢
-        //            [self deleteRatingForSongId:identifier];
-        //        }else{
-        //            //当前没有添加为喜欢/添加喜欢
-        //            [self addRatingForSongId:identifier];
-        //        }
-    }];
+    //从 on --> off 时 表示要删除
+    //从 off --> on 时 表示要添加rating 到catalog
+    // 播放器的 识别 llibrary 音乐  或者catalog 音乐
+    if (![heart isOn]) {
+
+    }else{
+
+    }
+
 }
 
--(void) deleteRatingForSongId:(NSString*)identifier{
-    [MusicKit.new.api.library deleteRating:identifier byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (response.statusCode/10 == 20) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.heartSwitch setOn:NO];
-            });
-        }
-    }];
-}
 
-/**添加到播放列表中,
- 0.添加rating, 成功后,执行添加到库播放列表中
- 1.先查询播放列表id
- 2.添加到播放列表中,
- 3.存储到数据库中
- */
--(void) addRatingForSongId:(NSString*)song{
-    //添加rating
-    [MusicKit.new.api.library addRating:song byType:CRatingSongs value:1 callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (response.statusCode/10==20) {
-            //请求Rating 的默认库播放列表 identifier,
-            [MusicKit.new.api.library searchForTerm:@"Rating" byType:SLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-                NSDictionary *track = @{@"id":song,@"type":@"songs"};
-                NSArray *list = [json valueForKeyPath:@"results.library-playlists.data"];
-                NSString *identifier = [list.firstObject valueForKey:@"id"];
 
-                [MusicKit.new.api.library addTracksToLibraryPlaylists:identifier tracks:@[track,] callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
 
-                }];
-            }];
-            //更新ui
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.heartSwitch setOn:YES];
-            });
-        }
-    }];
-}
-
--(void)addResourceToLibrary:(NSString*) identifier{
-    [MusicKit.new.api.library addResourceToLibraryForIdentifiers:@[identifier,]
-                                                          byType:AddSongs
-                                                        callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-
-                                                            //更新ui
-                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                [self.heartSwitch setOn:YES];
-                                                            });
-                                                        }];
-}
 
 @end

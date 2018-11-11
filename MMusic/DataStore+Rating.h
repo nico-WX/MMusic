@@ -10,11 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface DataStore (Rating)
 
-// ->
-- (void)ratingForCatalog;
-- (void)ratingForLibrary;
+//catalog &library
+- (void)addRatingToCatalogWith:(NSString*)identifier type:(RTRatingType)type callBack:(void(^)(BOOL succeed))callBack;
+- (void)deleteRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type callBack:(void(^)(BOOL succeed))callBack;
+- (void)requestRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type callBack:(void(^)(BOOL isRating))callBack;
 @end
 
 NS_ASSUME_NONNULL_END

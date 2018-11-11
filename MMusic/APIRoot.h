@@ -10,5 +10,5 @@
 
 
 @interface APIRoot : NSObject
-@property(nonatomic, strong)NSString* rootPath;
+@property(nonatomic, readonly)NSString* rootPath;
 @end

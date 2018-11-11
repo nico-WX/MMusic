@@ -13,7 +13,8 @@ static MusicKit* _instance;
 @implementation MusicKit
 -(instancetype)init{
     if (self = [super init]) {
-        _api = [[API alloc] init];
+        _catalog = [Catalog new];
+        _library = [Library new];
     }
     return self;
 }

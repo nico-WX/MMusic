@@ -222,7 +222,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 /**请求数据*/
 - (void) requestDataWithResource:(Resource*) resource{
     if ([self.resource.type isEqualToString:@"library-playlists"]) {
-        [[MusicKit new].api.library resource:@[self.resource.identifier,] byType:CLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        [MusicKit.new.library resource:@[self.resource.identifier,] byType:CLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
             Log(@"json =%@",json);
 
             self.songs = [self serializationJSON:json];
@@ -295,14 +295,14 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
         MusicKit *music = [MusicKit new];
         UIAlertAction *notLove = [UIAlertAction actionWithTitle:@"不喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [music.api.library deleteRating:songID byType:CRatingSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+            [music.library deleteRatingForCatalogWith:songID type:RTCatalogSongs responseHandle:^(NSDictionary *json, NSHTTPURLResponse *response) {
                 [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*)response];
             }];
         }];
 
         UIAlertAction *love = [UIAlertAction actionWithTitle:@"喜欢" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [music.api.library addRating:songID byType:CRatingSongs value:1 callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-                [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*) response];
+            [music.library addRatingToCatalogWith:songID type:RTCatalogSongs responseHandle:^(NSDictionary *json, NSHTTPURLResponse *response) {
+                 [self showHUDToView:self.tableView withResponse:(NSHTTPURLResponse*) response];
             }];
         }];
 

@@ -92,7 +92,7 @@ static NSString *const cellID = @"cellReuseIDentifier";
 - (void) requestData{
     NSString *identifier = [self.album.playParams valueForKey:@"id"];
 
-    [[MusicKit new].api resources:@[identifier,] byType:CatalogAlbums callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+    [[MusicKit new].catalog resources:@[identifier,] byType:CatalogAlbums callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         self.songs = [self serializationJSON:json];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];

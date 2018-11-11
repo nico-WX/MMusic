@@ -1,5 +1,5 @@
 //
-//  API.h
+//  Catalog.h
 //  MMusic
 //
 
@@ -35,11 +35,8 @@ typedef NS_ENUM(NSUInteger, ChartsType){
 };
 
 
-@interface API : APIRoot
-
-#pragma mark - 用户资源入口
-/**个人资源*/
-@property(nonatomic, strong) Library *library;
+@interface Catalog : APIRoot
+@property(nonatomic, readonly) NSString *catalogPath;
 
 #pragma mark - 公开资源实例方法
 /**

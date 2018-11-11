@@ -89,7 +89,7 @@ static NSString *const cellID = @"cellReuseIdentifier";
     return cell;
 }
 - (void)showHintsFromTerms:(NSString *)term{
-    [[MusicKit new].api searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+    [[MusicKit new].catalog searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if ([json valueForKeyPath: @"results.terms"]) {
             self->_terms = [json valueForKeyPath:@"results.terms"];
             dispatch_async(dispatch_get_main_queue(), ^{

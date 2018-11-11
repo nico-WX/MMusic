@@ -41,19 +41,9 @@ typedef NS_ENUM(NSUInteger, AddType){
     AddSongs        //单曲
 };
 
-/**
- 管理个人CatalogRating 资源类型
- */
-typedef NS_ENUM(NSUInteger, CRating){
-    CRatingAlbums,      //专辑
-    CRatingMusicVideos, //MV
-    CRatingPlaylists,   //播放列表
-    CRatingSongs,       //单曲
-    CRatingStations     //电台
-};
-
 
 @interface Library : APIRoot
+@property(nonatomic, readonly)NSString *libraryPath;
 
 /**
  通过标识获取个人资料库资源, 空的资源标识默认获取全部资源
@@ -137,34 +127,6 @@ typedef NS_ENUM(NSUInteger, CRating){
  */
 - (void)addTracksToLibraryPlaylists:(NSString *)identifier tracks:(NSArray<NSDictionary*>*)tracks callBack:(RequestCallBack)handle;
 
-/**
- 获取目录Rating
-
- @param ids  id数组
- @param type 资源类型
- @param handle 数据回调
- */
-- (void)getRating:(NSArray<NSString*>*)ids byType:(CRating)type callBack:(RequestCallBack)handle;
-
-/**
- 添加目录Rating
-
- @param identifier 目录资源id
- @param type 资源类型
- @param value 传入 1或者-1
- @param handle 数据回调
- */
-- (void)addRating:(NSString*)identifier byType:(CRating)type value:(int)value callBack:(RequestCallBack)handle;
-
-
-/**
- 删除Rating
-
- @param identifier 要删除的资源id
- @param type 资源类型
- @param handle 处理结果
- */
-- (void)deleteRating:(NSString*)identifier byType:(CRating)type callBack:(RequestCallBack)handle;
 
 /**
  获取默认推荐

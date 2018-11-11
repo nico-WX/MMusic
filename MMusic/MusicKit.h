@@ -7,10 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "API.h"
+
+#import "Catalog.h"
+#import "Library.h"
+#import "Library+Rating.h"
 
 @interface MusicKit : NSObject
 
 /**资源入口*/
-@property(nonatomic, strong) API *api;
+@property(nonatomic, readonly) Catalog *catalog;
+@property(nonatomic, readonly) Library *library;
 @end

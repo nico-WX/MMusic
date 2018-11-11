@@ -68,7 +68,7 @@
     }
 
     if (!nowSong) {
-        [MusicKit.new.api resources:@[self.nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
             json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
             nowSong = [Song instanceWithDict:json];
         }];

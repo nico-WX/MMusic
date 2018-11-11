@@ -125,7 +125,7 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
 
 #pragma mark - 请求所有播放列表
 -(void) requestAllLibraryPlaylist{
-    [MusicKit.new.api.library resource:@[] byType:CLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+    [MusicKit.new.library resource:@[] byType:CLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         NSMutableArray<Resource*> *resources = [NSMutableArray array];
         for (NSDictionary *dict in [json valueForKey:@"data"]) {
             [resources addObject:[Resource instanceWithDict:dict]];

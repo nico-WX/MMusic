@@ -13,7 +13,7 @@
 
 - (void)requestDefaultRecommendationWithCompletion:(defaultRecommendationBlock)callBack{
 
-    [MusicKit.new.api.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+    [MusicKit.new.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         //数据临时集合 [{@"section title":[data]},...]
         NSMutableArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *array = [NSMutableArray array];
         for (NSDictionary *subJSON in [json objectForKey:@"data"]) {

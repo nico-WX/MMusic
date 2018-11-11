@@ -183,7 +183,7 @@
 //请求艺人信息
 -(void) requestFromArtistName:(NSString*) name{
 
-    [[MusicKit new].api searchForTerm:name callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+    [[MusicKit new].catalog searchForTerm:name callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (json) {
             NSMutableArray<NSDictionary<NSString*,ResponseRoot*>*> *list = [NSMutableArray array];
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {

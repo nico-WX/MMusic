@@ -14,7 +14,7 @@
 
     NSMutableArray<Chart*> *chartArray = [NSMutableArray array];
 
-    [MusicKit.new.api chartsByType:ChartsAll callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+    [MusicKit.new.catalog chartsByType:ChartsAll callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];
         if (json) {
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {

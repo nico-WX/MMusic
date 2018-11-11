@@ -139,7 +139,7 @@
 - (void)closePopupViewController{
 
     [self.impactFeedback impactOccurred];
-    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.5 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.visualEffectView.frame = self.popupFrame;
         self.popupViewController.view.frame = self.visualEffectView.contentView.bounds;//self.popupFrame;
         if ([self.popupViewController respondsToSelector:@selector(mmTabBarControllerDidClosePopupWithBounds:)]) {

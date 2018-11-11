@@ -108,7 +108,7 @@ static NSString *const typesCellID = @"typesCellReuseIdentifier";
  @param terms 搜索文本
  */
 -(void)requestDataWithTerms:(NSString*) terms{
-    [[MusicKit new].api searchForTerm:terms callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+    [[MusicKit new].catalog searchForTerm:terms callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         self.results = [self serializationJSON:json];
         //更新UI 滚动内容大小 等
         dispatch_async(dispatch_get_main_queue(), ^{

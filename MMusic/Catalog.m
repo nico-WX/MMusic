@@ -4,23 +4,22 @@
  不用用户Token即可访问的接口
  */
 
-#import "API.h"
+#import "Catalog.h"
 #import "AuthManager.h"
 
-@interface API()
+@interface Catalog()
 //@property(nonatomic, strong)NSString *root;
 @end
 
-static API* _instance;
-@implementation API
+static Catalog* _instance;
+@implementation Catalog
 
 - (instancetype)init{
     if (self =[super init]) {
-        _library = [[Library alloc] init];
+        _catalogPath = [self.rootPath stringByAppendingPathComponent:@"catalog"];
 
-        self.rootPath = [self.rootPath stringByAppendingPathComponent:@"catalog"];
         NSString *storeFront = [AuthManager shareManager].storefront;
-        self.rootPath = [self.rootPath stringByAppendingPathComponent:storeFront];
+        _catalogPath= [_catalogPath stringByAppendingPathComponent:storeFront];
     }
     return self;
 }
@@ -36,7 +35,7 @@ static API* _instance;
 
 - (void)resources:(NSArray<NSString *> *)ids byType:(ResourceType)catalog callBack:(RequestCallBack)handle {
     NSString *component = [self pathComponentForType:catalog];
-    NSString *path = [self.rootPath stringByAppendingPathComponent:component];
+    NSString *path = [self.catalogPath stringByAppendingPathComponent:component];
     //拼接方式
     if (ids.count == 1) {
         path = [path stringByAppendingPathComponent:ids.lastObject];
@@ -53,7 +52,7 @@ static API* _instance;
 
 - (void)relationship:(NSString *)identifier byType:(ResourceType)catalog forName:(NSString *)name callBack:(RequestCallBack)handle {
     NSString *component = [self pathComponentForType:catalog];
-    NSString *path = [self.rootPath stringByAppendingPathComponent:component];
+    NSString *path = [self.catalogPath stringByAppendingPathComponent:component];
     path = [path stringByAppendingPathComponent:identifier];
     path = [path stringByAppendingPathComponent:name];
 
@@ -63,7 +62,7 @@ static API* _instance;
 
 - (void)musicVideosByISRC:(NSArray<NSString *> *)ISRCs callBack:(RequestCallBack)handle {
     NSString *subPath = [self pathComponentForType:CatalogMusicVideos];
-    NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
+    NSString *path = [self.catalogPath stringByAppendingPathComponent:subPath];
     path = [path stringByAppendingString:@"?filter[isrc]="];
     for (NSString *isrc in ISRCs) {
         path = [path stringByAppendingString:[NSString stringWithFormat:@"%@,",isrc]];
@@ -74,7 +73,7 @@ static API* _instance;
 }
 - (void)songsByISRC:(NSArray<NSString *> *)ISRCs callBack:(RequestCallBack)handle {
     NSString *subPath = [self pathComponentForType:CatalogSongs];
-    NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
+    NSString *path = [self.catalogPath stringByAppendingPathComponent:subPath];
     path = [path stringByAppendingString:@"?filter[isrc]="];
     for (NSString *isrc in ISRCs) {
         path = [path stringByAppendingString:[NSString stringWithFormat:@"%@,",isrc]];
@@ -85,7 +84,7 @@ static API* _instance;
 }
 
 - (void)chartsByType:(ChartsType)type callBack:(RequestCallBack)handle {
-    NSString *path = [self.rootPath stringByAppendingPathComponent:@"charts?types="];
+    NSString *path = [self.catalogPath stringByAppendingPathComponent:@"charts?types="];
     switch (type) {
         case ChartsAlbums:
             path = [path stringByAppendingString:@"albums"];
@@ -109,7 +108,7 @@ static API* _instance;
 }
 
 - (void)searchForTerm:(NSString *)term callBack:(RequestCallBack)handle {
-    NSString *path = [self.rootPath stringByAppendingPathComponent:@"search?term="];
+    NSString *path = [self.catalogPath stringByAppendingPathComponent:@"search?term="];
     path = [path stringByAppendingString:term];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
@@ -117,7 +116,7 @@ static API* _instance;
 }
 
 - (void)searchHintsForTerm:(NSString *)term callBack:(RequestCallBack)handle {
-    NSString *path = [self.rootPath stringByAppendingPathComponent:@"search"];
+    NSString *path = [self.catalogPath stringByAppendingPathComponent:@"search"];
     path = [path stringByAppendingPathComponent:@"hints?term="];
     path = [path stringByAppendingString:term];
 
