@@ -9,8 +9,10 @@
 #import <Foundation/Foundation.h>
 
 #import "Catalog.h"
+
 #import "Library.h"
 #import "Library+Rating.h"
+#import "Library+iCloud.h"
 
 @interface MusicKit : NSObject
 
