@@ -11,9 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DataStore (Search)
-- (void)searchCatalogResource;
-- (void)searchLibraryResource;
-- (void)catalogSearchHints;
+//- (void)searchCatalogResource;
+//- (void)searchLibraryResource;
+//- (void)catalogSearchHints;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -17,9 +17,9 @@ static Catalog* _instance;
 - (instancetype)init{
     if (self =[super init]) {
         _catalogPath = [self.rootPath stringByAppendingPathComponent:@"catalog"];
-
         NSString *storeFront = [AuthManager shareManager].storefront;
         _catalogPath= [_catalogPath stringByAppendingPathComponent:storeFront];
+        
     }
     return self;
 }
@@ -102,23 +102,6 @@ static Catalog* _instance;
             path = [path stringByAppendingString:@"songs,albums,playlists,music-videos"];
             break;
     }
-
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithRequest:request handler:handle];
-}
-
-- (void)searchForTerm:(NSString *)term callBack:(RequestCallBack)handle {
-    NSString *path = [self.catalogPath stringByAppendingPathComponent:@"search?term="];
-    path = [path stringByAppendingString:term];
-
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
-    [self dataTaskWithRequest:request handler:handle];
-}
-
-- (void)searchHintsForTerm:(NSString *)term callBack:(RequestCallBack)handle {
-    NSString *path = [self.catalogPath stringByAppendingPathComponent:@"search"];
-    path = [path stringByAppendingPathComponent:@"hints?term="];
-    path = [path stringByAppendingString:term];
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];

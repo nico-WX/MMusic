@@ -113,7 +113,7 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
  @param imageSize 图片大小
  @return 图片
  */
-- (UIImage*)imageFromURL:(NSString*)url withImageSize:(CGSize)imageSize;
+//- (UIImage*)imageFromURL:(NSString*)url withImageSize:(CGSize)imageSize;
 
 /**
  主屏幕显示提示信息

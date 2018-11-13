@@ -85,19 +85,5 @@ typedef NS_ENUM(NSUInteger, ChartsType){
 //Fetch Genres  未实现
 
 
-/**
- 搜索目录资源
 
- @param term    搜索字段
- @param handle  数据回调
- */
-- (void)searchForTerm:(NSString*)term callBack:(RequestCallBack)handle;
-
-/**
- 搜索字段提示
-
- @param term    搜索提示关键字段
- @param handle  数据回调
- */
-- (void)searchHintsForTerm:(NSString*)term callBack:(RequestCallBack)handle;
 @end

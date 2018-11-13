@@ -10,10 +10,23 @@
 @class Resource;
 @class DetailHeaderView;
 
+@class DetailViewController;
+
+@protocol DetailViewControllerDelegate <NSObject>
+
+- (void)detailViewControllerDidDismiss:(DetailViewController*)detailVC;
+
+@end
+
 @interface DetailViewController : UIViewController
+@property(nonatomic, weak)id<DetailViewControllerDelegate> delegate;
+
+
 /**通过Resource 初始化*/
 - (instancetype) initWithResource:(Resource*) resource;
 /**通过songs root响应体,直接初始化, 没有头视图*/
 //- (instancetype) initWithResponseRoot:(ResponseRoot*) responseRoot;
 
+- (instancetype)initWithAlbum:(Album*)album;
+- (instancetype)initWithPlaylist:(Playlist*)playlist;
 @end

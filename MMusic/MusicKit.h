@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "Catalog.h"
+#import "Catalog+Search.h"
 
 #import "Library.h"
 #import "Library+Rating.h"

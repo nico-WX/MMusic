@@ -26,15 +26,12 @@ static Library* _instance;
 - (instancetype)init{
     if (self = [super init]) {
         _libraryPath = [self.rootPath stringByAppendingPathComponent:@"me"];
-
-//        self.rootPath = [self.rootPath stringByAppendingPathComponent:@"me"];
-//        self.rootPath = [self.rootPath stringByAppendingPathComponent:@"library"];
     }
     return self;
 }
 
 
-- (void)resource:(NSArray<NSString *> *)ids byType:(CLibrary)library callBack:(RequestCallBack)handle {
+- (void)resource:(NSArray<NSString *> *)ids byType:(LibraryResourceType)library callBack:(RequestCallBack)handle {
 
     NSString *subPath = [self subPathForType:library];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
@@ -56,7 +53,7 @@ static Library* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
-- (void)relationship:(NSString *)identifier forType:(CLibrary)library byName:(NSString *)name callBacl:(RequestCallBack)handle {
+- (void)relationship:(NSString *)identifier forType:(LibraryResourceType)library byName:(NSString *)name callBacl:(RequestCallBack)handle {
 
     NSString *subPath = [self subPathForType:library];
     NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
@@ -67,9 +64,9 @@ static Library* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
-- (void)searchForTerm:(NSString *)term byType:(SLibrary)library callBack:(RequestCallBack)handle {
+- (void)searchForTerm:(NSString *)term byType:(SearchLibraryType)library callBack:(RequestCallBack)handle {
 
-    NSString *path = [self.rootPath stringByAppendingPathComponent:@"search?term="];
+    NSString *path = [self.libraryPath stringByAppendingPathComponent:@"library/search?term="];
     path = [path stringByAppendingString:term];
     path = [path stringByAppendingString:@"&types="];
     switch (library) {
@@ -95,18 +92,15 @@ static Library* _instance;
 }
 
 
-
-
-
 - (void)defaultRecommendationsInCallBack:(RequestCallBack)handle {
-    NSString *path = [self.rootPath stringByReplacingOccurrencesOfString:@"library" withString:@"recommendations"];
+    NSString *path = [self.libraryPath stringByAppendingPathComponent:@"recommendations"];
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:handle];
 }
 
 #pragma  mark - helper
 
-- (NSString*)subPathForType:(CLibrary)library {
+- (NSString*)subPathForType:(LibraryResourceType)library {
     NSString *subPath = @"";
     switch (library) {
         case CLibraryAlbums:

@@ -18,6 +18,8 @@
         #endif
 
 #import "NSString+Hash.h"
+#import "NSString+Replace.h"
+#import "UIImageView+Extension.h"
 #import "NSObject+Tool.h"
 #import "UIButton+BlockButton.h"
 #import "MusicKit.h"

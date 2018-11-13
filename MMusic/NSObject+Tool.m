@@ -238,15 +238,5 @@ extern NSString *const userTokenIssueNotification;
 }
 
 
-- (UIImage *)imageFromURL:(NSString *)url withImageSize:(CGSize)imageSize {
-    NSString *path = IMAGE_PATH_FOR_URL(url);
-    UIImage *image = [UIImage imageWithContentsOfFile:path];
-    if (!image) {
-        NSString *imagePath = [self stringReplacingOfString:url height:imageSize.height width:imageSize.width];
-        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imagePath]];
-        image = [UIImage imageWithData:data];
-    }
-    return image;
-}
 
 @end

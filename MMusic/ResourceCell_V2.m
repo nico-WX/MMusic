@@ -10,7 +10,11 @@
 #import <Masonry.h>
 #import "EditorialNotes.h"
 #import "Artwork.h"
+#import "MMDetailViewController.h"
 
+@interface ResourceCell_V2 ()<MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
+
+@end
 
 @implementation ResourceCell_V2
 - (instancetype)initWithFrame:(CGRect)frame{
@@ -63,8 +67,14 @@
             [self setTransform:CGAffineTransformIdentity];
         }];
     }];
+
+ //   NSLog(@"self.frame =%@",NSStringFromCGRect(self.frame));
+
     
+
     [super touchesBegan:touches withEvent:event];
+
+
 }
 
 
@@ -74,20 +84,31 @@
     [super prepareForReuse];
 }
 
--(void)setAlbum:(Album *)album{
-    if (_album != album) {
-        _album = album;
 
-        self.titleLabel.text = album.name;
-        [self showImageToView:self.imageView withImageURL:album.artwork.url cacheToMemory:YES];
-    }
-}
--(void)setPlaylists:(Playlist *)playlists{
-    if (_playlists != playlists) {
-        _playlists = playlists;
+//-(void)setAlbum:(Album *)album{
+//    if (_album != album) {
+//        _album = album;
+//
+//        self.titleLabel.text = album.name;
+//        [self showImageToView:self.imageView withImageURL:album.artwork.url cacheToMemory:YES];
+//    }
+//}
+//-(void)setPlaylists:(Playlist *)playlists{
+//    if (_playlists != playlists) {
+//        _playlists = playlists;
+//
+//        self.titleLabel.text = playlists.name;
+//        [self showImageToView:self.imageView withImageURL:playlists.artwork.url cacheToMemory:YES];
+//    }
+//}
+- (void)setResource:(Resource *)resource{
+    if (_resource != resource) {
+        _resource = resource;
 
-        self.titleLabel.text = playlists.name;
-        [self showImageToView:self.imageView withImageURL:playlists.artwork.url cacheToMemory:YES];
+        self.titleLabel.text = [resource valueForKeyPath:@"attributes.name"];
+        NSString *path = [resource valueForKeyPath:@"attributes.artwork.url"];
+
+        [self.imageView imageWithURLPath:path];
     }
 }
 @end

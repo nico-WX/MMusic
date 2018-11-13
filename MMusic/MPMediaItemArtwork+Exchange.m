@@ -25,7 +25,7 @@
     if (!image) {
         NSString *imageURL  = MainPlayer.nowPlayingSong.artwork.url;   // nowPlayingSong == null;
         
-        image = [self imageFromURL:imageURL withImageSize:size];
+        //image = self// [self imageFromURL:imageURL withImageSize:size];
     }
     return image;
 }

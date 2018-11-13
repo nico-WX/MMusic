@@ -15,29 +15,30 @@
 //controller
 #import "RecommendationViewController.h"
 #import "DetailViewController.h"
+#import "MMDetailViewController.h"
 
 //view
 #import "TodaySectionView.h"
 #import "ResourceCell.h"
 #import "ResourceCell_V2.h"
 
+#import "MMPopupAnimator.h"
+
 //model
 #import "Resource.h"
-#import "Artwork.h"
 #import "Playlist.h"
 #import "Album.h"
 
-
 #import "DataStoreKit.h"
 
-@interface RecommendationViewController()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching>
+@interface RecommendationViewController()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate,UIViewControllerContextTransitioning>
 
 
-@property(nonatomic, strong) UIActivityIndicatorView *activityView;     //内容加载指示器
 @property(nonatomic, strong) UICollectionView *collectionView;          //内容ui
-
 //json 结构
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *allData;
+
+@property(nonatomic, strong)MMPopupAnimator *popupAnimator;
 @end
 
 
@@ -50,12 +51,10 @@ static NSString *const cellIdentifier = @"resourceCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    _popupAnimator = [MMPopupAnimator new];
+
     self.view.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:self.collectionView];
-
-    //数据加载指示器
-    [self.collectionView addSubview:self.activityView];
-
     [self requestData];
 }
 
@@ -69,17 +68,10 @@ static NSString *const cellIdentifier = @"resourceCell";
 
 #pragma  mark - 请求数据 和解析JSON
 - (void)requestData {
-
     //加载数据
     [DataStore.new requestDefaultRecommendationWithCompletion:^(NSArray<NSDictionary<NSString *,NSArray<Resource *> *> *> * _Nonnull array) {
         dispatch_async(dispatch_get_main_queue(), ^{
-
             self.allData = array;
-
-            [self.activityView stopAnimating];
-            [self.activityView removeFromSuperview];
-            self.activityView = nil;
-
             [self.collectionView reloadData];
             [self.collectionView.mj_header endRefreshing];
         });
@@ -104,14 +96,15 @@ static NSString *const cellIdentifier = @"resourceCell";
     //dequeue cell
     ResourceCell_V2 *cell;
     cell = (ResourceCell_V2*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    cell.resource = resource;
     //只有专辑和歌单两种类型;
-    if ([resource.type isEqualToString:@"albums"]) {
-        Album *album = [Album instanceWithResource:resource];
-        cell.album = album;
-    }else{
-        Playlist *playlist = [Playlist instanceWithResource:resource];
-        cell.playlists = playlist;
-    }
+//    if ([resource.type isEqualToString:@"albums"]) {
+//        Album *album = [Album instanceWithResource:resource];
+//        cell.album = album;
+//    }else{
+//        Playlist *playlist = [Playlist instanceWithResource:resource];
+//        cell.playlists = playlist;
+//    }
     return cell;
 }
 
@@ -132,7 +125,40 @@ static NSString *const cellIdentifier = @"resourceCell";
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
+    ResourceCell_V2 *cell = (ResourceCell_V2*)[collectionView cellForItemAtIndexPath:indexPath];
+    MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:cell.resource];
+    detail.delegate = self;
+    detail.transitioningDelegate = self;
+/**
+    [detail setModalTransitionStyle:UIModalTransitionStylePartialCurl];
+    [detail setModalPresentationStyle:UIModalPresentationPopover];
+*/
+    detail.titleLabel.text = cell.titleLabel.text;
+    detail.imageView.image = cell.imageView.image;
+
+    [self presentViewController:detail animated:YES completion:nil];
 }
+#pragma mark - DetailViewControllerDelegate
+- (void)detailViewControllerDidDismiss:(DetailViewController *)detailVC{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+#pragma mark - UIViewControllerTransitioningDelegate
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+    return self.popupAnimator;
+}
+
+#pragma mark - UIViewControllerContextTransitioning
+- (CGRect)initialFrameForViewController:(UIViewController *)vc{
+    NSIndexPath *indexPath = [self.collectionView indexPathsForSelectedItems].firstObject;
+    UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
+    NSLog(@">>>>initial");
+    return cell.frame;
+}
+- (CGRect)finalFrameForViewController:(UIViewController *)vc{
+    NSLog(@"final");
+    return self.collectionView.frame;
+}
+
 
 #pragma mark - UICollectionViewDataSourcePrefetching  预取数据
 - (void)collectionView:(UICollectionView *)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths{
@@ -161,7 +187,10 @@ static NSString *const cellIdentifier = @"resourceCell";
         [layout setHeaderReferenceSize:CGSizeMake(w, h)];
 
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
-        [_collectionView registerClass:ResourceCell_V2.class forCellWithReuseIdentifier:cellIdentifier];
+
+        [_collectionView registerClass:ResourceCell_V2.class
+            forCellWithReuseIdentifier:cellIdentifier];
+
         [_collectionView registerClass:TodaySectionView.class
             forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:sectionIdentifier];
@@ -181,15 +210,6 @@ static NSString *const cellIdentifier = @"resourceCell";
     }
     return _collectionView;
 }
-- (UIActivityIndicatorView *)activityView{
-    if (!_activityView) {
-        _activityView = [[UIActivityIndicatorView alloc] initWithFrame:self.collectionView.frame];
-        [_activityView setHidesWhenStopped:YES];
-        [_activityView setColor:[UIColor lightGrayColor]];
-        [_activityView setBackgroundColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.96 alpha:0.9]];
-        [_activityView startAnimating];
-    }
-    return _activityView;
-}
+
 
 @end

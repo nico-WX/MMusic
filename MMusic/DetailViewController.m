@@ -31,6 +31,12 @@
 
 
 @interface DetailViewController ()<UITableViewDelegate,UITableViewDataSource>
+// data
+@property(nonatomic, strong)Album *album;
+@property(nonatomic, strong)Playlist *playlist;
+
+
+
 @property(nonatomic, strong,readonly) UITableView *tableView;
 /**头视图*/
 @property(nonatomic, strong) DetailHeaderView *header;
@@ -49,15 +55,29 @@
 @implementation DetailViewController
 
 @synthesize tableView = _tableView;
+
+
 static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 
+
+- (instancetype)initWithAlbum:(Album *)album{
+    if (self = [super init]) {
+        _album = album;
+    }
+    return self;
+}
+- (instancetype)initWithPlaylist:(Playlist *)playlist{
+    if (self =[super init]) {
+        _playlist = playlist;
+    }
+    return self;
+}
 -(instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
         _resource = resource;
     }
     return self;
 }
-
 -(instancetype)initWithResponseRoot:(ResponseRoot *)responseRoot{
     if (self = [super init]) {
         _responseRoot = responseRoot;
@@ -65,10 +85,20 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     return self;
 }
 
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     [self.view addSubview:self.tableView];
+
+    //安装手势
+    UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] init];
+    [downSwipe setDirection:UISwipeGestureRecognizerDirectionDown];
+    [downSwipe addTarget:self action:@selector(handleSwipeGesture:)];
+    [self.view addGestureRecognizer:downSwipe];
+
 
     //resource  类型
     if (self.resource) {
@@ -107,6 +137,11 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     }];
 }
 
+- (void)handleSwipeGesture:(UISwipeGestureRecognizer*)swipe{
+    if ([self.delegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
+        [self.delegate detailViewControllerDidDismiss:self];
+    }
+}
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -340,7 +375,5 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         [hud hideAnimated:YES afterDelay:1.5];
     });
 }
-
-
 
 @end
