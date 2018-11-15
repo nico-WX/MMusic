@@ -14,7 +14,6 @@
 
 //controller
 #import "RecommendationViewController.h"
-#import "DetailViewController.h"
 #import "MMDetailViewController.h"
 
 //view
@@ -23,15 +22,14 @@
 #import "ResourceCell_V2.h"
 
 #import "MMPopupAnimator.h"
+#import "MMPresentationController.h"
 
 //model
 #import "Resource.h"
-#import "Playlist.h"
-#import "Album.h"
 
 #import "DataStoreKit.h"
 
-@interface RecommendationViewController()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate,UIViewControllerContextTransitioning>
+@interface RecommendationViewController()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
 
 
 @property(nonatomic, strong) UICollectionView *collectionView;          //内容ui
@@ -53,7 +51,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 
     _popupAnimator = [MMPopupAnimator new];
 
-    self.view.backgroundColor = UIColor.whiteColor;
+    [self.view setBackgroundColor:UIColor.whiteColor];
     [self.view addSubview:self.collectionView];
     [self requestData];
 }
@@ -97,14 +95,6 @@ static NSString *const cellIdentifier = @"resourceCell";
     ResourceCell_V2 *cell;
     cell = (ResourceCell_V2*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     cell.resource = resource;
-    //只有专辑和歌单两种类型;
-//    if ([resource.type isEqualToString:@"albums"]) {
-//        Album *album = [Album instanceWithResource:resource];
-//        cell.album = album;
-//    }else{
-//        Playlist *playlist = [Playlist instanceWithResource:resource];
-//        cell.playlists = playlist;
-//    }
     return cell;
 }
 
@@ -127,38 +117,33 @@ static NSString *const cellIdentifier = @"resourceCell";
 
     ResourceCell_V2 *cell = (ResourceCell_V2*)[collectionView cellForItemAtIndexPath:indexPath];
     MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:cell.resource];
-    detail.delegate = self;
-    detail.transitioningDelegate = self;
-/**
-    [detail setModalTransitionStyle:UIModalTransitionStylePartialCurl];
-    [detail setModalPresentationStyle:UIModalPresentationPopover];
-*/
-    detail.titleLabel.text = cell.titleLabel.text;
-    detail.imageView.image = cell.imageView.image;
 
+    [detail setDisMissDelegate:self];
+    [detail setTransitioningDelegate:self];
+    [detail setModalPresentationStyle:UIModalPresentationCustom];
+
+    [detail.titleLabel setText:cell.titleLabel.text];
+    [detail.imageView setImage:cell.imageView.image];
+
+    [self.popupAnimator setStartFrame:cell.frame];
     [self presentViewController:detail animated:YES completion:nil];
 }
 #pragma mark - DetailViewControllerDelegate
-- (void)detailViewControllerDidDismiss:(DetailViewController *)detailVC{
+- (void)detailViewControllerDidDismiss:(MMDetailViewController *)detailVC{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 #pragma mark - UIViewControllerTransitioningDelegate
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+    [self.popupAnimator setPresenting:YES];
     return self.popupAnimator;
 }
-
-#pragma mark - UIViewControllerContextTransitioning
-- (CGRect)initialFrameForViewController:(UIViewController *)vc{
-    NSIndexPath *indexPath = [self.collectionView indexPathsForSelectedItems].firstObject;
-    UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
-    NSLog(@">>>>initial");
-    return cell.frame;
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+    [self.popupAnimator setPresenting:NO];
+    return self.popupAnimator;
 }
-- (CGRect)finalFrameForViewController:(UIViewController *)vc{
-    NSLog(@"final");
-    return self.collectionView.frame;
+-(UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source{
+    return [[MMPresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
 }
-
 
 #pragma mark - UICollectionViewDataSourcePrefetching  预取数据
 - (void)collectionView:(UICollectionView *)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths{

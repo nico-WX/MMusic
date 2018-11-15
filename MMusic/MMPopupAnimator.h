@@ -1,8 +1,8 @@
 //
 //  MMPopupAnimator.h
-//  ScrollPage
+//  TransitionAnimation
 //
-//  Created by 🐙怪兽 on 2018/11/9.
+//  Created by 🐙怪兽 on 2018/11/12.
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
@@ -12,6 +12,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MMPopupAnimator : NSObject<UIViewControllerAnimatedTransitioning>
+@property(nonatomic, assign) CGRect startFrame; //起始位置
+@property(nonatomic, assign) BOOL presenting;   //present or Dismiss ?
 
 @end
 

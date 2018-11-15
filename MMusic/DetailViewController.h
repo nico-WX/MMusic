@@ -19,7 +19,7 @@
 @end
 
 @interface DetailViewController : UIViewController
-@property(nonatomic, weak)id<DetailViewControllerDelegate> delegate;
+@property(nonatomic, weak)id<DetailViewControllerDelegate> dismissDelegate;
 
 
 /**通过Resource 初始化*/

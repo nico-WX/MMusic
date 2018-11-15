@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface MMDetailViewController : UIViewController
-@property(nonatomic, weak)id<MMDetailViewControllerDelegate> delegate;
+@property(nonatomic, weak)id<MMDetailViewControllerDelegate> disMissDelegate;
 @property (strong, readonly) UIImageView *imageView;
 @property (strong, readonly) UILabel *titleLabel;
 

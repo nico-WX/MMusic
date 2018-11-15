@@ -62,7 +62,12 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 
+    //向下偏移量
+    self.topOffset = CGRectGetMaxY(self.titleLabel.frame)+8;
+    [self.tableView setContentInset:UIEdgeInsetsMake(self.topOffset, 0, 0, 0)];
+    [self.tableView setContentOffset:CGPointMake(0, -self.topOffset)];
 }
+
 - (void)viewDidLayoutSubviews{
 
 
@@ -83,10 +88,10 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         make.right.mas_equalTo(superView);
     }];
 
-    //向下偏移量
-    self.topOffset = CGRectGetMaxY(self.titleLabel.frame)+8;
-    [self.tableView setContentInset:UIEdgeInsetsMake(self.topOffset, 0, 0, 0)];
-    [self.tableView setContentOffset:CGPointMake(0, -self.topOffset)];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(superView);
+    }];
+
 
     [super viewDidLayoutSubviews];
 }
@@ -94,17 +99,16 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
 
     CGFloat y = scrollView.contentOffset.y;
-    if (fabs(y) > fabs(self.topOffset)+50) {
+    if ( y < (self.topOffset-100)) {
         //下拉一段距离  关闭VC
         [self delegateDismissViewController];
     }
-
 }
 
-//
+
 - (void)delegateDismissViewController{
-    if ([self.delegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
-        [self.delegate detailViewControllerDidDismiss:self];
+    if ([self.disMissDelegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
+        [self.disMissDelegate detailViewControllerDidDismiss:self];
     }
 }
 #pragma mark - Table view data source

@@ -138,8 +138,8 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 }
 
 - (void)handleSwipeGesture:(UISwipeGestureRecognizer*)swipe{
-    if ([self.delegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
-        [self.delegate detailViewControllerDidDismiss:self];
+    if ([self.dismissDelegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
+        [self.dismissDelegate detailViewControllerDidDismiss:self];
     }
 }
 
@@ -375,5 +375,8 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
         [hud hideAnimated:YES afterDelay:1.5];
     });
 }
+
+
+
 
 @end

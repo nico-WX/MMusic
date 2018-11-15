@@ -11,9 +11,10 @@
 #import "EditorialNotes.h"
 #import "Artwork.h"
 #import "MMDetailViewController.h"
+#import "MMPopupAnimator.h"
 
-@interface ResourceCell_V2 ()<MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
-
+@interface ResourceCell_V2 ()<UIViewControllerTransitioningDelegate>
+@property(nonatomic, strong) MMPopupAnimator *animation;
 @end
 
 @implementation ResourceCell_V2
@@ -21,6 +22,8 @@
     if (self = [super initWithFrame:frame]) {
         _imageView = UIImageView.new;
         _titleLabel = UILabel.new;
+
+        _animation = [MMPopupAnimator new];
 
         //add to contentView
         [self.contentView addSubview:_imageView];
@@ -59,6 +62,7 @@
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [super touchesBegan:touches withEvent:event];
 
     [UIView animateWithDuration:0.3 animations:^{
         [self setTransform:CGAffineTransformMakeScale(0.9, 0.9)];
@@ -67,14 +71,6 @@
             [self setTransform:CGAffineTransformIdentity];
         }];
     }];
-
- //   NSLog(@"self.frame =%@",NSStringFromCGRect(self.frame));
-
-    
-
-    [super touchesBegan:touches withEvent:event];
-
-
 }
 
 
@@ -111,4 +107,7 @@
         [self.imageView imageWithURLPath:path];
     }
 }
+
+
+
 @end
