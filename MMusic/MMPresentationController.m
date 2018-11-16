@@ -66,10 +66,6 @@
     }
 }
 
-//- (void)presentationTransitionDidEnd:(BOOL)completed{
-//
-//}
-
 - (void)dismissalTransitionWillBegin{
     [UIView animateWithDuration:0.5 animations:^{
         [[self dimmingView] setAlpha:0];

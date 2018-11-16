@@ -16,7 +16,6 @@
 
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext{
 
-
     //呈现
     if (self.presenting) {
         UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
@@ -36,10 +35,11 @@
                          }];
     }else{
 
+        //dismiss
+
         UIViewController *from = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
 //        NSLog(@"From frame =%@",NSStringFromCGRect(from.view.frame));
 //        NSLog(@"start frame =%@",NSStringFromCGRect(self.startFrame));
-
         [UIView animateWithDuration:[self transitionDuration:transitionContext]
                               delay:0.0
              usingSpringWithDamping:0.65

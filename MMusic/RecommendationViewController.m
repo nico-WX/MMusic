@@ -154,7 +154,7 @@ static NSString *const cellIdentifier = @"resourceCell";
             CGFloat cw = (CGRectGetWidth(self.view.frame) - spacing*3)/2;
             CGFloat ch = cw+32;
             CGSize itemSize = CGSizeMake(cw, ch);
-            CGSize headerSize = CGSizeMake(44.0f, CGRectGetWidth(self.view.bounds));
+            CGSize headerSize = CGSizeMake(CGRectGetWidth(self.view.bounds),44.0f);
 
             [flow setItemSize:itemSize];
             [flow setHeaderReferenceSize:headerSize];

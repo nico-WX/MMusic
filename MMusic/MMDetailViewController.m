@@ -20,11 +20,10 @@
 #import "Song.h"
 
 @interface MMDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
-// base
+
 @property (strong, nonatomic) UITableView *tableView;
 
 @property(nonatomic, assign) CGFloat topOffset;
-
 //data
 @property(nonatomic, strong)Resource *resource;
 @property(nonatomic, strong)NSArray<Song*> *songLists;
@@ -36,7 +35,6 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 - (instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
         _resource = resource;
-
         _imageView = [UIImageView new];
         _titleLabel = [UILabel new];
         [_titleLabel setTextAlignment:NSTextAlignmentCenter];
@@ -54,7 +52,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         self.tableView.dataSource = self;
         [self.tableView registerClass:[SongCell class] forCellReuseIdentifier:reuseIdentifier];
         [self.tableView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
-        [self.tableView setRowHeight:40];
+        [self.tableView setRowHeight:44.0f];
     });
 
     //添加子视图, 注意视图层次 & set
@@ -77,9 +75,8 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
     UIEdgeInsets padding =UIEdgeInsetsMake(0, 100, 0, 100);
     UIView *superView = self.view;
-
-    //计算frame  提前滚动偏移
     CGRect frame = self.view.frame;
+    //计算frame  提前滚动偏移
     self.imageView.frame = ({
         CGFloat x = padding.left;
         CGFloat y = 0;
@@ -89,41 +86,40 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     });
 
     self.titleLabel.frame = ({
-        CGFloat x = CGRectGetMinX(frame);
+        CGFloat x = 0; //CGRectGetMinX(frame);
         CGFloat y = CGRectGetMaxY(self.imageView.frame);
-        CGFloat h = 44;
+        CGFloat h = 40; //显式设置高度, 方便计算tableView偏移
         CGFloat w = CGRectGetWidth(frame);
         CGRectMake(x, y, w, h);
     });
-
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(superView);
     }];
 
     //向下偏移量
-    self.topOffset = CGRectGetMaxY(self.titleLabel.frame)+8;
-    [self.tableView setContentInset:UIEdgeInsetsMake(self.topOffset, 0, 0, 0)];
-    [self.tableView setContentOffset:CGPointMake(0, -self.topOffset)];
+    ({
+        self.topOffset = CGRectGetMaxY(self.titleLabel.frame)+8;
+        [self.tableView setContentInset:UIEdgeInsetsMake(self.topOffset, 0, 0, 0)];
+        [self.tableView setContentOffset:CGPointMake(0, -self.topOffset)];
+    });
+
 }
 
 
-#pragma mark - Table view data source
+#pragma mark - <TableView dataSource>
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.songLists.count;
 }
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
     [cell setSong:[self.songLists objectAtIndex:indexPath.row] withIndex:indexPath.row];
     return cell;
 }
-
-#pragma mark - TableView Delegate
+#pragma mark - <TableView Delegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [MainPlayer playSongs:self.songLists startIndex:indexPath.row];
 }
-
-#pragma mark - scroll delegate
+#pragma mark - <scroll delegate>
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     CGFloat y = scrollView.contentOffset.y;
 
@@ -132,14 +128,14 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         [self delegateDismissViewController];
     }
 }
+#pragma mark - <Dismiss ViewController dlelegate>
 - (void)delegateDismissViewController{
     if ([self.disMissDelegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
         [self.disMissDelegate detailViewControllerDidDismiss:self];
     }
 }
 
-
-# pragma mark requestData
+# pragma mark - requestData
 /**请求数据*/
 - (void) requestDataWithResource:(Resource*) resource{
 

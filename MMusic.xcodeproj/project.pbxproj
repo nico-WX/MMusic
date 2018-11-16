@@ -50,6 +50,7 @@
 		3B69896220A99DDC000C3403 /* LibrarySong.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69896120A99DDC000C3403 /* LibrarySong.m */; };
 		3B6BE746219DACDD0004F3E5 /* MMPresentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE742219DACDD0004F3E5 /* MMPresentationController.m */; };
 		3B6BE747219DACDD0004F3E5 /* MMPopupAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE744219DACDD0004F3E5 /* MMPopupAnimator.m */; };
+		3B6BE74A219F0CC00004F3E5 /* UIDevice+DeviceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE749219F0CC00004F3E5 /* UIDevice+DeviceModel.m */; };
 		3B87992E204FF7E000EE9D2A /* TodaySectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B87992D204FF7E000EE9D2A /* TodaySectionView.m */; };
 		3B8799592052BBC300EE9D2A /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8799582052BBC300EE9D2A /* DetailViewController.m */; };
 		3B8799612053DC4600EE9D2A /* DetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8799602053DC4600EE9D2A /* DetailHeaderView.m */; };
@@ -283,6 +284,8 @@
 		3B6BE743219DACDD0004F3E5 /* MMPopupAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMPopupAnimator.h; sourceTree = "<group>"; };
 		3B6BE744219DACDD0004F3E5 /* MMPopupAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMPopupAnimator.m; sourceTree = "<group>"; };
 		3B6BE745219DACDD0004F3E5 /* MMPresentationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMPresentationController.h; sourceTree = "<group>"; };
+		3B6BE748219F0CC00004F3E5 /* UIDevice+DeviceModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIDevice+DeviceModel.h"; sourceTree = "<group>"; };
+		3B6BE749219F0CC00004F3E5 /* UIDevice+DeviceModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+DeviceModel.m"; sourceTree = "<group>"; };
 		3B87992C204FF7E000EE9D2A /* TodaySectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodaySectionView.h; sourceTree = "<group>"; };
 		3B87992D204FF7E000EE9D2A /* TodaySectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodaySectionView.m; sourceTree = "<group>"; };
 		3B8799572052BBC300EE9D2A /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
@@ -688,6 +691,8 @@
 				3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */,
 				3BE2A2502198DA7E00AEA486 /* UIImageView+Extension.h */,
 				3BE2A2512198DA7E00AEA486 /* UIImageView+Extension.m */,
+				3B6BE748219F0CC00004F3E5 /* UIDevice+DeviceModel.h */,
+				3B6BE749219F0CC00004F3E5 /* UIDevice+DeviceModel.m */,
 			);
 			name = Tool;
 			sourceTree = "<group>";
@@ -1277,6 +1282,7 @@
 				3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */,
 				3BC33211209CA3220080D1B9 /* ScreeningCell.m in Sources */,
 				3BB731E1207BAF7E00DC629B /* ResultsViewController.m in Sources */,
+				3B6BE74A219F0CC00004F3E5 /* UIDevice+DeviceModel.m in Sources */,
 				3BE2A23B2198630100AEA486 /* Library+RecentHistory.m in Sources */,
 				3B9A371D219700E6000CB6B4 /* NowPlayingViewController.m in Sources */,
 				3B9AA8F51FB4719A00720085 /* MusicVideo.m in Sources */,

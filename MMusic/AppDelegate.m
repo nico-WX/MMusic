@@ -48,6 +48,20 @@
     [rootVC addPopupViewController:[NowPlayingViewController sharePlayerViewController]];
 
 
+    UIDevice *device = [UIDevice currentDevice];
+    /**
+     @property(nonatomic,readonly,strong) NSString    *name;              // e.g. "My iPhone"
+     @property(nonatomic,readonly,strong) NSString    *model;             // e.g. @"iPhone", @"iPod touch"
+     @property(nonatomic,readonly,strong) NSString    *localizedModel;    // localized version of model
+     @property(nonatomic,readonly,strong) NSString    *systemName;        // e.g. @"iOS"
+     @property(nonatomic,readonly,strong) NSString    *systemVersion;     // e.g. @"4.0"
+     */
+
+    NSLog(@"name =%@",device.name);
+    NSLog(@"model =%@",device.model);
+    NSLog(@"localized model =%@",device.localizedModel);
+    NSLog(@"systemNAme =%@",device.systemName);
+    NSLog(@"systemVersion =%@",device.systemVersion);
     
     
     MyMusicViewController  *mmusicVC =[[MyMusicViewController alloc] initWithStyle:UITableViewStylePlain];

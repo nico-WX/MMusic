@@ -17,22 +17,33 @@
 
 @implementation MMTabBarController
 
+- (instancetype)init{
+    if (self =[super init]) {
+        _impactFeedback = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     [self.tabBar setHidden:YES];
 
-    self.impactFeedback = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
-
+    CGFloat spacing = 8.0f;
     self.popupFrame = ({
-        CGFloat spacing = 8.0f;
         CGFloat x = spacing;
         CGFloat w = CGRectGetWidth(self.view.frame)-(spacing*2);
         CGFloat h = 55.0f;
         CGFloat y = CGRectGetMaxY(self.view.frame)-(h+spacing);
-
         CGRectMake(x, y, w, h);
     });
+    if (NO == self.tabBar.hidden) {
+        CGPoint point = self.popupFrame.origin;
+        point.y = CGRectGetMinY(self.tabBar.frame) - (spacing+CGRectGetHeight(self.popupFrame));
+        _popupFrame.origin = point;
+    }
+
+
 
     self.visualEffectView = ({
         UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
@@ -78,7 +89,7 @@
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 
-    if (CGRectGetHeight(self.tabBar.frame) > 49) {
+    if (CGRectGetHeight([UIScreen mainScreen].bounds) >= 812) {
         self.popupFrame = CGRectOffset(self.popupFrame, 0, - 34);  //标准为 34 点
         [self.visualEffectView setFrame:self.popupFrame];
     }

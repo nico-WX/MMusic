@@ -11,7 +11,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MMPresentationController : UIPresentationController
-    
 @end
 
 NS_ASSUME_NONNULL_END
