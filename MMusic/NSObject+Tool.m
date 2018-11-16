@@ -221,6 +221,7 @@ extern NSString *const userTokenIssueNotification;
     MPMusicPlayerPlayParametersQueueDescriptor *queue;
     queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:list];
     [queue setStartItemPlayParameters:[list objectAtIndex:index]];
+  
     return queue;
 }
 

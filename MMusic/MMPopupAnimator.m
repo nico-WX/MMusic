@@ -11,7 +11,7 @@
 @implementation MMPopupAnimator
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext{
-    return 1.0;
+    return 0.6;
 }
 
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext{
@@ -21,10 +21,8 @@
     if (self.presenting) {
         UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
         CGRect finalFrame = [transitionContext finalFrameForViewController:toVC];
-
         [toVC.view setFrame:self.startFrame];
         [transitionContext.containerView addSubview:toVC.view];
-
         [UIView animateWithDuration:[self transitionDuration:transitionContext]
                               delay:0.0
              usingSpringWithDamping:0.65

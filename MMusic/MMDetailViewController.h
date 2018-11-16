@@ -15,17 +15,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 //dismiss
 @protocol MMDetailViewControllerDelegate <NSObject>
-
 - (void)detailViewControllerDidDismiss:(MMDetailViewController*)detailVC;
 @end
 
 @interface MMDetailViewController : UIViewController
+
 @property(nonatomic, weak)id<MMDetailViewControllerDelegate> disMissDelegate;
 @property (strong, readonly) UIImageView *imageView;
 @property (strong, readonly) UILabel *titleLabel;
 
 - (instancetype) initWithResource:(Resource*)resource;
-
 @end
 
 NS_ASSUME_NONNULL_END

@@ -35,8 +35,6 @@
 @property(nonatomic, strong)Album *album;
 @property(nonatomic, strong)Playlist *playlist;
 
-
-
 @property(nonatomic, strong,readonly) UITableView *tableView;
 /**头视图*/
 @property(nonatomic, strong) DetailHeaderView *header;
@@ -210,12 +208,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
     cell.numberLabel.text = [NSString stringWithFormat:@"%02ld",indexPath.row+1];
     return cell;
 }
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-//    UILabel *label = UILabel.new;
-//    [label setText:@"section"];
-//    
-//    return label;
-//}
+
 
 #pragma mark - tableView delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -258,7 +251,7 @@ static NSString *const cellReuseIdentifier = @"detailCellReuseId";
 - (void) requestDataWithResource:(Resource*) resource{
     if ([self.resource.type isEqualToString:@"library-playlists"]) {
         [MusicKit.new.library resource:@[self.resource.identifier,] byType:CLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-            Log(@"json =%@",json);
+
 
             self.songs = [self serializationJSON:json];
             dispatch_async(dispatch_get_main_queue(), ^{

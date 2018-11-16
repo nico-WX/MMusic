@@ -69,6 +69,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+
 -(void)prepareForReuse{
     [super prepareForReuse];
     _numberLabel.text = nil;
@@ -135,9 +136,14 @@
     }
 }
 
--(void) stateForSong:(Song*) song{
-    MPMediaItem *item = MainPlayer.nowPlayingItem;
-    if ([song isEqualToMediaItem:item]) {
+- (void)setSong:(Song *)song withIndex:(NSUInteger)index{
+    self.song = song;
+    self.numberLabel.text = [NSString stringWithFormat:@"%02ld",index+1];
+}
+
+- (void)stateForSong:(Song*)song {
+
+    if ([song isEqualToMediaItem:MainPlayer.nowPlayingItem]) {
         [self.numberLabel setHidden:YES];
         switch (MainPlayer.playbackState) {
             case MPMusicPlaybackStatePlaying:
@@ -152,6 +158,7 @@
         [self.numberLabel setHidden:NO];
         [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
     }
+
     [self setNeedsDisplay];
 }
 

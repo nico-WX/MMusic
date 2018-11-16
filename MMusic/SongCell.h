@@ -15,4 +15,5 @@
 @property(nonatomic, strong,readonly) UILabel *numberLabel;
 /**当前song*/
 @property(nonatomic, strong) Song *song;
+- (void)setSong:(Song *)song withIndex:(NSUInteger)index;
 @end

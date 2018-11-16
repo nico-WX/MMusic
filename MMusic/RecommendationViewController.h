@@ -12,6 +12,4 @@
  Apple Music个人推荐
  */
 
-
-@interface RecommendationViewController : UIViewController
-@end
+@interface RecommendationViewController : UIViewController @end

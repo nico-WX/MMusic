@@ -6,12 +6,18 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
+#import <Masonry.h>
+#import <MJRefresh.h>
+#import <MediaPlayer/MediaPlayer.h>
+
+#import "MPMusicPlayerController+ResourcePlaying.h"
 
 #import "MMDetailViewController.h"
 
-#import <Masonry.h>
+#import "SongCell.h"
 
 #import "Resource.h"
+#import "Song.h"
 
 @interface MMDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 // base
@@ -21,6 +27,7 @@
 
 //data
 @property(nonatomic, strong)Resource *resource;
+@property(nonatomic, strong)NSArray<Song*> *songLists;
 @end
 
 static NSString *const reuseIdentifier = @"tableview cell id";
@@ -32,6 +39,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
         _imageView = [UIImageView new];
         _titleLabel = [UILabel new];
+        [_titleLabel setTextAlignment:NSTextAlignmentCenter];
     }
     return self;
 }
@@ -41,26 +49,56 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
     //table
     ({
-        self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         self.tableView.delegate = self;
         self.tableView.dataSource = self;
-        [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:reuseIdentifier];
+        [self.tableView registerClass:[SongCell class] forCellReuseIdentifier:reuseIdentifier];
         [self.tableView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
+        [self.tableView setRowHeight:40];
     });
 
-    //imageView & label
+    //添加子视图, 注意视图层次 & set
+    ({
+        [self.view addSubview:self.imageView];
+        [self.view addSubview:self.titleLabel];
+        [self.view addSubview:self.tableView];
 
-    [self.titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [self.view setBackgroundColor:UIColor.whiteColor];
+        [self.view.layer setCornerRadius:6.0f];
+        [self.view.layer setMasksToBounds:YES];
+    });
 
-    [self.view addSubview:self.imageView];
-    [self.view addSubview:self.titleLabel];
-    [self.view addSubview:self.tableView];
-    [self.view setBackgroundColor:UIColor.whiteColor];
-
+    [self requestDataWithResource:self.resource];
 }
 
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+
+    UIEdgeInsets padding =UIEdgeInsetsMake(0, 100, 0, 100);
+    UIView *superView = self.view;
+
+    //计算frame  提前滚动偏移
+    CGRect frame = self.view.frame;
+    self.imageView.frame = ({
+        CGFloat x = padding.left;
+        CGFloat y = 0;
+        CGFloat w = CGRectGetWidth(frame)-padding.left-padding.right;
+        CGFloat h = w;
+        CGRectMake(x, y, w, h);
+    });
+
+    self.titleLabel.frame = ({
+        CGFloat x = CGRectGetMinX(frame);
+        CGFloat y = CGRectGetMaxY(self.imageView.frame);
+        CGFloat h = 44;
+        CGFloat w = CGRectGetWidth(frame);
+        CGRectMake(x, y, w, h);
+    });
+
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(superView);
+    }];
 
     //向下偏移量
     self.topOffset = CGRectGetMaxY(self.titleLabel.frame)+8;
@@ -68,62 +106,82 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     [self.tableView setContentOffset:CGPointMake(0, -self.topOffset)];
 }
 
-- (void)viewDidLayoutSubviews{
 
-
-    UIEdgeInsets padding =UIEdgeInsetsMake(40, 150, 0, 150);
-    __weak typeof(self) weakSelf = self;
-    UIView *superView = self.view;
-    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superView).offset(padding.top);
-        make.left.mas_equalTo(superView).offset(padding.left);
-        make.right.mas_equalTo(superView).offset(-padding.right);
-        CGFloat h = CGRectGetWidth(superView.frame)-(padding.left+padding.right);
-        make.height.mas_equalTo(h);
-    }];
-
-    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.imageView.mas_bottom).offset(8);
-        make.left.mas_equalTo(superView);
-        make.right.mas_equalTo(superView);
-    }];
-
-    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superView);
-    }];
-
-
-    [super viewDidLayoutSubviews];
+#pragma mark - Table view data source
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.songLists.count;
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
+    [cell setSong:[self.songLists objectAtIndex:indexPath.row] withIndex:indexPath.row];
+    return cell;
+}
 
+#pragma mark - TableView Delegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [MainPlayer playSongs:self.songLists startIndex:indexPath.row];
+}
+
+#pragma mark - scroll delegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     CGFloat y = scrollView.contentOffset.y;
-    if ( y < (self.topOffset-100)) {
+
+    if ( y < -(self.topOffset+100)) {
         //下拉一段距离  关闭VC
         [self delegateDismissViewController];
     }
 }
-
-
 - (void)delegateDismissViewController{
     if ([self.disMissDelegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
         [self.disMissDelegate detailViewControllerDidDismiss:self];
     }
 }
-#pragma mark - Table view data source
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 20;
+
+# pragma mark requestData
+/**请求数据*/
+- (void) requestDataWithResource:(Resource*) resource{
+
+    NSURLRequest *request = [self createRequestWithHref:self.resource.href];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        self.songLists = [self serializationJSON:json];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }];
+
+}
+//-(void) loadNextPageDataWithHref:(NSString*) href{
+//    NSURLRequest *request = [self createRequestWithHref:href];
+//    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+//        json =[json valueForKeyPath:@"results.songs"];
+//
+//        //覆盖next url,  增加song
+//        self.responseRoot.next = [json valueForKey:@"next"];
+//        for (NSDictionary *dict in [json valueForKey:@"data"]) {
+//            Song *song = [Song instanceWithDict:[dict valueForKey:@"attributes"]];
+//            self.songs = [self.songs arrayByAddingObject:song];
+//        }
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.tableView.mj_footer endRefreshing];
+//            [self.tableView reloadData];
+//        });
+//    }];
+//}
+
+/**解析返回的JSON 数据*/
+- (NSArray<Song*>*) serializationJSON:(NSDictionary*)json{
+    NSMutableArray<Song*> *songList = [NSMutableArray array];
+    for (NSDictionary *temp in [json objectForKey:@"data"]) {
+        NSArray *tracks = [temp valueForKeyPath:@"relationships.tracks.data"];
+        for (NSDictionary *songDict in tracks) {
+            Song *song = [Song instanceWithDict:[songDict objectForKey:@"attributes"]];
+            [songList addObject:song];
+        }
+    }
+    return songList;
 }
 
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
-
-    cell.textLabel.text = [NSString stringWithFormat:@"cell  %ld",indexPath.row+1];
-
-    return cell;
-}
 
 @end

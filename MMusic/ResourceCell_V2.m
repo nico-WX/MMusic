@@ -13,98 +13,78 @@
 #import "MMDetailViewController.h"
 #import "MMPopupAnimator.h"
 
-@interface ResourceCell_V2 ()<UIViewControllerTransitioningDelegate>
-@property(nonatomic, strong) MMPopupAnimator *animation;
+@interface ResourceCell_V2 ()
+
 @end
 
 @implementation ResourceCell_V2
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        _imageView = UIImageView.new;
-        _titleLabel = UILabel.new;
 
-        _animation = [MMPopupAnimator new];
+        // 实例化变量 && set
+        ({
+            _imageView = [UIImageView new];
+            _titleLabel = [UILabel new];
 
-        //add to contentView
-        [self.contentView addSubview:_imageView];
-        [self.contentView addSubview:_titleLabel];
+            _imageView = [UIImageView new];
+            _titleLabel = [UILabel new];
+        });
 
-        //set
-        //默认全透明, 无法显示阴影  , 设置颜色通道透明
-        [self setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
-        [self.layer setShadowColor:UIColor.lightGrayColor.CGColor];
-        [self.layer setShadowOffset:CGSizeMake(5, 10)];
-        [self.layer setShadowOpacity:0.8];
-        [self.layer setShadowRadius:8];
+        //self set
+        ({
+            //add
+            [self.contentView addSubview:_imageView];
+            [self.contentView addSubview:_titleLabel];
 
-        //text
-        [_titleLabel setTextAlignment:NSTextAlignmentCenter];
-        [_titleLabel setAdjustsFontSizeToFitWidth:YES];         //调整字体
+            //set
+            //默认全透明, 无法显示阴影  , 设置颜色通道透明
+            [self setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
+            [self.layer setShadowColor:UIColor.lightGrayColor.CGColor];
+            //[self.layer setShadowOffset:CGSizeMake(5, 10)];
+            [self.layer setShadowOffset:CGSizeMake(0, 28)];
+            [self.layer setShadowOpacity:0.8];
+            [self.layer setShadowRadius:8];
+        });
 
-        //layout
-        UIView *superView = self.contentView;
-        __weak typeof(self) weakSelf = self;
-        [_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(superView.mas_left);
-            make.top.mas_equalTo(superView.mas_top);
-            make.right.mas_equalTo(superView.mas_right);
-            make.height.mas_equalTo(CGRectGetWidth(superView.frame));
-        }];
 
-        [_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(superView.mas_left);
-            make.right.mas_equalTo(superView.mas_right);
-            make.bottom.mas_equalTo(superView.mas_bottom);
-            make.top.mas_equalTo(weakSelf.imageView.mas_bottom);
-        }];
+        //layout(提前布局, )
+        ({
+            UIView *superView = self.contentView;
+            __weak typeof(self) weakSelf = self;
+            [_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(superView.mas_left);
+                make.top.mas_equalTo(superView.mas_top);
+                make.right.mas_equalTo(superView.mas_right);
+                make.height.mas_equalTo(CGRectGetWidth(superView.frame));
+            }];
+
+            [_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(superView.mas_left);
+                make.right.mas_equalTo(superView.mas_right);
+                make.bottom.mas_equalTo(superView.mas_bottom);
+                make.top.mas_equalTo(weakSelf.imageView.mas_bottom);
+            }];
+        });
+
     }
     return self;
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    [super touchesBegan:touches withEvent:event];
-
-    [UIView animateWithDuration:0.3 animations:^{
-        [self setTransform:CGAffineTransformMakeScale(0.9, 0.9)];
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.3 animations:^{
-            [self setTransform:CGAffineTransformIdentity];
-        }];
-    }];
-}
-
 
 -(void)prepareForReuse{
+
+    _resource = nil;
     _imageView.image = NULL;
     _titleLabel.text = NULL;
     [super prepareForReuse];
 }
 
-
-//-(void)setAlbum:(Album *)album{
-//    if (_album != album) {
-//        _album = album;
-//
-//        self.titleLabel.text = album.name;
-//        [self showImageToView:self.imageView withImageURL:album.artwork.url cacheToMemory:YES];
-//    }
-//}
-//-(void)setPlaylists:(Playlist *)playlists{
-//    if (_playlists != playlists) {
-//        _playlists = playlists;
-//
-//        self.titleLabel.text = playlists.name;
-//        [self showImageToView:self.imageView withImageURL:playlists.artwork.url cacheToMemory:YES];
-//    }
-//}
 - (void)setResource:(Resource *)resource{
     if (_resource != resource) {
         _resource = resource;
 
-        self.titleLabel.text = [resource valueForKeyPath:@"attributes.name"];
-        NSString *path = [resource valueForKeyPath:@"attributes.artwork.url"];
-
-        [self.imageView imageWithURLPath:path];
+        [_titleLabel setText:[resource valueForKeyPath:@"attributes.name"]];
+        [_imageView imageWithURLPath:[resource valueForKeyPath:@"attributes.artwork.url"]];
     }
 }
 

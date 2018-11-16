@@ -57,6 +57,7 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
                                                            queue:[NSOperationQueue mainQueue]
                                                       usingBlock:^(NSNotification * _Nonnull note) {
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:userTokenUserKey];
+                                                          NSLog(@"监听到 <userTokenIssueNotification> 消息");
             [self requestUserToken];
         }];
 
@@ -154,6 +155,8 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
 /**请求用户Token*/
 - (void)requestUserToken{
     [SKCloudServiceController.new requestUserTokenForDeveloperToken:self.developerToken completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
+
+        NSLog(@"SKCloud userToken Hnadler");
         if (userToken) {
             Log(@"userToken: %@",userToken);
             [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:userTokenUserKey];

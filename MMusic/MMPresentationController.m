@@ -27,11 +27,9 @@
 
 //呈现 内容Frame
 - (CGRect)frameOfPresentedViewInContainerView{
-
     CGFloat x = 20;
-    CGFloat y = 40;
-
-    CGRect presentedViewFrame = CGRectZero;
+    CGFloat y = 20;
+    CGRect presentedViewFrame = [[UIScreen mainScreen] bounds];
     CGRect containerBounds = [[self containerView] bounds];
 
     presentedViewFrame.size = CGSizeMake(CGRectGetWidth(containerBounds)-x*2,containerBounds.size.height-y*2);
@@ -49,6 +47,9 @@
     [[self dimmingView] setFrame:[containerView bounds]];
     [[self dimmingView] setAlpha:0.0];
 
+    //
+    [containerView setNeedsUpdateConstraints];
+
     [containerView addSubview:self.dimmingView];
 
     // Set up the animations for fading in the dimming view.
@@ -64,12 +65,10 @@
         [[self dimmingView] setAlpha:1.0];
     }
 }
-- (BOOL)shouldRemovePresentersView{
-    return NO;
-}
 
-- (void)presentationTransitionDidEnd:(BOOL)completed{
-}
+//- (void)presentationTransitionDidEnd:(BOOL)completed{
+//
+//}
 
 - (void)dismissalTransitionWillBegin{
     [UIView animateWithDuration:0.5 animations:^{
