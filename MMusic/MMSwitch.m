@@ -9,6 +9,7 @@
 #import "MMSwitch.h"
 
 @interface MMSwitch()
+@property(nonatomic, strong) UIImpactFeedbackGenerator *impact;
 @property(nonatomic, strong) UIImageView *imageView;
 @end
 
@@ -20,6 +21,7 @@
         [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
         [self setOn:NO];
 
+        _impact = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
         _imageView = [[UIImageView alloc] initWithFrame:self.bounds];
         [_imageView setImage:[UIImage imageNamed:@"on"]];               //默认图片
         [self addSubview:_imageView];
@@ -35,31 +37,38 @@
 
 - (void)change {
     //值取反传递给形参
+    [self.impact impactOccurred];
     [self setOn:!_on];
 }
 
 - (void)setOn:(BOOL)on {
-    //形参值与 原始值比较
-    if (_on != on) {
-        _on = on;
+    _on = on;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
         [self animationButton:self];
-        if (_on)    [_imageView setImage:[UIImage imageNamed:@"on"]];
-        else        [_imageView setImage:[UIImage imageNamed:@"off"]];
-    }
+        if (on){
+            [self.imageView setImage:[UIImage imageNamed:@"on"]];
+        }else{
+            [self.imageView setImage:[UIImage imageNamed:@"off"]];
+        }
+    });
 }
 
 //简单的缩小-->恢复原始状态
 - (void)animationButton:(MMSwitch*)sender {
+
+
     [UIView animateWithDuration:0.2 animations:^{
         [sender setTransform:CGAffineTransformMakeScale(0.8, 0.8)];
     } completion:^(BOOL finished) {
         if (finished){
-            //恢复
             [UIView animateWithDuration:0.2 animations:^{
                 [sender setTransform:CGAffineTransformIdentity];
             }];
         }
     }];
+
+
 }
 
 @end

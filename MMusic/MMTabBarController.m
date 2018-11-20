@@ -8,11 +8,9 @@
 #import "MMTabBarController.h"
 
 @interface MMTabBarController ()
-@property(nonatomic, strong)UIViewController<MMTabbarControllerPopupDelegate> *popupViewController;
-@property(nonatomic, strong)UIVisualEffectView *visualEffectView;
-
-@property(nonatomic, assign)CGRect popupFrame;
-@property(nonatomic, strong)UIImpactFeedbackGenerator *impactFeedback;
+@property(nonatomic, strong)UIViewController *popViewController;        //pop VC
+@property(nonatomic, strong)UIVisualEffectView *visualEffectView;       //背景效果
+@property(nonatomic, strong)UIImpactFeedbackGenerator *impactFeedback;  //手势反馈
 @end
 
 @implementation MMTabBarController
@@ -20,6 +18,7 @@
 - (instancetype)init{
     if (self =[super init]) {
         _impactFeedback = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
+
     }
     return self;
 }
@@ -29,38 +28,38 @@
 
     [self.tabBar setHidden:YES];
 
-    CGFloat spacing = 8.0f;
-    self.popupFrame = ({
+    _popFrame = ({
+        CGFloat spacing = 8.0f;
         CGFloat x = spacing;
         CGFloat w = CGRectGetWidth(self.view.frame)-(spacing*2);
         CGFloat h = 55.0f;
         CGFloat y = CGRectGetMaxY(self.view.frame)-(h+spacing);
+
+        // tabBar 隐藏
+        if (NO == self.tabBar.hidden) {
+            y = CGRectGetMinY(self.tabBar.frame) - (spacing+h);
+        }
+
+        //iPhone X home 指示器 偏移 34 点
+        if (CGRectGetHeight([UIScreen mainScreen].bounds) >= 812) {
+            y -= 34;
+        }
+
         CGRectMake(x, y, w, h);
     });
-    if (NO == self.tabBar.hidden) {
-        CGPoint point = self.popupFrame.origin;
-        point.y = CGRectGetMinY(self.tabBar.frame) - (spacing+CGRectGetHeight(self.popupFrame));
-        _popupFrame.origin = point;
-    }
-
-
 
     self.visualEffectView = ({
-        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-        UIVisualEffectView *view = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        view.frame = self.popupFrame;
-        [view.layer setCornerRadius:6.0f];
-        [view.layer setMasksToBounds:YES];
-        [view.layer setBorderWidth:1];
-
-        [view.layer setBorderColor:[UIColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:0.2].CGColor];
-        view;
+        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        effectView.frame = self.popFrame;
+        [effectView.layer setCornerRadius:6.0f];
+        [effectView.layer setMasksToBounds:YES];
+        effectView;
     });
 
     [self.view addSubview:self.visualEffectView];
 
-
-    //手势
+    //安装手势
     ({
         UISwipeGestureRecognizer *rightSwipe = [UISwipeGestureRecognizer new];
         UISwipeGestureRecognizer *leftSwipe = [UISwipeGestureRecognizer new];
@@ -77,45 +76,39 @@
         [upSwipe addTarget:self action:@selector(handleSwipeGesture:)];
         [downSwipe addTarget:self action:@selector(handleSwipeGesture:)];
 
+        //左右手势i添加到主视图中左右切换视图控制器
         [self.view addGestureRecognizer:leftSwipe];
         [self.view addGestureRecognizer:rightSwipe];
-        //效果视图
+        //上下手势添加到效果视图的内容视图中, 显示和隐藏popup h视图
         [self.visualEffectView addGestureRecognizer:upSwipe];
         [self.visualEffectView addGestureRecognizer:downSwipe];
     });
 }
-
-
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-
-    if (CGRectGetHeight([UIScreen mainScreen].bounds) >= 812) {
-        self.popupFrame = CGRectOffset(self.popupFrame, 0, - 34);  //标准为 34 点
-        [self.visualEffectView setFrame:self.popupFrame];
-    }
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
 }
-
 
 - (void)handleSwipeGesture:(UISwipeGestureRecognizer*)swipeGesture {
 
     //打开popupView 时, 拦截左右切换VC 手势(判断 当前popupView 高度)
-    CGFloat oh = CGRectGetHeight(self.popupViewController.view.frame);
-    CGFloat ch = CGRectGetHeight(self.popupFrame);
+    CGFloat vcH = CGRectGetHeight(self.popViewController.view.frame);
+    CGFloat popH = CGRectGetHeight(self.popFrame);
 
-    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionRight && oh <= ch) {
+    BOOL isOpen = vcH > popH;
+
+    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionRight && !isOpen) {
         [self previousViewController];
     }
 
-    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionLeft  && oh <= ch) {
+    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionLeft  && !isOpen) {
         [self nextViewController];
     }
-    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionUp) {
-        [self openPopupViewController];
+    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionUp && !isOpen) {
+        [self poppingViewController:YES];
     }
-    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionDown) {
-        [self closePopupViewController];
+    if (swipeGesture.direction & UISwipeGestureRecognizerDirectionDown && isOpen) {
+        [self poppingViewController: NO];
     }
-
 }
 
 //上一个视图控制器
@@ -134,36 +127,36 @@
     }
 }
 
-- (void)openPopupViewController{
-
+- (void)poppingViewController:(BOOL)popping{
     [self.impactFeedback impactOccurred];
-    CGRect newFrame = [UIScreen mainScreen].bounds;
-    [UIView animateWithDuration:1.0 delay:0.0 usingSpringWithDamping:0.5 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.visualEffectView.frame = newFrame;
-        self.popupViewController.view.frame = self.visualEffectView.contentView.bounds;//newFrame;
-        if ([self.popupViewController respondsToSelector:@selector(mmTabBarControllerDidOpenPopupWithBounds:)]) {
-            [self.popupViewController mmTabBarControllerDidOpenPopupWithBounds:newFrame];
-        }
-    } completion:nil];
+    if (popping) {
+        //打开
+        CGRect newFrame = [UIScreen mainScreen].bounds;
+        [UIView animateWithDuration:1.0 delay:0.0 usingSpringWithDamping:0.7 initialSpringVelocity:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.visualEffectView.frame = newFrame;
+            self.popViewController.view.frame = self.visualEffectView.contentView.bounds;//newFrame;
+            if (self.popupStateDelegate && [self.popupStateDelegate respondsToSelector:@selector(mmTabBarControllerPopupState:whitFrame:)]) {
+                [self.popupStateDelegate mmTabBarControllerPopupState:YES whitFrame:newFrame];
+            }
+        } completion:nil];
 
+    }else{
+        //关闭
+        [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.visualEffectView.frame = self.popFrame;
+            self.popViewController.view.frame = self.visualEffectView.contentView.bounds;//self.popupFrame;
+            if (self.popupStateDelegate && [self.popupStateDelegate respondsToSelector:@selector(mmTabBarControllerPopupState:whitFrame:)]) {
+                [self.popupStateDelegate mmTabBarControllerPopupState:NO whitFrame:self.popFrame];
+            }
+        } completion:nil];
+    }
 }
-- (void)closePopupViewController{
 
-    [self.impactFeedback impactOccurred];
-    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.visualEffectView.frame = self.popupFrame;
-        self.popupViewController.view.frame = self.visualEffectView.contentView.bounds;//self.popupFrame;
-        if ([self.popupViewController respondsToSelector:@selector(mmTabBarControllerDidClosePopupWithBounds:)]) {
-            [self.popupViewController mmTabBarControllerDidClosePopupWithBounds:self.popupFrame];
-        }
-    } completion:nil];
-}
-
-
-- (void)addPopupViewController:(UIViewController<MMTabbarControllerPopupDelegate> *)popupViewController{
-    self.popupViewController = popupViewController;
-    self.popupViewController.view.frame = self.visualEffectView.bounds;
-    [self.visualEffectView.contentView addSubview:self.popupViewController.view];
+- (void)addPopViewController:(UIViewController *)popViewController{
+    self.popViewController = popViewController;
+    self.popViewController.view.frame = self.visualEffectView.bounds;
+    [self.visualEffectView.contentView addSubview:self.popViewController.view];
+    
 }
 
 @end

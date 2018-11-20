@@ -27,7 +27,7 @@
 
 //呈现 内容Frame
 - (CGRect)frameOfPresentedViewInContainerView{
-    CGFloat x = 20;
+    CGFloat x = 10;
     CGFloat y = 20;
     CGRect presentedViewFrame = [[UIScreen mainScreen] bounds];
     CGRect containerBounds = [[self containerView] bounds];

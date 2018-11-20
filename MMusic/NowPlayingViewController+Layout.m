@@ -33,22 +33,6 @@
     [self.songNameLabel setTextAlignment:NSTextAlignmentLeft];
     [self.artistLabel setTextAlignment:NSTextAlignmentLeft];
 
-    //更改playButton & nextPlayButton image
-//
-//    [self.nextButton setImage:[UIImage imageNamed:@"nextFwd"] forState:UIControlStateNormal];
-//    switch (MainPlayer.playbackState) {
-//        case MPMusicPlaybackStatePaused:
-//        case MPMusicPlaybackStateStopped:
-//        case MPMusicPlaybackStateInterrupted:
-//            [self.playButton setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
-//            break;
-//        case MPMusicPlaybackStatePlaying:
-//            [self.playButton setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
-//            break;
-//
-//        default:
-//            break;
-//    }
 
     UIEdgeInsets padding = UIEdgeInsetsMake(4, 4, -4, -4);
     UIView *superView = self.view;
@@ -92,23 +76,6 @@
     //更改文本对齐
     [self.songNameLabel setTextAlignment:NSTextAlignmentCenter];
     [self.artistLabel setTextAlignment:NSTextAlignmentCenter];
-
-//    //更改playButton & nextPlayButton image
-//    [self.previousButton setImage:[UIImage imageNamed:@"nowPlaying_prev"] forState:UIControlStateNormal];
-//    [self.nextButton setImage:[UIImage imageNamed:@"nowPlaying_next"] forState:UIControlStateNormal];
-//    switch (MainPlayer.playbackState) {
-//        case MPMusicPlaybackStatePaused:
-//        case MPMusicPlaybackStateStopped:
-//        case MPMusicPlaybackStateInterrupted:
-//            [self.playButton setImage:[UIImage imageNamed:@"nowPlaying_play"] forState:UIControlStateNormal];
-//            break;
-//        case MPMusicPlaybackStatePlaying:
-//            [self.playButton setImage:[UIImage imageNamed:@"nowPlaying_pause"] forState:UIControlStateNormal];
-//            break;
-//
-//        default:
-//            break;
-//    }
 
     //边距
     UIEdgeInsets padding = UIEdgeInsetsMake(40, 40, -40, -40);
@@ -172,6 +139,9 @@
         make.width.mas_equalTo(heartW);
         make.height.mas_equalTo(heartW);
     }];
+}
 
+- (void)mmTabBarControllerPopupState:(BOOL)popping whitFrame:(CGRect)frame{
+    NSLog(@"delegate method!!");
 }
 @end

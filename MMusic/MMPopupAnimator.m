@@ -11,7 +11,7 @@
 @implementation MMPopupAnimator
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext{
-    return 0.6;
+    return 0.5;
 }
 
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext{
@@ -20,6 +20,7 @@
     if (self.presenting) {
         UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
         CGRect finalFrame = [transitionContext finalFrameForViewController:toVC];
+
         [toVC.view setFrame:self.startFrame];
         [transitionContext.containerView addSubview:toVC.view];
         [UIView animateWithDuration:[self transitionDuration:transitionContext]
@@ -28,7 +29,7 @@
               initialSpringVelocity:0.0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
-                             toVC.view.frame = finalFrame;
+                             [toVC.view setFrame:finalFrame];
                          }
                          completion:^(BOOL finished) {
                              [transitionContext completeTransition:YES];
@@ -36,7 +37,6 @@
     }else{
 
         //dismiss
-
         UIViewController *from = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
 //        NSLog(@"From frame =%@",NSStringFromCGRect(from.view.frame));
 //        NSLog(@"start frame =%@",NSStringFromCGRect(self.startFrame));

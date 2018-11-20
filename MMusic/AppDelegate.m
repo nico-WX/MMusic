@@ -45,25 +45,11 @@
     [self.window setRootViewController:rootVC];
 
     //悬浮窗口添加
-    [rootVC addPopupViewController:[NowPlayingViewController sharePlayerViewController]];
+    [rootVC addPopViewController:[NowPlayingViewController sharePlayerViewController]];
+    //popping 状态
+    rootVC.popupStateDelegate = [NowPlayingViewController sharePlayerViewController];
 
 
-    UIDevice *device = [UIDevice currentDevice];
-    /**
-     @property(nonatomic,readonly,strong) NSString    *name;              // e.g. "My iPhone"
-     @property(nonatomic,readonly,strong) NSString    *model;             // e.g. @"iPhone", @"iPod touch"
-     @property(nonatomic,readonly,strong) NSString    *localizedModel;    // localized version of model
-     @property(nonatomic,readonly,strong) NSString    *systemName;        // e.g. @"iOS"
-     @property(nonatomic,readonly,strong) NSString    *systemVersion;     // e.g. @"4.0"
-     */
-
-    NSLog(@"name =%@",device.name);
-    NSLog(@"model =%@",device.model);
-    NSLog(@"localized model =%@",device.localizedModel);
-    NSLog(@"systemNAme =%@",device.systemName);
-    NSLog(@"systemVersion =%@",device.systemVersion);
-    
-    
     MyMusicViewController  *mmusicVC =[[MyMusicViewController alloc] initWithStyle:UITableViewStylePlain];
     UINavigationController *mmusicNavCtr = [[UINavigationController alloc] initWithRootViewController:mmusicVC];
     [mmusicVC setTitle:@"我的音乐"];
@@ -71,6 +57,7 @@
     //今日推荐
     RecommendationViewController *todayCVC = [[RecommendationViewController alloc] init];
     [todayCVC setTitle:@"今日推荐"];
+    UINavigationController *todayNav = [[UINavigationController alloc] initWithRootViewController:todayCVC];
 
     //排行榜
     ChartsMainViewController *chartVC = [[ChartsMainViewController alloc] init];
@@ -83,7 +70,7 @@
     UINavigationController *browseNav = [[UINavigationController alloc] initWithRootViewController:browseVC];
 
     //添加控制器
-    [rootVC addChildViewController:todayCVC];
+    [rootVC addChildViewController:todayNav];
     [rootVC addChildViewController:chartNav];
     [rootVC addChildViewController:browseNav];
     [rootVC addChildViewController:mmusicNavCtr];

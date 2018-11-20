@@ -43,7 +43,6 @@ static NSString *const reuseID = @"chartCell";
     // Dispose of any resources that can be recreated.
 }
 
-
 - (void)requestData {
     [DataStore.new requestAllCharts:^(NSArray<Chart *> * _Nonnull chartArray) {
         dispatch_async(dispatch_get_main_queue(), ^{

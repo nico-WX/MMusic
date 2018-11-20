@@ -14,8 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 //布局代码拆分到这里
 @interface NowPlayingViewController (Layout)
 
-- (void)popupStateLayout;
-- (void)openStateLayout;
 @end
 
 NS_ASSUME_NONNULL_END

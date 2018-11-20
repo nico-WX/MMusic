@@ -10,18 +10,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**改变布局*/
-@protocol MMTabbarControllerPopupDelegate <NSObject>
+/**popup 代理*/
+@protocol MMTabBarControllerPopupStateDelegate <NSObject>
 
 @optional
-/**最小化窗口时调用, bounds 为最小化的窗口bounds 调整布局*/
-- (void)mmTabBarControllerDidClosePopupWithBounds:(CGRect)bounds;
-/**最大化窗口时调用 bounds 为最大化的窗口bounds 调整布局*/
-- (void)mmTabBarControllerDidOpenPopupWithBounds:(CGRect)bounds;
+//popping 状态
+- (void)mmTabBarControllerPopupState:(BOOL)popping whitFrame:(CGRect)frame;
 @end
 
 @interface MMTabBarController : UITabBarController
-- (void)addPopupViewController:(UIViewController<MMTabbarControllerPopupDelegate>*)popupViewController;
+@property(nonatomic, weak)id<MMTabBarControllerPopupStateDelegate> popupStateDelegate;
+@property(nonatomic, assign,readonly)CGRect popFrame;
+
+- (void)addPopViewController:(UIViewController*)popViewController;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -13,19 +13,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class PlayProgressView;
 @class MMSwitch;
-@interface NowPlayingViewController : UIViewController<MMTabbarControllerPopupDelegate>
-@property(nonatomic, strong)UIImageView *artworkView;
-@property(nonatomic, strong)PlayProgressView *playProgressView;
-@property(nonatomic, strong)UILabel *songNameLabel;
-@property(nonatomic, strong)UILabel *artistLabel;
-@property(nonatomic, strong)UIButton *previousButton;
-@property(nonatomic, strong)UIButton *playButton;
-@property(nonatomic, strong)UIButton *nextButton;
-@property(nonatomic, strong)MMSwitch *heartSwitch;
+@interface NowPlayingViewController : UIViewController<MMTabBarControllerPopupStateDelegate>
 
+
+@property(nonatomic, strong, readonly)UIImageView *artworkView;
+@property(nonatomic, strong, readonly)PlayProgressView *playProgressView;
+@property(nonatomic, strong, readonly)UILabel *songNameLabel;
+@property(nonatomic, strong, readonly)UILabel *artistLabel;
+@property(nonatomic, strong, readonly)UIButton *previousButton;
+@property(nonatomic, strong, readonly)UIButton *playButton;
+@property(nonatomic, strong, readonly)UIButton *nextButton;
+@property(nonatomic, strong, readonly)MMSwitch *heartSwitch;
 
 + (instancetype)sharePlayerViewController;
-
 @end
 
 NS_ASSUME_NONNULL_END

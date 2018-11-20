@@ -9,6 +9,7 @@
 
 #import "RecommendationViewController.h"
 #import "MMDetailViewController.h"
+#import "MMTabBarController.h"
 
 #import "TodaySectionView.h"
 #import "ResourceCell.h"
@@ -47,6 +48,14 @@ static NSString *const cellIdentifier = @"resourceCell";
     [self.view setBackgroundColor:UIColor.whiteColor];
     [self.view addSubview:self.collectionView];
 
+    //底部偏移
+    if ([self.tabBarController isKindOfClass:[MMTabBarController class]]) {
+        MMTabBarController *tabBarController = (MMTabBarController*)self.tabBarController;
+        CGFloat bottomInset = CGRectGetHeight(self.view.frame) - CGRectGetMinY(tabBarController.popFrame);
+        [self.collectionView setContentInset:UIEdgeInsetsMake(0, 0, bottomInset, 0)];
+    }
+
+
     [self requestData];
 }
 
@@ -54,9 +63,9 @@ static NSString *const cellIdentifier = @"resourceCell";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
+//- (BOOL)prefersStatusBarHidden {
+//    return YES;
+//}
 
 #pragma  mark - 请求数据 和解析JSON
 - (void)requestData {
@@ -115,7 +124,10 @@ static NSString *const cellIdentifier = @"resourceCell";
     [detail.titleLabel setText:cell.titleLabel.text];
     [detail.imageView setImage:cell.imageView.image];
 
-    [self.popupAnimator setStartFrame:cell.frame];
+    CGRect startFram = cell.frame;
+    startFram.origin.y -= collectionView.contentOffset.y; // 减去滚动偏移,动画消除动画弹出时的初始位置太大造成的晃动;
+
+    [self.popupAnimator setStartFrame:startFram];
     [self presentViewController:detail animated:YES completion:nil];
 }
 #pragma mark - <DetailViewControllerDelegate>
@@ -166,7 +178,7 @@ static NSString *const cellIdentifier = @"resourceCell";
             flow;
         });
 
-        //集合对象
+        //集合视图对象
         _collectionView = ({
 
             UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];

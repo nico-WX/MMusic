@@ -102,7 +102,7 @@
         make.top.mas_equalTo(superview.mas_top);
         make.right.mas_equalTo(superview.mas_right);
         make.bottom.mas_equalTo(superview.mas_bottom);
-        make.width.mas_equalTo(66);
+        make.width.mas_equalTo(CGRectGetHeight(superview.frame));
     }];
 
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
