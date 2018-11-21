@@ -26,9 +26,15 @@
 }
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
+    [searchBar setShowsCancelButton:YES animated:YES];
     [self presentViewController:_searchViewController animated:YES completion:nil];
     return YES;
 }
-
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
+    [searchBar setShowsCancelButton:NO animated:YES];
+}
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    [searchBar resignFirstResponder];
+}
 
 @end

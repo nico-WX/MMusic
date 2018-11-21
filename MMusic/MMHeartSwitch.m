@@ -1,19 +1,19 @@
 //
-//  MMSwitch.m
+//  MMHeartSwitch.m
 //  CustomSwitch
 //
 //  Created by Magician on 2018/7/4.
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "MMSwitch.h"
+#import "MMHeartSwitch.h"
 
-@interface MMSwitch()
+@interface MMHeartSwitch()
 @property(nonatomic, strong) UIImpactFeedbackGenerator *impact;
 @property(nonatomic, strong) UIImageView *imageView;
 @end
 
-@implementation MMSwitch
+@implementation MMHeartSwitch
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -55,7 +55,7 @@
 }
 
 //简单的缩小-->恢复原始状态
-- (void)animationButton:(MMSwitch*)sender {
+- (void)animationButton:(MMHeartSwitch*)sender {
 
 
     [UIView animateWithDuration:0.2 animations:^{

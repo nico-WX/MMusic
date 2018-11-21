@@ -9,6 +9,7 @@
 
 //Controller
 #import "ChartsMainViewController.h"
+#import "MMSearchBarController.h"
 
 //view  and cell
 #import "ChartsMainCell.h"
@@ -20,6 +21,7 @@
 @interface ChartsMainViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 @property(nonatomic, strong) NSArray<Chart*> *rowData;
 @property(nonatomic, strong) UICollectionView *rowCollectionView; //每一行cell中包含一个视图控制器,及一个title
+@property(nonatomic, strong) MMSearchBarController *searchBarController;
 
 @end
 
@@ -36,6 +38,24 @@ static NSString *const reuseID = @"chartCell";
     [self.view addSubview:self.rowCollectionView];
     [self.rowCollectionView setContentInset:UIEdgeInsetsMake(4, 4, 10, 4)];
     [self requestData];
+
+    _searchBarController = [[MMSearchBarController alloc] init];
+    [self.navigationController.navigationBar addSubview:_searchBarController.searchBar];
+
+}
+
+- (void)viewDidLayoutSubviews{
+    UIView *superView = self.navigationController.navigationBar;
+    [self.searchBarController.searchBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(superView);
+    }];
+
+    superView = self.view;
+    [self.rowCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(superView);
+    }];
+
+    [super viewDidLayoutSubviews];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -88,17 +108,6 @@ static NSString *const reuseID = @"chartCell";
     return _rowCollectionView;
 }
 
-//#pragma mark - MPSystemMusicPlayerController
-///**跳转到Music APP 播放MV*/
-//- (void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor{
-//    UIApplication *app = [UIApplication sharedApplication];
-//    NSURL *url = [NSURL URLWithString:@"Music:prefs:root=MUSIC"];
-//    if ([app canOpenURL:url]) {
-//        [app openURL:url options:@{} completionHandler:^(BOOL success) {
-//            [[MPMusicPlayerController systemMusicPlayer] setQueueWithDescriptor:queueDescriptor];
-//            [[MPMusicPlayerController systemMusicPlayer] play];
-//        }];
-//    }
-//}
+
 
 @end

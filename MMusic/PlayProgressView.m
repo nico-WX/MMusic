@@ -91,6 +91,7 @@
 
 - (NSTimer *)timer {
     if (!_timer) {
+        //当前事件循环中
         _timer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
             NSTimeInterval current = (CGFloat)MainPlayer.currentPlaybackTime;
             NSTimeInterval duration = MainPlayer.nowPlayingItem.playbackDuration; //秒

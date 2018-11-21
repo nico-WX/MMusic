@@ -15,11 +15,15 @@
 @implementation NowPlayingViewController (UpdateUIState)
 
 - (void)addButtonActivation{
+    //上一首
     [self.previousButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-        [MainPlayer skipToPreviousItem];
         [self animationButton:self.previousButton];
+        [MainPlayer skipToPreviousItem];
     }];
+
+    // 播放或暂停
     [self.playButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+        [self animationButton:self.playButton];
         switch (MainPlayer.playbackState) {
             case MPMusicPlaybackStatePaused:
             case MPMusicPlaybackStateStopped:
@@ -32,11 +36,12 @@
             default:
                 break;
         }
-        [self animationButton:self.playButton];
     }];
+
+    //下一首
     [self.nextButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-        [MainPlayer skipToNextItem];
         [self animationButton:self.nextButton];
+        [MainPlayer skipToNextItem];
     }];
 }
 #pragma mark - button animation
@@ -44,12 +49,10 @@
     [UIView animateWithDuration:0.2 animations:^{
         [sender setTransform:CGAffineTransformMakeScale(0.88, 0.88)];
     } completion:^(BOOL finished) {
-        if (finished) {
-            //恢复
-            [UIView animateWithDuration:0.2 animations:^{
-                [sender setTransform:CGAffineTransformIdentity];
-            }];
-        }
+        //恢复
+        [UIView animateWithDuration:0.2 animations:^{
+            [sender setTransform:CGAffineTransformIdentity];
+        }];
     }];
 }
 
@@ -58,7 +61,8 @@
     //popup state
     if (h<100) {
         // title FontSize
-         [self.songNameLabel setFont:[UIFont systemFontOfSize:20]];
+        [self.songNameLabel setFont:[UIFont systemFontOfSize:18]];
+        [self.nextButton setImage:[UIImage imageNamed:@"nextFwd"] forState:UIControlStateNormal];
         switch (MainPlayer.playbackState) {
             case MPMusicPlaybackStateStopped:
             case MPMusicPlaybackStatePaused:
@@ -73,12 +77,11 @@
             default:
                 break;
         }
-        [self.nextButton setImage:[UIImage imageNamed:@"nextFwd"] forState:UIControlStateNormal];
 
     }else{
         //open state
         // title FontSize
-        [self.songNameLabel setFont:[UIFont systemFontOfSize:24]];
+        [self.songNameLabel setFont:[UIFont systemFontOfSize:26]];
         [self.previousButton setImage:[UIImage imageNamed:@"nowPlaying_prev"] forState:UIControlStateNormal];
         [self.nextButton setImage:[UIImage imageNamed:@"nowPlaying_next"] forState:UIControlStateNormal];
         switch (MainPlayer.playbackState) {

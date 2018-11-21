@@ -19,7 +19,7 @@
     self = [super initWithPresentedViewController:presentedViewController presentingViewController:presentingViewController];
     if (self) {
         _dimmingView = [[UIView alloc] init];
-        [_dimmingView setBackgroundColor:[UIColor colorWithWhite:0.0 alpha:0.7]];
+        [_dimmingView setBackgroundColor:[UIColor colorWithWhite:0.0 alpha:0.8]];
         [_dimmingView setAlpha:0.0];
     }
     return self;
@@ -27,14 +27,17 @@
 
 //呈现 内容Frame
 - (CGRect)frameOfPresentedViewInContainerView{
-    CGFloat x = 10;
-    CGFloat y = 20;
+
+    UIEdgeInsets padding = UIEdgeInsetsMake(20, 8, 8, 8);;
+
     CGRect presentedViewFrame = [[UIScreen mainScreen] bounds];
     CGRect containerBounds = [[self containerView] bounds];
 
-    presentedViewFrame.size = CGSizeMake(CGRectGetWidth(containerBounds)-x*2,containerBounds.size.height-y*2);
-    presentedViewFrame.origin.x = x;
-    presentedViewFrame.origin.y = y;
+    CGFloat whidthOffset = padding.left+padding.right;
+    CGFloat heightOffset = padding.top+padding.bottom;
+    presentedViewFrame.size = CGSizeMake(CGRectGetWidth(containerBounds)-whidthOffset,CGRectGetHeight(containerBounds)-heightOffset);
+    presentedViewFrame.origin.x = padding.left;
+    presentedViewFrame.origin.y = padding.top;
 
     return presentedViewFrame;
 }

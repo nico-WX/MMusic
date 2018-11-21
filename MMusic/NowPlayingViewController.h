@@ -12,7 +12,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class PlayProgressView;
-@class MMSwitch;
+@class MMHeartSwitch;
 @interface NowPlayingViewController : UIViewController<MMTabBarControllerPopupStateDelegate>
 
 
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, readonly)UIButton *previousButton;
 @property(nonatomic, strong, readonly)UIButton *playButton;
 @property(nonatomic, strong, readonly)UIButton *nextButton;
-@property(nonatomic, strong, readonly)MMSwitch *heartSwitch;
+@property(nonatomic, strong, readonly)MMHeartSwitch *heartSwitch;
 
 + (instancetype)sharePlayerViewController;
 @end

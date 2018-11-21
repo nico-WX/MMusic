@@ -73,7 +73,6 @@
             nowSong = [Song instanceWithDict:json];
         }];
     }
-
     return nowSong;
 }
 

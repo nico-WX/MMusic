@@ -13,7 +13,7 @@
 #import "DataStoreKit.h"
 
 #import "PlayProgressView.h"
-#import "MMSwitch.h"
+#import "MMHeartSwitch.h"
 
 #import "Artwork.h"
 #import "Song.h"
@@ -24,7 +24,6 @@
 
 
 @interface NowPlayingViewController ()
-
 @end
 
 static NowPlayingViewController *_instance;
@@ -39,9 +38,9 @@ static NowPlayingViewController *_instance;
         _previousButton     = [UIButton new];
         _playButton         = [UIButton new];
         _nextButton         = [UIButton new];
-        _heartSwitch        = [MMSwitch new];
+        _heartSwitch        = [MMHeartSwitch new];
 
-        _heartSwitch.frame = CGRectMake(200, 200, 30, 30); //偏移, 不要在 x=0 y=0 没约束前会出现在左上角
+        _heartSwitch.frame = CGRectMake(200, 200, 30, 30);      //设置偏移,  x=y=0 时, 没约束前会出现在左上角
         _playProgressView.frame = CGRectMake(200, 200, 30, 30);
 
         [self.view addSubview:_heartSwitch];
@@ -151,7 +150,7 @@ static NowPlayingViewController *_instance;
     }];
 }
 //红心按钮 添加喜欢或者删除喜欢
-- (void)changeLove:(MMSwitch*)heart {
+- (void)changeLove:(MMHeartSwitch*)heart {
 
     //从 on --> off 时 表示要删除
     //从 off --> on 时 表示要添加rating 到catalog
@@ -164,13 +163,10 @@ static NowPlayingViewController *_instance;
         }];
     }else{
         [DataStore.new deleteRatingForCatalogWith:identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
-
+            [heart setOn:!succeed];
         }];
     }
 }
-
-
-
 
 
 @end
