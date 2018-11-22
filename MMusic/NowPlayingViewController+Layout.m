@@ -19,16 +19,14 @@
 
 - (void)viewDidLayoutSubviews {
     if (CGRectGetHeight(self.view.frame) < 100) {
-        NSLog(@"-----------------------------popState");
         [self popStateLayout];
     }else{
-        NSLog(@"*****************************poppingState");
+
         [self poppingStateLayout];
         //打开时, 刷新图片大小,
     }
     [self updateButton];
 
-    NSLog(@"\n%@\n-%@\n%@\n",self.previousButton,self.playButton,self.nextButton);
     [super viewDidLayoutSubviews];
 }
 
@@ -88,6 +86,19 @@
     UIView *superView = self.view;
     __weak typeof(self) weakSelf = self;
 
+    // artworkView布局 与pop状态下的按钮布局 发生冲突(覆盖), 后面更新约束即可更正;
+    //移除 , 消除约束警告
+    ({
+        [self.playButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            [make setRemoveExisting:YES];
+        }];
+        [self.nextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            [make setRemoveExisting:YES];
+        }];
+    });
+
+    //重新布局
+    //NSLog(@"begin layout iamgeView");
     [self.artworkView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(superView).offset(padding.top);
         make.left.mas_equalTo(superView).offset(padding.left);
@@ -120,13 +131,11 @@
     CGFloat h = 44.0f;
     CGSize buttonSize = CGSizeMake(w, h);
 
-
     [self.previousButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.artistLabel.mas_bottom).offset(padding.top/2);
         make.left.mas_equalTo(superView).offset(padding.left);
         make.size.mas_equalTo(buttonSize);
     }];
-
 
     [self.playButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.previousButton.mas_top);
@@ -139,13 +148,12 @@
         make.size.mas_equalTo(buttonSize);
     }];
 
-    CGFloat heartW = 35.0f;
+    CGFloat heartW = 30.0f;
     [self.heartSwitch mas_remakeConstraints:^(MASConstraintMaker *make) {
         CGFloat heartOffset = CGRectGetMidX(weakSelf.playButton.frame) - heartW/2; //左边偏移
         make.top.mas_equalTo(weakSelf.playButton.mas_bottom).offset(padding.top/2);
         make.left.mas_equalTo(superView).offset(heartOffset);
-        make.width.mas_equalTo(heartW);
-        make.height.mas_equalTo(heartW);
+        make.size.mas_equalTo(CGSizeMake(heartW, heartW));
     }];
 }
 

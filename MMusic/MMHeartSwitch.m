@@ -19,7 +19,7 @@
     if (self = [super initWithFrame:frame]) {
 
         [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
-        [self setOn:NO];
+        [self setOn:NO]; // 默认off
 
         _impact = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
         _imageView = [[UIImageView alloc] initWithFrame:self.bounds];
@@ -36,7 +36,7 @@
 }
 
 - (void)change {
-    //值取反传递给形参
+    //取反
     [self.impact impactOccurred];
     [self setOn:!_on];
 }
@@ -56,7 +56,6 @@
 
 //简单的缩小-->恢复原始状态
 - (void)animationButton:(MMHeartSwitch*)sender {
-
 
     [UIView animateWithDuration:0.2 animations:^{
         [sender setTransform:CGAffineTransformMakeScale(0.8, 0.8)];
