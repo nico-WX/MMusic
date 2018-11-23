@@ -18,6 +18,7 @@
 #import "MMPopupAnimator.h"
 #import "MMPresentationController.h"
 
+#import "RecommendationData.h"
 #import "Resource.h"
 #import "DataStoreKit.h"
 
@@ -26,11 +27,10 @@ UICollectionViewDataSourcePrefetching,MMDetailViewControllerDelegate,UIViewContr
 
 
 @property(nonatomic, strong) UICollectionView *collectionView;
-//json 结构
-@property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *allData;
 
 @property(nonatomic, strong)MMPresentationController *presentationController;
 @property(nonatomic, strong)MMPopupAnimator *popupAnimator;
+@property(nonatomic, strong)RecommendationData *recommendationData;
 @end
 
 
@@ -55,7 +55,7 @@ static NSString *const cellIdentifier = @"resourceCell";
         [self.collectionView setContentInset:UIEdgeInsetsMake(0, 0, bottomInset, 0)];
     }
 
-
+    //请求数据
     [self requestData];
 }
 
@@ -67,32 +67,30 @@ static NSString *const cellIdentifier = @"resourceCell";
 //    return YES;
 //}
 
-#pragma  mark - 请求数据 和解析JSON
-- (void)requestData {
-    //加载数据
-    [DataStore.new requestDefaultRecommendationWithCompletion:^(NSArray<NSDictionary<NSString *,NSArray<Resource *> *> *> * _Nonnull array) {
+- (void)requestData{
+    [RecommendationData.new defaultRecommendataionWithCompletion:^(RecommendationData * _Nonnull recommendataion) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.collectionView.mj_header endRefreshing];
-            self.allData = array;
+            self.recommendationData = recommendataion;
             [self.collectionView reloadData];
         });
     }];
+
 }
+
 
 #pragma mark - <UICollectionViewDataSource>
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return self.allData.count;
+    return self.recommendationData.sectionCount;
+
 }
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self.allData objectAtIndex:section].allValues.firstObject.count;
+    return [self.recommendationData numberOfSection:section];
 }
 
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
-    NSDictionary<NSString*,NSArray<Resource*>*> *dict = [self.allData objectAtIndex:indexPath.section]; //节数据
-    Resource* resource = [dict.allValues.firstObject objectAtIndex:indexPath.row];                      //row数据
-
+    Resource *resource = [self.recommendationData dataWithIndexPath:indexPath];
     //dequeue cell
     ResourceCell_V2 *cell = (ResourceCell_V2*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     [cell setResource:resource];
@@ -103,9 +101,8 @@ static NSString *const cellIdentifier = @"resourceCell";
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     //节头
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
-        NSString *title = [self.allData objectAtIndex:indexPath.section].allKeys.firstObject;
         TodaySectionView *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:sectionIdentifier forIndexPath:indexPath];
-        [header.titleLabel setText:title];
+        [header.titleLabel setText:[self.recommendationData titleWithSection:indexPath.section]];
         return header;
     }
     return nil;

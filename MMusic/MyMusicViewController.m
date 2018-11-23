@@ -10,7 +10,7 @@
 
 #import "MyMusicViewController.h"
 #import "LocalMusicViewController.h"
-#import "DetailViewController.h"
+
 
 #import "LibraryPlaylist.h"
 #import "Resource.h"
@@ -117,9 +117,6 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
         [self.navigationController pushViewController:lmCtr animated:YES];
     }
     if (indexPath.section == 1) {
-        Resource *resource = [self.playlistsResources objectAtIndex:indexPath.row];
-        DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
-        [self.navigationController pushViewController:detail animated:YES];
     }
 }
 

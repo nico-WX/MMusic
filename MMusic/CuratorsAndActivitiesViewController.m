@@ -10,7 +10,7 @@
 #import <MJRefresh.h>
 
 #import "CuratorsAndActivitiesViewController.h"
-#import "DetailViewController.h"
+
 #import "DetailHeaderView.h"
 #import "ResourceCollectionViewCell.h"
 
@@ -93,9 +93,7 @@ static NSString *const cellID = @"CollectionViewCellReuseID";
 
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    Resource *res = [self.root.data objectAtIndex:indexPath.row];
-    DetailViewController *detail = [[DetailViewController alloc] initWithResource:res];
-    [self.navigationController pushViewController:detail animated:YES];
+
 }
 
 

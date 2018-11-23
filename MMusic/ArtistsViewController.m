@@ -10,7 +10,6 @@
 
 #import "ArtistsViewController.h"
 #import "ArtistsContentViewController.h"
-#import "DetailViewController.h"
 #import "Resource.h"
 #import "ResponseRoot.h"
 #import "Artwork.h"
@@ -169,9 +168,10 @@
     NSString *title = dict.allKeys.lastObject ;
     ResponseRoot *root = dict.allValues.lastObject;
     if ([title isEqualToString:@"songs"]) {
-        DetailViewController *detail = [[DetailViewController alloc] init];  //[[DetailViewController alloc] initWithResponseRoot:root];
+       // DetailViewController *detail = [[DetailViewController alloc] init];  //[[DetailViewController alloc] initWithResponseRoot:root];
 
-        return detail;
+       //return detail;
+        return nil;
 
     }else{
         ArtistsContentViewController *artistsContentVC = [[ArtistsContentViewController alloc] initWithResponseRoot:root];

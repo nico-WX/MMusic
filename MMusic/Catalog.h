@@ -39,6 +39,17 @@ typedef NS_ENUM(NSUInteger, ChartsType){
 @property(nonatomic, readonly) NSString *catalogPath;
 
 #pragma mark - 公开资源实例方法
+
+
+/**
+ 获取歌单,播放列表等 曲目
+
+ @param resource 专辑等包含曲目的资源
+ @param handle JSON 数据回调及响应头
+ */
+- (void)songListWithResource:(Resource*)resource completion:(RequestCallBack)handle;
+
+
 /**
  通过资源标识获取目录资源
 

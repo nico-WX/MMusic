@@ -11,7 +11,6 @@
 #import <MJRefresh.h>
 
 #import "ResultsContentViewController.h"
-#import "DetailViewController.h"
 #import "ArtistsViewController.h"
 #import "ResultsCell.h"
 #import "ResultsArtistsCell.h"
@@ -83,8 +82,8 @@ static NSString *const cellID = @"tableCellReuseID";
 
      // album  / playlist  弹出详细页面
      if ([type isEqualToString:@"albums"] || [type isEqualToString:@"playlists"]) {
-         DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
-         [self.navigationController pushViewController:detail animated:YES];
+//         DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
+//         [self.navigationController pushViewController:detail animated:YES];
      }
 
      //mv 跳转到Music App 播放

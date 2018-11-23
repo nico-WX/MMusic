@@ -1,21 +1,39 @@
 //
-//  DataStore+Recommendations.m
+//  RecommendationData.m
 //  MMusic
 //
-//  Created by 🐙怪兽 on 2018/11/8.
+//  Created by 🐙怪兽 on 2018/11/23.
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import <objc/runtime.h>
-#import "DataStore+Recommendations.h"
+#import "RecommendationData.h"
 #import "Resource.h"
 
-@implementation DataStore (Recommendations)
+@interface RecommendationData ()
+// all data
+@property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*>* dataArray;
+@end
+
+@implementation RecommendationData
 
 
+- (NSInteger)sectionCount{
+    return self.dataArray.count;
+}
 
-- (void)requestDefaultRecommendationWithCompletion:(defaultRecommendationBlock)callBack{
+// section title
+- (NSString *)titleWithSection:(NSInteger)section{
+    return [[[self.dataArray objectAtIndex:section] allKeys] firstObject];
+}
+-(Resource *)dataWithIndexPath:(NSIndexPath *)indexPath{
+    return [[[[self.dataArray objectAtIndex:indexPath.section] allValues] firstObject] objectAtIndex:indexPath.row];
+}
+- (NSInteger)numberOfSection:(NSInteger)section{
+    return [[[[self.dataArray objectAtIndex:section] allValues] firstObject] count];
+}
 
+
+- (void)defaultRecommendataionWithCompletion:(void (^)(RecommendationData * _Nonnull))completion{
     [MusicKit.new.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         //数据临时集合 [{@"section title":[data]},...]
         NSMutableArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *array = [NSMutableArray array];
@@ -32,10 +50,9 @@
             NSDictionary *dict = @{title:resources};
             [array addObject:dict];
         }
-
-        //数据解析完成
-        if (callBack) {
-            callBack(array);
+        self.dataArray = array;
+        if (completion) {
+            completion(self);
         }
     }];
 }
@@ -63,23 +80,6 @@
         }
     }
     return sectionList;
-}
-
-- (void)setCount:(NSUInteger)count{
-    NSNumber *value = [NSNumber numberWithUnsignedInteger:count];
-    objc_setAssociatedObject(self, @selector(count), value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
--(NSUInteger)count{
-    NSNumber *value = objc_getAssociatedObject(self, @selector(count));
-    return value.integerValue;
-}
-- (void)setSectionCount:(NSUInteger)sectionCount{
-    NSNumber *value = [NSNumber numberWithInteger:sectionCount];
-    objc_setAssociatedObject(self,@selector(sectionCount) , value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-- (NSUInteger)sectionCount{
-    NSNumber *value = objc_getAssociatedObject(self, @selector(sectionCount));
-    return value.integerValue;
 }
 
 @end

@@ -8,7 +8,7 @@
 #import <Masonry.h>
 
 #import "ChartsSubViewController.h"
-#import "DetailViewController.h"
+
 
 #import "Chart.h"
 #import "ResourceCell_V2.h"
@@ -70,9 +70,7 @@ static NSString * const reuseIdentifier = @"Cell";
 
 #pragma mark <UICollectionViewDelegate>
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    Resource *resource = [self.chart.data objectAtIndex:indexPath.row];
-    DetailViewController *detailVC = [[DetailViewController alloc] initWithResource:resource];
-    [self.mainNavigatonController pushViewController:detailVC animated:YES];
+
 }
 
 #pragma mark <UICollectionViewDelegateFlowLayout>

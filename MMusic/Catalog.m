@@ -6,6 +6,8 @@
 
 #import "Catalog.h"
 #import "AuthManager.h"
+#import "Resource.h"
+#import "Song.h"
 
 @interface Catalog()
 //@property(nonatomic, strong)NSString *root;
@@ -144,6 +146,9 @@ static Catalog* _instance;
     return subPath;
 }
 
-
+- (void)songListWithResource:(Resource *)resource completion:(RequestCallBack)handle{
+    NSURLRequest *request = [self createRequestWithHref:resource.href];
+    [self dataTaskWithRequest:request handler:handle];
+}
 
 @end

@@ -11,7 +11,7 @@
 #import <MJRefresh.h>
 //vc
 #import "ContentViewController.h"
-#import "DetailViewController.h"
+
 
 //view
 #import "MusicVideosCell.h"
@@ -102,8 +102,8 @@ static NSString * const cellID = @"cellReuseIdentifier";
     if ([resource.type isEqualToString:@"music-videos"]) {
 
     }else{
-        DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
-        [self.navigationController pushViewController:detail animated:YES];
+//        DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
+//        [self.navigationController pushViewController:detail animated:YES];
     }
 }
 #pragma mark - UITableViewDataSource

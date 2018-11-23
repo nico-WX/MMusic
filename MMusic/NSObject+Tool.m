@@ -119,6 +119,7 @@ extern NSString *const userTokenIssueNotification;
 
     if (YES == setupUserToken) {
         NSString *userToken = AuthManager.shareManager.userToken;
+        NSLog(@"userToken:=%@",userToken);
         if (userToken) {
             [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];
         }else

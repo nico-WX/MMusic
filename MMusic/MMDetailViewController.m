@@ -16,6 +16,7 @@
 
 #import "SongCell.h"
 
+#import "ResourceData.h"
 #import "Resource.h"
 #import "Song.h"
 
@@ -26,7 +27,8 @@
 @property(nonatomic, assign) CGFloat topOffset;
 //data
 @property(nonatomic, strong)Resource *resource;
-@property(nonatomic, strong)NSArray<Song*> *songLists;
+
+@property(nonatomic, strong)ResourceData *resourceData;
 @end
 
 static NSString *const reuseIdentifier = @"tableview cell id";
@@ -66,7 +68,12 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         [self.view.layer setMasksToBounds:YES];
     });
 
-    [self requestDataWithResource:self.resource];
+    [ResourceData.new resourceDataWithResource:self.resource completion:^(ResourceData * _Nonnull resourceData) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.resourceData = resourceData;
+            [self.tableView reloadData];
+        });
+    }];
 }
 
 
@@ -108,17 +115,20 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
 #pragma mark - <TableView dataSource>
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.songLists.count;
+    return self.resourceData.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
-    [cell setSong:[self.songLists objectAtIndex:indexPath.row] withIndex:indexPath.row];
+    NSInteger index = indexPath.row;
+    [cell setSong:[self.resourceData songWithIndex:index] withIndex:index];
     return cell;
 }
+
 #pragma mark - <TableView Delegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [MainPlayer playSongs:self.songLists startIndex:indexPath.row];
+    [MainPlayer playSongs:[self.resourceData allSong] startIndex:indexPath.row];
 }
+
 #pragma mark - <scroll delegate>
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     CGFloat y = scrollView.contentOffset.y;
@@ -128,56 +138,12 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         [self delegateDismissViewController];
     }
 }
+
 #pragma mark - <Dismiss ViewController dlelegate>
 - (void)delegateDismissViewController{
     if ([self.disMissDelegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
         [self.disMissDelegate detailViewControllerDidDismiss:self];
     }
 }
-
-# pragma mark - requestData
-/**请求数据*/
-- (void) requestDataWithResource:(Resource*) resource{
-
-    NSURLRequest *request = [self createRequestWithHref:self.resource.href];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        self.songLists = [self serializationJSON:json];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    }];
-
-}
-//-(void) loadNextPageDataWithHref:(NSString*) href{
-//    NSURLRequest *request = [self createRequestWithHref:href];
-//    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-//        json =[json valueForKeyPath:@"results.songs"];
-//
-//        //覆盖next url,  增加song
-//        self.responseRoot.next = [json valueForKey:@"next"];
-//        for (NSDictionary *dict in [json valueForKey:@"data"]) {
-//            Song *song = [Song instanceWithDict:[dict valueForKey:@"attributes"]];
-//            self.songs = [self.songs arrayByAddingObject:song];
-//        }
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.tableView.mj_footer endRefreshing];
-//            [self.tableView reloadData];
-//        });
-//    }];
-//}
-
-/**解析返回的JSON 数据*/
-- (NSArray<Song*>*) serializationJSON:(NSDictionary*)json{
-    NSMutableArray<Song*> *songList = [NSMutableArray array];
-    for (NSDictionary *temp in [json objectForKey:@"data"]) {
-        NSArray *tracks = [temp valueForKeyPath:@"relationships.tracks.data"];
-        for (NSDictionary *songDict in tracks) {
-            Song *song = [Song instanceWithDict:[songDict objectForKey:@"attributes"]];
-            [songList addObject:song];
-        }
-    }
-    return songList;
-}
-
 
 @end

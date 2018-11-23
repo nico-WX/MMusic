@@ -51,8 +51,9 @@
 		3B6BE746219DACDD0004F3E5 /* MMPresentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE742219DACDD0004F3E5 /* MMPresentationController.m */; };
 		3B6BE747219DACDD0004F3E5 /* MMPopupAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE744219DACDD0004F3E5 /* MMPopupAnimator.m */; };
 		3B6BE79D21A57D7C0004F3E5 /* MMPlayerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE79C21A57D7C0004F3E5 /* MMPlayerButton.m */; };
+		3B6BE7A921A7F38A0004F3E5 /* RecommendationData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7A821A7F38A0004F3E5 /* RecommendationData.m */; };
+		3B6BE7BB21A808590004F3E5 /* ResourceData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7BA21A808590004F3E5 /* ResourceData.m */; };
 		3B87992E204FF7E000EE9D2A /* TodaySectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B87992D204FF7E000EE9D2A /* TodaySectionView.m */; };
-		3B8799592052BBC300EE9D2A /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8799582052BBC300EE9D2A /* DetailViewController.m */; };
 		3B8799612053DC4600EE9D2A /* DetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8799602053DC4600EE9D2A /* DetailHeaderView.m */; };
 		3B9226212180896800A0CB96 /* ChartsSubViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9226202180896800A0CB96 /* ChartsSubViewController.m */; };
 		3B92AFA22181BFA60016CE46 /* ChartsMainCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B92AFA12181BFA60016CE46 /* ChartsMainCell.m */; };
@@ -286,10 +287,12 @@
 		3B6BE745219DACDD0004F3E5 /* MMPresentationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMPresentationController.h; sourceTree = "<group>"; };
 		3B6BE79B21A57D7C0004F3E5 /* MMPlayerButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMPlayerButton.h; sourceTree = "<group>"; };
 		3B6BE79C21A57D7C0004F3E5 /* MMPlayerButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMPlayerButton.m; sourceTree = "<group>"; };
+		3B6BE7A721A7F38A0004F3E5 /* RecommendationData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecommendationData.h; sourceTree = "<group>"; };
+		3B6BE7A821A7F38A0004F3E5 /* RecommendationData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RecommendationData.m; sourceTree = "<group>"; };
+		3B6BE7B921A808590004F3E5 /* ResourceData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceData.h; sourceTree = "<group>"; };
+		3B6BE7BA21A808590004F3E5 /* ResourceData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResourceData.m; sourceTree = "<group>"; };
 		3B87992C204FF7E000EE9D2A /* TodaySectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodaySectionView.h; sourceTree = "<group>"; };
 		3B87992D204FF7E000EE9D2A /* TodaySectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodaySectionView.m; sourceTree = "<group>"; };
-		3B8799572052BBC300EE9D2A /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
-		3B8799582052BBC300EE9D2A /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		3B87995F2053DC4600EE9D2A /* DetailHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailHeaderView.h; sourceTree = "<group>"; };
 		3B8799602053DC4600EE9D2A /* DetailHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailHeaderView.m; sourceTree = "<group>"; };
 		3B92261F2180896800A0CB96 /* ChartsSubViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsSubViewController.h; sourceTree = "<group>"; };
@@ -466,8 +469,6 @@
 			children = (
 				3B23AC731FF236A800F0A9CA /* RecommendationViewController.h */,
 				3B23AC741FF236A800F0A9CA /* RecommendationViewController.m */,
-				3B8799572052BBC300EE9D2A /* DetailViewController.h */,
-				3B8799582052BBC300EE9D2A /* DetailViewController.m */,
 				3BE2A24D2198D25300AEA486 /* MMDetailViewController.h */,
 				3BE2A24E2198D25400AEA486 /* MMDetailViewController.m */,
 				3B6BE745219DACDD0004F3E5 /* MMPresentationController.h */,
@@ -573,6 +574,10 @@
 				3BE2A21F2197324200AEA486 /* DataStore+Rating.m */,
 				3B4DDD552194465700F70547 /* DataStore+Recommendations.h */,
 				3B4DDD562194465700F70547 /* DataStore+Recommendations.m */,
+				3B6BE7A721A7F38A0004F3E5 /* RecommendationData.h */,
+				3B6BE7A821A7F38A0004F3E5 /* RecommendationData.m */,
+				3B6BE7B921A808590004F3E5 /* ResourceData.h */,
+				3B6BE7BA21A808590004F3E5 /* ResourceData.m */,
 			);
 			name = "Model  Controller";
 			sourceTree = "<group>";
@@ -1228,6 +1233,7 @@
 				3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */,
 				3B9AA8D81FB452FF00720085 /* ResponseRoot.m in Sources */,
 				3B9AA8D71FB452FF00720085 /* Resource.m in Sources */,
+				3B6BE7BB21A808590004F3E5 /* ResourceData.m in Sources */,
 				3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */,
 				3B408EDC20B6A8600057E323 /* ArtistsViewController.m in Sources */,
 				3B9AA8E01FB461CD00720085 /* Activities.m in Sources */,
@@ -1270,7 +1276,7 @@
 				3B5371E51FD148B6009AFE47 /* Genre.m in Sources */,
 				3B555EE720E0C23900AFF9A2 /* MusicKit.m in Sources */,
 				3BE2A2552198DC7900AEA486 /* NSString+Replace.m in Sources */,
-				3B8799592052BBC300EE9D2A /* DetailViewController.m in Sources */,
+				3B6BE7A921A7F38A0004F3E5 /* RecommendationData.m in Sources */,
 				3B9226212180896800A0CB96 /* ChartsSubViewController.m in Sources */,
 				3B4DDC8A219357DE00F70547 /* DataStore.m in Sources */,
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
