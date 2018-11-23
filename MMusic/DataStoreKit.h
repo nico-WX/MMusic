@@ -11,9 +11,8 @@
 
 
 #import "DataStore.h"
-#import "DataStore+Charts.h"
+
 #import "DataStore+Rating.h"
-#import "DataStore+Recommendations.h"
 
 
 //model

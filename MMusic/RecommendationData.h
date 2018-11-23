@@ -12,11 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 @class Resource;
 
 @interface RecommendationData : NSObject
-@property(nonatomic, assign, readonly)NSInteger sectionCount;    //
+@property(nonatomic, assign, readonly)NSInteger sectionCount;    // 节数
+
+
 - (NSInteger)numberOfSection:(NSInteger)section;
 - (Resource*)dataWithIndexPath:(NSIndexPath*)indexPath;
 - (NSString*)titleWithSection:(NSInteger)section;
-
 
 /**
  在该方法内部请求数据,数据取回后会调用回调

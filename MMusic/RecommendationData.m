@@ -32,7 +32,6 @@
     return [[[[self.dataArray objectAtIndex:section] allValues] firstObject] count];
 }
 
-
 - (void)defaultRecommendataionWithCompletion:(void (^)(RecommendationData * _Nonnull))completion{
     [MusicKit.new.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         //数据临时集合 [{@"section title":[data]},...]

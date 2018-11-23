@@ -28,8 +28,6 @@
 		3B4DDC5E2192C5D700F70547 /* MPMediaItemArtwork+Exchange.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4DDC5D2192C5D700F70547 /* MPMediaItemArtwork+Exchange.m */; };
 		3B4DDC8A219357DE00F70547 /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4DDC89219357DE00F70547 /* DataStore.m */; };
 		3B4DDD51219441B800F70547 /* DataStore+Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4DDD50219441B800F70547 /* DataStore+Search.m */; };
-		3B4DDD542194425100F70547 /* DataStore+Charts.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4DDD532194425100F70547 /* DataStore+Charts.m */; };
-		3B4DDD572194465700F70547 /* DataStore+Recommendations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4DDD562194465700F70547 /* DataStore+Recommendations.m */; };
 		3B4E3AD6208F46B90042498C /* ChartsMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD5208F46B90042498C /* ChartsMainViewController.m */; };
 		3B5371E51FD148B6009AFE47 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E41FD148B6009AFE47 /* Genre.m */; };
 		3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E71FD2BC60009AFE47 /* MMObject.m */; };
@@ -53,6 +51,7 @@
 		3B6BE79D21A57D7C0004F3E5 /* MMPlayerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE79C21A57D7C0004F3E5 /* MMPlayerButton.m */; };
 		3B6BE7A921A7F38A0004F3E5 /* RecommendationData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7A821A7F38A0004F3E5 /* RecommendationData.m */; };
 		3B6BE7BB21A808590004F3E5 /* ResourceData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7BA21A808590004F3E5 /* ResourceData.m */; };
+		3B6BE7CA21A822D30004F3E5 /* ChartsData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7C921A822D30004F3E5 /* ChartsData.m */; };
 		3B87992E204FF7E000EE9D2A /* TodaySectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B87992D204FF7E000EE9D2A /* TodaySectionView.m */; };
 		3B8799612053DC4600EE9D2A /* DetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8799602053DC4600EE9D2A /* DetailHeaderView.m */; };
 		3B9226212180896800A0CB96 /* ChartsSubViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9226202180896800A0CB96 /* ChartsSubViewController.m */; };
@@ -240,10 +239,6 @@
 		3B4DDC89219357DE00F70547 /* DataStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataStore.m; sourceTree = "<group>"; };
 		3B4DDD4F219441B800F70547 /* DataStore+Search.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DataStore+Search.h"; sourceTree = "<group>"; };
 		3B4DDD50219441B800F70547 /* DataStore+Search.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DataStore+Search.m"; sourceTree = "<group>"; };
-		3B4DDD522194425100F70547 /* DataStore+Charts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DataStore+Charts.h"; sourceTree = "<group>"; };
-		3B4DDD532194425100F70547 /* DataStore+Charts.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DataStore+Charts.m"; sourceTree = "<group>"; };
-		3B4DDD552194465700F70547 /* DataStore+Recommendations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DataStore+Recommendations.h"; sourceTree = "<group>"; };
-		3B4DDD562194465700F70547 /* DataStore+Recommendations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DataStore+Recommendations.m"; sourceTree = "<group>"; };
 		3B4DDD5921944BDF00F70547 /* DataStoreKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataStoreKit.h; sourceTree = "<group>"; };
 		3B4E3AD4208F46B90042498C /* ChartsMainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsMainViewController.h; sourceTree = "<group>"; };
 		3B4E3AD5208F46B90042498C /* ChartsMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsMainViewController.m; sourceTree = "<group>"; };
@@ -291,6 +286,8 @@
 		3B6BE7A821A7F38A0004F3E5 /* RecommendationData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RecommendationData.m; sourceTree = "<group>"; };
 		3B6BE7B921A808590004F3E5 /* ResourceData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceData.h; sourceTree = "<group>"; };
 		3B6BE7BA21A808590004F3E5 /* ResourceData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResourceData.m; sourceTree = "<group>"; };
+		3B6BE7C821A822D30004F3E5 /* ChartsData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsData.h; sourceTree = "<group>"; };
+		3B6BE7C921A822D30004F3E5 /* ChartsData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsData.m; sourceTree = "<group>"; };
 		3B87992C204FF7E000EE9D2A /* TodaySectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodaySectionView.h; sourceTree = "<group>"; };
 		3B87992D204FF7E000EE9D2A /* TodaySectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodaySectionView.m; sourceTree = "<group>"; };
 		3B87995F2053DC4600EE9D2A /* DetailHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailHeaderView.h; sourceTree = "<group>"; };
@@ -568,16 +565,14 @@
 				3B4DDC89219357DE00F70547 /* DataStore.m */,
 				3B4DDD4F219441B800F70547 /* DataStore+Search.h */,
 				3B4DDD50219441B800F70547 /* DataStore+Search.m */,
-				3B4DDD522194425100F70547 /* DataStore+Charts.h */,
-				3B4DDD532194425100F70547 /* DataStore+Charts.m */,
 				3BE2A21E2197324200AEA486 /* DataStore+Rating.h */,
 				3BE2A21F2197324200AEA486 /* DataStore+Rating.m */,
-				3B4DDD552194465700F70547 /* DataStore+Recommendations.h */,
-				3B4DDD562194465700F70547 /* DataStore+Recommendations.m */,
 				3B6BE7A721A7F38A0004F3E5 /* RecommendationData.h */,
 				3B6BE7A821A7F38A0004F3E5 /* RecommendationData.m */,
 				3B6BE7B921A808590004F3E5 /* ResourceData.h */,
 				3B6BE7BA21A808590004F3E5 /* ResourceData.m */,
+				3B6BE7C821A822D30004F3E5 /* ChartsData.h */,
+				3B6BE7C921A822D30004F3E5 /* ChartsData.m */,
 			);
 			name = "Model  Controller";
 			sourceTree = "<group>";
@@ -1234,6 +1229,7 @@
 				3B9AA8D81FB452FF00720085 /* ResponseRoot.m in Sources */,
 				3B9AA8D71FB452FF00720085 /* Resource.m in Sources */,
 				3B6BE7BB21A808590004F3E5 /* ResourceData.m in Sources */,
+				3B6BE7CA21A822D30004F3E5 /* ChartsData.m in Sources */,
 				3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */,
 				3B408EDC20B6A8600057E323 /* ArtistsViewController.m in Sources */,
 				3B9AA8E01FB461CD00720085 /* Activities.m in Sources */,
@@ -1270,7 +1266,6 @@
 				3B4D989120BA8A3D00139BE0 /* DBModel.m in Sources */,
 				3B23AC751FF236A800F0A9CA /* RecommendationViewController.m in Sources */,
 				3BAAB7C9207A45B6007A74EA /* SearchViewController.m in Sources */,
-				3B4DDD542194425100F70547 /* DataStore+Charts.m in Sources */,
 				3B555F4220E2FEC700AFF9A2 /* ResourceCell.m in Sources */,
 				3B9AA90D1FB47E0700720085 /* Storefront.m in Sources */,
 				3B5371E51FD148B6009AFE47 /* Genre.m in Sources */,
@@ -1312,7 +1307,6 @@
 				3BC3324820A04E490080D1B9 /* ContentViewController.m in Sources */,
 				3B9B269320D65EEA00881199 /* ResourceCollectionViewCell.m in Sources */,
 				3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */,
-				3B4DDD572194465700F70547 /* DataStore+Recommendations.m in Sources */,
 				3B2D6EFB2091F69200E1B22C /* ScreeningViewController.m in Sources */,
 				3B4E3AD6208F46B90042498C /* ChartsMainViewController.m in Sources */,
 				3B66A22E2195CCDC00F7DC9E /* MMTabBarController.m in Sources */,

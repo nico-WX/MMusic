@@ -14,6 +14,7 @@
 #import "ChartsMainCell.h"
 
 //model and tool
+#import "ChartsData.h"
 #import "DataStoreKit.h"
 #import "Resource.h"
 
@@ -21,7 +22,7 @@
 @property(nonatomic, strong) NSArray<Chart*> *rowData;
 @property(nonatomic, strong) UICollectionView *rowCollectionView; //每一行cell中包含一个视图控制器,及一个title
 
-
+@property(nonatomic, strong)ChartsData *chartsData;
 @end
 
 static NSString *const reuseID = @"chartCell";
@@ -56,9 +57,9 @@ static NSString *const reuseID = @"chartCell";
 }
 
 - (void)requestData {
-    [DataStore.new requestAllCharts:^(NSArray<Chart *> * _Nonnull chartArray) {
+    [ChartsData.new requestChartsWithCompletion:^(ChartsData * _Nonnull chartData) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.rowData = chartArray;
+            self.chartsData = chartData;
             [self.rowCollectionView reloadData];
         });
     }];
@@ -66,11 +67,12 @@ static NSString *const reuseID = @"chartCell";
 
 #pragma mark <UICollectionViewDataSource>
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.rowData.count;
+    return self.chartsData.count;
+
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ChartsMainCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseID forIndexPath:indexPath];
-    cell.chart = [self.rowData objectAtIndex:indexPath.row];
+    cell.chart = [self.chartsData chartWithIndexPath:indexPath];
     cell.navigationController = self.navigationController ; //传递导航控制器
     return cell;
 }
