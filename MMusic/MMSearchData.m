@@ -11,12 +11,20 @@
 
 @interface MMSearchData ()
 @property(nonatomic, strong)NSArray<NSDictionary<NSString*,ResponseRoot*>*> *searchResults;
+@property(nonatomic, strong)NSArray<NSString*> *hints;
 @end
 
 @implementation MMSearchData
 
 -(NSInteger)sectionCount{
     return self.searchResults.count;
+}
+-(NSInteger)hintsCount{
+    return self.hints.count;
+}
+
+- (NSString *)hintTextForIndex:(NSInteger)index{
+    return [self.hints objectAtIndex:index];
 }
 
 - (void)searchDataForTemr:(NSString *)term completion:(void (^)(MMSearchData * _Nonnull))completion{
@@ -39,12 +47,12 @@
     }];
 }
 
-- (void)searchHintForTerm:(NSString *)term complectin:(void (^)(NSArray<NSString *> * _Nonnull))completion{
+- (void)searchHintForTerm:(NSString *)term complectin:(void (^)(MMSearchData * _Nonnulll))completion{
     [MusicKit.new.catalog searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if ([json valueForKeyPath: @"results.terms"]) {
-            NSArray<NSString*> *hints = [json valueForKeyPath:@"results.terms"];
+            self.hints = [json valueForKeyPath:@"results.terms"];
             if (completion) {
-                completion(hints);
+                completion(self);
             }
         }
     }];

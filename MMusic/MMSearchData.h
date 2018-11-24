@@ -13,12 +13,14 @@ NS_ASSUME_NONNULL_BEGIN
 @class ResponseRoot;
 @interface MMSearchData : NSObject
 @property(nonatomic, assign, readonly) NSInteger sectionCount;
+@property(nonatomic, assign, readonly) NSInteger hintsCount;
 
+- (NSString*)hintTextForIndex:(NSInteger)index;
 //- (NSInteger)numberOfSection:(NSInteger)section;
 //- (NSString*)titleOfSection:(NSInteger)section;
 
-- (void)searchHintForTerm:(NSString*)term complectin:(void(^)(NSArray<NSString*>* hints))completion;
-- (void)searchDataForTemr:(NSString*)term completion:(void(^)(MMSearchData*))completion;
+- (void)searchHintForTerm:(NSString*)term complectin:(void(^)(MMSearchData* searchData))completion;
+- (void)searchDataForTemr:(NSString*)term completion:(void(^)(MMSearchData* searchData))completion;
 
 @end
 

@@ -19,7 +19,10 @@
 @property(nonatomic, strong) UIView *fakeNavgationBar;
 @property(nonatomic, weak) UIView *searchBarSuperView;
 
-@property(nonatomic, strong) NSArray<NSString*> *hintsTerms;
+//@property(nonatomic, strong) NSArray<NSString*> *hintsTerms;
+
+@property(nonatomic, assign)CGRect keyboardFrame;
+@property(nonatomic, strong)MMSearchData *searchData;
 @end
 
 static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
@@ -31,6 +34,9 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
         // 外部触发 呈现
         _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0,width, 44.0f)];
         [_searchBar setDelegate:self];
+        [_searchBar setShowsScopeBar:YES];
+
+        _searchData = [[MMSearchData alloc] init];
 
         //假的导航栏
         _fakeNavgationBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, 64)];
@@ -43,48 +49,12 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self.view setBackgroundColor:UIColor.whiteColor];
+    [self.view setBackgroundColor:UIColor.grayColor];
 
-
-    CGFloat topOffset = CGRectGetMaxY(self.fakeNavgationBar.frame);
-    CGRect frame = self.view.bounds;
-    frame.origin.y += topOffset;
-    frame.size.height -= topOffset;
-    [self.hintsView setFrame:frame];
-    //[self.view addSubview:self.hintsView];
-
-    //键盘通知
-    //监听键盘Frame 改变通知, 获取键盘高度,修改Hints view Frame 显示
-//    [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidChangeFrameNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-//        NSDictionary *info = note.userInfo;
-//        NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
-//
-//        CGRect rect = self.hintsView.frame;
-//        rect.size.height -= CGRectGetHeight(value.CGRectValue);
-//        [UIView animateWithDuration:0.5 animations:^{
-//            self.hintsView.frame = rect;
-//        }];
-//    }];
-    //刷新布局
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidHideNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-        NSDictionary *info = note.userInfo;
-        NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
-
-
-
-        NSLog(@"hide note frame =%@",value);
-    }];
     [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidShowNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-
         NSDictionary *info = note.userInfo;
         NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
-
-        CGRect rect = self.hintsView.frame;
-        rect.size.height -= CGRectGetHeight(value.CGRectValue);
-        [UIView animateWithDuration:0.5 animations:^{
-            self.hintsView.frame = rect;
-        }];
-        NSLog(@"show note frame =%@",value);
+        self.keyboardFrame = value.CGRectValue;
     }];
 }
 
@@ -92,80 +62,84 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidChangeFrameNotification object:nil];
 }
-- (void)viewDidLayoutSubviews{
-    [super viewDidLayoutSubviews];
-
-//    //因为每次监听键盘事件 都会改变提示表视图的Frame  所以这里要立即将视图填充回初始状态;
-//    [self.hintsView mas_remakeConstraints:^(MASConstraintMaker *make) {
-//        make.left.bottom.right.mas_equalTo(self.view);
-//        make.top.mas_equalTo(CGRectGetMaxY(self.fakeNavgationBar.frame));
-//    }];
-}
 
 
 #pragma mark - <UITableViewDataSource>
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return self.hintsTerms.count;
+    return self.searchData.hintsCount;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:hintsCellRuseId forIndexPath:indexPath];
-    [cell.textLabel setText:[self.hintsTerms objectAtIndex:indexPath.row]];
-
+    [cell.textLabel setText:[self.searchData hintTextForIndex:indexPath.row]];
     return cell;
 }
 
 #pragma mark - <UITableViewDelegate>
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    NSString *term = cell.textLabel.text;
+    [self.searchBar setText:term];
+
+}
 
 #pragma mark - <UISearchBarDelegate>
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
     if (_presentDelegate && [_presentDelegate respondsToSelector:@selector(presentSearchViewController:)]) {
         [_presentDelegate presentSearchViewController:self];
     }
+
     [searchBar setShowsCancelButton:YES animated:YES];
-    self.searchBarSuperView = [searchBar superview];    //记录原始父视图
+    [self setSearchBarSuperView:[searchBar superview]];    //记录原始父视图
     [self.fakeNavgationBar addSubview:searchBar];       //搜索栏添加到当前视图中
+
+
     //布局
     [searchBar mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.bottom.right.mas_equalTo(self.fakeNavgationBar);
         make.height.mas_equalTo(CGRectGetHeight(self.fakeNavgationBar.bounds)-20);
     }];
+
+    if ([searchBar.text isEqualToString:@""]) {
+        [self.hintsView removeFromSuperview];
+    }
     return YES;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-    NSLog(@"term =%@",searchText);
-    if (searchText) {
-        [MMSearchData.new searchHintForTerm:searchText complectin:^(NSArray<NSString *> * _Nonnull hints) {
+    if (![searchText isEqualToString:@""]) {
+        [self.searchData searchHintForTerm:searchText complectin:^(MMSearchData * _Nonnull searchData) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 CGFloat topOffset = CGRectGetMaxY(self.fakeNavgationBar.frame);
                 CGRect frame = self.view.bounds;
                 frame.origin.y += topOffset;
                 frame.size.height -= topOffset;
+                frame.size.height -= CGRectGetHeight(self.keyboardFrame);
+
                 [self.hintsView setFrame:frame];
                 [self.view addSubview:self.hintsView];
-
-                self.hintsTerms = hints;
                 [self.hintsView reloadData];
             });
         }];
     }else{
+        //移除提示视图, 显示self.view
         [self.hintsView removeFromSuperview];
-        NSLog(@"null");
     }
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [self.searchBarSuperView addSubview:searchBar];
-    [searchBar setText:nil];
+    [searchBar setText:@""];
     if (_presentDelegate && [_presentDelegate respondsToSelector:@selector(dismissSearchViewController:)]) {
         [_presentDelegate dismissSearchViewController:self];
     }
-    [self.searchBar  setShowsCancelButton:NO animated:YES];
+
+    [searchBar  setShowsCancelButton:NO animated:YES];
+    [self.hintsView removeFromSuperview];
+
     //重新布局
     [searchBar mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(self.searchBarSuperView);
     }];
-
 }
 
 - (UITableView *)hintsView{
