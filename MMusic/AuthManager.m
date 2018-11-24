@@ -101,7 +101,7 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
     if (!_developerToken) {
         _developerToken = [[NSUserDefaults standardUserDefaults] objectForKey:developerTokenKey];
 #warning The token is set manually
-        _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTI3NTAwMjY0LCJleHAiOjE1NDMwNTIyNjR9.UtcI1T7Xu1qizH7XR_91Xyd7KNkUkPh318l6k11Jap5S8TW2pFtL-mjCrG9N42jdvmrkA-oIaKzvyN4oKnBwnQ";
+        _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTQzMDUyODU1LCJleHAiOjE1NTg2MDQ4NTV9.619j4QOH2KxlK62tmQlMzlu-pbbLc7EmQoqk-dNsc8f2gmPDF2nxWhpADvPk7Rc_Jv9M7lh6Bgu4123swDm9lA";
         if (!_developerToken) {
             [self requestDeveloperToken];
         }

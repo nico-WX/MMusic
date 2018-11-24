@@ -9,6 +9,8 @@
 
 //Controller
 #import "ChartsMainViewController.h"
+#import "MMSearchViewController.h"
+#import "MMSearchViewControllerAnimation.h"
 
 //view  and cell
 #import "ChartsMainCell.h"
@@ -18,11 +20,15 @@
 #import "DataStoreKit.h"
 #import "Resource.h"
 
-@interface ChartsMainViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
-@property(nonatomic, strong) NSArray<Chart*> *rowData;
-@property(nonatomic, strong) UICollectionView *rowCollectionView; //每一行cell中包含一个视图控制器,及一个title
+@interface ChartsMainViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,MMSearchViewControllerDelegate,UIViewControllerTransitioningDelegate>
 
+@property(nonatomic, strong) UICollectionView *collectionView;
+@property(nonatomic, strong) MMSearchViewController *searchVC;
+@property(nonatomic, strong) MMSearchViewControllerAnimation *animation;
+
+@property(nonatomic, strong) NSArray<NSString*> *cellSearchTerms;
 @property(nonatomic, strong)ChartsData *chartsData;
+
 @end
 
 static NSString *const reuseID = @"chartCell";
@@ -35,20 +41,28 @@ static NSString *const reuseID = @"chartCell";
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
 
-    [self.view addSubview:self.rowCollectionView];
-    [self.rowCollectionView setContentInset:UIEdgeInsetsMake(4, 4, 10, 4)];
-    [self requestData];
+    [self.view addSubview:self.collectionView];
+    [self.collectionView setContentInset:UIEdgeInsetsMake(4, 4, 10, 4)];
 
+    _animation = [MMSearchViewControllerAnimation new];
+    _searchVC = [[MMSearchViewController alloc] init];
+    [_searchVC setPresentDelegate:self];
+    [_searchVC setTransitioningDelegate:self];
+    [self.navigationController.navigationBar addSubview:_searchVC.searchBar];
 
-}
+//
+//    UINavigationBar *bar = [UINavigationBar alloc] init
 
-- (void)viewDidLayoutSubviews{
-    UIView *superView = self.view;
-    [self.rowCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superView);
-    }];
-
-    [super viewDidLayoutSubviews];
+    // 加载属性列表
+    _cellSearchTerms = ({
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"SearchContent.plist" ofType:nil];
+        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
+        __block NSArray<NSString*> *temp;
+        [dict enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            temp = (NSArray*)obj;
+        }];
+        temp;
+    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -56,50 +70,67 @@ static NSString *const reuseID = @"chartCell";
     // Dispose of any resources that can be recreated.
 }
 
-- (void)requestData {
-    [ChartsData.new requestChartsWithCompletion:^(ChartsData * _Nonnull chartData) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.chartsData = chartData;
-            [self.rowCollectionView reloadData];
-        });
-    }];
-}
 
-#pragma mark <UICollectionViewDataSource>
+
+#pragma mark - <UICollectionViewDataSource>
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.chartsData.count;
+    return self.cellSearchTerms.count;
 
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ChartsMainCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseID forIndexPath:indexPath];
-    cell.chart = [self.chartsData chartWithIndexPath:indexPath];
-    cell.navigationController = self.navigationController ; //传递导航控制器
+    [cell.titleLabel setText:[self.cellSearchTerms objectAtIndex:indexPath.row]];
     return cell;
 }
 
-#pragma mark <UICollectonViewDelegate>
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
-#pragma mark <UICollectionViewDelegateFlowLayout>
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CGFloat w = CGRectGetWidth(collectionView.bounds)-(collectionView.contentInset.left+collectionView.contentInset.right);
-    CGFloat h = 300;
-    return CGSizeMake(w, h);
 }
 
-#pragma mark layz Load
-- (UICollectionView *)rowCollectionView {
-    if (!_rowCollectionView) {
+
+#pragma mark - MMSearchViewControllerDelegate
+- (void)presentSearchViewController:(MMSearchViewController *)searchViewController{
+    [self presentViewController:searchViewController animated:YES completion:nil];
+}
+-(void)dismissSearchViewController:(MMSearchViewController *)searchViewcontroller{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - UIViewControllerTransitioningDelegate
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+    [_animation setPresent:YES];
+    return _animation;
+}
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+    [_animation setPresent:NO];
+    return _animation;
+}
+
+
+
+#pragma mark - layz Load
+- (UICollectionView *)collectionView {
+    if (!_collectionView) {
+        UIEdgeInsets padding = UIEdgeInsetsMake(8, 8, 8, 8);
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-        [layout setMinimumLineSpacing:20];
+        [layout setMinimumLineSpacing:padding.top];
+        [layout setMinimumInteritemSpacing:padding.left];
 
-        _rowCollectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
-        [_rowCollectionView registerClass:[ChartsMainCell class] forCellWithReuseIdentifier:reuseID];
-        [_rowCollectionView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
+        //两列
+        CGFloat w = (CGRectGetWidth(self.view.bounds)-(padding.left*3))/2;
+        CGFloat h = w/2;
+        [layout setItemSize:CGSizeMake(w, h)];
 
-        _rowCollectionView.delegate = self;
-        _rowCollectionView.dataSource = self;
+
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
+        [_collectionView registerClass:[ChartsMainCell class] forCellWithReuseIdentifier:reuseID];
+        [_collectionView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
+        [_collectionView setContentInset:UIEdgeInsetsMake(0, padding.left, 0, padding.right)];
+
+        [_collectionView setDelegate:self];
+        [_collectionView setDataSource:self];
     }
-    return _rowCollectionView;
+    return _collectionView;
 }
 
 

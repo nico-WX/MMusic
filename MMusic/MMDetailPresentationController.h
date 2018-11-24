@@ -1,5 +1,5 @@
 //
-//  MMPresentationController.h
+//  MMDetailPresentationController.h
 //  TransitionAnimation
 //
 //  Created by 🐙怪兽 on 2018/11/14.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MMPresentationController : UIPresentationController
+@interface MMDetailPresentationController : UIPresentationController
 @end
 
 NS_ASSUME_NONNULL_END

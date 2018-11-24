@@ -10,11 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class Chart;
+
 @interface ChartsMainCell : UICollectionViewCell
-/**cell 内部的控制器需要压栈, 传入chartsSubVC mainNavigationController*/
-@property(nonatomic, weak) UINavigationController *navigationController;
-@property(nonatomic, strong) Chart *chart;
+@property(nonatomic, strong,readonly) UILabel *titleLabel;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -40,8 +40,6 @@
                 }];
             }];
         }
-        self.chartList = chartArray;
-        if (completion) completion(self);
 
         //没有本地MV数据, 请求香港地区数据
         if (![json valueForKey:@"music-videos"]){
@@ -50,6 +48,9 @@
                 self.chartList = chartArray;
                 if (completion) completion(self);
             }];
+        }else{
+            self.chartList = chartArray;
+            if (completion) completion(self);
         }
     }];
 }

@@ -1,25 +1,26 @@
 //
-//  MMPresentationController.m
+//  MMDetailPresentationController.m
 //  TransitionAnimation
 //
 //  Created by 🐙怪兽 on 2018/11/14.
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import "MMPresentationController.h"
+#import "MMDetailPresentationController.h"
 
-@interface MMPresentationController ()
-@property(nonatomic, strong)UIView *dimmingView; //背景
+
+@interface MMDetailPresentationController ()
+@property(nonatomic, strong) UIView *dimmingView; //背景
 @end
 
-@implementation MMPresentationController
+@implementation MMDetailPresentationController
 
 
 - (instancetype)initWithPresentedViewController:(UIViewController *)presentedViewController presentingViewController:(UIViewController *)presentingViewController{
     self = [super initWithPresentedViewController:presentedViewController presentingViewController:presentingViewController];
     if (self) {
         _dimmingView = [[UIView alloc] init];
-        [_dimmingView setBackgroundColor:[UIColor colorWithWhite:0.0 alpha:0.8]];
+        [_dimmingView setBackgroundColor:[UIColor colorWithWhite:0.2 alpha:0.8]];
         [_dimmingView setAlpha:0.0];
     }
     return self;
@@ -50,11 +51,9 @@
     [[self dimmingView] setFrame:[containerView bounds]];
     [[self dimmingView] setAlpha:0.0];
 
-    //
+
     [containerView setNeedsUpdateConstraints];
-
     [containerView addSubview:self.dimmingView];
-
     // Set up the animations for fading in the dimming view.
     if([presentedViewController transitionCoordinator]) {
         [[presentedViewController transitionCoordinator]
@@ -77,5 +76,6 @@
 - (void)dismissalTransitionDidEnd:(BOOL)completed{
     [[self dimmingView] removeFromSuperview];
 }
+
 
 @end

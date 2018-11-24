@@ -11,7 +11,7 @@
 
 #import "CuratorsAndActivitiesViewController.h"
 
-#import "DetailHeaderView.h"
+
 #import "ResourceCollectionViewCell.h"
 
 

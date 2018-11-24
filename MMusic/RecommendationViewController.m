@@ -15,8 +15,8 @@
 #import "ResourceCell.h"
 #import "ResourceCell_V2.h"
 
-#import "MMPopupAnimator.h"
-#import "MMPresentationController.h"
+#import "MMDetailPoppingAnimator.h"
+#import "MMDetailPresentationController.h"
 
 #import "RecommendationData.h"
 #import "Resource.h"
@@ -26,11 +26,10 @@
 UICollectionViewDataSourcePrefetching,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
 
 
-@property(nonatomic, strong) UICollectionView *collectionView;
-
-@property(nonatomic, strong)MMPresentationController *presentationController;
-@property(nonatomic, strong)MMPopupAnimator *popupAnimator;
-@property(nonatomic, strong)RecommendationData *recommendationData;
+@property(nonatomic, strong) UICollectionView *collectionView;                  //内容视图
+@property(nonatomic, strong) MMDetailPresentationController *presentationController;  //自定义呈现样式
+@property(nonatomic, strong) MMDetailPoppingAnimator *popupAnimator;                    //呈现动画
+@property(nonatomic, strong) RecommendationData *recommendationData;            //数据模型对象
 @end
 
 
@@ -43,12 +42,12 @@ static NSString *const cellIdentifier = @"resourceCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    _popupAnimator = [MMPopupAnimator new];
+    _popupAnimator = [MMDetailPoppingAnimator new];
 
     [self.view setBackgroundColor:UIColor.whiteColor];
     [self.view addSubview:self.collectionView];
 
-    //底部偏移
+    //底部内容偏移量(底部浮动播放器窗口)
     if ([self.tabBarController isKindOfClass:[MMTabBarController class]]) {
         MMTabBarController *tabBarController = (MMTabBarController*)self.tabBarController;
         CGFloat bottomInset = CGRectGetHeight(self.view.frame) - CGRectGetMinY(tabBarController.popFrame);
@@ -72,9 +71,9 @@ static NSString *const cellIdentifier = @"resourceCell";
         dispatch_async(dispatch_get_main_queue(), ^{
             self.recommendationData = recommendataion;
             [self.collectionView reloadData];
+            [self.collectionView.mj_header endRefreshing]; //停止刷新控件
         });
     }];
-
 }
 
 
@@ -142,7 +141,7 @@ static NSString *const cellIdentifier = @"resourceCell";
     return self.popupAnimator;
 }
 -(UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source{
-    self.presentationController =[[MMPresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
+    self.presentationController =[[MMDetailPresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
     return self.presentationController;
 }
 
@@ -197,6 +196,4 @@ static NSString *const cellIdentifier = @"resourceCell";
     }
     return _collectionView;
 }
-
-
 @end

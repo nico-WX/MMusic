@@ -11,7 +11,7 @@
 #import "EditorialNotes.h"
 #import "Artwork.h"
 #import "MMDetailViewController.h"
-#import "MMPopupAnimator.h"
+#import "MMDetailPoppingAnimator.h"
 
 @interface ResourceCell_V2 ()
 

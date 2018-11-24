@@ -8,12 +8,10 @@
 #import <Masonry.h>
 
 #import "ChartsMainCell.h"
-#import "Chart.h"
-#import "ChartsSubViewController.h"
+
 
 @interface ChartsMainCell()
-@property(nonatomic, strong) ChartsSubViewController *chartsViewController;
-@property(nonatomic, strong) UILabel *titleLabel;
+
 @end
 
 @implementation ChartsMainCell
@@ -23,58 +21,49 @@
 
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:[UIFont systemFontOfSize:28.0]];
-        [_titleLabel setTextColor:MainColor];
+        [_titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [_titleLabel setTextColor:UIColor.whiteColor];
+        //[_titleLabel setTextColor:MainColor];
+        [self setBackgroundColor:[self randomColor]];
 
-        _chartsViewController = [[ChartsSubViewController alloc] init];
-
-        NSLog(@"add befor");
         [self.contentView addSubview:_titleLabel];
-        [self.contentView addSubview:_chartsViewController.view];
-        NSLog(@"addto view ed");
 
-        [self.layer setShadowOffset:CGSizeMake(5, 10)];
-        [self.layer setShadowOpacity:0.7];
-        [self.layer setShadowColor:UIColor.grayColor.CGColor];
-
-        [self setBackgroundColor:[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1]];
+//        [self.layer setShadowOffset:CGSizeMake(5, 10)];
+//        [self.layer setShadowOpacity:0.7];
+//        [self.layer setShadowColor:UIColor.grayColor.CGColor];
     }
     return self;
+}
+-(void)prepareForReuse{
+
+    [super prepareForReuse];
 }
 
 - (void)layoutSubviews{
 
     UIView *superView = self.contentView;
     [_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superView.mas_top);
-        make.left.mas_equalTo(superView.mas_left).offset(10);
-        make.right.mas_equalTo(superView.mas_right);
+        make.top.mas_equalTo(superView).mas_offset(8);
+        make.left.right.mas_equalTo(superView);
     }];
-
-    if (self.chartsViewController) {
-        __weak typeof(self) weakSelf = self;
-        [_chartsViewController.view mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(weakSelf.titleLabel.mas_bottom);
-            make.left.mas_equalTo(superView.mas_left);
-            make.right.mas_equalTo(superView.mas_right);
-            make.bottom.mas_equalTo(superView.mas_bottom);
-        }];
-    }
 
     [super layoutSubviews];
 }
-- (void)setChart:(Chart *)chart{
-    if (_chart != chart) {
-        _chart = chart;
-        _titleLabel.text = chart.name;
-        //_chartsViewController = [[ChartsSubViewController alloc] initWithChart:chart];
-        _chartsViewController.chart = chart;
-    }
-}
-- (void)setNavigationController:(UINavigationController *)navigationController{
-    if (_chartsViewController) {
-        //传递导航控制器,
-        _chartsViewController.mainNavigatonController = navigationController;
-    }
+
+- (UIColor*)randomColor{
+    int max = 256.0;  // 0-255
+    int red     = (arc4random()%max);
+    int green   = arc4random()%max;
+    int blue    = arc4random()%max;
+
+    max -= 1;   // 255
+    CGFloat r = ((float)red)/max;
+    CGFloat g = ((float)green)/max;
+    CGFloat b = ((float)blue)/max;
+
+    CGFloat alpha   = 1.0; //((float)(arc4random()%256))/255.0;
+
+    return [UIColor colorWithRed:r green:g blue:b alpha:alpha];
 }
 
 @end

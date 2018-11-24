@@ -1,14 +1,13 @@
 //
-//  MMPopupAnimator.m
-//  TransitionAnimation
+//  MMDetailPoppingAnimator.m
 //
 //  Created by 🐙怪兽 on 2018/11/12.
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import "MMPopupAnimator.h"
+#import "MMDetailPoppingAnimator.h"
 
-@implementation MMPopupAnimator
+@implementation MMDetailPoppingAnimator
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext{
     return 0.5;

@@ -1,5 +1,5 @@
 //
-//  MMPopupAnimator.h
+//  MMDetailPoppingAnimator.h
 //  TransitionAnimation
 //
 //  Created by 🐙怪兽 on 2018/11/12.
@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MMPopupAnimator : NSObject<UIViewControllerAnimatedTransitioning>
+@interface MMDetailPoppingAnimator : NSObject<UIViewControllerAnimatedTransitioning>
 @property(nonatomic, assign) CGRect startFrame; //起始位置
 @property(nonatomic, assign) BOOL presenting;   //present or Dismiss ?
 

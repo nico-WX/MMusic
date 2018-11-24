@@ -58,6 +58,7 @@ static NowPlayingViewController *_instance;
 
         [_songNameLabel setAdjustsFontSizeToFitWidth:YES];
         [_artistLabel setTextColor:UIColor.grayColor];
+        [_artistLabel setAdjustsFontSizeToFitWidth:YES];
 
         [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             [self updateButton];
@@ -67,6 +68,10 @@ static NowPlayingViewController *_instance;
         }];
     }
     return self;
+}
+
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 + (instancetype)sharePlayerViewController {
