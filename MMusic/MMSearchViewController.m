@@ -28,20 +28,11 @@
 static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 @implementation MMSearchViewController
 
+@synthesize searchBar = _searchBar;
+
 - (instancetype)init{
     if (self =[super init]) {
-        CGFloat width = CGRectGetWidth([[UIScreen mainScreen] bounds]);
-        // 外部触发 呈现
-        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0,width, 44.0f)];
-        [_searchBar setDelegate:self];
-        [_searchBar setShowsScopeBar:YES];
-
         _searchData = [[MMSearchData alloc] init];
-
-        //假的导航栏
-        _fakeNavgationBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, 64)];
-        [_fakeNavgationBar setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5]];
-        [self.view addSubview:_fakeNavgationBar];
     }
     return self;
 }
@@ -50,6 +41,8 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view setBackgroundColor:UIColor.grayColor];
+
+    [self.view addSubview:self.fakeNavgationBar];
 
     //键盘弹出 与隐藏消息
     [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidShowNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
@@ -183,5 +176,23 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
     }
     return _hintsView;
 }
-
+- (UIView *)fakeNavgationBar{
+    if (!_fakeNavgationBar) {
+        //假的导航栏
+        CGFloat width = CGRectGetWidth([[UIScreen mainScreen] bounds]);
+        _fakeNavgationBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, 64)];
+        [_fakeNavgationBar setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
+    }
+    return _fakeNavgationBar;
+}
+- (UISearchBar *)searchBar{
+    if (!_searchBar) {
+        CGFloat width = CGRectGetWidth([[UIScreen mainScreen] bounds]);
+        // 外部触发 呈现
+        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0,width, 44.0f)];
+        [_searchBar setDelegate:self];
+        //[_searchBar setShowsScopeBar:YES];
+    }
+    return _searchBar;
+}
 @end

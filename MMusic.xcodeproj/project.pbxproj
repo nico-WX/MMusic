@@ -58,6 +58,7 @@
 		3B6BE7FD21A985720004F3E5 /* MMSearchTopPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7FC21A985720004F3E5 /* MMSearchTopPageCell.m */; };
 		3B87992E204FF7E000EE9D2A /* TodaySectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B87992D204FF7E000EE9D2A /* TodaySectionView.m */; };
 		3B907FA821AA886A00B205BD /* MMSearchResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B907FA721AA886A00B205BD /* MMSearchResultsViewController.m */; };
+		3B907FB621AAB84300B205BD /* MMSearchContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B907FB521AAB84300B205BD /* MMSearchContentViewController.m */; };
 		3B9226212180896800A0CB96 /* ChartsSubViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9226202180896800A0CB96 /* ChartsSubViewController.m */; };
 		3B92AFA22181BFA60016CE46 /* ChartsMainCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B92AFA12181BFA60016CE46 /* ChartsMainCell.m */; };
 		3B98EC9C21872A5B009A4B6B /* ChartsSubCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B98EC9B21872A5B009A4B6B /* ChartsSubCell.m */; };
@@ -303,6 +304,8 @@
 		3B87992D204FF7E000EE9D2A /* TodaySectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodaySectionView.m; sourceTree = "<group>"; };
 		3B907FA621AA886A00B205BD /* MMSearchResultsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMSearchResultsViewController.h; sourceTree = "<group>"; };
 		3B907FA721AA886A00B205BD /* MMSearchResultsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMSearchResultsViewController.m; sourceTree = "<group>"; };
+		3B907FB421AAB84300B205BD /* MMSearchContentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMSearchContentViewController.h; sourceTree = "<group>"; };
+		3B907FB521AAB84300B205BD /* MMSearchContentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMSearchContentViewController.m; sourceTree = "<group>"; };
 		3B92261F2180896800A0CB96 /* ChartsSubViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsSubViewController.h; sourceTree = "<group>"; };
 		3B9226202180896800A0CB96 /* ChartsSubViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsSubViewController.m; sourceTree = "<group>"; };
 		3B92AFA02181BFA60016CE46 /* ChartsMainCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsMainCell.h; sourceTree = "<group>"; };
@@ -630,6 +633,8 @@
 				3B6BE7E921A945320004F3E5 /* MMSearchViewController.m */,
 				3B907FA621AA886A00B205BD /* MMSearchResultsViewController.h */,
 				3B907FA721AA886A00B205BD /* MMSearchResultsViewController.m */,
+				3B907FB421AAB84300B205BD /* MMSearchContentViewController.h */,
+				3B907FB521AAB84300B205BD /* MMSearchContentViewController.m */,
 				3B6BE7E621A945320004F3E5 /* MMSearchViewControllerAnimation.h */,
 				3B6BE7E821A945320004F3E5 /* MMSearchViewControllerAnimation.m */,
 				3B92261F2180896800A0CB96 /* ChartsSubViewController.h */,
@@ -1251,6 +1256,7 @@
 				3B6BE7BB21A808590004F3E5 /* ResourceData.m in Sources */,
 				3B6BE7CA21A822D30004F3E5 /* ChartsData.m in Sources */,
 				3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */,
+				3B907FB621AAB84300B205BD /* MMSearchContentViewController.m in Sources */,
 				3B408EDC20B6A8600057E323 /* ArtistsViewController.m in Sources */,
 				3B9AA8E01FB461CD00720085 /* Activities.m in Sources */,
 				3B9AA8D61FB452FF00720085 /* Relationship.m in Sources */,

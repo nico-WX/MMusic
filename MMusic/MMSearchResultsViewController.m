@@ -11,7 +11,11 @@
 #import "MMSearchTopPageCell.h"
 #import "MMSearchData.h"
 
-@interface MMSearchResultsViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
+
+
+@interface MMSearchResultsViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,
+UIPageViewControllerDelegate>
+
 @property(nonatomic, strong) NSString *term;
 @property(nonatomic, strong) MMSearchData *searchData;
 @property(nonatomic, strong) NSArray<NSString*> *types;
@@ -37,17 +41,31 @@ static NSString *const topCellID = @"top cell reuse identifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-
     [self.view addSubview:self.topPageSectionView];
+
+
+
     [MMSearchData.new searchDataForTemr:self.term completion:^(MMSearchData * _Nonnull searchData) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.searchData = searchData;
             [self.topPageSectionView reloadData];
+
+            //数据返回,添加分页控制器
+            [self addChildViewController:self.pageViewController];
+            [self.view addSubview:self.pageViewController.view];
+            [self.pageViewController didMoveToParentViewController:self];
+            //pageView 显示第一个内容视图
+            UIViewController *vc = [searchData viewControllerAtIndex:0];
+            [self.pageViewController setViewControllers:@[vc,]
+                                                direction:UIPageViewControllerNavigationDirectionForward
+                                                 animated:YES
+                                               completion:nil];
         });
     }];
 }
 
-# pragma mark - UICollectionViewDataSource
+#pragma mark - Protocol ----------Begin-------------------------
+# pragma mark  UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.searchData.sectionCount;
 }
@@ -56,8 +74,34 @@ static NSString *const topCellID = @"top cell reuse identifier";
     [cell.titleLabel setText:[self.searchData pageTitleForIndex:indexPath.row]];
     return cell;
 }
+# pragma mark  UICollectionViewDelegate
 
-# pragma mark - UICollectionViewDelegate
+#pragma mark - UIPageViewControllerDelegate
+-(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers{
+    NSLog(@"whill Transistion");
+
+}
+-(void)pageViewController:(UIPageViewController *)pageViewController
+       didFinishAnimating:(BOOL)finished
+  previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers
+      transitionCompleted:(BOOL)completed{
+
+    if (completed) {
+        if (finished) {
+//            MMSearchContentViewController *contentVC = pageViewController.viewControllers.lastObject;
+//            NSUInteger index = [self indexOfViewController:contentVC];
+//
+//            [self.classifyView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]
+//                                            animated:YES
+//                                      scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+        }
+    }
+}
+
+
+//#pragma mark  Protocol ----------End-------------------------
+
+#pragma mark - layz Load
 - (UICollectionView *)topPageSectionView{
     if (!_topPageSectionView) {
         UICollectionViewFlowLayout *layout =[[UICollectionViewFlowLayout alloc] init];
@@ -78,6 +122,22 @@ static NSString *const topCellID = @"top cell reuse identifier";
     return _topPageSectionView;
 }
 
+-(UIPageViewController *)pageViewController{
+    if (!_pageViewController) {
+        _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
+                                                              navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+                                                                            options:nil];
+        [_pageViewController setDelegate:self];
+        [_pageViewController setDataSource:self.searchData];    //数据源从模型控制器中获取
 
+        CGRect frame = self.view.bounds;
+        frame.origin.y += CGRectGetMaxY(_topPageSectionView.frame);
+        frame.size.height -= CGRectGetMaxY(_topPageSectionView.frame);
+        [_pageViewController.view setFrame:frame];
+    }
+    return _pageViewController;
+}
 
 @end
+
+

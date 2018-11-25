@@ -13,8 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class ResponseRoot;
 
+@interface MMSearchData : NSObject<UIPageViewControllerDataSource>
 
-@interface MMSearchData : NSObject
 /**结果分页*/
 @property(nonatomic, assign, readonly) NSInteger sectionCount;
 /**搜索提示总数*/
@@ -53,10 +53,9 @@ NS_ASSUME_NONNULL_BEGIN
  @param completion 消息接受者
  */
 - (void)searchDataForTemr:(NSString*)term completion:(void(^)(MMSearchData* searchData))completion;
+
+- (UIViewController*)viewControllerAtIndex:(NSUInteger)index;
 @end
 
-@interface MMSearchData ()<UITableViewDataSource,UICollectionViewDataSource>
-
-@end
 
 NS_ASSUME_NONNULL_END
