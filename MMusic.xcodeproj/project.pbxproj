@@ -55,8 +55,9 @@
 		3B6BE7ED21A945330004F3E5 /* MMSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7E921A945320004F3E5 /* MMSearchViewController.m */; };
 		3B6BE7F621A949070004F3E5 /* SearchContent.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B6BE7F521A949070004F3E5 /* SearchContent.plist */; };
 		3B6BE7F921A95E160004F3E5 /* MMSearchData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7F821A95E160004F3E5 /* MMSearchData.m */; };
-		3B6BE7FD21A985720004F3E5 /* MMSearchNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7FC21A985720004F3E5 /* MMSearchNavigationBar.m */; };
+		3B6BE7FD21A985720004F3E5 /* MMSearchTopPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7FC21A985720004F3E5 /* MMSearchTopPageCell.m */; };
 		3B87992E204FF7E000EE9D2A /* TodaySectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B87992D204FF7E000EE9D2A /* TodaySectionView.m */; };
+		3B907FA821AA886A00B205BD /* MMSearchResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B907FA721AA886A00B205BD /* MMSearchResultsViewController.m */; };
 		3B9226212180896800A0CB96 /* ChartsSubViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9226202180896800A0CB96 /* ChartsSubViewController.m */; };
 		3B92AFA22181BFA60016CE46 /* ChartsMainCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B92AFA12181BFA60016CE46 /* ChartsMainCell.m */; };
 		3B98EC9C21872A5B009A4B6B /* ChartsSubCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B98EC9B21872A5B009A4B6B /* ChartsSubCell.m */; };
@@ -296,10 +297,12 @@
 		3B6BE7F521A949070004F3E5 /* SearchContent.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = SearchContent.plist; sourceTree = "<group>"; };
 		3B6BE7F721A95E160004F3E5 /* MMSearchData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMSearchData.h; sourceTree = "<group>"; };
 		3B6BE7F821A95E160004F3E5 /* MMSearchData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMSearchData.m; sourceTree = "<group>"; };
-		3B6BE7FB21A985720004F3E5 /* MMSearchNavigationBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMSearchNavigationBar.h; sourceTree = "<group>"; };
-		3B6BE7FC21A985720004F3E5 /* MMSearchNavigationBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMSearchNavigationBar.m; sourceTree = "<group>"; };
+		3B6BE7FB21A985720004F3E5 /* MMSearchTopPageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMSearchTopPageCell.h; sourceTree = "<group>"; };
+		3B6BE7FC21A985720004F3E5 /* MMSearchTopPageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMSearchTopPageCell.m; sourceTree = "<group>"; };
 		3B87992C204FF7E000EE9D2A /* TodaySectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodaySectionView.h; sourceTree = "<group>"; };
 		3B87992D204FF7E000EE9D2A /* TodaySectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodaySectionView.m; sourceTree = "<group>"; };
+		3B907FA621AA886A00B205BD /* MMSearchResultsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMSearchResultsViewController.h; sourceTree = "<group>"; };
+		3B907FA721AA886A00B205BD /* MMSearchResultsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMSearchResultsViewController.m; sourceTree = "<group>"; };
 		3B92261F2180896800A0CB96 /* ChartsSubViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsSubViewController.h; sourceTree = "<group>"; };
 		3B9226202180896800A0CB96 /* ChartsSubViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsSubViewController.m; sourceTree = "<group>"; };
 		3B92AFA02181BFA60016CE46 /* ChartsMainCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsMainCell.h; sourceTree = "<group>"; };
@@ -625,6 +628,8 @@
 				3B4E3AD5208F46B90042498C /* ChartsMainViewController.m */,
 				3B6BE7EB21A945320004F3E5 /* MMSearchViewController.h */,
 				3B6BE7E921A945320004F3E5 /* MMSearchViewController.m */,
+				3B907FA621AA886A00B205BD /* MMSearchResultsViewController.h */,
+				3B907FA721AA886A00B205BD /* MMSearchResultsViewController.m */,
 				3B6BE7E621A945320004F3E5 /* MMSearchViewControllerAnimation.h */,
 				3B6BE7E821A945320004F3E5 /* MMSearchViewControllerAnimation.m */,
 				3B92261F2180896800A0CB96 /* ChartsSubViewController.h */,
@@ -641,8 +646,8 @@
 				3B92AFA12181BFA60016CE46 /* ChartsMainCell.m */,
 				3B98EC9A21872A5B009A4B6B /* ChartsSubCell.h */,
 				3B98EC9B21872A5B009A4B6B /* ChartsSubCell.m */,
-				3B6BE7FB21A985720004F3E5 /* MMSearchNavigationBar.h */,
-				3B6BE7FC21A985720004F3E5 /* MMSearchNavigationBar.m */,
+				3B6BE7FB21A985720004F3E5 /* MMSearchTopPageCell.h */,
+				3B6BE7FC21A985720004F3E5 /* MMSearchTopPageCell.m */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -1252,6 +1257,7 @@
 				3B6BE746219DACDD0004F3E5 /* MMDetailPresentationController.m in Sources */,
 				3B9AA8E31FB463E800720085 /* Album.m in Sources */,
 				3B9AA9011FB479B700720085 /* Preview.m in Sources */,
+				3B907FA821AA886A00B205BD /* MMSearchResultsViewController.m in Sources */,
 				3B6BE79D21A57D7C0004F3E5 /* MMPlayerButton.m in Sources */,
 				3B64D0EE20ECE76200D831FE /* MMHeartSwitch.m in Sources */,
 				3B408EEB20B6E7D70057E323 /* ArtistsContentViewController.m in Sources */,
@@ -1259,7 +1265,7 @@
 				3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */,
 				3B9AA9041FB47A6C00720085 /* Recommendation.m in Sources */,
 				3BFB704E2109BA6F002B3A06 /* APIRoot.m in Sources */,
-				3B6BE7FD21A985720004F3E5 /* MMSearchNavigationBar.m in Sources */,
+				3B6BE7FD21A985720004F3E5 /* MMSearchTopPageCell.m in Sources */,
 				3BE2A2202197324200AEA486 /* DataStore+Rating.m in Sources */,
 				3B4D989720BAC71200139BE0 /* TracksModel.m in Sources */,
 				3BAAE01920B4211B00C82F4B /* ResultsContentViewController.m in Sources */,

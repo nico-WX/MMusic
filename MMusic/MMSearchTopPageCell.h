@@ -1,5 +1,5 @@
 //
-//  MMSearchNavigationBar.h
+//  MMSearchTopPageCell.h
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2018/11/24.
@@ -10,8 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MMSearchNavigationBar : UIView
-
+@interface MMSearchTopPageCell : UICollectionViewCell
+@property(nonatomic, strong, readonly) UILabel *titleLabel;
 @end
 
 NS_ASSUME_NONNULL_END

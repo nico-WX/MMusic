@@ -27,6 +27,15 @@
     return [self.hints objectAtIndex:index];
 }
 
+-(NSDictionary<NSString *,ResponseRoot *> *)searchResultsForIndex:(NSInteger)index{
+    return [self.searchResults objectAtIndex:index];
+}
+
+- (NSString*)pageTitleForIndex:(NSInteger)index{
+    NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:index];
+    return [dict allKeys].firstObject;
+}
+
 - (void)searchDataForTemr:(NSString *)term completion:(void (^)(MMSearchData * _Nonnull))completion{
     [[MusicKit new].catalog searchForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];
@@ -58,5 +67,15 @@
     }];
 }
 
+
+//#pragma mark - <UITableViewDataSource>
+//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+//    return self.hints.count;
+//}
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+//    NSString *term = [self.hints objectAtIndex:indexPath.row];
+//
+//}
+//#pragma mark - <UICollectionViewDataSource>
 
 @end

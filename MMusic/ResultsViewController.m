@@ -212,7 +212,6 @@ static NSString * const cellID = @"colletionCellReuseId";
                                       scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
         }
     }
-
 }
 
 #pragma mark - UICollectionViewDataSource
