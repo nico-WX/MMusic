@@ -15,6 +15,9 @@
     NSString *path = [self.catalogPath stringByAppendingPathComponent:@"search?term="];
     path = [path stringByAppendingString:term];
 
+    //每页15 条数
+    path = [path stringByAppendingString:@"&limit=15"];
+
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }

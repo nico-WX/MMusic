@@ -48,6 +48,7 @@ static NSString *const topCellID = @"top cell reuse identifier";
 
             //数据返回,添加分页控制器
             [self addChildViewController:self.pageViewController];
+
             [self.view addSubview:self.pageViewController.view];
             [self.pageViewController didMoveToParentViewController:self];
             //pageView 显示第一个内容视图
@@ -139,6 +140,9 @@ static NSString *const topCellID = @"top cell reuse identifier";
         CGRect frame = self.view.bounds;
         frame.origin.y += CGRectGetMaxY(_topPageSectionView.frame);
         frame.size.height -= CGRectGetMaxY(_topPageSectionView.frame);
+
+        NSLog(@"page frame =%@",NSStringFromCGRect(frame));
+
         [_pageViewController.view setFrame:frame];
     }
     return _pageViewController;

@@ -137,31 +137,7 @@
 
     index++;
     if (index==self.searchResults.count) return nil;
-
-    NSLog(@"page index =%ld",index);
     return [self viewControllerAtIndex:index];
 }
-
-//#pragma mark - UIPageViewControllerDelegate
-//-(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers{
-//
-//}
-//-(void)pageViewController:(UIPageViewController *)pageViewController
-//       didFinishAnimating:(BOOL)finished
-//  previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers
-//      transitionCompleted:(BOOL)completed{
-//
-//    if (completed) {
-//        if (finished) {
-//            MMSearchContentViewController *contentVC = pageViewController.viewControllers.lastObject;
-//            NSUInteger index = [self indexOfViewController:contentVC];
-//
-//            [self.classifyView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]
-//                                            animated:YES
-//                                      scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
-//        }
-//    }
-//}
-
 
 @end

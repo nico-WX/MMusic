@@ -50,8 +50,6 @@ static NSString *const reuseID = @"chartCell";
     [_searchVC setTransitioningDelegate:self];
     [self.navigationController.navigationBar addSubview:_searchVC.searchBar];
 
-//
-//    UINavigationBar *bar = [UINavigationBar alloc] init
 
     // 加载属性列表
     _cellSearchTerms = ({

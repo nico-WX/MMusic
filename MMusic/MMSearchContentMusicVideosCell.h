@@ -6,11 +6,11 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "MMSearchContentCell.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MMSearchContentMusicVideosCell : UICollectionViewCell
+@interface MMSearchContentMusicVideosCell : MMSearchContentCell
 
 @end
 

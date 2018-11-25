@@ -655,14 +655,14 @@
 				3B92AFA12181BFA60016CE46 /* ChartsMainCell.m */,
 				3B6BE7FB21A985720004F3E5 /* MMSearchTopPageCell.h */,
 				3B6BE7FC21A985720004F3E5 /* MMSearchTopPageCell.m */,
-				3B907FF521AAE1AB00B205BD /* MMSearchContentSongCell.h */,
-				3B907FF621AAE1AB00B205BD /* MMSearchContentSongCell.m */,
 				3B907FF821AAE1FB00B205BD /* MMSearchContentCell.h */,
 				3B907FF921AAE1FB00B205BD /* MMSearchContentCell.m */,
-				3B907FFB21AAE21200B205BD /* MMSearchContentMusicVideosCell.h */,
-				3B907FFC21AAE21200B205BD /* MMSearchContentMusicVideosCell.m */,
+				3B907FF521AAE1AB00B205BD /* MMSearchContentSongCell.h */,
+				3B907FF621AAE1AB00B205BD /* MMSearchContentSongCell.m */,
 				3B907FFE21AAE25A00B205BD /* MMSearchContentArtistsCell.h */,
 				3B907FFF21AAE25A00B205BD /* MMSearchContentArtistsCell.m */,
+				3B907FFB21AAE21200B205BD /* MMSearchContentMusicVideosCell.h */,
+				3B907FFC21AAE21200B205BD /* MMSearchContentMusicVideosCell.m */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
