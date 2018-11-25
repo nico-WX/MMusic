@@ -10,7 +10,13 @@
 #import "MMSearchContentViewController.h"
 #import "ResponseRoot.h"
 
-@interface MMSearchContentViewController ()<UICollectionViewDelegate, UICollectionViewDataSource>
+#import "MMSearchContentCell.h"
+#import "MMSearchContentSongCell.h"
+#import "MMSearchContentArtistsCell.h"
+#import "MMSearchContentMusicVideosCell.h"
+
+@interface MMSearchContentViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
+
 @property(nonatomic, strong) UICollectionView *collectionView;
 @end
 
@@ -34,11 +40,11 @@ static NSString *const cellID = @" cell reuse identifier";
 }
 - (void)viewDidLayoutSubviews{
 
-    UIView *superView = self.view;
-    UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 0, 4);
-    [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superView).insets(padding);
-    }];
+//    UIView *superView = self.view;
+//    UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 0, 4);
+//    [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
+//        make.edges.mas_equalTo(superView).insets(padding);
+//    }];
 
     [super viewDidLayoutSubviews];
 }
@@ -56,23 +62,48 @@ static NSString *const cellID = @" cell reuse identifier";
 - (UICollectionView *)collectionView{
     if (!_collectionView) {
 
-        CGRect frame = self.view.bounds;
-        _collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:[self flowLayout]];
+        UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+        [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
 
-        [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:cellID];
+        UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 0, 4);
+        CGRect frame = self.view.bounds;
+        frame.origin.x +=padding.left;
+        frame.size.width -= (padding.left+padding.right);
+        _collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:layout];
+
+        //[_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:cellID];
         [_collectionView setDelegate:self];
         [_collectionView setDataSource:self];
         [_collectionView setBackgroundColor:UIColor.whiteColor];
+
+        // 不同的类型注册不同的cell 及设置不同的大小
+        ({
+            CGFloat w = CGRectGetWidth(frame);
+            CGFloat h = 0;
+
+            if ([self.title isEqualToString:@"artists"]) {
+                [_collectionView registerClass:[MMSearchContentArtistsCell class] forCellWithReuseIdentifier:cellID];
+                h = 66.0;
+
+            }else if ([self.title isEqualToString:@"songs"]) {
+                [_collectionView registerClass:[MMSearchContentSongCell class] forCellWithReuseIdentifier:cellID];
+                h = 60;
+
+            }else if ([self.title isEqualToString:@"music-videos"]) {
+                [_collectionView registerClass:[MMSearchContentMusicVideosCell class] forCellWithReuseIdentifier:cellID];
+                h = 74;
+            }else{
+                [_collectionView registerClass:[MMSearchContentCell class] forCellWithReuseIdentifier:cellID];
+                h = 74;
+            }
+
+            [layout setItemSize:CGSizeMake(w, h)];
+        });
+
+
     }
     return _collectionView;
 }
 
-- (UICollectionViewFlowLayout*)flowLayout{
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
-    [layout setItemSize:CGSizeMake(414, 60)];
-
-    return layout;
-}
 
 @end

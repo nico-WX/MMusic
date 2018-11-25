@@ -55,6 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)searchDataForTemr:(NSString*)term completion:(void(^)(MMSearchData* searchData))completion;
 
 - (UIViewController*)viewControllerAtIndex:(NSUInteger)index;
+- (NSUInteger)indexOfViewController:(UIViewController*)viewController;
 @end
 
 

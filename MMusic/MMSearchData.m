@@ -83,10 +83,13 @@
 
 # pragma - mark help method
 //返回控制器对应的下标
-- (NSUInteger)indexOfViewController:(MMSearchContentViewController*)viewController {
+- (NSUInteger)indexOfViewController:(UIViewController*)viewController {
     for (NSDictionary<NSString*,ResponseRoot*> *dict in self.searchResults) {
-        if (viewController.responseRoot == dict.allValues.firstObject) {
-            return [self.searchResults indexOfObject:dict];
+        if ([viewController isKindOfClass:MMSearchContentViewController.class]) {
+            MMSearchContentViewController *scVC = (MMSearchContentViewController*)viewController;
+            if (scVC.responseRoot == dict.allValues.firstObject) {
+                return [self.searchResults indexOfObject:dict];
+            }
         }
     }
     return NSNotFound;

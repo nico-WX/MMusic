@@ -18,7 +18,6 @@ UIPageViewControllerDelegate>
 
 @property(nonatomic, strong) NSString *term;
 @property(nonatomic, strong) MMSearchData *searchData;
-@property(nonatomic, strong) NSArray<NSString*> *types;
 
 //顶部分页段
 @property(nonatomic, strong) UICollectionView *topPageSectionView;
@@ -32,7 +31,6 @@ static NSString *const topCellID = @"top cell reuse identifier";
 - (instancetype)initWithTerm:(NSString *)term{
     if (self = [super init]) {
         _term = term;
-        _types = @[@"单曲",@"歌单",@"专辑",@"MV",@"歌手"];
     }
     return self;
 }
@@ -42,8 +40,6 @@ static NSString *const topCellID = @"top cell reuse identifier";
     // Do any additional setup after loading the view.
 
     [self.view addSubview:self.topPageSectionView];
-
-
 
     [MMSearchData.new searchDataForTemr:self.term completion:^(MMSearchData * _Nonnull searchData) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -60,6 +56,8 @@ static NSString *const topCellID = @"top cell reuse identifier";
                                                 direction:UIPageViewControllerNavigationDirectionForward
                                                  animated:YES
                                                completion:nil];
+            //选中第一项
+            [self.topPageSectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
         });
     }];
 }
@@ -72,13 +70,22 @@ static NSString *const topCellID = @"top cell reuse identifier";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     MMSearchTopPageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:topCellID forIndexPath:indexPath];
     [cell.titleLabel setText:[self.searchData pageTitleForIndex:indexPath.row]];
+    
     return cell;
 }
 # pragma mark  UICollectionViewDelegate
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    UIViewController *vc = [self.searchData viewControllerAtIndex:indexPath.row];
+    NSInteger currentIndex = [self.searchData indexOfViewController:self.pageViewController.viewControllers.firstObject];
+
+    // 确定滚动的方向
+    UIPageViewControllerNavigationDirection direction = indexPath.row > currentIndex ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse;
+    [self.pageViewController setViewControllers:@[vc,] direction:direction animated:YES completion:nil];
+}
 
 #pragma mark - UIPageViewControllerDelegate
 -(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers{
-    NSLog(@"whill Transistion");
+   
 
 }
 -(void)pageViewController:(UIPageViewController *)pageViewController
@@ -88,12 +95,10 @@ static NSString *const topCellID = @"top cell reuse identifier";
 
     if (completed) {
         if (finished) {
-//            MMSearchContentViewController *contentVC = pageViewController.viewControllers.lastObject;
-//            NSUInteger index = [self indexOfViewController:contentVC];
-//
-//            [self.classifyView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]
-//                                            animated:YES
-//                                      scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+            UIViewController *currentVC = pageViewController.viewControllers.firstObject;
+            NSUInteger index = [self.searchData indexOfViewController:currentVC];
+
+            [self.topPageSectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
         }
     }
 }
@@ -118,6 +123,7 @@ static NSString *const topCellID = @"top cell reuse identifier";
         [_topPageSectionView setBackgroundColor:UIColor.whiteColor];
         [_topPageSectionView setDelegate:self];
         [_topPageSectionView setDataSource:self];
+        [_topPageSectionView setAllowsSelection:YES];
     }
     return _topPageSectionView;
 }

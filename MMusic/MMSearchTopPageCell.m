@@ -32,5 +32,12 @@
     [_titleLabel setFrame:self.contentView.bounds];
     [super layoutSubviews];
 }
+- (void)setSelected:(BOOL)selected{
+    if (selected) {
+        [_titleLabel setTextColor:UIColor.greenColor];
+    }else{
+        [_titleLabel setTextColor:UIColor.blackColor];
+    }
+}
 
 @end
