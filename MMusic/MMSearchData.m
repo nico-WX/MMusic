@@ -23,21 +23,12 @@
 }
 
 
-
-- (NSString *)hintTextForIndex:(NSInteger)index{
-    return [self.hints objectAtIndex:index];
-}
-
--(NSDictionary<NSString *,ResponseRoot *> *)searchResultsForIndex:(NSInteger)index{
-    return [self.searchResults objectAtIndex:index];
-}
-
 - (NSString*)pageTitleForIndex:(NSInteger)index{
     NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:index];
     return [dict allKeys].firstObject;
 }
 
-- (void)searchDataForTemr:(NSString *)term completion:(void (^)(MMSearchData * _Nonnull))completion{
+- (void)searchDataForTemr:(NSString *)term completion:(nonnull void (^)(BOOL))completion{
     [[MusicKit new].catalog searchForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];
         //检查结果返回空结果字典
@@ -57,18 +48,7 @@
         }
         
         if (completion) {
-            completion(self);
-        }
-    }];
-}
-
-- (void)searchHintForTerm:(NSString *)term complectin:(void (^)(MMSearchData * _Nonnulll))completion{
-    [MusicKit.new.catalog searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if ([json valueForKeyPath: @"results.terms"]) {
-            self->_hints = [json valueForKeyPath:@"results.terms"];
-            if (completion) {
-                completion(self);
-            }
+            completion(self.searchResults.count > 0);
         }
     }];
 }
@@ -105,7 +85,7 @@
 
     //数组中没有创建过的控制器, 创建新的,并添加到数组
     MMSearchContentViewController *contentVC = [[MMSearchContentViewController alloc] initWithResponseRoot:root];
-    [contentVC setTitle:title];
+    [contentVC setTitle:title]; 
     [self.cacheViewControllers addObject:contentVC]; //添加缓存
     return contentVC;
 }
@@ -130,6 +110,23 @@
     index++;
     if (index==self.searchResults.count) return nil;
     return [self viewControllerAtIndex:index];
+}
+
+@end
+
+
+
+@implementation MMSearchData (Hints)
+
+- (void)searchHintForTerm:(NSString *)term complectin:(void (^)(BOOL))completion{
+    [MusicKit.new.catalog searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        if ([json valueForKeyPath: @"results.terms"]) {
+            self->_searchHints = [json valueForKeyPath:@"results.terms"];
+            if (completion) {
+                completion(self.searchHints.count > 0);
+            }
+        }
+    }];
 }
 
 @end

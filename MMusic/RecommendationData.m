@@ -9,30 +9,37 @@
 #import "RecommendationData.h"
 #import "Resource.h"
 
+#import "ResourceCell_V2.h"
+#import "TodaySectionView.h"
+
 @interface RecommendationData ()
 // all data
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*>* dataArray;
+@property(nonatomic, strong) NSString *identifier;
 @end
 
 @implementation RecommendationData
 
-
-- (NSInteger)sectionCount{
+- (NSInteger)numberOfSection{
     return self.dataArray.count;
 }
+- (NSInteger)numberOfItemsInSection:(NSInteger)section{
+    NSDictionary<NSString*,NSArray<Resource*>*> * temp = [self.dataArray objectAtIndex:section];
+    return [[[temp allValues] firstObject] count];
+}
+
 
 // section title
 - (NSString *)titleWithSection:(NSInteger)section{
     return [[[self.dataArray objectAtIndex:section] allKeys] firstObject];
 }
 -(Resource *)dataWithIndexPath:(NSIndexPath *)indexPath{
-    return [[[[self.dataArray objectAtIndex:indexPath.section] allValues] firstObject] objectAtIndex:indexPath.row];
-}
-- (NSInteger)numberOfSection:(NSInteger)section{
-    return [[[[self.dataArray objectAtIndex:section] allValues] firstObject] count];
+    NSDictionary<NSString*,NSArray<Resource*>*> * temp = [self.dataArray objectAtIndex:indexPath.section];
+    return [[[temp allValues] firstObject] objectAtIndex:indexPath.row];
 }
 
-- (void)defaultRecommendataionWithCompletion:(void (^)(RecommendationData * _Nonnull))completion{
+
+- (void)defaultRecommendataionWithCompletion:(void (^)(BOOL))completion{
     [MusicKit.new.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         //数据临时集合 [{@"section title":[data]},...]
         NSMutableArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *array = [NSMutableArray array];
@@ -51,7 +58,7 @@
         }
         self.dataArray = array;
         if (completion) {
-            completion(self);
+            completion(self.dataArray.count > 0);
         }
     }];
 }

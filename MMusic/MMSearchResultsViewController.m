@@ -30,6 +30,7 @@ static NSString *const topCellID = @"top cell reuse identifier";
 
 - (instancetype)initWithTerm:(NSString *)term{
     if (self = [super init]) {
+        _searchData = [[MMSearchData alloc] init];
         _term = term;
     }
     return self;
@@ -41,24 +42,28 @@ static NSString *const topCellID = @"top cell reuse identifier";
 
     [self.view addSubview:self.topPageSectionView];
 
-    [MMSearchData.new searchDataForTemr:self.term completion:^(MMSearchData * _Nonnull searchData) {
+    [self.searchData searchDataForTemr:self.term completion:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.searchData = searchData;
-            [self.topPageSectionView reloadData];
+            if (success) {
+                //数据返回, 刷新顶部分页数据
+                [self.topPageSectionView reloadData];
 
-            //数据返回,添加分页控制器
-            [self addChildViewController:self.pageViewController];
+                //数据返回,添加分页控制器到s当前视图中, 并从数据模型中刷新数据
+                [self addChildViewController:self.pageViewController];  //添加, 从其他视图中移除
 
-            [self.view addSubview:self.pageViewController.view];
-            [self.pageViewController didMoveToParentViewController:self];
-            //pageView 显示第一个内容视图
-            UIViewController *vc = [searchData viewControllerAtIndex:0];
-            [self.pageViewController setViewControllers:@[vc,]
-                                                direction:UIPageViewControllerNavigationDirectionForward
-                                                 animated:YES
-                                               completion:nil];
-            //选中第一项
-            [self.topPageSectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+                [self.view addSubview:self.pageViewController.view];
+                [self.pageViewController didMoveToParentViewController:self];
+                //pageView 显示第一个内容视图
+                UIViewController *vc = [self.searchData viewControllerAtIndex:0];
+                [self.pageViewController setViewControllers:@[vc,]
+                                                  direction:UIPageViewControllerNavigationDirectionForward
+                                                   animated:YES
+                                                 completion:nil];
+                //选中第一项
+                [self.topPageSectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+            }else{
+
+            }
         });
     }];
 }

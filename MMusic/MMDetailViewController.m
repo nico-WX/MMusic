@@ -16,7 +16,7 @@
 
 #import "SongCell.h"
 
-#import "ResourceData.h"
+#import "MMSongListData.h"
 #import "Resource.h"
 #import "Song.h"
 
@@ -28,7 +28,7 @@
 //data
 @property(nonatomic, strong)Resource *resource;
 
-@property(nonatomic, strong)ResourceData *resourceData;
+@property(nonatomic, strong)MMSongListData *resourceData;
 @end
 
 static NSString *const reuseIdentifier = @"tableview cell id";
@@ -36,6 +36,8 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
 - (instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
+        _resourceData = [[MMSongListData alloc] init];
+
         _resource = resource;
         _imageView = [UIImageView new];
         _titleLabel = [UILabel new];
@@ -68,10 +70,13 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         [self.view.layer setMasksToBounds:YES];
     });
 
-    [ResourceData.new resourceDataWithResource:self.resource completion:^(ResourceData * _Nonnull resourceData) {
+    [self.resourceData resourceDataWithResource:self.resource completion:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.resourceData = resourceData;
-            [self.tableView reloadData];
+            if (success) {
+                [self.tableView reloadData];
+            }else{
+
+            }
         });
     }];
 }
@@ -109,13 +114,12 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         [self.tableView setContentInset:UIEdgeInsetsMake(self.topOffset, 0, 0, 0)];
         [self.tableView setContentOffset:CGPointMake(0, -self.topOffset)];
     });
-
 }
 
 
 #pragma mark - <TableView dataSource>
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.resourceData.count;
+    return [self.resourceData songCount];
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
@@ -126,7 +130,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
 #pragma mark - <TableView Delegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [MainPlayer playSongs:[self.resourceData allSong] startIndex:indexPath.row];
+    [MainPlayer playSongs:[self.resourceData songList] startIndex:indexPath.row];
 }
 
 #pragma mark - <scroll delegate>
@@ -141,7 +145,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
 #pragma mark - <Dismiss ViewController dlelegate>
 - (void)delegateDismissViewController{
-    if ([self.disMissDelegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
+    if (self.disMissDelegate && [self.disMissDelegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
         [self.disMissDelegate detailViewControllerDidDismiss:self];
     }
 }

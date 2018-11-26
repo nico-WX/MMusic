@@ -109,7 +109,7 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
 - (NSString *)userToken{
     if (!_userToken) {
         _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:userTokenUserKey];
-        //Log(@"userToken: %@",_userToken);
+        Log(@"userToken: %@",_userToken);
         if (!_userToken) {
             //本地无Token,  网络请求
             [self requestUserToken];

@@ -68,11 +68,11 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 
 #pragma mark - <UITableViewDataSource>
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return self.searchData.hints.count;
+    return self.searchData.searchHints.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:hintsCellRuseId forIndexPath:indexPath];
-    [cell.textLabel setText:[self.searchData.hints  objectAtIndex:indexPath.row]];
+    [cell.textLabel setText:[self.searchData.searchHints  objectAtIndex:indexPath.row]];
     return cell;
 }
 
@@ -112,18 +112,22 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     [self.searchResultsVC.view removeFromSuperview];
     if (![searchText isEqualToString:@""]) {
-        [self.searchData searchHintForTerm:searchText complectin:^(MMSearchData * _Nonnull searchData) {
+        [self.searchData searchHintForTerm:searchText complectin:^(BOOL success) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                CGFloat topOffset = CGRectGetMaxY(self.fakeNavgationBar.frame);
-                CGRect frame = self.view.bounds;
-                frame.origin.y += topOffset;
-                frame.size.height -= topOffset;
-                frame.size.height -= CGRectGetHeight(self.keyboardFrame);
+                if (success) {
 
-                //self.searchData = searchData;
-                [self.hintsView setFrame:frame];
-                [self.view addSubview:self.hintsView];
-                [self.hintsView reloadData];
+                    CGFloat topOffset = CGRectGetMaxY(self.fakeNavgationBar.frame);
+                    CGRect frame = self.view.bounds;
+                    frame.origin.y += topOffset;
+                    frame.size.height -= topOffset;
+                    frame.size.height -= CGRectGetHeight(self.keyboardFrame);
+
+                    [self.hintsView setFrame:frame];
+                    [self.view addSubview:self.hintsView];
+                    [self.hintsView reloadData];
+                }else{
+
+                }
             });
         }];
     }else{

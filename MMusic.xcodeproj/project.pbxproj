@@ -43,7 +43,7 @@
 		3B6BE747219DACDD0004F3E5 /* MMDetailPoppingAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE744219DACDD0004F3E5 /* MMDetailPoppingAnimator.m */; };
 		3B6BE79D21A57D7C0004F3E5 /* MMPlayerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE79C21A57D7C0004F3E5 /* MMPlayerButton.m */; };
 		3B6BE7A921A7F38A0004F3E5 /* RecommendationData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7A821A7F38A0004F3E5 /* RecommendationData.m */; };
-		3B6BE7BB21A808590004F3E5 /* ResourceData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7BA21A808590004F3E5 /* ResourceData.m */; };
+		3B6BE7BB21A808590004F3E5 /* MMSongListData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7BA21A808590004F3E5 /* MMSongListData.m */; };
 		3B6BE7CA21A822D30004F3E5 /* ChartsData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7C921A822D30004F3E5 /* ChartsData.m */; };
 		3B6BE7EC21A945320004F3E5 /* MMSearchViewControllerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7E821A945320004F3E5 /* MMSearchViewControllerAnimation.m */; };
 		3B6BE7ED21A945330004F3E5 /* MMSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6BE7E921A945320004F3E5 /* MMSearchViewController.m */; };
@@ -268,8 +268,8 @@
 		3B6BE79C21A57D7C0004F3E5 /* MMPlayerButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMPlayerButton.m; sourceTree = "<group>"; };
 		3B6BE7A721A7F38A0004F3E5 /* RecommendationData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecommendationData.h; sourceTree = "<group>"; };
 		3B6BE7A821A7F38A0004F3E5 /* RecommendationData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RecommendationData.m; sourceTree = "<group>"; };
-		3B6BE7B921A808590004F3E5 /* ResourceData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceData.h; sourceTree = "<group>"; };
-		3B6BE7BA21A808590004F3E5 /* ResourceData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResourceData.m; sourceTree = "<group>"; };
+		3B6BE7B921A808590004F3E5 /* MMSongListData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMSongListData.h; sourceTree = "<group>"; };
+		3B6BE7BA21A808590004F3E5 /* MMSongListData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMSongListData.m; sourceTree = "<group>"; };
 		3B6BE7C821A822D30004F3E5 /* ChartsData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsData.h; sourceTree = "<group>"; };
 		3B6BE7C921A822D30004F3E5 /* ChartsData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsData.m; sourceTree = "<group>"; };
 		3B6BE7E621A945320004F3E5 /* MMSearchViewControllerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMSearchViewControllerAnimation.h; sourceTree = "<group>"; };
@@ -541,8 +541,8 @@
 				3BE2A21F2197324200AEA486 /* DataStore+Rating.m */,
 				3B6BE7A721A7F38A0004F3E5 /* RecommendationData.h */,
 				3B6BE7A821A7F38A0004F3E5 /* RecommendationData.m */,
-				3B6BE7B921A808590004F3E5 /* ResourceData.h */,
-				3B6BE7BA21A808590004F3E5 /* ResourceData.m */,
+				3B6BE7B921A808590004F3E5 /* MMSongListData.h */,
+				3B6BE7BA21A808590004F3E5 /* MMSongListData.m */,
 				3B6BE7C821A822D30004F3E5 /* ChartsData.h */,
 				3B6BE7C921A822D30004F3E5 /* ChartsData.m */,
 				3B6BE7F721A95E160004F3E5 /* MMSearchData.h */,
@@ -1196,7 +1196,7 @@
 				3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */,
 				3B9AA8D81FB452FF00720085 /* ResponseRoot.m in Sources */,
 				3B9AA8D71FB452FF00720085 /* Resource.m in Sources */,
-				3B6BE7BB21A808590004F3E5 /* ResourceData.m in Sources */,
+				3B6BE7BB21A808590004F3E5 /* MMSongListData.m in Sources */,
 				3B6BE7CA21A822D30004F3E5 /* ChartsData.m in Sources */,
 				3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */,
 				3B90800021AAE25A00B205BD /* MMSearchContentArtistsCell.m in Sources */,

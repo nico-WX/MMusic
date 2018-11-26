@@ -12,19 +12,25 @@ NS_ASSUME_NONNULL_BEGIN
 @class Resource;
 
 @interface RecommendationData : NSObject
-@property(nonatomic, assign, readonly)NSInteger sectionCount;    // 节数
 
+/**每一节数据count*/
+- (NSInteger)numberOfItemsInSection:(NSInteger)section;
+/**节count*/
+- (NSInteger)numberOfSection;
 
-- (NSInteger)numberOfSection:(NSInteger)section;
+/**对应下标数据*/
 - (Resource*)dataWithIndexPath:(NSIndexPath*)indexPath;
+/**节title*/
 - (NSString*)titleWithSection:(NSInteger)section;
 
-/**
- 在该方法内部请求数据,数据取回后会调用回调
 
- @param completion 推荐数据模型实例 与方法接收者同一个对象;
+/**
+  默认推荐数据请求方法, 数据取回后会调用回调
+
+ @param completion 完成回调
  */
-- (void)defaultRecommendataionWithCompletion:(void(^)(RecommendationData *recommendataion))completion;
+-(void)defaultRecommendataionWithCompletion:(void (^)(BOOL success))completion;
+
 @end
 
 NS_ASSUME_NONNULL_END

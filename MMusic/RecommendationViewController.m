@@ -12,7 +12,6 @@
 #import "MMTabBarController.h"
 
 #import "TodaySectionView.h"
-#import "ResourceCell.h"
 #import "ResourceCell_V2.h"
 
 #import "MMDetailPoppingAnimator.h"
@@ -20,7 +19,7 @@
 
 #import "RecommendationData.h"
 #import "Resource.h"
-#import "DataStoreKit.h"
+
 
 @interface RecommendationViewController()<UICollectionViewDelegate,UICollectionViewDataSource,
 UICollectionViewDataSourcePrefetching,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
@@ -42,6 +41,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    _recommendationData = [[RecommendationData alloc] init];
     _popupAnimator = [MMDetailPoppingAnimator new];
 
     [self.view setBackgroundColor:UIColor.whiteColor];
@@ -67,11 +67,14 @@ static NSString *const cellIdentifier = @"resourceCell";
 //}
 
 - (void)requestData{
-    [RecommendationData.new defaultRecommendataionWithCompletion:^(RecommendationData * _Nonnull recommendataion) {
+    [self.recommendationData defaultRecommendataionWithCompletion:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.recommendationData = recommendataion;
-            [self.collectionView reloadData];
-            [self.collectionView.mj_header endRefreshing]; //停止刷新控件
+            if (success) {
+                [self.collectionView reloadData];
+                [self.collectionView.mj_header endRefreshing]; //停止刷新控件
+            }else{
+                NSLog(@"数据请求b不成功");
+            }
         });
     }];
 }
@@ -79,20 +82,19 @@ static NSString *const cellIdentifier = @"resourceCell";
 
 #pragma mark - <UICollectionViewDataSource>
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return self.recommendationData.sectionCount;
+    return [self.recommendationData numberOfSection];
 
 }
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self.recommendationData numberOfSection:section];
+    return [self.recommendationData numberOfItemsInSection:section];
 }
 
 //cell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
-    Resource *resource = [self.recommendationData dataWithIndexPath:indexPath];
     //dequeue cell
     ResourceCell_V2 *cell = (ResourceCell_V2*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    [cell setResource:resource];
+    [cell setResource:[self.recommendationData dataWithIndexPath:indexPath]];   //data
     return cell;
 }
 

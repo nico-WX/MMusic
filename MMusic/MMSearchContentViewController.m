@@ -7,6 +7,7 @@
 //
 
 #import <Masonry.h>
+#import <MJRefresh.h>
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
 #import "MMSearchContentViewController.h"
@@ -19,9 +20,12 @@
 
 #import "Song.h"
 
+
 @interface MMSearchContentViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 
 @property(nonatomic, strong) UICollectionView *collectionView;
+@property(nonatomic, strong) NSString *type;
+
 @end
 
 static NSString *const cellID = @" cell reuse identifier";
@@ -30,6 +34,7 @@ static NSString *const cellID = @" cell reuse identifier";
 - (instancetype)initWithResponseRoot:(ResponseRoot *)responseRoot{
     if (self = [super init]) {
         _responseRoot = responseRoot;
+        _type = responseRoot.data.firstObject.type; //资源类型
     }
     return self;
 }
@@ -66,7 +71,8 @@ static NSString *const cellID = @" cell reuse identifier";
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    if ([self.title isEqualToString:@"songs"]) {
+
+    if ([self.type isEqualToString:@"songs"]) {
         NSMutableArray<Song*> *songs = [NSMutableArray array];
         for (Resource *res in _responseRoot.data) {
             Song *song = [Song instanceWithResource:res];
@@ -96,15 +102,15 @@ static NSString *const cellID = @" cell reuse identifier";
             CGFloat w = CGRectGetWidth(self.view.bounds) - (padding.left+padding.right);
             CGFloat h = 0;
 
-            if ([self.title isEqualToString:@"artists"]) {
+            if ([self.type isEqualToString:@"artists"]) {
                 [_collectionView registerClass:[MMSearchContentArtistsCell class] forCellWithReuseIdentifier:cellID];
                 h = 60.0;
 
-            }else if ([self.title isEqualToString:@"songs"]) {
+            }else if ([self.type isEqualToString:@"songs"]) {
                 [_collectionView registerClass:[MMSearchContentSongCell class] forCellWithReuseIdentifier:cellID];
                 h = 44;
 
-            }else if ([self.title isEqualToString:@"music-videos"]) {
+            }else if ([self.type isEqualToString:@"music-videos"]) {
                 [_collectionView registerClass:[MMSearchContentMusicVideosCell class] forCellWithReuseIdentifier:cellID];
                 h = 80;
             }else{
@@ -115,9 +121,42 @@ static NSString *const cellID = @" cell reuse identifier";
             [layout setItemSize:CGSizeMake(w, h)];
         });
 
+        //底部加载更多
+        if (_responseRoot.next) {
+
+            _collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+
+                if (self.responseRoot.next) {
+                    [self loadNextPageData];
+                }else{
+                    [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+                }
+            }];
+        }
+
     }
     return _collectionView;
 }
+
+
+
+ -(void) loadNextPageData{
+     NSURLRequest *request = [self createRequestWithHref:self.responseRoot.next];
+     [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+         json =[json valueForKeyPath:@"results"];
+
+         [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+             ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
+             self.responseRoot.next = root.next;
+             self.responseRoot.data = [self.responseRoot.data arrayByAddingObjectsFromArray:root.data];
+         }];
+
+         dispatch_async(dispatch_get_main_queue(), ^{
+             [self.collectionView.mj_footer endRefreshing];
+             [self.collectionView reloadData];
+         });
+     }];
+ }
 
 
 @end
