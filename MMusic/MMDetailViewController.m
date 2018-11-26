@@ -70,6 +70,10 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         [self.view.layer setMasksToBounds:YES];
     });
 
+    [_titleLabel setText:[self.resource.attributes valueForKey:@"name"]];
+    NSString *path = [self.resource.attributes valueForKeyPath:@"artwork.url"];
+    [_imageView setImageWithURLPath:path];
+
     [self.resourceData resourceDataWithResource:self.resource completion:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
@@ -80,7 +84,6 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         });
     }];
 }
-
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];

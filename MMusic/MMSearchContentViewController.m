@@ -11,30 +11,37 @@
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
 #import "MMSearchContentViewController.h"
-#import "ResponseRoot.h"
+
+#import "MMDetailViewController.h"
+#import "MMDetailPoppingAnimator.h"
+#import "MMDetailPresentationController.h"
 
 #import "MMSearchContentCell.h"
 #import "MMSearchContentSongCell.h"
 #import "MMSearchContentArtistsCell.h"
 #import "MMSearchContentMusicVideosCell.h"
 
+#import "ResponseRoot.h"
 #import "Song.h"
 
-
-@interface MMSearchContentViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
+@interface MMSearchContentViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
 
 @property(nonatomic, strong) UICollectionView *collectionView;
 @property(nonatomic, strong) NSString *type;
 
+@property(nonatomic, strong) MMDetailPoppingAnimator *animator;
+@property(nonatomic, strong) MMDetailPresentationController *presentationController;
 @end
 
 static NSString *const cellID = @" cell reuse identifier";
+
 @implementation MMSearchContentViewController
 
 - (instancetype)initWithResponseRoot:(ResponseRoot *)responseRoot{
     if (self = [super init]) {
         _responseRoot = responseRoot;
         _type = responseRoot.data.firstObject.type; //资源类型
+        _animator = [[MMDetailPoppingAnimator alloc] init];
     }
     return self;
 }
@@ -80,6 +87,37 @@ static NSString *const cellID = @" cell reuse identifier";
         }
         [MainPlayer playSongs:songs startIndex:indexPath.row];
     }
+    if ([self.type isEqualToString:@"albums"] || [self.type isEqualToString:@"playlists"]) {
+
+        MMSearchContentCell *cell = (MMSearchContentCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:cell.resource];
+
+        [detail setDisMissDelegate:self];
+        [detail setTransitioningDelegate:self];
+
+        [detail setModalPresentationStyle:UIModalPresentationCustom];
+        [self.animator setStartFrame:cell.frame];
+        [self presentViewController:detail animated:YES completion:nil];
+    }
+}
+
+#pragma mark - <DetailViewControllerDelegate>
+- (void)detailViewControllerDidDismiss:(MMDetailViewController *)detailVC{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - <UIViewControllerTransitioningDelegate>
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+    [self.animator setPresenting:YES];
+    return self.animator;
+}
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+    [self.animator setPresenting:NO];
+    return self.animator;
+}
+-(UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source{
+    self.presentationController =[[MMDetailPresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
+    return self.presentationController;
 }
 
 
@@ -89,17 +127,19 @@ static NSString *const cellID = @" cell reuse identifier";
         UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 0, 4);
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
-        [layout setMinimumLineSpacing:padding.left];
+        [layout setMinimumLineSpacing:padding.left*2];
 
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         [_collectionView setDelegate:self];
         [_collectionView setDataSource:self];
         [_collectionView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
         [_collectionView setContentInset:padding];  //内容左右偏移4, 翻页时看到分界线效果
+        [_collectionView setAllowsSelection:YES];
+
 
         // 不同的类型注册不同的cell 及设置不同的大小
         ({
-            CGFloat w = CGRectGetWidth(self.view.bounds) - (padding.left+padding.right);
+            CGFloat w = CGRectGetWidth(self.view.bounds) - (padding.left+padding.right*3); //视图约束时, 左右偏移4, 减去
             CGFloat h = 0;
 
             if ([self.type isEqualToString:@"artists"]) {
@@ -123,9 +163,7 @@ static NSString *const cellID = @" cell reuse identifier";
 
         //底部加载更多
         if (_responseRoot.next) {
-
             _collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-
                 if (self.responseRoot.next) {
                     [self loadNextPageData];
                 }else{
@@ -133,12 +171,9 @@ static NSString *const cellID = @" cell reuse identifier";
                 }
             }];
         }
-
     }
     return _collectionView;
 }
-
-
 
  -(void) loadNextPageData{
      NSURLRequest *request = [self createRequestWithHref:self.responseRoot.next];

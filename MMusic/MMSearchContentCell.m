@@ -19,11 +19,19 @@
         _titleLabel = [[UILabel alloc] init];
         _subTitleLabel = [[UILabel alloc] init];
 
+        [_titleLabel setAdjustsFontSizeToFitWidth:YES];
         [_subTitleLabel setTextColor:UIColor.lightGrayColor];
+        [_subTitleLabel setFont:[UIFont systemFontOfSize:16.0]];
 
         [self.contentView addSubview:_imageView];
         [self.contentView addSubview:_titleLabel];
         [self.contentView addSubview:_subTitleLabel];
+
+        [self.layer setCornerRadius:6.0f];
+
+//        [self.layer setShadowOffset:CGSizeMake(3, 2)];
+//        [self.layer setShadowOpacity:1.0];
+//        [self.layer setShadowColor:UIColor.grayColor.CGColor];
     }
     return self;
 }
