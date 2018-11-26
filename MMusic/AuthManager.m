@@ -52,12 +52,9 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
         }];
 
         //userToken 异常, 可能修改设置或者未订阅服务等
-        [[NSNotificationCenter defaultCenter] addObserverForName:userTokenIssueNotification
-                                                          object:nil
-                                                           queue:[NSOperationQueue mainQueue]
-                                                      usingBlock:^(NSNotification * _Nonnull note) {
+        [[NSNotificationCenter defaultCenter] addObserverForName:userTokenIssueNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:userTokenUserKey];
-                                                          NSLog(@"监听到 <userTokenIssueNotification> 消息");
+            NSLog(@"监听到 <userTokenIssueNotification> 消息");
             [self requestUserToken];
         }];
 

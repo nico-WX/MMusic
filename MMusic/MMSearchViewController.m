@@ -68,11 +68,11 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 
 #pragma mark - <UITableViewDataSource>
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return self.searchData.hintsCount;
+    return self.searchData.hints.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:hintsCellRuseId forIndexPath:indexPath];
-    [cell.textLabel setText:[self.searchData hintTextForIndex:indexPath.row]];
+    [cell.textLabel setText:[self.searchData.hints  objectAtIndex:indexPath.row]];
     return cell;
 }
 

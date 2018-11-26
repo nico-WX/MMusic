@@ -11,8 +11,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UIImageView (Extension)
-/**w通过未替换参数URL Path 获取图片并设置*/
-- (void)imageWithURLPath:(NSString*)path;
+/**通过未替换参数URL Path 获取图片并设置*/
+- (void)setImageWithURLPath:(NSString*)path;
 @end
 
 NS_ASSUME_NONNULL_END

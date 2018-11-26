@@ -23,7 +23,7 @@
 - (UIImage*)myImageWithSize:(CGSize)size{
     UIImage *image = [self myImageWithSize:size];  //调用原来的实现, 如果能返回image  就不用另外请求image
     if (!image) {
-        NSString *imageURL  = MainPlayer.nowPlayingSong.artwork.url;   // nowPlayingSong == null;
+        //NSString *imageURL  = MainPlayer.nowPlayingSong.artwork.url;   // nowPlayingSong == null;
         
         //image = self// [self imageFromURL:imageURL withImageSize:size];
     }

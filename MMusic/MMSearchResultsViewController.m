@@ -66,12 +66,11 @@ static NSString *const topCellID = @"top cell reuse identifier";
 #pragma mark - Protocol ----------Begin-------------------------
 # pragma mark  UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return self.searchData.sectionCount;
+    return self.searchData.searchResults.count;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     MMSearchTopPageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:topCellID forIndexPath:indexPath];
     [cell.titleLabel setText:[self.searchData pageTitleForIndex:indexPath.row]];
-    
     return cell;
 }
 # pragma mark  UICollectionViewDelegate
@@ -85,27 +84,20 @@ static NSString *const topCellID = @"top cell reuse identifier";
 }
 
 #pragma mark - UIPageViewControllerDelegate
--(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers{
-   
-
-}
+//-(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers{
+//}
 -(void)pageViewController:(UIPageViewController *)pageViewController
        didFinishAnimating:(BOOL)finished
   previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers
       transitionCompleted:(BOOL)completed{
+    if (completed && finished) {
+        UIViewController *currentVC = pageViewController.viewControllers.firstObject;
+        NSUInteger index = [self.searchData indexOfViewController:currentVC];
 
-    if (completed) {
-        if (finished) {
-            UIViewController *currentVC = pageViewController.viewControllers.firstObject;
-            NSUInteger index = [self.searchData indexOfViewController:currentVC];
-
-            [self.topPageSectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
-        }
+        [self.topPageSectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
     }
 }
 
-
-//#pragma mark  Protocol ----------End-------------------------
 
 #pragma mark - layz Load
 - (UICollectionView *)topPageSectionView{
@@ -140,10 +132,8 @@ static NSString *const topCellID = @"top cell reuse identifier";
         CGRect frame = self.view.bounds;
         frame.origin.y += CGRectGetMaxY(_topPageSectionView.frame);
         frame.size.height -= CGRectGetMaxY(_topPageSectionView.frame);
-
-        NSLog(@"page frame =%@",NSStringFromCGRect(frame));
-
         [_pageViewController.view setFrame:frame];
+        [_pageViewController.view setBackgroundColor:UIColor.whiteColor];
     }
     return _pageViewController;
 }

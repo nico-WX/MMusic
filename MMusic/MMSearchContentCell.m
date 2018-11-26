@@ -8,6 +8,7 @@
 #import <Masonry.h>
 
 #import "MMSearchContentCell.h"
+#import "UIImageView+Extension.h"
 #import "Resource.h"
 
 @implementation MMSearchContentCell
@@ -17,6 +18,8 @@
         _imageView = [[UIImageView alloc] init];
         _titleLabel = [[UILabel alloc] init];
         _subTitleLabel = [[UILabel alloc] init];
+
+        [_subTitleLabel setTextColor:UIColor.lightGrayColor];
 
         [self.contentView addSubview:_imageView];
         [self.contentView addSubview:_titleLabel];
@@ -30,15 +33,22 @@
         _resource = resource;
 
         [_titleLabel setText:[resource valueForKeyPath:@"attributes.name"]];
+        [_imageView setImageWithURLPath:[resource valueForKeyPath:@"attributes.artwork.url"]];
 
+        NSString *subStr = [resource valueForKeyPath:@"attributes.artistName"];
+        if (!subStr) subStr = [resource valueForKeyPath:@"attributes.curatorName"];
+
+        [_subTitleLabel setText:subStr];
     }
 }
 
 - (void)layoutSubviews{
-    UIEdgeInsets padding = UIEdgeInsetsMake(4, 4, 4, 4);
+    [super layoutSubviews];
 
+    UIEdgeInsets padding = UIEdgeInsetsMake(4, 4, 4, 4);
     UIView *superView = self.contentView;
     __weak typeof(self) weakSelf = self;
+    
     [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.bottom.mas_equalTo(superView).insets(padding);
 
@@ -59,8 +69,6 @@
         make.right.mas_equalTo(superView.mas_right).offset(-padding.right);
     }];
 
-
-    [super layoutSubviews];
 }
 
 @end

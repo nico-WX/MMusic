@@ -11,9 +11,6 @@
 #import "MMSearchContentViewController.h"
 
 @interface MMSearchData ()
-@property(nonatomic, strong)NSArray<NSDictionary<NSString*,ResponseRoot*>*> *searchResults;
-@property(nonatomic, strong)NSArray<NSString*> *hints;
-
 @property(nonatomic, strong)NSMutableArray<MMSearchContentViewController*> *cacheViewControllers;
 @end
 
@@ -25,12 +22,7 @@
     return self;
 }
 
--(NSInteger)sectionCount{
-    return self.searchResults.count;
-}
--(NSInteger)hintsCount{
-    return self.hints.count;
-}
+
 
 - (NSString *)hintTextForIndex:(NSInteger)index{
     return [self.hints objectAtIndex:index];
@@ -57,7 +49,7 @@
                 ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
                 [resultsList addObject:@{(NSString*)key:root}];
             }];
-            self.searchResults = resultsList;
+            self->_searchResults = resultsList;
             //移除旧控制器
             if (self.cacheViewControllers.count >0) {
                 [self.cacheViewControllers removeAllObjects];
@@ -73,7 +65,7 @@
 - (void)searchHintForTerm:(NSString *)term complectin:(void (^)(MMSearchData * _Nonnulll))completion{
     [MusicKit.new.catalog searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if ([json valueForKeyPath: @"results.terms"]) {
-            self.hints = [json valueForKeyPath:@"results.terms"];
+            self->_hints = [json valueForKeyPath:@"results.terms"];
             if (completion) {
                 completion(self);
             }
@@ -114,7 +106,7 @@
     //数组中没有创建过的控制器, 创建新的,并添加到数组
     MMSearchContentViewController *contentVC = [[MMSearchContentViewController alloc] initWithResponseRoot:root];
     [contentVC setTitle:title];
-    [self.cacheViewControllers addObject:contentVC];
+    [self.cacheViewControllers addObject:contentVC]; //添加缓存
     return contentVC;
 }
 

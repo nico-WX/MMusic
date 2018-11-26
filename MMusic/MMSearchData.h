@@ -14,11 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 @class ResponseRoot;
 
 @interface MMSearchData : NSObject<UIPageViewControllerDataSource>
-
-/**结果分页*/
-@property(nonatomic, assign, readonly) NSInteger sectionCount;
-/**搜索提示总数*/
-@property(nonatomic, assign, readonly) NSInteger hintsCount;
+@property(nonatomic, strong, readonly)NSArray<NSDictionary<NSString*,ResponseRoot*>*> *searchResults; //搜索结果数据
+@property(nonatomic, strong, readonly)NSArray<NSString*> *hints;    //搜索提示数据
 
 
 /**

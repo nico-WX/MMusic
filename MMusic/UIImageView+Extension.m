@@ -11,7 +11,7 @@
 
 @implementation UIImageView (Extension)
 
--(void)imageWithURLPath:(NSString *)path{
+-(void)setImageWithURLPath:(NSString *)path{
     NSString *md5Path = IMAGE_PATH_FOR_URL(path);
     UIImage *image = [UIImage imageWithContentsOfFile:md5Path];
     [self setImage:image];

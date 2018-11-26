@@ -85,7 +85,7 @@
         _resource = resource;
 
         [_titleLabel setText:[resource valueForKeyPath:@"attributes.name"]];
-        [_imageView imageWithURLPath:[resource valueForKeyPath:@"attributes.artwork.url"]];
+        [_imageView setImageWithURLPath:[resource valueForKeyPath:@"attributes.artwork.url"]];
     }
 }
 
