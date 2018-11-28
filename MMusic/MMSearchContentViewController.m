@@ -23,6 +23,7 @@
 
 #import "ResponseRoot.h"
 #import "Song.h"
+#import "MusicVideo.h"
 
 @interface MMSearchContentViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
 
@@ -59,7 +60,7 @@ static NSString *const cellID = @" cell reuse identifier";
     UIView *superView = self.view;
     UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 0, 4);
     [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superView).insets(padding);
+        make.edges.mas_equalTo(superView);
     }];
 }
 
@@ -87,7 +88,14 @@ static NSString *const cellID = @" cell reuse identifier";
         }
         [MainPlayer playSongs:songs startIndex:indexPath.row];
     }
-    if ([self.type isEqualToString:@"albums"] || [self.type isEqualToString:@"playlists"]) {
+
+    if ([self.type isEqualToString:@"music-videos"]) {
+        NSMutableArray<MusicVideo*> *mvs = [NSMutableArray array];
+        for (Resource *res in _responseRoot.data) {
+            [mvs addObject:[MusicVideo instanceWithResource:res]];
+        }
+        [MainPlayer playMusicVideos:mvs startIndex:indexPath.row];
+    }else{
 
         MMSearchContentCell *cell = (MMSearchContentCell*)[collectionView cellForItemAtIndexPath:indexPath];
         MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:cell.resource];
@@ -142,11 +150,12 @@ static NSString *const cellID = @" cell reuse identifier";
             CGFloat w = CGRectGetWidth(self.view.bounds) - (padding.left+padding.right*3); //视图约束时, 左右偏移4, 减去
             CGFloat h = 0;
 
-            if ([self.type isEqualToString:@"artists"]) {
-                [_collectionView registerClass:[MMSearchContentArtistsCell class] forCellWithReuseIdentifier:cellID];
-                h = 60.0;
-
-            }else if ([self.type isEqualToString:@"songs"]) {
+//            if ([self.type isEqualToString:@"artists"]) {
+//                [_collectionView registerClass:[MMSearchContentArtistsCell class] forCellWithReuseIdentifier:cellID];
+//                h = 60.0;
+//
+//            }else
+            if ([self.type isEqualToString:@"songs"]) {
                 [_collectionView registerClass:[MMSearchContentSongCell class] forCellWithReuseIdentifier:cellID];
                 h = 44;
 

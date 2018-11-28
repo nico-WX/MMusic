@@ -17,12 +17,10 @@
 @property(nonatomic, strong) MMSearchResultsViewController *searchResultsVC;    //结果显示控制器
 
 @property(nonatomic, strong) UITableView *hintsView;    //搜索提示栏
-@property(nonatomic, strong) UIView *fakeNavgationBar;  //导航栏
 @property(nonatomic, weak)   UIView *searchBarSuperView;    //搜索栏从外部进入搜索控制器时,会添加到搜索控制中, 退出控制器时,再添加回去
 @property(nonatomic, assign) CGRect keyboardFrame;      // 记录键盘的Frame, 用于调整提示窗口;
 
 @property(nonatomic, strong) MMSearchData *searchData;  //数据模型控制器
-
 @end
 
 static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
@@ -30,9 +28,13 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 
 @synthesize searchBar = _searchBar;
 
+
 - (instancetype)init{
     if (self =[super init]) {
         _searchData = [[MMSearchData alloc] init];
+        CGFloat width = CGRectGetWidth([[UIScreen mainScreen] bounds]) - 16;
+        _searchBar = [[UISearchBar alloc] initWithFrame: CGRectMake(8, 0, width, 44.0f)];
+        [_searchBar setDelegate:self];
     }
     return self;
 }
@@ -41,8 +43,6 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view setBackgroundColor:UIColor.grayColor];
-
-    [self.view addSubview:self.fakeNavgationBar];
 
     //键盘弹出 与隐藏消息
     [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidShowNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
@@ -53,7 +53,6 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
     [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidHideNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
         [self.hintsView removeFromSuperview];
     }];
-
 }
 
 - (void)dealloc{
@@ -65,6 +64,13 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
     [self.searchBar resignFirstResponder];
 }
 
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+
+//    __weak typeof(self) weakSelf = self;
+//    UIView *superView = self.view;
+
+}
 
 #pragma mark - <UITableViewDataSource>
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -86,19 +92,15 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 
 #pragma mark - <UISearchBarDelegate>
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
-    [self.searchResultsVC.view removeFromSuperview];
-    if (_presentDelegate && [_presentDelegate respondsToSelector:@selector(presentSearchViewController:)] && searchBar.superview != self.fakeNavgationBar) {
+    //[self.searchResultsVC.view removeFromSuperview];
+    //未入栈
+    if (_presentDelegate && [_presentDelegate respondsToSelector:@selector(presentSearchViewController:)] && !self.navigationController) {
         [_presentDelegate presentSearchViewController:self];
         [searchBar setShowsCancelButton:YES animated:YES];
-        [self setSearchBarSuperView:[searchBar superview]];     //记录原始父视图,
-        [self.fakeNavgationBar addSubview:searchBar];           //搜索栏添加到当前视图中
+        [self setSearchBarSuperView:[searchBar superview]];             //记录原始父视图,
+        [self.navigationController.navigationBar addSubview:searchBar]; //搜索栏添加到当前视图中
     }
 
-    //布局
-    [searchBar mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.bottom.right.mas_equalTo(self.fakeNavgationBar);
-        make.height.mas_equalTo(CGRectGetHeight(self.fakeNavgationBar.bounds)-20);
-    }];
 
     //无字符串时, 隐藏提示栏
     if ([searchBar.text isEqualToString:@""]) {
@@ -115,18 +117,21 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
         [self.searchData searchHintForTerm:searchText complectin:^(BOOL success) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (success) {
-
-                    CGFloat topOffset = CGRectGetMaxY(self.fakeNavgationBar.frame);
-                    CGRect frame = self.view.bounds;
-                    frame.origin.y += topOffset;
-                    frame.size.height -= topOffset;
-                    frame.size.height -= CGRectGetHeight(self.keyboardFrame);
-
-                    [self.hintsView setFrame:frame];
                     [self.view addSubview:self.hintsView];
+
+                    __weak typeof(self) weakSelf = self;
+                    [self.hintsView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                        CGFloat y = CGRectGetMaxY(weakSelf.navigationController.navigationBar.frame);
+                        CGFloat h = CGRectGetHeight([UIScreen mainScreen].bounds) - (y+CGRectGetHeight(weakSelf.keyboardFrame));
+
+                        make.top.mas_equalTo(weakSelf.view).offset(y);
+                        make.left.right.mas_equalTo(weakSelf.view);
+                        make.height.mas_equalTo(h);
+                    }];
+
                     [self.hintsView reloadData];
                 }else{
-
+                    NSLog(@"没有提示数据");
                 }
             });
         }];
@@ -142,31 +147,24 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     //[self.searchResultsVC.view removeFromSuperview];
-    [self.searchBarSuperView addSubview:searchBar];
+
     [searchBar setText:@""];
-
     [searchBar  setShowsCancelButton:NO animated:YES];
+
     [self.hintsView removeFromSuperview];
+    [self.searchBarSuperView addSubview:searchBar];
 
-    //重新布局
-    [searchBar mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(self.searchBarSuperView);
-    }];
-
-    //dismiss
-    if (_presentDelegate && [_presentDelegate respondsToSelector:@selector(dismissSearchViewController:)]) {
-        [_presentDelegate dismissSearchViewController:self];
-    }
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)searchText:(NSString*)term{
     [self.searchBar resignFirstResponder]; //执行搜索, 隐藏键盘
-    [self.hintsView removeFromSuperview];
+    [self.hintsView removeFromSuperview];   //移除提示表
 
     self.searchResultsVC = [[MMSearchResultsViewController alloc] initWithTerm:term];
     CGRect frame = self.view.bounds;
-    frame.origin.y += CGRectGetHeight(self.fakeNavgationBar.bounds);
-    frame.size.height -= CGRectGetHeight(self.fakeNavgationBar.bounds);
+    frame.origin.y += CGRectGetMaxY(self.navigationController.navigationBar.frame);
+    frame.size.height -= CGRectGetHeight(self.navigationController.navigationBar.bounds);
     self.searchResultsVC.view.frame = frame;
     [self.view addSubview:self.searchResultsVC.view];
 }
@@ -180,23 +178,6 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
     }
     return _hintsView;
 }
-- (UIView *)fakeNavgationBar{
-    if (!_fakeNavgationBar) {
-        //假的导航栏
-        CGFloat width = CGRectGetWidth([[UIScreen mainScreen] bounds]);
-        _fakeNavgationBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, 64)];
-        [_fakeNavgationBar setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
-    }
-    return _fakeNavgationBar;
-}
-- (UISearchBar *)searchBar{
-    if (!_searchBar) {
-        CGFloat width = CGRectGetWidth([[UIScreen mainScreen] bounds]);
-        // 外部触发 呈现
-        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0,width, 44.0f)];
-        [_searchBar setDelegate:self];
-        //[_searchBar setShowsScopeBar:YES];
-    }
-    return _searchBar;
-}
+
+
 @end

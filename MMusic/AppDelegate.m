@@ -17,9 +17,7 @@
 #import "RecommendationViewController.h"
 #import "ChartsMainViewController.h"
 #import "MyMusicViewController.h"
-#import "BrowseViewController.h"
 #import "NowPlayingViewController.h"
-
 
 #import "AuthManager.h"
 
@@ -64,21 +62,16 @@
     [chartVC setTitle:@"排行榜"];
     UINavigationController *chartNav = [[UINavigationController alloc] initWithRootViewController:chartVC];
 
-    //浏览
-    BrowseViewController *browseVC = BrowseViewController.new;
-    [browseVC setTitle:@"浏览"];
-    UINavigationController *browseNav = [[UINavigationController alloc] initWithRootViewController:browseVC];
 
     //添加控制器
     [rootVC addChildViewController:todayNav];
     [rootVC addChildViewController:chartNav];
-    [rootVC addChildViewController:browseNav];
+
     [rootVC addChildViewController:mmusicNavCtr];
 
     //设置item 图标
     [todayCVC.tabBarItem setImage:[UIImage imageNamed:@"recom"]];
     [chartNav.tabBarItem setImage:[UIImage imageNamed:@"Chart"]];
-    [browseNav.tabBarItem setImage:[UIImage imageNamed:@"browse"]];
     [mmusicNavCtr.tabBarItem setImage:[UIImage imageNamed:@"Library"]];
 
     [MainPlayer beginGeneratingPlaybackNotifications];

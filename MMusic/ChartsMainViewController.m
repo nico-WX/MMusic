@@ -11,6 +11,8 @@
 #import "ChartsMainViewController.h"
 #import "MMSearchViewController.h"
 #import "MMSearchViewControllerAnimation.h"
+#import "MMSearchResultsViewController.h"
+#import "MMTabBarController.h"
 
 //view  and cell
 #import "ChartsMainCell.h"
@@ -27,13 +29,13 @@
 @property(nonatomic, strong) MMSearchViewControllerAnimation *animation;
 
 @property(nonatomic, strong) NSArray<NSString*> *cellSearchTerms;
-@property(nonatomic, strong)ChartsData *chartsData;
+//@property(nonatomic, strong) ChartsData *chartsData;
 
 @end
 
-static NSString *const reuseID = @"chartCell";
-@implementation ChartsMainViewController
 
+static NSString *const reuseID = @"cell search term";
+@implementation ChartsMainViewController
 
 #pragma mark - cycle
 - (void)viewDidLoad {
@@ -42,14 +44,13 @@ static NSString *const reuseID = @"chartCell";
     self.view.backgroundColor = UIColor.whiteColor;
 
     [self.view addSubview:self.collectionView];
-    [self.collectionView setContentInset:UIEdgeInsetsMake(4, 4, 10, 4)];
 
-    _animation = [MMSearchViewControllerAnimation new];
+
+    _animation = [[MMSearchViewControllerAnimation alloc] init];
     _searchVC = [[MMSearchViewController alloc] init];
     [_searchVC setPresentDelegate:self];
     [_searchVC setTransitioningDelegate:self];
     [self.navigationController.navigationBar addSubview:_searchVC.searchBar];
-
 
     // 加载属性列表
     _cellSearchTerms = ({
@@ -69,7 +70,6 @@ static NSString *const reuseID = @"chartCell";
 }
 
 
-
 #pragma mark - <UICollectionViewDataSource>
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.cellSearchTerms.count;
@@ -82,17 +82,20 @@ static NSString *const reuseID = @"chartCell";
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-
+    ChartsMainCell *cell = (ChartsMainCell*)[collectionView cellForItemAtIndexPath:indexPath];
+    MMSearchResultsViewController *resultsVC = [[MMSearchResultsViewController alloc] initWithTerm:cell.titleLabel.text];
+    [self.navigationController pushViewController:resultsVC animated:YES];
 }
 
 
 #pragma mark - MMSearchViewControllerDelegate
 - (void)presentSearchViewController:(MMSearchViewController *)searchViewController{
-    [self presentViewController:searchViewController animated:YES completion:nil];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:searchViewController];
+    //h这里要嵌入导航控制器中, 搜索VC 需要使用
+    [nav setTransitioningDelegate:self];
+    [self presentViewController:nav animated:YES completion:nil];
 }
--(void)dismissSearchViewController:(MMSearchViewController *)searchViewcontroller{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
+
 
 #pragma mark - UIViewControllerTransitioningDelegate
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
@@ -105,7 +108,6 @@ static NSString *const reuseID = @"chartCell";
 }
 
 
-
 #pragma mark - layz Load
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
@@ -115,15 +117,22 @@ static NSString *const reuseID = @"chartCell";
         [layout setMinimumInteritemSpacing:padding.left];
 
         //两列
-        CGFloat w = (CGRectGetWidth(self.view.bounds)-(padding.left*3))/2;
+        CGFloat w = (CGRectGetWidth(self.view.bounds)-(padding.left*3)) / 2;
         CGFloat h = w/2;
         [layout setItemSize:CGSizeMake(w, h)];
 
-
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         [_collectionView registerClass:[ChartsMainCell class] forCellWithReuseIdentifier:reuseID];
-        [_collectionView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
-        [_collectionView setContentInset:UIEdgeInsetsMake(0, padding.left, 0, padding.right)];
+        [_collectionView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:1]];
+
+
+        if (self.tabBarController) {
+            MMTabBarController *tabBar = (MMTabBarController*)self.tabBarController;
+            CGFloat bottomOffset = CGRectGetHeight([UIScreen mainScreen].bounds) - CGRectGetMinY(tabBar.popFrame);
+            padding.bottom += bottomOffset;
+        }
+        [_collectionView setContentInset:padding];
+
 
         [_collectionView setDelegate:self];
         [_collectionView setDataSource:self];

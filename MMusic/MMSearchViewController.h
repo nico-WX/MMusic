@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol MMSearchViewControllerDelegate <NSObject>
 @optional
 - (void)presentSearchViewController:(MMSearchViewController*)searchViewController;
-- (void)dismissSearchViewController:(MMSearchViewController*)searchViewcontroller;
+//- (void)dismissSearchViewController:(MMSearchViewController*)searchViewcontroller;
 
 @end
 
@@ -24,7 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, readonly) UISearchBar *searchBar;
 // 显示与dismiss 代理
 @property(nonatomic, weak) id<MMSearchViewControllerDelegate> presentDelegate;
-
 @end
 
 NS_ASSUME_NONNULL_END

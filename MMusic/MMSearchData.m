@@ -37,9 +37,16 @@
             NSMutableArray<NSDictionary<NSString*,ResponseRoot*>*> *resultsList = [NSMutableArray array];
             //解析字典
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-                ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
-                [resultsList addObject:@{(NSString*)key:root}];
+
+                //过滤
+                if ([key isEqualToString:@"songs"] || [key isEqualToString:@"music-videos"] || [key isEqualToString:@"albums"] || [key isEqualToString:@"playlists"]) {
+                    ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
+                    [resultsList addObject:@{(NSString*)key:root}];
+                }
+
             }];
+
+
             self->_searchResults = resultsList;
             //移除旧控制器
             if (self.cacheViewControllers.count >0) {

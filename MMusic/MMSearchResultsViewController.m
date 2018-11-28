@@ -6,6 +6,7 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
+#import <Masonry.h>
 
 #import "MMSearchResultsViewController.h"
 #import "MMSearchTopPageCell.h"
@@ -40,7 +41,15 @@ static NSString *const topCellID = @"top cell reuse identifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
+    [self.view setBackgroundColor:UIColor.whiteColor];
+
+    //top 分段
     [self.view addSubview:self.topPageSectionView];
+
+    //分页视图
+    [self addChildViewController:self.pageViewController];
+    [self.view addSubview:self.pageViewController.view];
+    [self.pageViewController didMoveToParentViewController:self];
 
     [self.searchData searchDataForTemr:self.term completion:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -48,11 +57,6 @@ static NSString *const topCellID = @"top cell reuse identifier";
                 //数据返回, 刷新顶部分页数据
                 [self.topPageSectionView reloadData];
 
-                //数据返回,添加分页控制器到s当前视图中, 并从数据模型中刷新数据
-                [self addChildViewController:self.pageViewController];  //添加, 从其他视图中移除
-
-                [self.view addSubview:self.pageViewController.view];
-                [self.pageViewController didMoveToParentViewController:self];
                 //pageView 显示第一个内容视图
                 UIViewController *vc = [self.searchData viewControllerAtIndex:0];
                 [self.pageViewController setViewControllers:@[vc,]
@@ -62,9 +66,27 @@ static NSString *const topCellID = @"top cell reuse identifier";
                 //选中第一项
                 [self.topPageSectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
             }else{
-
+                NSLog(@"搜索结果无数据");
             }
         });
+    }];
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+
+    __weak typeof(self) weakSelf = self;
+    UIView *superView = self.view;
+    CGFloat y = CGRectGetMaxY(self.navigationController.navigationBar.frame);
+    [self.topPageSectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(superView).offset(y);
+        make.left.right.mas_equalTo(superView);
+        make.height.mas_equalTo(44.0f);
+    }];
+
+    [self.pageViewController.view mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.topPageSectionView.mas_bottom);
+        make.left.right.bottom.mas_equalTo(superView);
     }];
 }
 
@@ -111,13 +133,13 @@ static NSString *const topCellID = @"top cell reuse identifier";
         CGFloat w = CGRectGetWidth(self.view.bounds)/4;
         CGFloat h = 44.0f;
         [layout setItemSize:CGSizeMake(w, h)];
-        [layout setMinimumInteritemSpacing:1.0];
+        [layout setMinimumInteritemSpacing:2.0];
         [layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
 
-        CGRect frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), h);
-        _topPageSectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:layout];
+        //CGRect frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), h);
+        _topPageSectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
         [_topPageSectionView registerClass:[MMSearchTopPageCell class] forCellWithReuseIdentifier:topCellID];
-        [_topPageSectionView setContentInset:UIEdgeInsetsMake(0, 10, 0, 10)];
+        [_topPageSectionView setContentInset:UIEdgeInsetsMake(0, 8, 0, 8)];
         [_topPageSectionView setBackgroundColor:UIColor.whiteColor];
         [_topPageSectionView setDelegate:self];
         [_topPageSectionView setDataSource:self];
@@ -133,11 +155,6 @@ static NSString *const topCellID = @"top cell reuse identifier";
                                                                             options:nil];
         [_pageViewController setDelegate:self];
         [_pageViewController setDataSource:self.searchData];    //数据源从模型控制器中获取
-
-        CGRect frame = self.view.bounds;
-        frame.origin.y += CGRectGetMaxY(_topPageSectionView.frame);
-        frame.size.height -= CGRectGetMaxY(_topPageSectionView.frame);
-        [_pageViewController.view setFrame:frame];
         [_pageViewController.view setBackgroundColor:UIColor.whiteColor];
     }
     return _pageViewController;
