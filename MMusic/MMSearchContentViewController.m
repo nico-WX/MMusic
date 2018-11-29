@@ -186,6 +186,8 @@ static NSString *const cellID = @" cell reuse identifier";
 
  -(void) loadNextPageData{
      NSURLRequest *request = [self createRequestWithHref:self.responseRoot.next];
+
+
      [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
          json =[json valueForKeyPath:@"results"];
 

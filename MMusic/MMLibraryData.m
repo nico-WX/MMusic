@@ -33,65 +33,28 @@
     //music-videos
     //playlists
     //albums
+    //songs
 
     NSMutableArray<NSDictionary<NSString*,ResponseRoot*>*> *array = [NSMutableArray array];
 
-    //s等待所有任务完成, 再调用回调刷新, 主页不用频繁刷新
-    dispatch_group_t group = dispatch_group_create();
-    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
-
-    //albums
-    dispatch_group_async(group, queue, ^{
-
-        [self requestAllAlbums:^(NSDictionary<NSString *,ResponseRoot *> *resource) {
-            NSLog(@"album");
-            if (resource) [array addObject:resource];
-        }];
-    });
-
-    //playlists
-    dispatch_group_async(group, queue, ^{
-        [self requestAllPlaylists:^(NSDictionary<NSString *,ResponseRoot *> *resource) {
-            NSLog(@"playlists");
-            if (resource) [array addObject:resource];
-        }];
-    });
-
-    //mv
-    dispatch_group_async(group, queue, ^{
-        [self requestAllMusicVideos:^(NSDictionary<NSString *,ResponseRoot *> *resource) {
-            NSLog(@"mv");
-            if (resource) [array addObject:resource];
-        }];
-    });
-
-    //songs
-    dispatch_group_async(group, queue, ^{
-        [self requestAllLibrarySongs:^(NSDictionary<NSString *,ResponseRoot *> *resource) {
-            NSLog(@"songs");
-            if (resource) [array addObject:resource];
-        }];
-    });
-
-
-    
-
-    dispatch_group_notify(group, queue, ^{
-        NSLog(@"nofity");
-
-        self->_results = array;
-        if (completion) {
-
-            completion(self.results.count>0);
+    void(^callBack)(NSDictionary<NSString *,ResponseRoot *> *resource) = ^(NSDictionary<NSString *,ResponseRoot *> *resource) {
+        if (resource) {
+            [array addObject:resource];
+            self->_results = array;
+            if (completion) {
+                completion(self->_results.count > 0);
+            }
         }
-    });
+    };
+    [self requestAllAlbums:callBack];
+    [self requestAllPlaylists:callBack];
+    [self requestAllMusicVideos:callBack];
+    [self requestAllLibrarySongs:callBack];
 }
 - (void)requestAllAlbums:(void(^)(NSDictionary<NSString*,ResponseRoot*> *resource))completion{
     [MusicKit.new.library resource:@[] byType:CLibraryAlbums callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if (json) {
             ResponseRoot *root = [[ResponseRoot alloc] initWithDict:json];
-            NSLog(@"root =%@",root);
-
             completion(@{@"albums":root});
         }else{
             completion(nil);

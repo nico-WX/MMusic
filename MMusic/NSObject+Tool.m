@@ -33,7 +33,7 @@ extern NSString *const userTokenIssueNotification;
 - (NSURLRequest *)createRequestWithHref:(NSString *)href {
     NSString *path = @"https://api.music.apple.com";
     path = [path stringByAppendingPathComponent:href];
-    return [self createRequestWithURLString:path setupUserToken:NO];
+    return [self createRequestWithURLString:path setupUserToken:YES];
 }
 
 //统一解析响应体,处理异常等.

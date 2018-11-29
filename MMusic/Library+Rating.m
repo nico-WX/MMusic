@@ -48,13 +48,13 @@ static NSString *const ratingPath = @"ratings";
     //PUT https://api.music.apple.com/v1/me/ratings/library-playlists/{id}
 
     NSString *path = [self.libraryPath stringByAppendingPathComponent:ratingPath];
-    path = [path stringByAppendingPathComponent:[self subPathForType:type]];
+    path = [path stringByAppendingPathComponent:[self ratingSubPathForType:type]];
     path = [path stringByAppendingPathComponent:identifier];
     return path;
 }
 
 //替换枚举值
-- (NSString*)subPathForType:(RTRatingType)type {
+- (NSString*)ratingSubPathForType:(RTRatingType)type {
     NSString *subPath;
     switch (type) {
         case RTCatalogSongs:

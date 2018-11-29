@@ -35,6 +35,7 @@ static Library* _instance;
 
     NSString *subPath = @"library";
     subPath = [subPath stringByAppendingPathComponent:[self subPathForType:library]];
+
     NSString *path = [self.libraryPath stringByAppendingPathComponent:subPath];
     if (ids) {
         if (ids.count == 1) {
@@ -48,8 +49,6 @@ static Library* _instance;
             }
         }
     }
-
-   //NSLog(@"path =%@",path);
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
     //Log(@"header %@",request.allHTTPHeaderFields);
@@ -117,6 +116,7 @@ static Library* _instance;
             break;
         case CLibraryMusicVideos:
             subPath = @"music-videos";
+            NSLog(@"MV =========");
             break;
         case CLibrarySongs:
             subPath = @"songs";

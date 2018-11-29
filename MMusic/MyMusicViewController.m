@@ -38,6 +38,7 @@ static NSString *reuseId = @"top cell identifier";
 
     [self.view addSubview:self.topPageView];
     [self.view addSubview:self.pageViewController.view];
+    [self.pageViewController didMoveToParentViewController:self];
 
     [self.librarData requestAllLibraryResource:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -56,7 +57,7 @@ static NSString *reuseId = @"top cell identifier";
     [super viewDidLayoutSubviews];
 
     __weak typeof(self) weakSelf = self;
-    CGFloat topOffset = CGRectGetMaxY(self.navigationController.navigationBar.frame);
+    //CGFloat topOffset = CGRectGetMaxY(self.navigationController.navigationBar.frame);
     [self.topPageView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.navigationController.navigationBar.mas_bottom);
         make.left.right.mas_equalTo(weakSelf.view);
@@ -84,9 +85,26 @@ static NSString *reuseId = @"top cell identifier";
     return cell;
 }
 
+#pragma mark - UIPageViewControllerDelegate
+//-(void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers{
+//}
+-(void)pageViewController:(UIPageViewController *)pageViewController
+       didFinishAnimating:(BOOL)finished
+  previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers
+      transitionCompleted:(BOOL)completed{
+    if (completed && finished) {
+        UIViewController *currentVC = pageViewController.viewControllers.firstObject;
+        NSUInteger index = [self.librarData indexOfViewController:currentVC];
+
+        [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+    }
+}
+
+
 - (UICollectionView *)topPageView{
     if (!_topPageView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+        [layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
         [layout setItemSize:CGSizeMake(100, 44.0f)];
 
         _topPageView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
@@ -112,19 +130,19 @@ static NSString *reuseId = @"top cell identifier";
 
 
 
-
--(void)addPlaylists{
-    UIAlertController *alertCtr = [UIAlertController alertControllerWithTitle:@"新建播放列表" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-    [alertCtr addAction:action];
-    
-
-    [alertCtr addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = @"输入播放列表名称";
-    }];
-    [self presentViewController:alertCtr animated:YES completion:nil];
-}
+//
+//-(void)addPlaylists{
+//    UIAlertController *alertCtr = [UIAlertController alertControllerWithTitle:@"新建播放列表" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+//
+//    UIAlertAction *action = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+//    [alertCtr addAction:action];
+//
+//
+//    [alertCtr addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+//        textField.placeholder = @"输入播放列表名称";
+//    }];
+//    [self presentViewController:alertCtr animated:YES completion:nil];
+//}
 
 
 
