@@ -7,9 +7,12 @@
 //
 
 #import "LocalMusicViewController.h"
+#import "MMSearchContentViewController.h"
+
+#import <Masonry.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <StoreKit/StoreKit.h>
-#import <Masonry.h>
+
 
 @interface LocalMusicViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property(nonatomic, strong) UITableView *tableView;
@@ -49,12 +52,13 @@ static NSString *reuseID = @"localMusicCellIdentifier";
 //
 //                NSString *name = @"sfasdfas";
 //            }
+       
 
             self.query = [MPMediaQuery songsQuery];
             self.items = [self.query items];
 
             //刷新数据
-            [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+            [self.tableView reloadData];
         }
     }];
 

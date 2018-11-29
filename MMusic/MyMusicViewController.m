@@ -5,53 +5,114 @@
 //  Created by Magician on 2017/11/8.
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
-#import <MediaPlayer/MediaPlayer.h>
-#import <StoreKit/StoreKit.h>
+
+#import <Masonry.h>
 
 #import "MyMusicViewController.h"
-#import "LocalMusicViewController.h"
-
+#import "MMSearchTopPageCell.h"
+#import "MMLibraryData.h"
 
 #import "LibraryPlaylist.h"
-#import "Resource.h"
-@interface MyMusicViewController ()
-//local
-@property(nonatomic, strong) NSArray<MPMediaItem*>  *items;
 
-//lib playlists
-@property(nonatomic, strong) NSArray<Resource*> *playlistsResources;
 
+@interface MyMusicViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIPageViewControllerDelegate>
+@property(nonatomic, strong) UICollectionView *topPageView;
+@property(nonatomic, strong)UIPageViewController *pageViewController;
+@property(nonatomic, strong)MMLibraryData *librarData;
 @end
 
-static NSString *reuseId = @"MyMusicViewControllerCellId";
+static NSString *reuseId = @"top cell identifier";
 @implementation MyMusicViewController
+
+
+- (instancetype)init{
+    if (self = [super init]) {
+        _librarData = [[MMLibraryData alloc] init];
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setTitle:@"我的音乐"];
 
-    [self requestAllLibraryPlaylist];
-    //读取本地音乐数据
-    [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
-        if (status == SKCloudServiceAuthorizationStatusAuthorized) {
-            NSArray *items = [[MPMediaQuery songsQuery] items];
-            self.items = items;
-            [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
-        }
+    [self.view addSubview:self.topPageView];
+    [self.view addSubview:self.pageViewController.view];
+
+    [self.librarData requestAllLibraryResource:^(BOOL success) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (success) {
+                [self.topPageView reloadData];
+
+                UIViewController *vc = [self.librarData viewControllerAtIndex:0];
+                [self.pageViewController setViewControllers:@[vc,] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+                [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+            }
+        });
+    }];
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+
+    __weak typeof(self) weakSelf = self;
+    CGFloat topOffset = CGRectGetMaxY(self.navigationController.navigationBar.frame);
+    [self.topPageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.navigationController.navigationBar.mas_bottom);
+        make.left.right.mas_equalTo(weakSelf.view);
+        make.height.mas_equalTo(44.0f);
     }];
 
-    //注册Cell
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:reuseId];
+    [self.pageViewController.view mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.topPageView.mas_bottom);
+        make.left.bottom.right.mas_equalTo(weakSelf.view);
+    }];
 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addPlaylists)];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return self.librarData.results.count;
+}
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    MMSearchTopPageCell *cell = (MMSearchTopPageCell*)[collectionView dequeueReusableCellWithReuseIdentifier:reuseId forIndexPath:indexPath];
+    [cell.titleLabel setText:[self.librarData titleWhitIndex:indexPath.row]];
+    return cell;
+}
+
+- (UICollectionView *)topPageView{
+    if (!_topPageView) {
+        UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+        [layout setItemSize:CGSizeMake(100, 44.0f)];
+
+        _topPageView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+        [_topPageView registerClass:[MMSearchTopPageCell class] forCellWithReuseIdentifier:reuseId];
+        [_topPageView setDelegate:self];
+        [_topPageView setDataSource:self];
+        [_topPageView setBackgroundColor:UIColor.whiteColor];
+    }
+    return _topPageView;
+}
+
+- (UIPageViewController *)pageViewController{
+    if (!_pageViewController) {
+        _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+
+        [_pageViewController setDelegate:self];
+        [_pageViewController setDataSource:self.librarData];
+        [_pageViewController.view setBackgroundColor:UIColor.whiteColor];
+    }
+    return _pageViewController;
+}
+
+
+
+
+
 -(void)addPlaylists{
     UIAlertController *alertCtr = [UIAlertController alertControllerWithTitle:@"新建播放列表" message:@"" preferredStyle:UIAlertControllerStyleAlert];
 
@@ -62,76 +123,10 @@ static NSString *reuseId = @"MyMusicViewControllerCellId";
     [alertCtr addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = @"输入播放列表名称";
     }];
-
     [self presentViewController:alertCtr animated:YES completion:nil];
 }
 
-#pragma mark - Table view data source
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 2;
-}
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
-        return 1;
-    }
-    if (section == 1) {
-        return self.playlistsResources.count;
-    }
-    return 0;
-}
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseId forIndexPath:indexPath];
 
-    if (indexPath.row == 0 && indexPath.section == 0) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseId];
-        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-        NSString *detailStr = [NSString stringWithFormat:@"%ld",self.items.count];
-        [cell.detailTextLabel setText:detailStr];
-        [cell.textLabel setText:@"本地音乐"];
-    }
-    if (indexPath.section == 1) {
-        Resource *resource = [self.playlistsResources objectAtIndex:indexPath.row];
-        [cell.textLabel setText:[resource.attributes valueForKey:@"name"]];
-    }
-    [cell.textLabel setTextColor:MainColor];
 
-    return cell;
-}
--(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-    if (section == 0) {
-        return @"本地音乐";
-    }
-    if (section == 1) {
-        return @"创建的列表";
-    }
-    return @"";
-}
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 22.0f;
-}
-
-#pragma mark - Table View Delegate
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.row == 0 && indexPath.section == 0) {
-        LocalMusicViewController *lmCtr = [[LocalMusicViewController alloc] init];
-        [self.navigationController pushViewController:lmCtr animated:YES];
-    }
-    if (indexPath.section == 1) {
-    }
-}
-
-#pragma mark - 请求所有播放列表
--(void) requestAllLibraryPlaylist{
-    [MusicKit.new.library resource:@[] byType:CLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        NSMutableArray<Resource*> *resources = [NSMutableArray array];
-        for (NSDictionary *dict in [json valueForKey:@"data"]) {
-            [resources addObject:[Resource instanceWithDict:dict]];
-        }
-        self.playlistsResources = resources;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    }];
-}
 
 @end

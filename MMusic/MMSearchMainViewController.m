@@ -1,5 +1,5 @@
 //
-//  ChartsMainViewController.m
+//  MMSearchMainViewController.m
 //  MMusic
 //
 //  Copyright © 2018年 com.😈. All rights reserved.
@@ -8,7 +8,7 @@
 #import <MJRefresh.h>
 
 //Controller
-#import "ChartsMainViewController.h"
+#import "MMSearchMainViewController.h"
 #import "MMSearchViewController.h"
 #import "MMSearchViewControllerAnimation.h"
 #import "MMSearchResultsViewController.h"
@@ -22,7 +22,7 @@
 #import "DataStoreKit.h"
 #import "Resource.h"
 
-@interface ChartsMainViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,MMSearchViewControllerDelegate,UIViewControllerTransitioningDelegate>
+@interface MMSearchMainViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,MMSearchViewControllerDelegate,UIViewControllerTransitioningDelegate>
 
 @property(nonatomic, strong) UICollectionView *collectionView;
 @property(nonatomic, strong) MMSearchViewController *searchVC;
@@ -35,7 +35,7 @@
 
 
 static NSString *const reuseID = @"cell search term";
-@implementation ChartsMainViewController
+@implementation MMSearchMainViewController
 
 #pragma mark - cycle
 - (void)viewDidLoad {

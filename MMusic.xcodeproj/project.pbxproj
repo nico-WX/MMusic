@@ -20,10 +20,12 @@
 		3B4DDC5E2192C5D700F70547 /* MPMediaItemArtwork+Exchange.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4DDC5D2192C5D700F70547 /* MPMediaItemArtwork+Exchange.m */; };
 		3B4DDC8A219357DE00F70547 /* DataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4DDC89219357DE00F70547 /* DataStore.m */; };
 		3B4DDD51219441B800F70547 /* DataStore+Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4DDD50219441B800F70547 /* DataStore+Search.m */; };
-		3B4E3AD6208F46B90042498C /* ChartsMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD5208F46B90042498C /* ChartsMainViewController.m */; };
+		3B4E3AD6208F46B90042498C /* MMSearchMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4E3AD5208F46B90042498C /* MMSearchMainViewController.m */; };
 		3B5371E51FD148B6009AFE47 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E41FD148B6009AFE47 /* Genre.m */; };
 		3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371E71FD2BC60009AFE47 /* MMObject.m */; };
 		3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */; };
+		3B55341C21AFDBA900C15A0F /* MMLibraryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B55341B21AFDBA900C15A0F /* MMLibraryData.m */; };
+		3B55342B21AFE1EE00C15A0F /* MMTopPageLibraryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B55342A21AFE1EE00C15A0F /* MMTopPageLibraryData.m */; };
 		3B555EE720E0C23900AFF9A2 /* MusicKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B555EE620E0C23800AFF9A2 /* MusicKit.m */; };
 		3B555EEA20E0C25100AFF9A2 /* Catalog.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B555EE920E0C25100AFF9A2 /* Catalog.m */; };
 		3B555EED20E0EDAF00AFF9A2 /* Library.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B555EEC20E0EDAF00AFF9A2 /* Library.m */; };
@@ -240,14 +242,18 @@
 		3B4DDD4F219441B800F70547 /* DataStore+Search.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DataStore+Search.h"; sourceTree = "<group>"; };
 		3B4DDD50219441B800F70547 /* DataStore+Search.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DataStore+Search.m"; sourceTree = "<group>"; };
 		3B4DDD5921944BDF00F70547 /* DataStoreKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataStoreKit.h; sourceTree = "<group>"; };
-		3B4E3AD4208F46B90042498C /* ChartsMainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsMainViewController.h; sourceTree = "<group>"; };
-		3B4E3AD5208F46B90042498C /* ChartsMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsMainViewController.m; sourceTree = "<group>"; };
+		3B4E3AD4208F46B90042498C /* MMSearchMainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMSearchMainViewController.h; sourceTree = "<group>"; };
+		3B4E3AD5208F46B90042498C /* MMSearchMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMSearchMainViewController.m; sourceTree = "<group>"; };
 		3B5371E31FD148B6009AFE47 /* Genre.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Genre.h; sourceTree = "<group>"; };
 		3B5371E41FD148B6009AFE47 /* Genre.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Genre.m; sourceTree = "<group>"; };
 		3B5371E61FD2BC60009AFE47 /* MMObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMObject.h; sourceTree = "<group>"; };
 		3B5371E71FD2BC60009AFE47 /* MMObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMObject.m; sourceTree = "<group>"; };
 		3B5371FC1FDBF50B009AFE47 /* NSObject+Tool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+Tool.h"; sourceTree = "<group>"; };
 		3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Tool.m"; sourceTree = "<group>"; };
+		3B55341A21AFDBA900C15A0F /* MMLibraryData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMLibraryData.h; sourceTree = "<group>"; };
+		3B55341B21AFDBA900C15A0F /* MMLibraryData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMLibraryData.m; sourceTree = "<group>"; };
+		3B55342921AFE1EE00C15A0F /* MMTopPageLibraryData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMTopPageLibraryData.h; sourceTree = "<group>"; };
+		3B55342A21AFE1EE00C15A0F /* MMTopPageLibraryData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMTopPageLibraryData.m; sourceTree = "<group>"; };
 		3B555EE520E0C23800AFF9A2 /* MusicKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicKit.h; sourceTree = "<group>"; };
 		3B555EE620E0C23800AFF9A2 /* MusicKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicKit.m; sourceTree = "<group>"; };
 		3B555EE820E0C25100AFF9A2 /* Catalog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Catalog.h; sourceTree = "<group>"; };
@@ -564,6 +570,10 @@
 				3B6BE7C921A822D30004F3E5 /* ChartsData.m */,
 				3B6BE7F721A95E160004F3E5 /* MMSearchData.h */,
 				3B6BE7F821A95E160004F3E5 /* MMSearchData.m */,
+				3B55342921AFE1EE00C15A0F /* MMTopPageLibraryData.h */,
+				3B55342A21AFE1EE00C15A0F /* MMTopPageLibraryData.m */,
+				3B55341A21AFDBA900C15A0F /* MMLibraryData.h */,
+				3B55341B21AFDBA900C15A0F /* MMLibraryData.m */,
 			);
 			name = "Model  Controller";
 			sourceTree = "<group>";
@@ -604,8 +614,8 @@
 		3B78629D2060F3CA00E9A26A /* Search */ = {
 			isa = PBXGroup;
 			children = (
-				3B4E3AD4208F46B90042498C /* ChartsMainViewController.h */,
-				3B4E3AD5208F46B90042498C /* ChartsMainViewController.m */,
+				3B4E3AD4208F46B90042498C /* MMSearchMainViewController.h */,
+				3B4E3AD5208F46B90042498C /* MMSearchMainViewController.m */,
 				3B6BE7EB21A945320004F3E5 /* MMSearchViewController.h */,
 				3B6BE7E921A945320004F3E5 /* MMSearchViewController.m */,
 				3B907FA621AA886A00B205BD /* MMSearchResultsViewController.h */,
@@ -1280,6 +1290,7 @@
 				3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */,
 				3BE2A22421984BF400AEA486 /* Library+Rating.m in Sources */,
 				3B4DDD51219441B800F70547 /* DataStore+Search.m in Sources */,
+				3B55342B21AFE1EE00C15A0F /* MMTopPageLibraryData.m in Sources */,
 				3B4D989120BA8A3D00139BE0 /* DBModel.m in Sources */,
 				3B23AC751FF236A800F0A9CA /* RecommendationViewController.m in Sources */,
 				3B555F4220E2FEC700AFF9A2 /* ResourceCell.m in Sources */,
@@ -1310,13 +1321,14 @@
 				3B9AA8FE1FB478C700720085 /* PlayParameters.m in Sources */,
 				3B69896220A99DDC000C3403 /* LibrarySong.m in Sources */,
 				3B9AA8891FB2E06C00720085 /* MyMusicViewController.m in Sources */,
+				3B55341C21AFDBA900C15A0F /* MMLibraryData.m in Sources */,
 				3B9B269620D65F4F00881199 /* AlbumsCollectionCell.m in Sources */,
 				3B9AA8821FB04BC400720085 /* LocalMusicViewController.m in Sources */,
 				3B9A371C219700E6000CB6B4 /* NowPlayingViewController+Layout.m in Sources */,
 				3B6BE7F921A95E160004F3E5 /* MMSearchData.m in Sources */,
 				3B9B269320D65EEA00881199 /* ResourceCollectionViewCell.m in Sources */,
 				3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */,
-				3B4E3AD6208F46B90042498C /* ChartsMainViewController.m in Sources */,
+				3B4E3AD6208F46B90042498C /* MMSearchMainViewController.m in Sources */,
 				3B66A22E2195CCDC00F7DC9E /* MMTabBarController.m in Sources */,
 				3B9AA9161FB588AF00720085 /* AuthManager.m in Sources */,
 				3B555EEA20E0C25100AFF9A2 /* Catalog.m in Sources */,

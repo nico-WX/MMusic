@@ -15,7 +15,7 @@
 #import "MMTabBarController.h"
 
 #import "RecommendationViewController.h"
-#import "ChartsMainViewController.h"
+#import "MMSearchMainViewController.h"
 #import "MyMusicViewController.h"
 #import "NowPlayingViewController.h"
 
@@ -48,7 +48,7 @@
     rootVC.popupStateDelegate = [NowPlayingViewController sharePlayerViewController];
 
 
-    MyMusicViewController  *mmusicVC =[[MyMusicViewController alloc] initWithStyle:UITableViewStylePlain];
+    MyMusicViewController  *mmusicVC =[[MyMusicViewController alloc] init];
     UINavigationController *mmusicNavCtr = [[UINavigationController alloc] initWithRootViewController:mmusicVC];
     [mmusicVC setTitle:@"我的音乐"];
 
@@ -58,7 +58,7 @@
     UINavigationController *todayNav = [[UINavigationController alloc] initWithRootViewController:todayCVC];
 
     //排行榜
-    ChartsMainViewController *chartVC = [[ChartsMainViewController alloc] init];
+    MMSearchMainViewController *chartVC = [[MMSearchMainViewController alloc] init];
     [chartVC setTitle:@"排行榜"];
     UINavigationController *chartNav = [[UINavigationController alloc] initWithRootViewController:chartVC];
 

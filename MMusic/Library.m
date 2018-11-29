@@ -33,8 +33,9 @@ static Library* _instance;
 
 - (void)resource:(NSArray<NSString *> *)ids byType:(LibraryResourceType)library callBack:(RequestCallBack)handle {
 
-    NSString *subPath = [self subPathForType:library];
-    NSString *path = [self.rootPath stringByAppendingPathComponent:subPath];
+    NSString *subPath = @"library";
+    subPath = [subPath stringByAppendingPathComponent:[self subPathForType:library]];
+    NSString *path = [self.libraryPath stringByAppendingPathComponent:subPath];
     if (ids) {
         if (ids.count == 1) {
             path = [path stringByAppendingPathComponent:ids.lastObject];
@@ -47,6 +48,8 @@ static Library* _instance;
             }
         }
     }
+
+   //NSLog(@"path =%@",path);
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
     //Log(@"header %@",request.allHTTPHeaderFields);
