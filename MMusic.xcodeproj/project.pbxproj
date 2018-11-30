@@ -11,6 +11,8 @@
 		3B23AC751FF236A800F0A9CA /* RecommendationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B23AC741FF236A800F0A9CA /* RecommendationViewController.m */; };
 		3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFC2091F6D400E1B22C /* screening.plist */; };
 		3B353F4921B14B4F0072C424 /* MMLibraryContentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B353F4821B14B4F0072C424 /* MMLibraryContentCell.m */; };
+		3B353F5821B189810072C424 /* MMCloudLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B353F5721B189810072C424 /* MMCloudLibraryViewController.m */; };
+		3B353F6621B189990072C424 /* MMLocalLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B353F6521B189990072C424 /* MMLocalLibraryViewController.m */; };
 		3B3D9981205512FA000F2E9E /* SongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9980205512FA000F2E9E /* SongCell.m */; };
 		3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D99E9205E990F000F2E9E /* NSString+Hash.m */; };
 		3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D988020BA8A2600139BE0 /* DBTool.m */; };
@@ -223,6 +225,10 @@
 		3B2D6EFC2091F6D400E1B22C /* screening.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = screening.plist; sourceTree = "<group>"; };
 		3B353F4721B14B4F0072C424 /* MMLibraryContentCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMLibraryContentCell.h; sourceTree = "<group>"; };
 		3B353F4821B14B4F0072C424 /* MMLibraryContentCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMLibraryContentCell.m; sourceTree = "<group>"; };
+		3B353F5621B189810072C424 /* MMCloudLibraryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMCloudLibraryViewController.h; sourceTree = "<group>"; };
+		3B353F5721B189810072C424 /* MMCloudLibraryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMCloudLibraryViewController.m; sourceTree = "<group>"; };
+		3B353F6421B189990072C424 /* MMLocalLibraryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMLocalLibraryViewController.h; sourceTree = "<group>"; };
+		3B353F6521B189990072C424 /* MMLocalLibraryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMLocalLibraryViewController.m; sourceTree = "<group>"; };
 		3B3D997F205512FA000F2E9E /* SongCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SongCell.h; sourceTree = "<group>"; };
 		3B3D9980205512FA000F2E9E /* SongCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SongCell.m; sourceTree = "<group>"; };
 		3B3D99E8205E990D000F2E9E /* NSString+Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hash.h"; sourceTree = "<group>"; };
@@ -735,6 +741,10 @@
 			children = (
 				3B9AA8871FB2E06C00720085 /* MyMusicViewController.h */,
 				3B9AA8881FB2E06C00720085 /* MyMusicViewController.m */,
+				3B353F5621B189810072C424 /* MMCloudLibraryViewController.h */,
+				3B353F5721B189810072C424 /* MMCloudLibraryViewController.m */,
+				3B353F6421B189990072C424 /* MMLocalLibraryViewController.h */,
+				3B353F6521B189990072C424 /* MMLocalLibraryViewController.m */,
 				3B73F74321B1346000097801 /* MMLibraryContentViewController.h */,
 				3B73F74421B1346000097801 /* MMLibraryContentViewController.m */,
 			);
@@ -1298,7 +1308,9 @@
 				3B4D989120BA8A3D00139BE0 /* DBModel.m in Sources */,
 				3B23AC751FF236A800F0A9CA /* RecommendationViewController.m in Sources */,
 				3B555F4220E2FEC700AFF9A2 /* ResourceCell.m in Sources */,
+				3B353F5821B189810072C424 /* MMCloudLibraryViewController.m in Sources */,
 				3B9AA90D1FB47E0700720085 /* Storefront.m in Sources */,
+				3B353F6621B189990072C424 /* MMLocalLibraryViewController.m in Sources */,
 				3B5371E51FD148B6009AFE47 /* Genre.m in Sources */,
 				3B555EE720E0C23900AFF9A2 /* MusicKit.m in Sources */,
 				3B907FFD21AAE21200B205BD /* MMSearchContentMusicVideosCell.m in Sources */,

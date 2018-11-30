@@ -101,7 +101,6 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
         [self.navigationController.navigationBar addSubview:searchBar]; //搜索栏添加到当前视图中
     }
 
-
     //无字符串时, 隐藏提示栏
     if ([searchBar.text isEqualToString:@""]) {
         [self.hintsView removeFromSuperview];
@@ -130,8 +129,6 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
                     }];
 
                     [self.hintsView reloadData];
-                }else{
-                    NSLog(@"没有提示数据");
                 }
             });
         }];

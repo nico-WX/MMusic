@@ -94,7 +94,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     //计算frame  提前滚动偏移
     self.imageView.frame = ({
         CGFloat x = padding.left;
-        CGFloat y = 0;
+        CGFloat y = 8;
         CGFloat w = CGRectGetWidth(frame)-padding.left-padding.right;
         CGFloat h = w;
         CGRectMake(x, y, w, h);

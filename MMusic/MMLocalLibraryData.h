@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class MPMediaItem;
 @interface MMLocalLibraryData : NSObject<UIPageViewControllerDataSource>
+
 @property(nonatomic, strong, readonly) NSArray<NSDictionary<NSString*,NSArray<MPMediaItem*>*>*> *results;
 
 - (void)requestAllData:(void(^)(BOOL success))completion;

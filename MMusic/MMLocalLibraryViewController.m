@@ -1,36 +1,28 @@
 //
-//  MyMusicViewController.m
+//  MMLocalLibraryViewController.m
 //  MMusic
 //
-//  Created by Magician on 2017/11/8.
-//  Copyright © 2017年 com.😈. All rights reserved.
+//  Created by 🐙怪兽 on 2018/11/30.
+//  Copyright © 2018 com.😈. All rights reserved.
 //
 
 #import <Masonry.h>
-
-#import "MyMusicViewController.h"
+#import "MMLocalLibraryViewController.h"
 #import "MMSearchTopPageCell.h"
-
-#import "MMLibraryData.h"
 #import "MMLocalLibraryData.h"
 
-//#import "LibraryPlaylist.h"
-
-
-@interface MyMusicViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIPageViewControllerDelegate>
+@interface MMLocalLibraryViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UIPageViewControllerDelegate>
 @property(nonatomic, strong) UICollectionView *topPageView;
-@property(nonatomic, strong)UIPageViewController *pageViewController;
-@property(nonatomic, strong)MMLibraryData *librarData;
-@property(nonatomic, strong)MMLocalLibraryData *localLibraryData;
+@property(nonatomic, strong) UIPageViewController *pageViewController;
+@property(nonatomic, strong) MMLocalLibraryData *localLibraryData;
 @end
 
 static NSString *reuseId = @"top cell identifier";
-@implementation MyMusicViewController
+@implementation MMLocalLibraryViewController
 
 
 - (instancetype)init{
     if (self = [super init]) {
-        _librarData = [[MMLibraryData alloc] init];
         _localLibraryData = [[MMLocalLibraryData  alloc] init];
     }
     return self;
@@ -49,8 +41,6 @@ static NSString *reuseId = @"top cell identifier";
         dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
                 [self.topPageView reloadData];
-                //注意切换数据源
-                // UIViewController *vc = [self.librarData viewControllerAtIndex:0];
                 UIViewController *vc = [self.localLibraryData viewControllerAtIndex:0];
                 [self.pageViewController setViewControllers:@[vc,] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
                 [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
@@ -58,7 +48,6 @@ static NSString *reuseId = @"top cell identifier";
         });
     };
 
-    //[self.librarData requestAllLibraryResource:completion];
     [self.localLibraryData requestAllData:completion];
 
 }
@@ -115,9 +104,7 @@ static NSString *reuseId = @"top cell identifier";
       transitionCompleted:(BOOL)completed{
     if (completed && finished) {
         UIViewController *currentVC = pageViewController.viewControllers.firstObject;
-        //self.librarData
         NSUInteger index = [self.localLibraryData indexOfViewController:currentVC];
-
         [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
     }
 }
@@ -143,7 +130,6 @@ static NSString *reuseId = @"top cell identifier";
         _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 
         [_pageViewController setDelegate:self];
-        //[_pageViewController setDataSource:self.librarData];
         [_pageViewController setDataSource:self.localLibraryData];
         [_pageViewController.view setBackgroundColor:UIColor.whiteColor];
     }

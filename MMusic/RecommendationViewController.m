@@ -4,6 +4,7 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
+#import <MBProgressHUD.h>
 #import <MJRefresh.h>
 #import <Masonry.h>
 
@@ -23,7 +24,6 @@
 
 @interface RecommendationViewController()<UICollectionViewDelegate,UICollectionViewDataSource,
 UICollectionViewDataSourcePrefetching,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
-
 
 @property(nonatomic, strong) UICollectionView *collectionView;                  //内容视图
 @property(nonatomic, strong) MMDetailPresentationController *presentationController;  //自定义呈现样式
@@ -56,6 +56,15 @@ static NSString *const cellIdentifier = @"resourceCell";
 
     //请求数据
     [self requestData];
+
+    if ([self.navigationController.navigationBar isHidden]) {
+        [self.collectionView.mj_header setIgnoredScrollViewContentInsetTop:20];  //调整顶部距离
+    }
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -67,13 +76,21 @@ static NSString *const cellIdentifier = @"resourceCell";
 //}
 
 - (void)requestData{
+
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.collectionView animated:YES];
+    [hud setMode:MBProgressHUDModeIndeterminate];
+    [hud.label setText:@"加载数据.."];
+
     [self.recommendationData defaultRecommendataionWithCompletion:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
+                [hud setHidden:YES];
                 [self.collectionView reloadData];
                 [self.collectionView.mj_header endRefreshing]; //停止刷新控件
             }else{
-                NSLog(@"数据请求b不成功");
+                [hud setMode:MBProgressHUDModeText];
+                [hud.label setText:@"数据加载失败!"];
+                [hud hideAnimated:YES afterDelay:3.0f];
             }
         });
     }];
@@ -191,7 +208,6 @@ static NSString *const cellIdentifier = @"resourceCell";
                 [impact impactOccurred];
                 [self requestData];
             }]];
-            [collectionView.mj_header setIgnoredScrollViewContentInsetTop:20];  //调整顶部距离
 
             collectionView;
         });

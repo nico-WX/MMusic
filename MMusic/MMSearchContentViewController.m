@@ -73,7 +73,7 @@ static NSString *const cellID = @" cell reuse identifier";
     if ([cell isKindOfClass:MMSearchContentCell.class]) {
         ((MMSearchContentCell*)cell).resource = [self.responseRoot.data objectAtIndex:indexPath.row];
     }
-    [cell setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:1]];
+    //[cell setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:1]];
 
     return cell;
 }
@@ -132,10 +132,10 @@ static NSString *const cellID = @" cell reuse identifier";
 - (UICollectionView *)collectionView{
     if (!_collectionView) {
 
-        UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 0, 4);
+        UIEdgeInsets padding = UIEdgeInsetsMake(8, 4, 0, 4);
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
-        [layout setMinimumLineSpacing:padding.left*2];
+        [layout setMinimumLineSpacing:padding.top];
 
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         [_collectionView setDelegate:self];
@@ -186,8 +186,6 @@ static NSString *const cellID = @" cell reuse identifier";
 
  -(void) loadNextPageData{
      NSURLRequest *request = [self createRequestWithHref:self.responseRoot.next];
-
-
      [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
          json =[json valueForKeyPath:@"results"];
 

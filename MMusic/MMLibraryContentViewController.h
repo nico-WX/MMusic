@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, readonly)NSArray<MPMediaItem*> *items;
 
 - (instancetype)initWithMediaItems:(NSArray<MPMediaItem*>*)mediaItems;
+//- (instancetype)initWithMediaCollections:(NSArray<MPMediaItemCollection *>*)itemCollection;
 
 @end
 

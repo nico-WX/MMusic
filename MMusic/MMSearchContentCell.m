@@ -29,6 +29,8 @@
 
         [self.layer setCornerRadius:6.0f];
 
+        [self setBackgroundColor:UIColor.whiteColor];
+
 //        [self.layer setShadowOffset:CGSizeMake(3, 2)];
 //        [self.layer setShadowOpacity:1.0];
 //        [self.layer setShadowColor:UIColor.grayColor.CGColor];

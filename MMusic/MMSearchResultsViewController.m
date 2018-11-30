@@ -7,6 +7,7 @@
 //
 
 #import <Masonry.h>
+#import <MBProgressHUD.h>
 
 #import "MMSearchResultsViewController.h"
 #import "MMSearchTopPageCell.h"
@@ -17,9 +18,8 @@
 @interface MMSearchResultsViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,
 UIPageViewControllerDelegate>
 
-@property(nonatomic, strong) NSString *term;
-@property(nonatomic, strong) MMSearchData *searchData;
-
+@property(nonatomic, strong) NSString *term;    //搜索字段
+@property(nonatomic, strong) MMSearchData *searchData;  //搜索数据模型控制
 //顶部分页段
 @property(nonatomic, strong) UICollectionView *topPageSectionView;
 //分页控制器
@@ -51,9 +51,15 @@ static NSString *const topCellID = @"top cell reuse identifier";
     [self.view addSubview:self.pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
 
+    //hud
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.pageViewController.view animated:YES];
+    [hud setMode:MBProgressHUDModeIndeterminate];
+    [hud.label setText:@"搜索中"];
+
     [self.searchData searchDataForTemr:self.term completion:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
+                [hud setHidden:YES];
                 //数据返回, 刷新顶部分页数据
                 [self.topPageSectionView reloadData];
 
@@ -66,7 +72,9 @@ static NSString *const topCellID = @"top cell reuse identifier";
                 //选中第一项
                 [self.topPageSectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
             }else{
-                NSLog(@"搜索结果无数据");
+                [hud setMode:MBProgressHUDModeText];
+                [hud hideAnimated:YES afterDelay:4.0f];
+                [hud.label setText:@"没有搜索到结果"];
             }
         });
     }];
@@ -155,7 +163,7 @@ static NSString *const topCellID = @"top cell reuse identifier";
                                                                             options:nil];
         [_pageViewController setDelegate:self];
         [_pageViewController setDataSource:self.searchData];    //数据源从模型控制器中获取
-        [_pageViewController.view setBackgroundColor:UIColor.whiteColor];
+        [_pageViewController.view setBackgroundColor:UIColor.blackColor];
     }
     return _pageViewController;
 }

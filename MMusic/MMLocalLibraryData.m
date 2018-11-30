@@ -42,11 +42,32 @@
                 MPMediaQuery *podcasts = [MPMediaQuery podcastsQuery];
 
                 NSMutableArray<NSDictionary<NSString*,NSArray<MPMediaItem*> *>*> *temp = [NSMutableArray array];
+
+                [playlist setGroupingType:MPMediaGroupingGenre];
                 [temp addObject:@{@"playlist":playlist.items}];
+
+                [album setGroupingType:MPMediaGroupingAlbumArtist];
                 [temp addObject:@{@"album":album.items}];
+
+                [artist setGroupingType:MPMediaGroupingTitle];
                 [temp addObject:@{@"artist":artist.items}];
+
+                [song setGroupingType:MPMediaGroupingArtist];
                 [temp addObject:@{@"song":song.items}];
+
+                [podcasts setGroupingType:MPMediaGroupingPodcastTitle];
                 [temp addObject:@{@"podcasts":podcasts.items}];
+
+
+//                [podcasts setGroupingType:MPMediaGroupingPodcastTitle];
+
+//                for (MPMediaItemCollection *item in podcasts.collections) {
+//                    NSLog(@"***********************************************");
+//                    for (MPMediaItem *i in item.items) {
+//                       // NSLog(@"title === %@",i.title);
+//                        NSLog(@"pod ------>%@",i.podcastTitle);
+//                    }
+//                }
 
                 self->_results = temp;
                 if (completion) {

@@ -56,20 +56,12 @@ static NSString *const cellIdentifier = @"tableView cell reuse identifier";
     MPMediaItem *item = [self.items objectAtIndex:indexPath.row];
     [cell.textLabel setText:item.title];
     [cell.detailTextLabel setText:item.artist];
-
- //   UIImage *image = [item.artwork imageWithSize:cell.bounds.size];
-//    if (!image) {
-//        NSLog(@"item.artwork =%@",item.artwork);
-//        NSLog(@"cor =%@",NSStringFromCGRect(item.artwork.bounds));
-//    }
-
     [cell.imageView setImage:[item.artwork imageWithSize:cell.bounds.size]];
-
-    NSLog(@"title =%@",item.podcastTitle);
-
 
     return cell;
 }
+
+
 
 - (UITableView *)tableView{
     if (!_tableView) {
