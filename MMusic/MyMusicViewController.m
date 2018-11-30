@@ -11,6 +11,7 @@
 #import "MyMusicViewController.h"
 #import "MMSearchTopPageCell.h"
 
+#import "MMTopPageLibraryData.h"
 #import "MMLibraryData.h"
 #import "MMLocalLibraryData.h"
 
@@ -20,8 +21,11 @@
 @interface MyMusicViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIPageViewControllerDelegate>
 @property(nonatomic, strong) UICollectionView *topPageView;
 @property(nonatomic, strong)UIPageViewController *pageViewController;
-@property(nonatomic, strong)MMLibraryData *librarData;
-@property(nonatomic, strong)MMLocalLibraryData *localLibraryData;
+
+@property(nonatomic, strong) MMTopPageLibraryData *topPageData;
+
+//@property(nonatomic, strong)MMLibraryData *librarData;
+//@property(nonatomic, strong)MMLocalLibraryData *localLibraryData;
 @end
 
 static NSString *reuseId = @"top cell identifier";
@@ -30,8 +34,9 @@ static NSString *reuseId = @"top cell identifier";
 
 - (instancetype)init{
     if (self = [super init]) {
-        _librarData = [[MMLibraryData alloc] init];
-        _localLibraryData = [[MMLocalLibraryData  alloc] init];
+//        _librarData = [[MMLibraryData alloc] init];
+//        _localLibraryData = [[MMLocalLibraryData  alloc] init];
+        _topPageData = [[MMTopPageLibraryData alloc] init];
     }
     return self;
 }
@@ -44,22 +49,28 @@ static NSString *reuseId = @"top cell identifier";
     [self.view addSubview:self.pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
 
+    //[self.topPageView reloadData];
+    //注意切换数据源
+    UIViewController *vc = [self.topPageData viewControllerAtIndex:0];
+    [self.pageViewController setViewControllers:@[vc,] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+    [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
 
-    void(^completion)(BOOL success)  = ^(BOOL success){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (success) {
-                [self.topPageView reloadData];
-                //注意切换数据源
-                // UIViewController *vc = [self.librarData viewControllerAtIndex:0];
-                UIViewController *vc = [self.localLibraryData viewControllerAtIndex:0];
-                [self.pageViewController setViewControllers:@[vc,] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
-                [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
-            }
-        });
-    };
+
+//    void(^completion)(BOOL success)  = ^(BOOL success){
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            if (success) {
+//                [self.topPageView reloadData];
+//                //注意切换数据源
+//                // UIViewController *vc = [self.librarData viewControllerAtIndex:0];
+//                UIViewController *vc = [self.topPageData viewControllerAtIndex:0];
+//                [self.pageViewController setViewControllers:@[vc,] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+//                [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+//            }
+//        });
+//    };
 
     //[self.librarData requestAllLibraryResource:completion];
-    [self.localLibraryData requestAllData:completion];
+    //[self.topPageData requestAllData:completion];
 
 }
 
@@ -87,19 +98,20 @@ static NSString *reuseId = @"top cell identifier";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return self.localLibraryData.results.count;
+    return self.topPageData.controllers.count;
+    //return self.localLibraryData.results.count;
     //return self.librarData.results.count;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     MMSearchTopPageCell *cell = (MMSearchTopPageCell*)[collectionView dequeueReusableCellWithReuseIdentifier:reuseId forIndexPath:indexPath];
-    //self.librarData
-    [cell.titleLabel setText:[self.localLibraryData titleWhitIndex:indexPath.row]];
+
+    [cell.titleLabel setText:[self.topPageData titleWhitIndex:indexPath.row]];
     return cell;
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    UIViewController *vc = [self.localLibraryData viewControllerAtIndex:indexPath.row];
-    NSInteger currentIndex = [self.localLibraryData indexOfViewController:self.pageViewController.viewControllers.firstObject];
+    UIViewController *vc = [self.topPageData viewControllerAtIndex:indexPath.row];
+    NSInteger currentIndex = [self.topPageData indexOfViewController:self.pageViewController.viewControllers.firstObject];
 
     // 确定滚动的方向
     UIPageViewControllerNavigationDirection direction = indexPath.row > currentIndex ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse;
@@ -116,7 +128,7 @@ static NSString *reuseId = @"top cell identifier";
     if (completed && finished) {
         UIViewController *currentVC = pageViewController.viewControllers.firstObject;
         //self.librarData
-        NSUInteger index = [self.localLibraryData indexOfViewController:currentVC];
+        NSUInteger index = [self.topPageData indexOfViewController:currentVC];
 
         [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
     }
@@ -144,7 +156,7 @@ static NSString *reuseId = @"top cell identifier";
 
         [_pageViewController setDelegate:self];
         //[_pageViewController setDataSource:self.librarData];
-        [_pageViewController setDataSource:self.localLibraryData];
+        [_pageViewController setDataSource:self.topPageData];
         [_pageViewController.view setBackgroundColor:UIColor.whiteColor];
     }
     return _pageViewController;

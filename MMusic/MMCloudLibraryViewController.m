@@ -22,12 +22,19 @@
 static NSString *reuseId = @"top cell identifier";
 @implementation MMCloudLibraryViewController
 
-- (instancetype)init{
+- (instancetype)initWithICloudLibraryData:(MMLibraryData *)iCloudLibraryData{
     if (self = [super init]) {
-        _librarData = [[MMLibraryData alloc] init];
+        _librarData =iCloudLibraryData;
     }
     return self;
 }
+
+//- (instancetype)init{
+//    if (self = [super init]) {
+//        _librarData = [[MMLibraryData alloc] init];
+//    }
+//    return self;
+//}
 
 - (void)viewDidLoad {
     [super viewDidLoad];

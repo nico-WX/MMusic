@@ -21,12 +21,19 @@ static NSString *reuseId = @"top cell identifier";
 @implementation MMLocalLibraryViewController
 
 
-- (instancetype)init{
-    if (self = [super init]) {
-        _localLibraryData = [[MMLocalLibraryData  alloc] init];
+- (instancetype)initWithLocalLibraryData:(MMLocalLibraryData *)localData{
+    if(self = [super init]){
+        _localLibraryData = localData;
     }
     return self;
 }
+
+//- (instancetype)init{
+//    if (self = [super init]) {
+//        _localLibraryData = [[MMLocalLibraryData  alloc] init];
+//    }
+//    return self;
+//}
 
 - (void)viewDidLoad {
     [super viewDidLoad];

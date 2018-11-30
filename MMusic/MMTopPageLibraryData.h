@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 一级分页 控制
 @interface MMTopPageLibraryData : NSObject<UIPageViewControllerDataSource>
+@property(nonatomic, strong, readonly) NSArray<NSDictionary<NSString*,id>*> *controllers;
 
 - (NSString*)titleWhitIndex:(NSInteger)index;
 - (NSUInteger)indexOfViewController:(UIViewController*)viewController;

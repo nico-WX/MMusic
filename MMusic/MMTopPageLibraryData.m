@@ -16,7 +16,7 @@
 
 @interface MMTopPageLibraryData ()
 //  本地和云音乐两个PageViewController
-@property(nonatomic, strong) NSArray<NSDictionary<NSString*,id>*> *controllers;
+
 @property(nonatomic, strong) NSMutableArray *cacheViewControllers;
 @end
 
@@ -28,12 +28,13 @@
         MMLocalLibraryData *local = [[MMLocalLibraryData alloc] init];
         _controllers = @[@{@"iCloud":iCloud},@{@"local":local}];
         _cacheViewControllers = [NSMutableArray array];
-
     }
     return self;
 }
 
-
+- (NSString *)titleWhitIndex:(NSInteger)index{
+    return [[[_controllers objectAtIndex:index] allKeys] firstObject];
+}
 
 # pragma - mark help method
 //返回控制器对应的下标
@@ -64,46 +65,48 @@
     //没有内容 , 或者大于内容数量  直接返回nil
     if (self.controllers.count == 0 || index > self.controllers.count) return nil;
 
+    if ([self.cacheViewControllers objectAtIndex:index]) {
+        return [self.cacheViewControllers objectAtIndex:index];
+    }
+
     NSDictionary<NSString*,id> *dict = [self.controllers objectAtIndex:index];
     NSString *title = [dict allKeys].firstObject;
     id data = [dict allValues].firstObject;
 
-    //查找创建过的VC
-    for (UIViewController *vc in self.cacheViewControllers) {
-        if (vc.responseRoot == root) {
-            return vc;
-        }
+    if ([data isKindOfClass:[MMLibraryData class]]) {
+        MMCloudLibraryViewController *vc = [[MMCloudLibraryViewController alloc] initWithICloudLibraryData:data];
+        [vc setTitle:title];
+        [_cacheViewControllers addObject:vc];
+        return vc;
     }
-
-    //数组中没有创建过的控制器, 创建新的,并添加到数组
-    MMSearchContentViewController *contentVC = [[MMSearchContentViewController alloc] initWithResponseRoot:root];
-    [contentVC setTitle:title];
-    [self.cacheViewControllers addObject:contentVC]; //添加缓存
-    return contentVC;
+    if ([data isKindOfClass:[MMLocalLibraryData class]]) {
+        MMLocalLibraryViewController *vc = [[MMLocalLibraryViewController alloc] initWithLocalLibraryData:data];
+        [vc setTitle:title];
+        [_cacheViewControllers addObject:vc];
+        return vc;
+    }
     return nil;
 }
 
-//#pragma mark - UIPageViewControllerDataSource
-////返回左边控制器
-//-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
-//    MMSearchContentViewController *resultsVC = (MMSearchContentViewController*) viewController;
-//
-//    NSUInteger index = [self indexOfViewController:resultsVC];
-//    if (index == 0 || index == NSNotFound) return nil;
-//    index--;
-//    return [self viewControllerAtIndex:index];
-//}
-//
-////返回右边控制器
-//-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
-//    MMSearchContentViewController *resultsVC = (MMSearchContentViewController*) viewController;
-//    NSUInteger index = [self indexOfViewController:resultsVC];
-//    if (index== NSNotFound) return nil;
-//
-//    index++;
-//    if (index==self.searchResults.count) return nil;
-//    return [self viewControllerAtIndex:index];
-//}
+#pragma mark - UIPageViewControllerDataSource
+//返回左边控制器
+-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
+    NSUInteger index = [self indexOfViewController:viewController];
+    if (index == 0 || index == NSNotFound) return nil;
+    index--;
+    return [self viewControllerAtIndex:index];
+}
+
+//返回右边控制器
+-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
+
+    NSUInteger index = [self indexOfViewController:viewController];
+    if (index== NSNotFound) return nil;
+
+    index++;
+    if (index==self.controllers.count) return nil;
+    return [self viewControllerAtIndex:index];
+}
 
 
 @end
