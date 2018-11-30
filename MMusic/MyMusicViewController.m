@@ -10,15 +10,18 @@
 
 #import "MyMusicViewController.h"
 #import "MMSearchTopPageCell.h"
-#import "MMLibraryData.h"
 
-#import "LibraryPlaylist.h"
+#import "MMLibraryData.h"
+#import "MMLocalLibraryData.h"
+
+//#import "LibraryPlaylist.h"
 
 
 @interface MyMusicViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIPageViewControllerDelegate>
 @property(nonatomic, strong) UICollectionView *topPageView;
 @property(nonatomic, strong)UIPageViewController *pageViewController;
 @property(nonatomic, strong)MMLibraryData *librarData;
+@property(nonatomic, strong)MMLocalLibraryData *localLibraryData;
 @end
 
 static NSString *reuseId = @"top cell identifier";
@@ -28,6 +31,7 @@ static NSString *reuseId = @"top cell identifier";
 - (instancetype)init{
     if (self = [super init]) {
         _librarData = [[MMLibraryData alloc] init];
+        _localLibraryData = [[MMLocalLibraryData  alloc] init];
     }
     return self;
 }
@@ -40,17 +44,23 @@ static NSString *reuseId = @"top cell identifier";
     [self.view addSubview:self.pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
 
-    [self.librarData requestAllLibraryResource:^(BOOL success) {
+
+    void(^completion)(BOOL success)  = ^(BOOL success){
         dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
                 [self.topPageView reloadData];
-
-                UIViewController *vc = [self.librarData viewControllerAtIndex:0];
+                //注意切换数据源
+                // UIViewController *vc = [self.librarData viewControllerAtIndex:0];
+                UIViewController *vc = [self.localLibraryData viewControllerAtIndex:0];
                 [self.pageViewController setViewControllers:@[vc,] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
                 [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
             }
         });
-    }];
+    };
+
+    //[self.librarData requestAllLibraryResource:completion];
+    [self.localLibraryData requestAllData:completion];
+
 }
 
 - (void)viewDidLayoutSubviews{
@@ -77,11 +87,13 @@ static NSString *reuseId = @"top cell identifier";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return self.librarData.results.count;
+    return self.localLibraryData.results.count;
+    //return self.librarData.results.count;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     MMSearchTopPageCell *cell = (MMSearchTopPageCell*)[collectionView dequeueReusableCellWithReuseIdentifier:reuseId forIndexPath:indexPath];
-    [cell.titleLabel setText:[self.librarData titleWhitIndex:indexPath.row]];
+    //self.librarData
+    [cell.titleLabel setText:[self.localLibraryData titleWhitIndex:indexPath.row]];
     return cell;
 }
 
@@ -94,7 +106,8 @@ static NSString *reuseId = @"top cell identifier";
       transitionCompleted:(BOOL)completed{
     if (completed && finished) {
         UIViewController *currentVC = pageViewController.viewControllers.firstObject;
-        NSUInteger index = [self.librarData indexOfViewController:currentVC];
+        //self.librarData
+        NSUInteger index = [self.localLibraryData indexOfViewController:currentVC];
 
         [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
     }
@@ -121,7 +134,8 @@ static NSString *reuseId = @"top cell identifier";
         _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 
         [_pageViewController setDelegate:self];
-        [_pageViewController setDataSource:self.librarData];
+        //[_pageViewController setDataSource:self.librarData];
+        [_pageViewController setDataSource:self.localLibraryData];
         [_pageViewController.view setBackgroundColor:UIColor.whiteColor];
     }
     return _pageViewController;
