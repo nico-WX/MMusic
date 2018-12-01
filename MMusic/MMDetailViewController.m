@@ -134,6 +134,9 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 #pragma mark - <TableView Delegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [MainPlayer playSongs:[self.resourceData songList] startIndex:indexPath.row];
+
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [cell setSelected:YES animated:YES];
 }
 
 #pragma mark - <scroll delegate>

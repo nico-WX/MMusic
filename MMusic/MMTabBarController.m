@@ -5,6 +5,7 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
+#import <MediaPlayer/MediaPlayer.h>
 #import "MMTabBarController.h"
 
 @interface MMTabBarController ()
@@ -18,7 +19,6 @@
 - (instancetype)init{
     if (self =[super init]) {
         _impactFeedback = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
-
     }
     return self;
 }
@@ -28,6 +28,7 @@
 
     [self.tabBar setHidden:YES];
 
+    //初始化 popFrame
     _popFrame = ({
         CGFloat spacing = 8.0f;
         CGFloat x = spacing;
@@ -48,6 +49,7 @@
         CGRectMake(x, y, w, h);
     });
 
+    //模糊效果视图
     self.visualEffectView = ({
         UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
         UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
@@ -83,11 +85,20 @@
         [self.visualEffectView addGestureRecognizer:upSwipe];
         [self.visualEffectView addGestureRecognizer:downSwipe];
     });
+
+
+    //播放状态改变时, 隐藏或显示
+    [self popStateForState:MainPlayer.playbackState];
+    [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [self popStateForState:MainPlayer.playbackState];
+    }];
 }
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
 }
 
+
+//处理手势
 - (void)handleSwipeGesture:(UISwipeGestureRecognizer*)swipeGesture {
 
     //打开popupView 时, 拦截左右切换VC 手势(判断 当前popupView 高度)
@@ -127,6 +138,7 @@
     }
 }
 
+// pop 与 popping
 - (void)poppingViewController:(BOOL)popping{
     [self.impactFeedback impactOccurred];
     if (popping) {
@@ -156,7 +168,28 @@
     self.popViewController = popViewController;
     self.popViewController.view.frame = self.visualEffectView.bounds;
     [self.visualEffectView.contentView addSubview:self.popViewController.view];
-    
 }
+
+//播放状态改变时, 隐藏u或显示pop 视图
+- (void)popStateForState:(MPMusicPlaybackState)state{
+    switch (state) {
+        case MPMusicPlaybackStateStopped:
+        case MPMusicPlaybackStatePaused:{
+            CGRect frame = self.popFrame;
+            frame.origin.y = CGRectGetMaxY([UIScreen mainScreen].bounds);
+            [UIView animateWithDuration:0.5 animations:^{
+                [self.visualEffectView setFrame:frame];
+            }];
+        }
+            break;
+
+        default:
+            [UIView animateWithDuration:0.3 animations:^{
+                [self.visualEffectView setFrame:self.popFrame];
+            }];
+            break;
+    }
+}
+
 
 @end

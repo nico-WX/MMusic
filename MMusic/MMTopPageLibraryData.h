@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 一级分页 控制
 @interface MMTopPageLibraryData : NSObject<UIPageViewControllerDataSource>
+/**mymusic 顶部ICloud 和 Local 分页*/
 @property(nonatomic, strong, readonly) NSArray<NSDictionary<NSString*,id>*> *controllers;
 
 - (NSString*)titleWhitIndex:(NSInteger)index;

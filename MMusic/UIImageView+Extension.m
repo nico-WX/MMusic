@@ -7,7 +7,10 @@
 //
 
 #import "UIImageView+Extension.h"
+
+#import <MBProgressHUD.h>
 #import <UIImageView+WebCache.h>
+#import <UIView+WebCache.h>
 
 @implementation UIImageView (Extension)
 
@@ -17,9 +20,15 @@
     [self setImage:image];
 
     if (!image) {
-        path = [path stringReplacingImageURLSize:self.bounds.size];
-        [self sd_setImageWithURL:[NSURL URLWithString:path] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+        [hud setMode:MBProgressHUDModeIndeterminate];
+        [hud hideAnimated:YES afterDelay:5.0f];
 
+        path = [path stringReplacingImageURLSize:self.bounds.size];
+        [self sd_setImageWithURL:[NSURL URLWithString:path] placeholderImage:nil options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            [self showImageToView:self withImageURL:path cacheToMemory:YES];
+
+            [hud removeFromSuperview];
         }];
     }
 }

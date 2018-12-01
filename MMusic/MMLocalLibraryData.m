@@ -15,7 +15,6 @@
 
 @interface MMLocalLibraryData ()
 @property(nonatomic, strong) NSMutableArray *cacheViewControllers;
-
 @end
 
 

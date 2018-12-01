@@ -16,8 +16,7 @@
 
 @interface MMTopPageLibraryData ()
 //  本地和云音乐两个PageViewController
-
-@property(nonatomic, strong) NSMutableArray *cacheViewControllers;
+@property(nonatomic, strong) NSMutableArray<UIViewController*> *cacheViewControllers;
 @end
 
 @implementation MMTopPageLibraryData
@@ -26,7 +25,7 @@
     if (self= [super init]) {
         MMLibraryData *iCloud = [[MMLibraryData alloc] init];
         MMLocalLibraryData *local = [[MMLocalLibraryData alloc] init];
-        _controllers = @[@{@"iCloud":iCloud},@{@"local":local}];
+        _controllers = @[@{@"iCloud":iCloud},@{@"Local":local},];
         _cacheViewControllers = [NSMutableArray array];
     }
     return self;
@@ -39,18 +38,21 @@
 # pragma - mark help method
 //返回控制器对应的下标
 - (NSUInteger)indexOfViewController:(UIViewController*)viewController {
-    for (NSDictionary<NSString*,id> *dict in _controllers) {
-        if ([viewController isKindOfClass:[MMLocalLibraryViewController class]]) {
-            MMLocalLibraryViewController *localVC = (MMLocalLibraryViewController*)viewController;
-            MMLocalLibraryData *data = localVC.localLibraryData;
 
+    if ([viewController isKindOfClass:[MMLocalLibraryViewController class]]) {
+        MMLocalLibraryViewController *localVC = (MMLocalLibraryViewController*)viewController;
+        MMLocalLibraryData *data = localVC.localLibraryData;
+        for (NSDictionary<NSString*,id> *dict in _controllers){
             if ([[dict allValues] firstObject] == data) {
                 return [_controllers indexOfObject:dict];
             }
         }
-        if ([viewController isKindOfClass:[MMCloudLibraryViewController  class]]) {
-            MMCloudLibraryViewController *iCloudVC = (MMCloudLibraryViewController*)viewController;
-            MMLibraryData *data = iCloudVC.iCloudLibraryData;
+    }
+
+    if ([viewController isKindOfClass:[MMCloudLibraryViewController  class]]) {
+        MMCloudLibraryViewController *iCloudVC = (MMCloudLibraryViewController*)viewController;
+        MMLibraryData *data = iCloudVC.iCloudLibraryData;
+        for (NSDictionary<NSString*,id> *dict in _controllers) {
             if ([[dict allValues] firstObject] == data) {
                 return [_controllers indexOfObject:dict];
             }
@@ -65,13 +67,15 @@
     //没有内容 , 或者大于内容数量  直接返回nil
     if (self.controllers.count == 0 || index > self.controllers.count) return nil;
 
-    if ([self.cacheViewControllers objectAtIndex:index]) {
+    
+    if (index < self.cacheViewControllers.count) {
         return [self.cacheViewControllers objectAtIndex:index];
     }
 
     NSDictionary<NSString*,id> *dict = [self.controllers objectAtIndex:index];
     NSString *title = [dict allKeys].firstObject;
     id data = [dict allValues].firstObject;
+
 
     if ([data isKindOfClass:[MMLibraryData class]]) {
         MMCloudLibraryViewController *vc = [[MMCloudLibraryViewController alloc] initWithICloudLibraryData:data];

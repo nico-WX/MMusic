@@ -16,10 +16,11 @@
         imageSize.height = 200;
     }
 
-
-    CGFloat times =1; //[UIScreen mainScreen].scale;
+    // scale
+    CGFloat times = [UIScreen mainScreen].scale;
+    //注意占位不能是浮点数, 只能是整数, 不然报CFNetwork 385错误
     NSString *w = [NSString stringWithFormat:@"%d",(int)(imageSize.width * times)];
-    NSString *h = [NSString stringWithFormat:@"%d",(int)(imageSize.height * times)]; //注意占位不能是浮点数, 只能是整数, 不然报CFNetwork 385错误
+    NSString *h = [NSString stringWithFormat:@"%d",(int)(imageSize.height * times)];
 
     NSString *target = @"{w}x{h}";
     NSString *replacStr = [NSString stringWithFormat:@"%@x%@",w,h];

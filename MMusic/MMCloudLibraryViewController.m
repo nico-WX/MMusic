@@ -24,7 +24,8 @@ static NSString *reuseId = @"top cell identifier";
 
 - (instancetype)initWithICloudLibraryData:(MMLibraryData *)iCloudLibraryData{
     if (self = [super init]) {
-        _librarData =iCloudLibraryData;
+        _iCloudLibraryData = iCloudLibraryData;
+        _librarData = iCloudLibraryData;
     }
     return self;
 }
@@ -64,9 +65,9 @@ static NSString *reuseId = @"top cell identifier";
     [super viewDidLayoutSubviews];
 
     __weak typeof(self) weakSelf = self;
-    //CGFloat topOffset = CGRectGetMaxY(self.navigationController.navigationBar.frame);
+    CGFloat topOffset = CGRectGetMaxY(self.navigationController.navigationBar.frame);
     [self.topPageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.navigationController.navigationBar.mas_bottom);
+        make.top.mas_equalTo(weakSelf.view).mas_offset(topOffset);
         make.left.right.mas_equalTo(weakSelf.view);
         make.height.mas_equalTo(44.0f);
     }];

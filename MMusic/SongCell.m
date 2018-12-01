@@ -158,9 +158,51 @@
         [self.numberLabel setHidden:NO];
         [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
     }
-
     [self setNeedsDisplay];
 }
 
+- (UITableViewCellSelectionStyle)selectionStyle{
+    return UITableViewCellSelectionStyleGray;
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated{
+    [super setSelected:selected animated:animated];
+
+    if (animated && selected) {
+
+        UIGraphicsBeginImageContext(self.bounds.size);
+
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        [self.layer renderInContext:context];
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        [imageView setFrame:self.bounds];
+        [self.contentView addSubview:imageView];
+
+        __block CGRect frame = self.bounds;
+        frame.origin.y -= 8;
+        frame.origin.x += 8;
+        [UIView animateWithDuration:0.3 animations:^{
+            [imageView setFrame:frame];
+        } completion:^(BOOL finished) {
+            if (finished) {
+                frame.origin.x = CGRectGetMaxX([UIScreen mainScreen].bounds);
+                [UIView animateWithDuration:2 animations:^{
+                    [imageView setFrame:frame];
+                } completion:^(BOOL finished) {
+                    [imageView removeFromSuperview];
+                }];
+            }
+
+        }];
+
+
+
+
+
+    }
+}
 
 @end
