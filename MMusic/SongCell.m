@@ -11,6 +11,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 
 #import "NowPlayingViewController.h"
+#import "UIView+LayerImage.h"
 #import "SongCell.h"
 #import "Song.h"
 
@@ -170,7 +171,7 @@
 
     if (animated && selected) {
 
-        UIImage *image = [self imageWithCurrentContext];
+        UIImage *image = [self imageWithCurrentView];
 
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.bounds];
         [imageView setImage:image];
@@ -200,20 +201,6 @@
             }
         }];
     }
-}
-
-//当前图层 绘制成图片
-- (UIImage*)imageWithCurrentContext{
-
-    UIGraphicsBeginImageContextWithOptions(self.bounds.size, 1, [[UIScreen mainScreen] scale]);
-   // UIGraphicsBeginImageContext(size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-
-    [self.layer renderInContext:context];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-
-    UIGraphicsEndImageContext();
-    return image;
 }
 
 @end

@@ -17,6 +17,7 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - JGProgressHUD (2.0.3)
   - Masonry (1.1.0)
   - MBProgressHUD (1.1.0)
   - MJExtension (3.0.15.1)
@@ -31,6 +32,7 @@ PODS:
 DEPENDENCIES:
   - AFNetworking
   - FMDB
+  - JGProgressHUD
   - Masonry
   - MBProgressHUD
   - MJExtension
@@ -44,6 +46,7 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - AFNetworking
     - FMDB
+    - JGProgressHUD
     - Masonry
     - MBProgressHUD
     - MJExtension
@@ -56,6 +59,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  JGProgressHUD: 12b20a8f4ffe05258f8635c1ab92816e451f904d
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   MJExtension: 19bc33ce2eee2d319760f5622562cf581a6ff756
@@ -65,6 +69,6 @@ SPEC CHECKSUMS:
   SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
   YTPageController: a42ed15972066e66ff7c8d769c214c11f27d483b
 
-PODFILE CHECKSUM: f0ed96a153635861d657addf36772413120a2f1d
+PODFILE CHECKSUM: 8e805ad55e8066e26fbea5aa8c68f47f45815214
 
 COCOAPODS: 1.6.0.beta.1

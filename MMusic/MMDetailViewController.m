@@ -6,16 +6,16 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
+#import <JGProgressHUD.h>
+//#import <MBProgressHUD.h>
 #import <Masonry.h>
 #import <MJRefresh.h>
 #import <MediaPlayer/MediaPlayer.h>
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
-
 #import "MMDetailViewController.h"
 
 #import "SongCell.h"
-
 #import "MMSongListData.h"
 #import "Resource.h"
 #import "Song.h"
@@ -23,11 +23,9 @@
 @interface MMDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (strong, nonatomic) UITableView *tableView;
-
 @property(nonatomic, assign) CGFloat topOffset;
 //data
 @property(nonatomic, strong)Resource *resource;
-
 @property(nonatomic, strong)MMSongListData *resourceData;
 @end
 
@@ -49,16 +47,6 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    //table
-    ({
-        self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        self.tableView.delegate = self;
-        self.tableView.dataSource = self;
-        [self.tableView registerClass:[SongCell class] forCellReuseIdentifier:reuseIdentifier];
-        [self.tableView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
-        [self.tableView setRowHeight:44.0f];
-    });
-
     //添加子视图, 注意视图层次 & set
     ({
         [self.view addSubview:self.imageView];
@@ -74,12 +62,19 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     NSString *path = [self.resource.attributes valueForKeyPath:@"artwork.url"];
     [_imageView setImageWithURLPath:path];
 
+    JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
+    [hud.textLabel setText:@"loading"];
+    [hud showInView:self.tableView animated:YES];
+    [hud setPosition:JGProgressHUDPositionTopCenter];
+
     [self.resourceData resourceDataWithResource:self.resource completion:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
+                [hud removeFromSuperview];
                 [self.tableView reloadData];
             }else{
-
+                [hud.textLabel setText:@"加载超时.."];
+                [hud dismissAfterDelay:2 animated:YES];
             }
         });
     }];
@@ -156,4 +151,16 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     }
 }
 
+
+- (UITableView *)tableView{
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        [_tableView setDelegate:self];
+        [_tableView setDataSource:self];
+        [_tableView registerClass:[SongCell class] forCellReuseIdentifier:reuseIdentifier];
+        [_tableView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
+        [_tableView setRowHeight:44.0f];
+    }
+    return _tableView;
+}
 @end

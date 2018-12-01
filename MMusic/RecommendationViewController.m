@@ -4,7 +4,7 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <MBProgressHUD.h>
+#import <JGProgressHUD.h>
 #import <MJRefresh.h>
 #import <Masonry.h>
 
@@ -77,20 +77,20 @@ static NSString *const cellIdentifier = @"resourceCell";
 
 - (void)requestData{
 
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.collectionView animated:YES];
-    [hud setMode:MBProgressHUDModeIndeterminate];
-    [hud.label setText:@"加载数据.."];
+    JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
+    [hud.textLabel setText:@"加载中.."];
+    [hud showInView:self.collectionView animated:YES];
 
     [self.recommendationData defaultRecommendataionWithCompletion:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
-                [hud setHidden:YES];
+                [hud dismissAnimated:YES];
+                [hud removeFromSuperview];
                 [self.collectionView reloadData];
                 [self.collectionView.mj_header endRefreshing]; //停止刷新控件
             }else{
-                [hud setMode:MBProgressHUDModeText];
-                [hud.label setText:@"数据加载失败!"];
-                [hud hideAnimated:YES afterDelay:3.0f];
+                [hud.textLabel setText:@"数据加载失败!"];
+                [hud dismissAfterDelay:2 animated:YES];
             }
         });
     }];

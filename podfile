@@ -1,18 +1,20 @@
 
+
 platform:ios,'11.0'
 
 target "MMusic" do
 
-pod 'AFNetworking'
-pod 'MJExtension'
-pod 'MJRefresh'
-pod 'SDWebImage'
-pod 'MBProgressHUD'
-pod 'Masonry'
-pod 'NAKPlaybackIndicatorView'
-pod 'YTPageController'
-pod 'FMDB'
-pod 'Reveal-SDK', :configurations => ['Debug']
+    pod 'JGProgressHUD'
+    pod 'AFNetworking'
+    pod 'MJExtension'
+    pod 'MJRefresh'
+    pod 'SDWebImage'
+    pod 'MBProgressHUD'
+    pod 'Masonry'
+    pod 'NAKPlaybackIndicatorView'
+    pod 'YTPageController'
+    pod 'FMDB'
 
-
+    pod 'Reveal-SDK', :configurations => ['Debug']
+    
 end
