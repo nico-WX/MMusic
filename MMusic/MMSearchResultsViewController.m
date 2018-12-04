@@ -163,7 +163,7 @@ static NSString *const topCellID = @"top cell reuse identifier";
                                                                             options:nil];
         [_pageViewController setDelegate:self];
         [_pageViewController setDataSource:self.searchData];    //数据源从模型控制器中获取
-        [_pageViewController.view setBackgroundColor:UIColor.blackColor];
+        //[_pageViewController.view setBackgroundColor:UIColor.blackColor];
     }
     return _pageViewController;
 }

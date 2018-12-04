@@ -7,13 +7,14 @@
 //
 
 #import <JGProgressHUD.h>
-//#import <MBProgressHUD.h>
 #import <Masonry.h>
 #import <MJRefresh.h>
 #import <MediaPlayer/MediaPlayer.h>
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
 #import "MMDetailViewController.h"
+#import "MMCloseButton.h"
+#import "UIButton+BlockButton.h"
 
 #import "SongCell.h"
 #import "MMSongListData.h"
@@ -21,9 +22,10 @@
 #import "Song.h"
 
 @interface MMDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
-
-@property (strong, nonatomic) UITableView *tableView;
+@property(nonatomic, strong) MMCloseButton *closeButton;
+@property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, assign) CGFloat topOffset;
+
 //data
 @property(nonatomic, strong)Resource *resource;
 @property(nonatomic, strong)MMSongListData *resourceData;
@@ -34,12 +36,21 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
 - (instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
-        _resourceData = [[MMSongListData alloc] init];
+         _resource = resource;
 
-        _resource = resource;
-        _imageView = [UIImageView new];
-        _titleLabel = [UILabel new];
+        _resourceData   = [[MMSongListData alloc] init];
+        _closeButton    = [[MMCloseButton alloc] init];
+        _imageView      = [[UIImageView alloc] init];
+        _titleLabel     = [[UILabel alloc] init];
+
         [_titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [_titleLabel setTextColor:MainColor];
+
+        //添加子视图, 注意视图层次 &
+        [self.view addSubview:_imageView];
+        [self.view addSubview:_titleLabel];
+        [self.view addSubview:_tableView];
+        [self.view addSubview:_closeButton];
     }
     return self;
 }
@@ -47,16 +58,11 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    //添加子视图, 注意视图层次 & set
-    ({
-        [self.view addSubview:self.imageView];
-        [self.view addSubview:self.titleLabel];
-        [self.view addSubview:self.tableView];
 
-        [self.view setBackgroundColor:UIColor.whiteColor];
-        [self.view.layer setCornerRadius:6.0f];
-        [self.view.layer setMasksToBounds:YES];
-    });
+    [self.view setBackgroundColor:UIColor.whiteColor];
+    [self.view.layer setCornerRadius:6.0f];
+    [self.view.layer setMasksToBounds:YES];
+
 
     [_titleLabel setText:[self.resource.attributes valueForKey:@"name"]];
     NSString *path = [self.resource.attributes valueForKeyPath:@"artwork.url"];
@@ -78,38 +84,51 @@ static NSString *const reuseIdentifier = @"tableview cell id";
             }
         });
     }];
+
+    //代理关闭
+    [self.closeButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+        [self delegateDismissViewController];
+    }];
 }
+
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
 
-    UIEdgeInsets padding =UIEdgeInsetsMake(0, 100, 0, 100);
     UIView *superView = self.view;
-    CGRect frame = self.view.frame;
-    //计算frame  提前滚动偏移
-    self.imageView.frame = ({
-        CGFloat x = padding.left;
-        CGFloat y = 8;
-        CGFloat w = CGRectGetWidth(frame)-padding.left-padding.right;
-        CGFloat h = w;
-        CGRectMake(x, y, w, h);
-    });
+    __weak typeof(self) weakSelf = self;
 
-    self.titleLabel.frame = ({
-        CGFloat x = 0; //CGRectGetMinX(frame);
-        CGFloat y = CGRectGetMaxY(self.imageView.frame);
-        CGFloat h = 40; //显式设置高度, 方便计算tableView偏移
-        CGFloat w = CGRectGetWidth(frame);
-        CGRectMake(x, y, w, h);
-    });
+// 约束
+    [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        UIEdgeInsets padding = UIEdgeInsetsMake(8, 100, 0, 100);
+        make.top.mas_equalTo(superView).offset(padding.top);
+        make.left.mas_equalTo(superView).offset(padding.left);
+        make.right.mas_equalTo(superView).offset(-padding.left);
+        CGFloat h = CGRectGetWidth(superView.bounds) - (padding.left+padding.right);
+        make.height.mas_equalTo(h);
+    }];
+
+    [self.titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.imageView.mas_bottom);
+        make.left.right.mas_equalTo(superView);
+        make.height.mas_equalTo(40);
+    }];
+
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(superView);
     }];
 
-    //向下偏移量
+    [self.closeButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(superView).offset(8);
+        make.right.mas_equalTo(superView).offset(-8);
+        make.size.mas_equalTo(CGSizeMake(35, 35));
+    }];
+
+    //tablView content 向下偏移量
     ({
         self.topOffset = CGRectGetMaxY(self.titleLabel.frame)+8;
         [self.tableView setContentInset:UIEdgeInsetsMake(self.topOffset, 0, 0, 0)];
+
         [self.tableView setContentOffset:CGPointMake(0, -self.topOffset)];
     });
 }
@@ -129,8 +148,8 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 #pragma mark - <TableView Delegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [MainPlayer playSongs:[self.resourceData songList] startIndex:indexPath.row];
-
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    
     [cell setSelected:YES animated:YES];
 }
 
@@ -148,9 +167,10 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 - (void)delegateDismissViewController{
     if (self.disMissDelegate && [self.disMissDelegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
         [self.disMissDelegate detailViewControllerDidDismiss:self];
+    }else{
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
-
 
 - (UITableView *)tableView{
     if (!_tableView) {
@@ -163,4 +183,5 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     }
     return _tableView;
 }
+
 @end

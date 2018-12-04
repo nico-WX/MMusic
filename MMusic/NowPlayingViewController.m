@@ -120,7 +120,8 @@ static NowPlayingViewController *_instance;
         [self.songNameLabel setText:nowPlayingItem.title];
         [self.artistLabel setText:nowPlayingItem.artist];
 
-        UIImage *image  = [nowPlayingItem.artwork imageWithSize:self.artworkView.bounds.size];
+
+        UIImage *image  = [nowPlayingItem.artwork imageWithSize:CGSizeMake(200, 200)];
         if (image) {
             [self.artworkView setImage:image];
             return;

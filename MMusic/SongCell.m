@@ -18,9 +18,11 @@
 @interface SongCell()
 
 @property(nonatomic, strong) NAKPlaybackIndicatorView   *playbackIndicatorView;
-@property(nonatomic, strong, readonly) UILabel          *nameLabel;
-@property(nonatomic, strong, readonly) UILabel          *artistLabel;
-@property(nonatomic, strong, readonly) UILabel          *durationLabel;
+
+@property(nonatomic, strong) UILabel          *nameLabel;
+@property(nonatomic, strong) UILabel          *artistLabel;
+@property(nonatomic, strong) UILabel          *durationLabel;
+@property(nonatomic, strong) UILabel          *numberLabel;
 @end
 
 @implementation SongCell
@@ -53,7 +55,7 @@
         [self.contentView addSubview:_artistLabel];
         [self.contentView addSubview:_durationLabel];
 
-        [self setupLayout];
+        //[self setupLayout];
 
         //播放项目改变  修改播放指示cell
         [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
@@ -63,6 +65,7 @@
         [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
             [self stateForSong:self.song];
         }];
+
     }
     return self;
 }
@@ -81,90 +84,95 @@
 
 }
 
--(void) setupLayout{
+- (void)layoutSubviews{
+    [super layoutSubviews];
+
     UIEdgeInsets padding = UIEdgeInsetsMake(2, 2, 2, 2);
     NSUInteger timer = 3;
     UIView *superview = self.contentView;
     __weak typeof(self) weakSelf = self;
 
-    [self.numberLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superview.mas_top).offset(padding.top);
-        make.left.mas_equalTo(superview.mas_left).offset(padding.left);
-        make.bottom.mas_equalTo(superview.mas_bottom).offset(-padding.bottom);
-        CGFloat w = CGRectGetHeight(superview.frame)-(padding.top+padding.bottom);
+    [self.numberLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(superview).offset(padding.top);
+        make.left.mas_equalTo(superview).offset(padding.left);
+        make.bottom.mas_equalTo(superview).offset(-padding.bottom);
+        CGFloat w = CGRectGetHeight(superview.bounds)-(padding.top+padding.bottom);
         make.width.mas_equalTo(w);
     }];
 
-    [self.playbackIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(weakSelf.numberLabel).insets(UIEdgeInsetsMake(0, 0, 0, 0));
+    [self.playbackIndicatorView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(weakSelf.numberLabel);
     }];
 
-    [self.durationLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.durationLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(superview.mas_top);
         make.right.mas_equalTo(superview.mas_right);
         make.bottom.mas_equalTo(superview.mas_bottom);
         make.width.mas_equalTo(CGRectGetHeight(superview.frame));
     }];
 
-    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superview.mas_top);
+    [self.nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(weakSelf.numberLabel.mas_right).offset(padding.left*timer);
         make.right.mas_equalTo(weakSelf.durationLabel.mas_left).offset(-padding.right);
-        CGFloat h = CGRectGetHeight(superview.frame)*0.6;
-        make.height.mas_equalTo(h);
+        make.bottom.mas_equalTo(superview).offset(-CGRectGetMidY(superview.bounds));
+        make.top.lessThanOrEqualTo(superview).offset(padding.top);
+
+//        make.top.mas_equalTo(superview.mas_top);
+//        CGFloat h = CGRectGetHeight(superview.frame)*0.6;
+//        make.height.mas_equalTo(h);
     }];
 
-    [self.artistLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.artistLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.nameLabel.mas_bottom);
         make.left.mas_equalTo(weakSelf.nameLabel.mas_left);
         make.right.mas_equalTo(weakSelf.nameLabel.mas_right);
-        make.bottom.mas_equalTo(superview.mas_bottom);
+        make.bottom.mas_equalTo(superview.mas_bottom).mas_offset(-padding.bottom);
     }];
 }
 
 #pragma mark - setter
--(void)setSong:(Song *)song{
-    if (_song != song ) {
+
+- (void)setSong:(Song *)song withIndex:(NSUInteger)index{
+    if (_song != song) {
+
         _song = song;
 
         //设置歌曲信息
-        self.nameLabel.text = self.song.name;
-        self.artistLabel.text = self.song.artistName;
-        NSTimeInterval duration = self.song.durationInMillis.doubleValue / 1000.0;
+        [_numberLabel setText:[NSString stringWithFormat:@"%02ld",index+1]];
+        [_nameLabel setText:song.name];
+        [_artistLabel setText:song.artistName];
+
+        NSTimeInterval duration = song.durationInMillis.doubleValue / 1000.0;
         NSString *durationText = [NSString stringWithFormat:@"%d:%02d",(int32_t)duration/60,(int32_t)duration%60];
-        self.durationLabel.text = durationText;
+        [_durationLabel setText:durationText];
+
         [self stateForSong:song];
     }
-}
-
-- (void)setSong:(Song *)song withIndex:(NSUInteger)index{
-    self.song = song;
-    self.numberLabel.text = [NSString stringWithFormat:@"%02ld",index+1];
 }
 
 - (void)stateForSong:(Song*)song {
 
     if ([song isEqualToMediaItem:MainPlayer.nowPlayingItem]) {
-        [self.numberLabel setHidden:YES];
+        [_numberLabel setHidden:YES];
         switch (MainPlayer.playbackState) {
             case MPMusicPlaybackStatePlaying:
-                [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
+                [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
                 break;
 
             default:
-                [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
+                [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
                 break;
         }
     }else{
-        [self.numberLabel setHidden:NO];
-        [self.playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
+        [_numberLabel setHidden:NO];
+        [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
     }
     [self setNeedsDisplay];
 }
 
-//- (UITableViewCellSelectionStyle)selectionStyle{
-//    return UITableViewCellSelectionStyleGray;
-//}
+- (UITableViewCellSelectionStyle)selectionStyle{
+    return UITableViewCellSelectionStyleBlue;
+}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated{
     [super setSelected:selected animated:animated];

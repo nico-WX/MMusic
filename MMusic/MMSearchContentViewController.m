@@ -73,7 +73,6 @@ static NSString *const cellID = @" cell reuse identifier";
     if ([cell isKindOfClass:MMSearchContentCell.class]) {
         ((MMSearchContentCell*)cell).resource = [self.responseRoot.data objectAtIndex:indexPath.row];
     }
-    //[cell setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:1]];
 
     return cell;
 }
@@ -140,7 +139,7 @@ static NSString *const cellID = @" cell reuse identifier";
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         [_collectionView setDelegate:self];
         [_collectionView setDataSource:self];
-        [_collectionView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
+        [_collectionView setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:1]];
         [_collectionView setContentInset:padding];  //内容左右偏移4, 翻页时看到分界线效果
         [_collectionView setAllowsSelection:YES];
 
@@ -192,7 +191,8 @@ static NSString *const cellID = @" cell reuse identifier";
          [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
              ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
              self.responseRoot.next = root.next;
-             self.responseRoot.data = [self.responseRoot.data arrayByAddingObjectsFromArray:root.data];
+             [self.responseRoot.data addObjectsFromArray:root.data];
+             // = [self.responseRoot.data arrayByAddingObjectsFromArray:root.data];
          }];
 
          dispatch_async(dispatch_get_main_queue(), ^{

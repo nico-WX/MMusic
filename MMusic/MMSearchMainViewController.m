@@ -37,19 +37,24 @@
 static NSString *const reuseID = @"cell search term";
 @implementation MMSearchMainViewController
 
+- (instancetype)init{
+    if (self = [super init]) {
+        _animation = [[MMSearchViewControllerAnimation alloc] init];
+        _searchVC = [[MMSearchViewController alloc] init];
+        [_searchVC setPresentDelegate:self];
+        [_searchVC setTransitioningDelegate:self];
+    }
+    return self;
+}
+
 #pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
+    [self setTitle:@""];
 
     [self.view addSubview:self.collectionView];
-
-
-    _animation = [[MMSearchViewControllerAnimation alloc] init];
-    _searchVC = [[MMSearchViewController alloc] init];
-    [_searchVC setPresentDelegate:self];
-    [_searchVC setTransitioningDelegate:self];
     [self.navigationController.navigationBar addSubview:_searchVC.searchBar];
 
     // 加载属性列表
@@ -133,13 +138,10 @@ static NSString *const reuseID = @"cell search term";
         }
         [_collectionView setContentInset:padding];
 
-
         [_collectionView setDelegate:self];
         [_collectionView setDataSource:self];
     }
     return _collectionView;
 }
-
-
 
 @end

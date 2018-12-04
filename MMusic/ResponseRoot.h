@@ -16,7 +16,7 @@
 /**当前资源地址(子路径)*/
 @property(nonatomic, copy) NSString  *href;
 /**资源对象数组*/
-@property(nonatomic, strong) NSArray<Resource*> *data;
+@property(nonatomic, strong) NSMutableArray<Resource*> *data;
 @property(nonatomic, strong) NSArray<Error*> *errors;
 
 @property(nonatomic, strong) NSDictionary *results;

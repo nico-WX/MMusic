@@ -21,30 +21,26 @@
 
         [_titleLabel setAdjustsFontSizeToFitWidth:YES];
         [_subTitleLabel setTextColor:UIColor.lightGrayColor];
-        [_subTitleLabel setFont:[UIFont systemFontOfSize:16.0]];
+        [_subTitleLabel setFont:[UIFont systemFontOfSize:10.0]];
 
         [self.contentView addSubview:_imageView];
         [self.contentView addSubview:_titleLabel];
         [self.contentView addSubview:_subTitleLabel];
 
         [self.layer setCornerRadius:6.0f];
-
         [self setBackgroundColor:UIColor.whiteColor];
-
-//        [self.layer setShadowOffset:CGSizeMake(3, 2)];
-//        [self.layer setShadowOpacity:1.0];
-//        [self.layer setShadowColor:UIColor.grayColor.CGColor];
     }
     return self;
 }
+
 
 - (void)setResource:(Resource *)resource{
     if (_resource != resource) {
         _resource = resource;
 
         [_titleLabel setText:[resource valueForKeyPath:@"attributes.name"]];
-        [_imageView setImageWithURLPath:[resource valueForKeyPath:@"attributes.artwork.url"]];
 
+        [_imageView setImageWithURLPath:[resource valueForKeyPath:@"attributes.artwork.url"]];
         NSString *subStr = [resource valueForKeyPath:@"attributes.artistName"];
         if (!subStr) subStr = [resource valueForKeyPath:@"attributes.curatorName"];
 
@@ -61,22 +57,23 @@
     
     [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.bottom.mas_equalTo(superView).insets(padding);
-
         CGFloat w = CGRectGetHeight(superView.bounds)-(padding.top+padding.bottom);
         make.width.mas_equalTo(w);
     }];
 
+    CGFloat centerY = CGRectGetMidY(self.contentView.bounds);
     [self.titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(weakSelf.imageView.mas_right).offset(padding.left);
-        make.top.mas_equalTo(weakSelf.imageView.mas_top);
         make.right.mas_equalTo(superView).mas_offset(-padding.right);
+        make.bottom.mas_equalTo(superView).mas_offset(-centerY);
+        make.top.mas_lessThanOrEqualTo(superView.mas_top).mas_offset(padding.top);
     }];
 
     [self.subTitleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.titleLabel.mas_bottom);
         make.left.mas_equalTo(weakSelf.titleLabel.mas_left);
-        make.bottom.mas_lessThanOrEqualTo(superView.mas_bottom).offset(-padding.bottom);
         make.right.mas_equalTo(superView.mas_right).offset(-padding.right);
+        make.bottom.mas_lessThanOrEqualTo(superView.mas_bottom).offset(-padding.bottom);
     }];
 
 }

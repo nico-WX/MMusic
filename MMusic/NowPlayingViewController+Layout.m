@@ -81,6 +81,14 @@
     [self.songNameLabel setTextAlignment:NSTextAlignmentCenter];
     [self.artistLabel setTextAlignment:NSTextAlignmentCenter];
 
+    CGSize imageSize = self.artworkView.image.size;
+    CGSize artworkSize = self.artworkView.bounds.size;
+    if (imageSize.width<artworkSize.width || imageSize.height<artworkSize.height) {
+        
+    }
+
+
+
     //边距
     UIEdgeInsets padding = UIEdgeInsetsMake(40, 20, -20, -20);
     UIView *superView = self.view;

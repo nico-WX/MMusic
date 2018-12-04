@@ -66,10 +66,6 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-
-//    __weak typeof(self) weakSelf = self;
-//    UIView *superView = self.view;
-
 }
 
 #pragma mark - <UITableViewDataSource>

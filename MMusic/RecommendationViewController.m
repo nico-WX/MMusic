@@ -37,12 +37,17 @@ UICollectionViewDataSourcePrefetching,MMDetailViewControllerDelegate,UIViewContr
 static NSString *const sectionIdentifier = @"sectionView";
 static NSString *const cellIdentifier = @"resourceCell";
 
+- (instancetype)init{
+    if (self = [super init]) {
+        _recommendationData = [[RecommendationData alloc] init];
+        _popupAnimator = [MMDetailPoppingAnimator new];
+    }
+    return self;
+}
+
 #pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    _recommendationData = [[RecommendationData alloc] init];
-    _popupAnimator = [MMDetailPoppingAnimator new];
 
     [self.view setBackgroundColor:UIColor.whiteColor];
     [self.view addSubview:self.collectionView];
@@ -64,7 +69,6 @@ static NSString *const cellIdentifier = @"resourceCell";
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -127,6 +131,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 }
 
 #pragma mark - <UICollectionViewDelegate>
+// 选中,  呈现专辑或者播放列表 歌曲信息
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
     ResourceCell_V2 *cell = (ResourceCell_V2*)[collectionView cellForItemAtIndexPath:indexPath];

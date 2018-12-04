@@ -25,7 +25,7 @@
         [UIView animateWithDuration:[self transitionDuration:transitionContext]
                               delay:0.0
              usingSpringWithDamping:0.65
-              initialSpringVelocity:0.0
+              initialSpringVelocity:0.1
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
                              [toVC.view setFrame:finalFrame];
@@ -39,6 +39,7 @@
         UIViewController *from = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
 //        NSLog(@"From frame =%@",NSStringFromCGRect(from.view.frame));
 //        NSLog(@"start frame =%@",NSStringFromCGRect(self.startFrame));
+//        CGRect frame = CGRectMake(0, 1000, CGRectGetWidth(from.view.frame), CGRectGetHeight(from.view.frame));
         [UIView animateWithDuration:[self transitionDuration:transitionContext]
                               delay:0.0
              usingSpringWithDamping:0.65

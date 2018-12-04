@@ -11,9 +11,7 @@
 @class Song;
 
 @interface SongCell : UITableViewCell
-/**歌曲编号*/
-@property(nonatomic, strong,readonly) UILabel *numberLabel;
 /**当前song*/
-@property(nonatomic, strong) Song *song;
+@property(nonatomic, strong, readonly) Song *song;
 - (void)setSong:(Song *)song withIndex:(NSUInteger)index;
 @end
