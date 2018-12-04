@@ -3,6 +3,7 @@
 //  MMusic
 //
 //  Copyright © 2018年 com.😈. All rights reserved.
+
 //  pod and system
 #import <Masonry.h>
 #import <MJRefresh.h>
@@ -96,11 +97,10 @@ static NSString *const reuseID = @"cell search term";
 #pragma mark - MMSearchViewControllerDelegate
 - (void)presentSearchViewController:(MMSearchViewController *)searchViewController{
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:searchViewController];
-    //h这里要嵌入导航控制器中, 搜索VC 需要使用
+    //这里要嵌入导航控制器中, 搜索VC 需要使用
     [nav setTransitioningDelegate:self];
     [self presentViewController:nav animated:YES completion:nil];
 }
-
 
 #pragma mark - UIViewControllerTransitioningDelegate
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
@@ -113,7 +113,7 @@ static NSString *const reuseID = @"cell search term";
 }
 
 
-#pragma mark - layz Load
+#pragma mark - getter
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
         UIEdgeInsets padding = UIEdgeInsetsMake(8, 8, 8, 8);

@@ -194,7 +194,7 @@
         frame.origin.x += 8;
 
         [UIView animateWithDuration:0.2 animations:^{
-            //禁用, 防止不断点击
+            //禁用, 防止多次触发
             [self setUserInteractionEnabled:NO];
             [imageView setFrame:frame];
         } completion:^(BOOL finished) {

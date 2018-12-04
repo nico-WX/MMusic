@@ -11,7 +11,6 @@
 #import "MMSearchResultsViewController.h"
 #import "MMSearchData.h"
 
-
 @interface MMSearchViewController ()<UISearchBarDelegate,UITableViewDelegate,UITableViewDataSource>
 
 @property(nonatomic, strong) MMSearchResultsViewController *searchResultsVC;    //结果显示控制器
@@ -26,12 +25,12 @@
 static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 @implementation MMSearchViewController
 
-@synthesize searchBar = _searchBar;
-
+//@synthesize searchBar = _searchBar;
 
 - (instancetype)init{
     if (self =[super init]) {
         _searchData = [[MMSearchData alloc] init];
+
         CGFloat width = CGRectGetWidth([[UIScreen mainScreen] bounds]) - 16;
         _searchBar = [[UISearchBar alloc] initWithFrame: CGRectMake(8, 0, width, 44.0f)];
         [_searchBar setDelegate:self];
@@ -42,15 +41,16 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self.view setBackgroundColor:UIColor.grayColor];
+    [self.view setBackgroundColor:UIColor.lightGrayColor];
 
     //键盘弹出 与隐藏消息
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidShowNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:UIKeyboardDidShowNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
         NSDictionary *info = note.userInfo;
         NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
         self.keyboardFrame = value.CGRectValue;
     }];
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidHideNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+    [center addObserverForName:UIKeyboardDidHideNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
         [self.hintsView removeFromSuperview];
     }];
 }
@@ -88,8 +88,9 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
 
 #pragma mark - <UISearchBarDelegate>
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
-    //[self.searchResultsVC.view removeFromSuperview];
-    //未入栈
+
+    [self.searchResultsVC.view removeFromSuperview];
+    //未入栈,代理显示本视图控制器
     if (_presentDelegate && [_presentDelegate respondsToSelector:@selector(presentSearchViewController:)] && !self.navigationController) {
         [_presentDelegate presentSearchViewController:self];
         [searchBar setShowsCancelButton:YES animated:YES];
@@ -123,7 +124,6 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
                         make.left.right.mas_equalTo(weakSelf.view);
                         make.height.mas_equalTo(h);
                     }];
-
                     [self.hintsView reloadData];
                 }
             });

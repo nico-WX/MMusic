@@ -12,7 +12,7 @@
 #import "MMDetailViewController.h"
 #import "MMTabBarController.h"
 
-#import "TodaySectionView.h"
+#import "RecommentationSectionView.h"
 #import "ResourceCell_V2.h"
 
 #import "MMDetailPoppingAnimator.h"
@@ -123,7 +123,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     //节头
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
-        TodaySectionView *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:sectionIdentifier forIndexPath:indexPath];
+        RecommentationSectionView *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:sectionIdentifier forIndexPath:indexPath];
         [header.titleLabel setText:[self.recommendationData titleWithSection:indexPath.section]];
         return header;
     }
@@ -203,7 +203,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 
             UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
             [collectionView registerClass:[ResourceCell_V2 class] forCellWithReuseIdentifier:cellIdentifier];
-            [collectionView registerClass:[TodaySectionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionIdentifier];
+            [collectionView registerClass:[RecommentationSectionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionIdentifier];
             [collectionView setBackgroundColor:[UIColor whiteColor]];
             [collectionView setDataSource:self];
             [collectionView setDelegate: self];

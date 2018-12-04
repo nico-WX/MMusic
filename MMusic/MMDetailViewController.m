@@ -98,14 +98,11 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     UIView *superView = self.view;
     __weak typeof(self) weakSelf = self;
 
-// 约束
+    // 约束
     [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        UIEdgeInsets padding = UIEdgeInsetsMake(8, 100, 0, 100);
-        make.top.mas_equalTo(superView).offset(padding.top);
-        make.left.mas_equalTo(superView).offset(padding.left);
-        make.right.mas_equalTo(superView).offset(-padding.left);
-        CGFloat h = CGRectGetWidth(superView.bounds) - (padding.left+padding.right);
-        make.height.mas_equalTo(h);
+        make.top.mas_equalTo(superView).offset(8);
+        make.centerX.mas_equalTo(superView);
+        make.size.mas_equalTo(CGSizeMake(200, 200));
     }];
 
     [self.titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -124,11 +121,10 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         make.size.mas_equalTo(CGSizeMake(35, 35));
     }];
 
-    //tablView content 向下偏移量
+    //布局完成,确定 tablView content 向下偏移量
     ({
         self.topOffset = CGRectGetMaxY(self.titleLabel.frame)+8;
         [self.tableView setContentInset:UIEdgeInsetsMake(self.topOffset, 0, 0, 0)];
-
         [self.tableView setContentOffset:CGPointMake(0, -self.topOffset)];
     });
 }

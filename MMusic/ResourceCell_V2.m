@@ -21,54 +21,43 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
 
-        // 实例化变量 && set
-        ({
-            _imageView = [UIImageView new];
-            _titleLabel = [UILabel new];
+        //[self setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
 
-            [_titleLabel setTextAlignment:NSTextAlignmentCenter];
-            [_titleLabel setAdjustsFontSizeToFitWidth:YES];
-        });
+        _imageView = [[UIImageView alloc] init];
+        _titleLabel = [[UILabel alloc] init];
 
-        //self set
-        ({
-            //add
-            [self.contentView addSubview:_imageView];
-            [self.contentView addSubview:_titleLabel];
+        [_titleLabel setTextAlignment:NSTextAlignmentCenter];
+        [_titleLabel setAdjustsFontSizeToFitWidth:YES];
+        [_titleLabel setTextColor:MainColor];
 
-            //set
-            //默认全透明, 无法显示阴影  , 设置颜色通道透明
-            //[self setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0]];
-            [self.layer setShadowColor:UIColor.lightGrayColor.CGColor];
-            [self.layer setShadowOffset:CGSizeMake(5, 10)];
-            [self.layer setShadowOpacity:0.8];
-            [self.layer setShadowRadius:8];
-        });
+        
+        [self.contentView addSubview:_imageView];
+        [self.contentView addSubview:_titleLabel];
+
+        //set
+        //默认全透明, 无法显示阴影  , 设置颜色通道透明
+        [self.layer setShadowColor:UIColor.lightGrayColor.CGColor];
+        [self.layer setShadowOffset:CGSizeMake(4, 8)];
+        [self.layer setShadowOpacity:0.8];
+        [self.layer setShadowRadius:6];
     }
     return self;
 }
 
 - (void)layoutSubviews{
-    //layout
-    ({
-        UIView *superView = self.contentView;
-        __weak typeof(self) weakSelf = self;
-        [_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(superView.mas_left);
-            make.top.mas_equalTo(superView.mas_top);
-            make.right.mas_equalTo(superView.mas_right);
-            make.height.mas_equalTo(CGRectGetWidth(superView.frame));
-        }];
-
-        [_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(superView.mas_left);
-            make.right.mas_equalTo(superView.mas_right);
-            make.bottom.mas_equalTo(superView.mas_bottom);
-            make.top.mas_equalTo(weakSelf.imageView.mas_bottom);
-        }];
-    });
-
     [super layoutSubviews];
+
+    UIView *superView = self.contentView;
+    __weak typeof(self) weakSelf = self;
+    [_imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.mas_equalTo(superView);
+        make.height.mas_equalTo(CGRectGetWidth(superView.frame));
+    }];
+
+    [_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(superView);
+        make.top.mas_equalTo(weakSelf.imageView.mas_bottom);
+    }];
 }
 
 

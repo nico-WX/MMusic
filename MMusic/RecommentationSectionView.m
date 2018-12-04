@@ -2,17 +2,14 @@
 //  HeadCell.m
 //  MMusic
 //
-//  Created by Magician on 2018/3/7.
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "TodaySectionView.h"
+#import "RecommentationSectionView.h"
 #import <Masonry.h>
 
-@interface TodaySectionView()
-@end
 
-@implementation TodaySectionView
+@implementation RecommentationSectionView
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {

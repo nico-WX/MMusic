@@ -19,9 +19,10 @@
         _titleLabel = [[UILabel alloc] init];
         _subTitleLabel = [[UILabel alloc] init];
 
+        [_titleLabel setFont:[UIFont systemFontOfSize:[UIFont labelFontSize]]];
         [_titleLabel setAdjustsFontSizeToFitWidth:YES];
-        [_subTitleLabel setTextColor:UIColor.lightGrayColor];
-        [_subTitleLabel setFont:[UIFont systemFontOfSize:10.0]];
+        [_subTitleLabel setTextColor:UIColor.grayColor];
+        [_subTitleLabel setFont:[UIFont systemFontOfSize:[UIFont smallSystemFontSize]]];
 
         [self.contentView addSubview:_imageView];
         [self.contentView addSubview:_titleLabel];

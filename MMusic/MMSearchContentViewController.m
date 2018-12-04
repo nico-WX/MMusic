@@ -26,10 +26,12 @@
 #import "MusicVideo.h"
 
 @interface MMSearchContentViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
-
+//内容
 @property(nonatomic, strong) UICollectionView *collectionView;
+//内容类型: songs,albums,playlists,music-videos
 @property(nonatomic, strong) NSString *type;
 
+//动画
 @property(nonatomic, strong) MMDetailPoppingAnimator *animator;
 @property(nonatomic, strong) MMDetailPresentationController *presentationController;
 @end
@@ -56,9 +58,7 @@ static NSString *const cellID = @" cell reuse identifier";
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
 
-    //view 大小产生变化
     UIView *superView = self.view;
-    UIEdgeInsets padding = UIEdgeInsetsMake(0, 4, 0, 4);
     [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(superView);
     }];
@@ -73,7 +73,6 @@ static NSString *const cellID = @" cell reuse identifier";
     if ([cell isKindOfClass:MMSearchContentCell.class]) {
         ((MMSearchContentCell*)cell).resource = [self.responseRoot.data objectAtIndex:indexPath.row];
     }
-
     return cell;
 }
 
@@ -85,10 +84,9 @@ static NSString *const cellID = @" cell reuse identifier";
             Song *song = [Song instanceWithResource:res];
             [songs addObject:song];
         }
-        [MainPlayer playSongs:songs startIndex:indexPath.row];
-    }
 
-    if ([self.type isEqualToString:@"music-videos"]) {
+        [MainPlayer playSongs:songs startIndex:indexPath.row];
+    }else if ([self.type isEqualToString:@"music-videos"]) {
         NSMutableArray<MusicVideo*> *mvs = [NSMutableArray array];
         for (Resource *res in _responseRoot.data) {
             [mvs addObject:[MusicVideo instanceWithResource:res]];
@@ -101,8 +99,8 @@ static NSString *const cellID = @" cell reuse identifier";
 
         [detail setDisMissDelegate:self];
         [detail setTransitioningDelegate:self];
-
         [detail setModalPresentationStyle:UIModalPresentationCustom];
+
         [self.animator setStartFrame:cell.frame];
         [self presentViewController:detail animated:YES completion:nil];
     }
@@ -141,19 +139,13 @@ static NSString *const cellID = @" cell reuse identifier";
         [_collectionView setDataSource:self];
         [_collectionView setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:1]];
         [_collectionView setContentInset:padding];  //内容左右偏移4, 翻页时看到分界线效果
-        [_collectionView setAllowsSelection:YES];
 
 
         // 不同的类型注册不同的cell 及设置不同的大小
         ({
-            CGFloat w = CGRectGetWidth(self.view.bounds) - (padding.left+padding.right*3); //视图约束时, 左右偏移4, 减去
+            CGFloat w = CGRectGetWidth(self.view.bounds) - (padding.left+padding.right); // 小于视图宽度
             CGFloat h = 0;
 
-//            if ([self.type isEqualToString:@"artists"]) {
-//                [_collectionView registerClass:[MMSearchContentArtistsCell class] forCellWithReuseIdentifier:cellID];
-//                h = 60.0;
-//
-//            }else
             if ([self.type isEqualToString:@"songs"]) {
                 [_collectionView registerClass:[MMSearchContentSongCell class] forCellWithReuseIdentifier:cellID];
                 h = 44;
@@ -188,19 +180,30 @@ static NSString *const cellID = @" cell reuse identifier";
      [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
          json =[json valueForKeyPath:@"results"];
 
+         //nextpage 加载 的数据
+         __block ResponseRoot *root;
          [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-             ResponseRoot *root = [ResponseRoot instanceWithDict:obj];
-             self.responseRoot.next = root.next;
-             [self.responseRoot.data addObjectsFromArray:root.data];
-             // = [self.responseRoot.data arrayByAddingObjectsFromArray:root.data];
+             root = [ResponseRoot instanceWithDict:obj];
          }];
 
          dispatch_async(dispatch_get_main_queue(), ^{
+
+             //添加前的最大下标
+             NSUInteger beforCount = self.responseRoot.data.count-1;
+             self.responseRoot.next = root.next;    //覆盖下一页地址
+             [self.responseRoot.data addObjectsFromArray:root.data];    //追加数据
+
+             //记录要刷新的cell下标
+             NSMutableArray<NSIndexPath*> *items = [NSMutableArray array];
+             for (int i = 0 ; i<root.data.count; i++) {
+                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:++beforCount inSection:0];
+                 [items addObject:indexPath];
+             }
+
+             [self.collectionView reloadData];                      //刷新数据源,再刷新cell
+             [self.collectionView reloadItemsAtIndexPaths:items];   //刷新最后添加的cell
              [self.collectionView.mj_footer endRefreshing];
-             [self.collectionView reloadData];
          });
      }];
  }
-
-
 @end

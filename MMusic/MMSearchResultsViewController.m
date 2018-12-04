@@ -14,15 +14,15 @@
 #import "MMSearchData.h"
 
 
-
 @interface MMSearchResultsViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,
 UIPageViewControllerDelegate>
 
 @property(nonatomic, strong) NSString *term;    //搜索字段
 @property(nonatomic, strong) MMSearchData *searchData;  //搜索数据模型控制
-//顶部分页段
+
+//顶部分页指示
 @property(nonatomic, strong) UICollectionView *topPageSectionView;
-//分页控制器
+//内容分页控制器
 @property(nonatomic, strong) UIPageViewController *pageViewController;
 @end
 
@@ -69,7 +69,7 @@ static NSString *const topCellID = @"top cell reuse identifier";
                                                   direction:UIPageViewControllerNavigationDirectionForward
                                                    animated:YES
                                                  completion:nil];
-                //选中第一项
+                //顶部分页视图选中第一项
                 [self.topPageSectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
             }else{
                 [hud setMode:MBProgressHUDModeText];
@@ -98,8 +98,8 @@ static NSString *const topCellID = @"top cell reuse identifier";
     }];
 }
 
-#pragma mark - Protocol ----------Begin-------------------------
-# pragma mark  UICollectionViewDataSource
+
+# pragma mark -  UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.searchData.searchResults.count;
 }
@@ -108,7 +108,7 @@ static NSString *const topCellID = @"top cell reuse identifier";
     [cell.titleLabel setText:[self.searchData pageTitleForIndex:indexPath.row]];
     return cell;
 }
-# pragma mark  UICollectionViewDelegate
+# pragma mark  - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     UIViewController *vc = [self.searchData viewControllerAtIndex:indexPath.row];
     NSInteger currentIndex = [self.searchData indexOfViewController:self.pageViewController.viewControllers.firstObject];
@@ -133,8 +133,7 @@ static NSString *const topCellID = @"top cell reuse identifier";
     }
 }
 
-
-#pragma mark - layz Load
+#pragma mark - getter
 - (UICollectionView *)topPageSectionView{
     if (!_topPageSectionView) {
         UICollectionViewFlowLayout *layout =[[UICollectionViewFlowLayout alloc] init];
@@ -151,7 +150,6 @@ static NSString *const topCellID = @"top cell reuse identifier";
         [_topPageSectionView setBackgroundColor:UIColor.whiteColor];
         [_topPageSectionView setDelegate:self];
         [_topPageSectionView setDataSource:self];
-        [_topPageSectionView setAllowsSelection:YES];
     }
     return _topPageSectionView;
 }
@@ -163,7 +161,6 @@ static NSString *const topCellID = @"top cell reuse identifier";
                                                                             options:nil];
         [_pageViewController setDelegate:self];
         [_pageViewController setDataSource:self.searchData];    //数据源从模型控制器中获取
-        //[_pageViewController.view setBackgroundColor:UIColor.blackColor];
     }
     return _pageViewController;
 }

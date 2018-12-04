@@ -10,7 +10,7 @@
 #import "Resource.h"
 
 #import "ResourceCell_V2.h"
-#import "TodaySectionView.h"
+#import "RecommentationSectionView.h"
 
 @interface RecommendationData ()
 // all data
