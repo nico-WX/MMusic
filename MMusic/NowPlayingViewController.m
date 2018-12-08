@@ -79,11 +79,13 @@ static NowPlayingViewController *_instance;
         [self.view addSubview:_playButton];
         [self.view addSubview:_nextButton];
 
-        // Llabel 文本
+        // Llabel 文本 setter
         [_songNameLabel setAdjustsFontSizeToFitWidth:YES];
         [_songNameLabel setTextColor:MainColor];
+        [_songNameLabel setFont:[UIFont systemFontOfSize:[UIFont buttonFontSize]]];
+
         [_artistLabel setTextColor:UIColor.grayColor];
-        [_artistLabel setFont:[UIFont systemFontOfSize:14.0]];
+        [_artistLabel setFont:[UIFont systemFontOfSize:[UIFont smallSystemFontSize]]];
         [_artistLabel setAdjustsFontSizeToFitWidth:YES];
     }
     return self;
@@ -203,12 +205,6 @@ static NowPlayingViewController *_instance;
     [self.songNameLabel setTextAlignment:NSTextAlignmentCenter];
     [self.artistLabel setTextAlignment:NSTextAlignmentCenter];
 
-    CGSize imageSize = self.artworkView.image.size;
-    CGSize artworkSize = self.artworkView.bounds.size;
-    if (imageSize.width<artworkSize.width || imageSize.height<artworkSize.height) {
-
-    }
-
     //边距
     UIEdgeInsets padding = UIEdgeInsetsMake(40, 20, 20, 20);
     UIView *superView = self.view;
@@ -243,30 +239,36 @@ static NowPlayingViewController *_instance;
         make.left.right.mas_equalTo(superView).insets(padding);
     }];
     [self.artistLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.songNameLabel.mas_bottom).offset(4);
+        make.top.mas_equalTo(weakSelf.songNameLabel.mas_bottom).offset(10);
         make.left.right.mas_equalTo(superView).insets(padding);
     }];
 
-    // note  按钮间无间距
-    CGFloat offset = padding.left+padding.right;
-    CGFloat w = (CGRectGetWidth(superView.frame) - offset)/3; //button 平均宽度
+    // size
     CGFloat h = 44.0f;
-    CGSize buttonSize = CGSizeMake(w, h);
+    CGFloat w = h;
+    CGSize buttonSize = CGSizeMake(w, h);  //w
+
+    // point
+    // 基于父视图偏移, 建立约束时, 减去宽度的一半偏移
+    CGFloat x1 = CGRectGetMidX(self.artistLabel.frame)/2;
+    CGFloat x2 = x1*2;
+    CGFloat x3 = x1*3;
 
     [self.previousButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.artistLabel.mas_bottom).offset(padding.top/2);
-        make.left.mas_equalTo(superView).offset(padding.left);
+        make.left.mas_equalTo(superView).offset(x1 - h/2);
         make.size.mas_equalTo(buttonSize);
     }];
 
     [self.playButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.previousButton.mas_top);
-        make.left.mas_equalTo(weakSelf.previousButton.mas_right);
+        make.left.mas_equalTo(superView).offset(x2 - h/2);
         make.size.mas_equalTo(buttonSize);
     }];
+
     [self.nextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.playButton.mas_top);
-        make.left.mas_equalTo(weakSelf.playButton.mas_right);
+        make.left.mas_equalTo(superView).offset(x3 - h/2);
         make.size.mas_equalTo(buttonSize);
     }];
 
@@ -276,6 +278,18 @@ static NowPlayingViewController *_instance;
         make.top.mas_equalTo(weakSelf.playButton.mas_bottom).offset(padding.top/2);
         make.size.mas_equalTo(CGSizeMake(heartW, heartW));
     }];
+
+
+ //   [self updateCurrentItemMetadata];
+
+//    //处理照片分辨率
+//    CGSize imageSize = self.artworkView.image.size;
+//    CGSize artworkSize = self.artworkView.bounds.size;
+//    if (imageSize.width<artworkSize.width || imageSize.height<artworkSize.height) {
+//        Song *nowSong = [MainPlayer nowPlayingSong];
+//        UIImage *image = [MainPlayer.nowPlayingItem.artwork imageWithSize:self.artworkView.bounds.size];
+//        [self.artworkView setImage:image];
+//    }
 }
 
 
@@ -296,7 +310,7 @@ static NowPlayingViewController *_instance;
     //pop state
     if (h<100) {
         // title FontSize
-        [self.songNameLabel setFont:[UIFont systemFontOfSize:20]];
+        //[self.songNameLabel setFont:[UIFont systemFontOfSize:20]];
         [self.nextButton setImage:[UIImage imageNamed:@"nextFwd"] forState:UIControlStateNormal];
         switch (MainPlayer.playbackState) {
             case MPMusicPlaybackStateStopped:
@@ -316,7 +330,7 @@ static NowPlayingViewController *_instance;
     }else{
         //open state (popping)
         // title FontSize
-        [self.songNameLabel setFont:[UIFont systemFontOfSize:26]];
+        //[self.songNameLabel setFont:[UIFont systemFontOfSize:26]];
         [self.previousButton setImage:[UIImage imageNamed:@"nowPlaying_prev"] forState:UIControlStateNormal];
         [self.nextButton setImage:[UIImage imageNamed:@"nowPlaying_next"] forState:UIControlStateNormal];
         switch (MainPlayer.playbackState) {

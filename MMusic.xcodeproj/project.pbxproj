@@ -17,6 +17,7 @@
 		3B3D9981205512FA000F2E9E /* SongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9980205512FA000F2E9E /* SongCell.m */; };
 		3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D99E9205E990F000F2E9E /* NSString+Hash.m */; };
 		3B42110421B5220B0078ECAC /* MMCloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B42110321B5220B0078ECAC /* MMCloseButton.m */; };
+		3B42114B21BBB0650078ECAC /* HeartStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B42114921BBB0640078ECAC /* HeartStyleKit.m */; };
 		3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D988020BA8A2600139BE0 /* DBTool.m */; };
 		3B4D989120BA8A3D00139BE0 /* DBModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D989020BA8A3D00139BE0 /* DBModel.m */; };
 		3B4D989420BA8C1700139BE0 /* ArtistsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D989320BA8C1600139BE0 /* ArtistsModel.m */; };
@@ -251,6 +252,8 @@
 		3B3D99E9205E990F000F2E9E /* NSString+Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hash.m"; sourceTree = "<group>"; };
 		3B4210F121B5220A0078ECAC /* MMCloseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMCloseButton.h; sourceTree = "<group>"; };
 		3B42110321B5220B0078ECAC /* MMCloseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMCloseButton.m; sourceTree = "<group>"; };
+		3B42114921BBB0640078ECAC /* HeartStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HeartStyleKit.m; path = ../../../HeartStyleKit.m; sourceTree = "<group>"; };
+		3B42114A21BBB0640078ECAC /* HeartStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HeartStyleKit.h; path = ../../../HeartStyleKit.h; sourceTree = "<group>"; };
 		3B4D987F20BA8A2600139BE0 /* DBTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBTool.h; sourceTree = "<group>"; };
 		3B4D988020BA8A2600139BE0 /* DBTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBTool.m; sourceTree = "<group>"; };
 		3B4D988F20BA8A3D00139BE0 /* DBModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBModel.h; sourceTree = "<group>"; };
@@ -531,6 +534,8 @@
 				3B4DDC402191BE0D00F70547 /* MPMusicPlayerController+ResourcePlaying.m */,
 				3B64D0ED20ECE76200D831FE /* MMHeartSwitch.h */,
 				3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */,
+				3B42114A21BBB0640078ECAC /* HeartStyleKit.h */,
+				3B42114921BBB0640078ECAC /* HeartStyleKit.m */,
 				3BDFCB662082219900D85021 /* PlayProgressView.h */,
 				3BDFCB672082219900D85021 /* PlayProgressView.m */,
 				3B6BE79B21A57D7C0004F3E5 /* MMPlayerButton.h */,
@@ -1311,6 +1316,7 @@
 				3B9AA8E01FB461CD00720085 /* Activities.m in Sources */,
 				3B9AA8D61FB452FF00720085 /* Relationship.m in Sources */,
 				3B6BE746219DACDD0004F3E5 /* MMDetailPresentationController.m in Sources */,
+				3B42114B21BBB0650078ECAC /* HeartStyleKit.m in Sources */,
 				3B9AA8E31FB463E800720085 /* Album.m in Sources */,
 				3B353F6921B2C4A80072C424 /* UIView+LayerImage.m in Sources */,
 				3B9AA9011FB479B700720085 /* Preview.m in Sources */,

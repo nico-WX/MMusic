@@ -7,10 +7,11 @@
 //
 
 #import "MMHeartSwitch.h"
+#import "HeartStyleKit.h"
 
 @interface MMHeartSwitch()
 @property(nonatomic, strong) UIImpactFeedbackGenerator *impact;
-@property(nonatomic, strong) UIImageView *imageView;
+
 @end
 
 @implementation MMHeartSwitch
@@ -18,40 +19,34 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
 
-        [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
-        [self setOn:NO]; // 默认off
-
         _impact = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
-        _imageView = [[UIImageView alloc] initWithFrame:self.bounds];
-        [_imageView setImage:[UIImage imageNamed:@"on"]];               //默认图片
-        [self addSubview:_imageView];
+
+        [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
         [self addTarget:self action:@selector(change) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
 
-- (void)layoutSubviews {
-    [_imageView setFrame:self.bounds];
-    [super layoutSubviews];
+- (void)drawRect:(CGRect)rect{
+    if(self.on){
+        [HeartStyleKit drawOnCanvasWithFrame:rect resizing:HeartStyleKitResizingBehaviorAspectFit];
+    }else{
+        [HeartStyleKit drawOffCanvasWithFrame:rect resizing:HeartStyleKitResizingBehaviorAspectFit];
+    }
+}
+
+- (void)setOn:(BOOL)on{
+    _on = on;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setNeedsDisplay];
+        [self animationButton:self];
+    });
 }
 
 - (void)change {
     //取反
     [self.impact impactOccurred];
     [self setOn:!_on];
-}
-
-- (void)setOn:(BOOL)on {
-    _on = on;
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self animationButton:self];
-        if (on){
-            [self.imageView setImage:[UIImage imageNamed:@"on"]];
-        }else{
-            [self.imageView setImage:[UIImage imageNamed:@"off"]];
-        }
-    });
 }
 
 //简单的缩小-->恢复原始状态
@@ -66,8 +61,6 @@
             }];
         }
     }];
-
-
 }
 
 @end

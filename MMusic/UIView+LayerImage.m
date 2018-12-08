@@ -21,8 +21,14 @@
     // UIGraphicsBeginImageContext(size);
     CGContextRef context = UIGraphicsGetCurrentContext();
 
+    [UIGraphicsImageRendererFormat new];
+
+    UIGraphicsImageRenderer;
+    UIGraphicsImageRendererContext;
+
     [self.layer renderInContext:context];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+
 
     UIGraphicsEndImageContext();
     return image;

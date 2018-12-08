@@ -60,13 +60,14 @@
 }
 
 - (Song *)nowPlayingSong{
-    __block Song *nowSong ;
+
     for (Song *song in self.songLists) {
         if ([song isEqualToMediaItem:self.nowPlayingItem]) {
-            nowSong = song;
+            return song;
         }
     }
 
+     __block Song *nowSong ;
     if (!nowSong) {
         [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
             json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];

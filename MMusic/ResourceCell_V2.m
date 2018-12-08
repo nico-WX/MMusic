@@ -29,6 +29,7 @@
         [_titleLabel setTextAlignment:NSTextAlignmentCenter];
         [_titleLabel setAdjustsFontSizeToFitWidth:YES];
         [_titleLabel setTextColor:MainColor];
+        [_titleLabel setFont:[UIFont systemFontOfSize:[UIFont labelFontSize]]];
 
         
         [self.contentView addSubview:_imageView];
@@ -62,11 +63,10 @@
 
 
 -(void)prepareForReuse{
-
+    [super prepareForReuse];
     _resource = nil;
     _imageView.image = NULL;
     _titleLabel.text = NULL;
-    [super prepareForReuse];
 }
 
 - (void)setResource:(Resource *)resource{

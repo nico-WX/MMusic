@@ -25,11 +25,15 @@
 #import "Song.h"
 #import "MusicVideo.h"
 
-@interface MMSearchContentViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
-//内容
-@property(nonatomic, strong) UICollectionView *collectionView;
-//内容类型: songs,albums,playlists,music-videos
-@property(nonatomic, strong) NSString *type;
+// 使用分类 分割代码
+@interface MMSearchContentViewController (protocal)<UICollectionViewDelegate, UICollectionViewDataSource,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
+@end
+
+
+@interface MMSearchContentViewController ()
+
+@property(nonatomic, strong) UICollectionView *collectionView;  //内容
+@property(nonatomic, strong) NSString *type;    //内容类型: songs,albums,playlists,music-videos
 
 //动画
 @property(nonatomic, strong) MMDetailPoppingAnimator *animator;
@@ -60,69 +64,9 @@ static NSString *const cellID = @" cell reuse identifier";
 
     UIView *superView = self.view;
     [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superView);
+        make.edges.mas_equalTo(superView);//.insets(UIEdgeInsetsMake(0, 0, 8, 0));
     }];
-}
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return self.responseRoot.data.count;
-}
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
-
-    if ([cell isKindOfClass:MMSearchContentCell.class]) {
-        ((MMSearchContentCell*)cell).resource = [self.responseRoot.data objectAtIndex:indexPath.row];
-    }
-    return cell;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-
-    if ([self.type isEqualToString:@"songs"]) {
-        NSMutableArray<Song*> *songs = [NSMutableArray array];
-        for (Resource *res in _responseRoot.data) {
-            Song *song = [Song instanceWithResource:res];
-            [songs addObject:song];
-        }
-
-        [MainPlayer playSongs:songs startIndex:indexPath.row];
-    }else if ([self.type isEqualToString:@"music-videos"]) {
-        NSMutableArray<MusicVideo*> *mvs = [NSMutableArray array];
-        for (Resource *res in _responseRoot.data) {
-            [mvs addObject:[MusicVideo instanceWithResource:res]];
-        }
-        [MainPlayer playMusicVideos:mvs startIndex:indexPath.row];
-    }else{
-
-        MMSearchContentCell *cell = (MMSearchContentCell*)[collectionView cellForItemAtIndexPath:indexPath];
-        MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:cell.resource];
-
-        [detail setDisMissDelegate:self];
-        [detail setTransitioningDelegate:self];
-        [detail setModalPresentationStyle:UIModalPresentationCustom];
-
-        [self.animator setStartFrame:cell.frame];
-        [self presentViewController:detail animated:YES completion:nil];
-    }
-}
-
-#pragma mark - <DetailViewControllerDelegate>
-- (void)detailViewControllerDidDismiss:(MMDetailViewController *)detailVC{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - <UIViewControllerTransitioningDelegate>
-- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
-    [self.animator setPresenting:YES];
-    return self.animator;
-}
-- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
-    [self.animator setPresenting:NO];
-    return self.animator;
-}
--(UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source{
-    self.presentationController =[[MMDetailPresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
-    return self.presentationController;
 }
 
 
@@ -134,7 +78,7 @@ static NSString *const cellID = @" cell reuse identifier";
         [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
         [layout setMinimumLineSpacing:padding.top];
 
-        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
         [_collectionView setDelegate:self];
         [_collectionView setDataSource:self];
         [_collectionView setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:1]];
@@ -203,7 +147,87 @@ static NSString *const cellID = @" cell reuse identifier";
              [self.collectionView reloadData];                      //刷新数据源,再刷新cell
              [self.collectionView reloadItemsAtIndexPaths:items];   //刷新最后添加的cell
              [self.collectionView.mj_footer endRefreshing];
+             //滚动到倒数第二行 , 倒数第一行, 会不断触发加载下一页
+             NSIndexPath *indexPath = [items objectAtIndex:items.count-2];
+             [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:YES];
          });
      }];
  }
+@end
+
+
+#pragma mark - 代理方法实现 分类
+
+@implementation MMSearchContentViewController (protocal)
+
+#pragma mark - <UICollectionViewDataSource>
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return self.responseRoot.data.count;
+}
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
+
+    if ([cell isKindOfClass:MMSearchContentCell.class]) {
+        ((MMSearchContentCell*)cell).resource = [self.responseRoot.data objectAtIndex:indexPath.row];
+    }
+
+    //选中背景
+    UIView *view = [[UIView alloc] initWithFrame:cell.contentView.bounds];
+    [view setBackgroundColor:UIColor.groupTableViewBackgroundColor];
+    [view.layer setCornerRadius:cell.layer.cornerRadius];
+    [view.layer setMasksToBounds:cell.layer.masksToBounds];
+    [cell setSelectedBackgroundView:view];
+    return cell;
+}
+
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+
+    if ([self.type isEqualToString:@"songs"]) {
+        NSMutableArray<Song*> *songs = [NSMutableArray array];
+        for (Resource *res in _responseRoot.data) {
+            Song *song = [Song instanceWithResource:res];
+            [songs addObject:song];
+        }
+
+        [MainPlayer playSongs:songs startIndex:indexPath.row];
+    }else if ([self.type isEqualToString:@"music-videos"]) {
+        NSMutableArray<MusicVideo*> *mvs = [NSMutableArray array];
+        for (Resource *res in _responseRoot.data) {
+            [mvs addObject:[MusicVideo instanceWithResource:res]];
+        }
+        [MainPlayer playMusicVideos:mvs startIndex:indexPath.row];
+    }else{
+
+        MMSearchContentCell *cell = (MMSearchContentCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:cell.resource];
+
+        [detail setDisMissDelegate:self];
+        [detail setTransitioningDelegate:self];
+        [detail setModalPresentationStyle:UIModalPresentationCustom];
+
+        [self.animator setStartFrame:cell.frame];
+        [self presentViewController:detail animated:YES completion:nil];
+    }
+}
+
+#pragma mark - <DetailViewControllerDelegate>
+- (void)detailViewControllerDidDismiss:(MMDetailViewController *)detailVC{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - <UIViewControllerTransitioningDelegate>
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+    [self.animator setPresenting:YES];
+    return self.animator;
+}
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+    [self.animator setPresenting:NO];
+    return self.animator;
+}
+-(UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source{
+    self.presentationController =[[MMDetailPresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
+    return self.presentationController;
+}
+
 @end

@@ -26,11 +26,11 @@
         _durationLabel = [[UILabel alloc] init];
         [_durationLabel setTextColor:UIColor.darkTextColor];
         [_durationLabel setFont:[UIFont systemFontOfSize:[UIFont smallSystemFontSize]]];
+        [_durationLabel setTextAlignment:NSTextAlignmentCenter];
 
 
         NAKPlaybackIndicatorViewStyle *style = [NAKPlaybackIndicatorViewStyle iOS10Style];
         _stateView = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
-//        [_stateView setHidden:YES];
         [_stateView setHidesWhenStopped:YES];
 
         [self.contentView addSubview:_stateView];
@@ -54,7 +54,7 @@
     [self.durationLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.right.bottom.mas_equalTo(superView).insets(UIEdgeInsetsMake(4, 4, 4, 4));
         CGFloat w = CGRectGetHeight(superView.bounds)-8;
-        make.width.mas_equalTo(w*1.5);
+        make.width.mas_equalTo(w*1.2);
     }];
 
     __weak typeof(self) weakSelf = self;
@@ -63,17 +63,19 @@
     }];
 }
 
+
+// 选中s动画
 - (void)setSelected:(BOOL)selected{
     [super setSelected:selected];
 
     if (selected ) {
-
-        NSLog(@">>>>>>>>>>>>");
-
-        UIImage *image = [self imageWithCurrentView]; // 切角了, 需要s
+        UIImage *image = [self imageWithCurrentView]; // 切角了, 但是为什么渲染到上下文中, 切角还是有
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.contentView.bounds];
         [imageView setImage:image];
-        [imageView setBackgroundColor:self.contentView.backgroundColor];
+
+        // 切角相同
+        [imageView.layer setCornerRadius:self.layer.cornerRadius];
+        [imageView.layer setMasksToBounds:self.layer.masksToBounds];
 
         [self.contentView addSubview:imageView];
 
