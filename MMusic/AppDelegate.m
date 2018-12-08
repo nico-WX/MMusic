@@ -45,7 +45,7 @@
     //悬浮窗口添加
     [rootVC addPopViewController:[NowPlayingViewController sharePlayerViewController]];
     //popping 状态
-    rootVC.popupStateDelegate = [NowPlayingViewController sharePlayerViewController];
+    //rootVC.popupStateDelegate = [NowPlayingViewController sharePlayerViewController];
 
 
     MyMusicViewController  *mmusicVC =[[MyMusicViewController alloc] init];

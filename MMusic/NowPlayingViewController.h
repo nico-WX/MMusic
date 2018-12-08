@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NowPlayingViewController : UIViewController<MMTabBarControllerPopupStateDelegate>
+@interface NowPlayingViewController : UIViewController
 + (instancetype)sharePlayerViewController;
 @end
 

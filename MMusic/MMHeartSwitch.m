@@ -11,7 +11,6 @@
 
 @interface MMHeartSwitch()
 @property(nonatomic, strong) UIImpactFeedbackGenerator *impact;
-
 @end
 
 @implementation MMHeartSwitch

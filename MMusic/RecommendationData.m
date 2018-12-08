@@ -9,7 +9,7 @@
 #import "RecommendationData.h"
 #import "Resource.h"
 
-#import "ResourceCell_V2.h"
+#import "ResourceCell.h"
 #import "RecommentationSectionView.h"
 
 @interface RecommendationData ()

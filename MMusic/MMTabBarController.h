@@ -10,16 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**popup 代理*/
-@protocol MMTabBarControllerPopupStateDelegate <NSObject>
-
-@optional
-//popping 状态
-- (void)mmTabBarControllerPopupState:(BOOL)popping whitFrame:(CGRect)frame;
-@end
 
 @interface MMTabBarController : UITabBarController
-@property(nonatomic, weak)id<MMTabBarControllerPopupStateDelegate> popupStateDelegate;
 @property(nonatomic, assign,readonly)CGRect popFrame;
 
 - (void)addPopViewController:(UIViewController*)popViewController;

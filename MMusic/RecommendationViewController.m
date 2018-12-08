@@ -13,7 +13,7 @@
 #import "MMTabBarController.h"
 
 #import "RecommentationSectionView.h"
-#import "ResourceCell_V2.h"
+#import "ResourceCell.h"
 
 #import "MMDetailPoppingAnimator.h"
 #import "MMDetailPresentationController.h"
@@ -114,7 +114,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
     //dequeue cell
-    ResourceCell_V2 *cell = (ResourceCell_V2*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    ResourceCell *cell = (ResourceCell*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     [cell setResource:[self.recommendationData dataWithIndexPath:indexPath]];   //data
     return cell;
 }
@@ -134,7 +134,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 // 选中,  呈现专辑或者播放列表 歌曲信息
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
-    ResourceCell_V2 *cell = (ResourceCell_V2*)[collectionView cellForItemAtIndexPath:indexPath];
+    ResourceCell *cell = (ResourceCell*)[collectionView cellForItemAtIndexPath:indexPath];
     MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:cell.resource];
 
     [detail setDisMissDelegate:self];
@@ -202,7 +202,7 @@ static NSString *const cellIdentifier = @"resourceCell";
         _collectionView = ({
 
             UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
-            [collectionView registerClass:[ResourceCell_V2 class] forCellWithReuseIdentifier:cellIdentifier];
+            [collectionView registerClass:[ResourceCell class] forCellWithReuseIdentifier:cellIdentifier];
             [collectionView registerClass:[RecommentationSectionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionIdentifier];
             [collectionView setBackgroundColor:[UIColor whiteColor]];
             [collectionView setDataSource:self];

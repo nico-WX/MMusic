@@ -6,13 +6,11 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-
 #import <MediaPlayer/MediaPlayer.h>
 #import <Masonry.h>
 
 #import "NowPlayingViewController.h"
 #import "MPMusicPlayerController+ResourcePlaying.h"
-
 #import "PlayProgressView.h"
 #import "MMHeartSwitch.h"
 
@@ -22,15 +20,12 @@
 
 @interface NowPlayingViewController ()
 
-@property(nonatomic, strong)UIImageView *artworkView;
-@property(nonatomic, strong)PlayProgressView *playProgressView;
-@property(nonatomic, strong)UILabel *songNameLabel;
-@property(nonatomic, strong)UILabel *artistLabel;
-@property(nonatomic, strong)UIButton *previousButton;
-@property(nonatomic, strong)UIButton *playButton;
-@property(nonatomic, strong)UIButton *nextButton;
-@property(nonatomic, strong)MMHeartSwitch *heartSwitch;
+@property(nonatomic, strong)UIImageView *artworkView;           // 海报图片
+@property(nonatomic, strong)PlayProgressView *playProgressView; // 播放进度控制
 
+@property(nonatomic, strong)UILabel *songNameLabel,*artistLabel;    // 歌曲名称和艺人名称
+@property(nonatomic, strong)UIButton *previousButton,*playButton,*nextButton;   // 播放控制按钮
+@property(nonatomic, strong)MMHeartSwitch *heartSwitch;         // 心脏开关
 @end
 
 static NowPlayingViewController *_instance;
@@ -69,6 +64,8 @@ static NowPlayingViewController *_instance;
         //设置偏移,  x=y=0 时, 没约束前会出现在左上角, 视图第一次弹出(poping)时,才布局
         _heartSwitch.frame = CGRectMake(200, 200, 30, 30);
         _playProgressView.frame = CGRectMake(200, 200, 30, 30);
+
+        [_artworkView setBackgroundColor:[UIColor colorWithWhite:0.95 alpha:1]];
 
         [self.view addSubview:_heartSwitch];
         [self.view addSubview:_artworkView];
@@ -249,8 +246,8 @@ static NowPlayingViewController *_instance;
     CGSize buttonSize = CGSizeMake(w, h);  //w
 
     // point
-    // 基于父视图偏移, 建立约束时, 减去宽度的一半偏移
-    CGFloat x1 = CGRectGetMidX(self.artistLabel.frame)/2;
+    // 基于父视图偏移, 建立约束时, 减去左边偏移的一半
+    CGFloat x1 = CGRectGetMidX(self.artistLabel.frame)/2 + padding.left/2;
     CGFloat x2 = x1*2;
     CGFloat x3 = x1*3;
 
@@ -280,16 +277,8 @@ static NowPlayingViewController *_instance;
     }];
 
 
- //   [self updateCurrentItemMetadata];
-
-//    //处理照片分辨率
-//    CGSize imageSize = self.artworkView.image.size;
-//    CGSize artworkSize = self.artworkView.bounds.size;
-//    if (imageSize.width<artworkSize.width || imageSize.height<artworkSize.height) {
-//        Song *nowSong = [MainPlayer nowPlayingSong];
-//        UIImage *image = [MainPlayer.nowPlayingItem.artwork imageWithSize:self.artworkView.bounds.size];
-//        [self.artworkView setImage:image];
-//    }
+    //处理照片分辨率
+    [self setupArtworkImage];
 }
 
 
@@ -349,7 +338,6 @@ static NowPlayingViewController *_instance;
 }
 
 
-
 -(void)updateCurrentItemMetadata{
     MPMediaItem *nowPlayingItem = MainPlayer.nowPlayingItem;
     NSString *identifier = MainPlayer.nowPlayingItem.playbackStoreID;
@@ -362,30 +350,32 @@ static NowPlayingViewController *_instance;
         return;
     }
 
-    ({
-        //播放的时候, 有可能在播放第三方音乐, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
-        self.heartSwitch.enabled = identifier ? YES  : NO;
 
-        //红心状态
-        [self heartFromSongIdentifier:identifier];
+    //播放的时候, 有可能在播放第三方音乐, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
+    self.heartSwitch.enabled = identifier ? YES  : NO;
+    //红心状态
+    [self heartFromSongIdentifier:identifier];
 
-        [self.songNameLabel setText:nowPlayingItem.title];
-        [self.artistLabel setText:nowPlayingItem.artist];
+    [self.songNameLabel setText:nowPlayingItem.title];
+    [self.artistLabel setText:nowPlayingItem.artist];
+    [self setupArtworkImage];
+}
 
+- (void)setupArtworkImage{
 
-        UIImage *image  = [nowPlayingItem.artwork imageWithSize:CGSizeMake(200, 200)];
-        if (image) {
-            [self.artworkView setImage:image];
-            return;
-        }
-    });
-
+    MPMediaItem *nowPlayingItem = MainPlayer.nowPlayingItem;
+    NSString *identifier = MainPlayer.nowPlayingItem.playbackStoreID;
+    UIImage *image  = [nowPlayingItem.artwork imageWithSize:CGSizeMake(200, 200)];
+    if (image) {
+        [self.artworkView setImage:image];
+        return;
+    }
     //本地无数据, 从网络 请求
     if (identifier) {
         [MusicKit.new.catalog resources:@[identifier,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-           json = [[[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
-           Song *song = [Song instanceWithDict:json];
-           [self showImageToView:self.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
+            json = [[[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
+            Song *song = [Song instanceWithDict:json];
+            [self showImageToView:self.artworkView withImageURL:song.artwork.url cacheToMemory:YES];
         }];
     }else{
         for (Song *song in MainPlayer.songLists ) {

@@ -23,6 +23,7 @@
 #import "NSObject+Tool.h"
 #import "UIButton+BlockButton.h"
 #import "MusicKit.h"
+#import "UIControl+MMActionBlock.h"
 
 //NSCachesDirectory
 //NSLibraryDirectory
