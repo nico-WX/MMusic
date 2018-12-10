@@ -150,6 +150,8 @@ static NSString *const hintsCellRuseId = @"hints cell Reuse identifier";
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
+
+
 - (void)searchText:(NSString*)term{
     [self.searchBar resignFirstResponder]; //执行搜索, 隐藏键盘
     [self.hintsView removeFromSuperview];   //移除提示表

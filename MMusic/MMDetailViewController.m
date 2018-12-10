@@ -58,7 +58,6 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-
     [self.view setBackgroundColor:UIColor.whiteColor];
     [self.view.layer setCornerRadius:6.0f];
     [self.view.layer setMasksToBounds:YES];

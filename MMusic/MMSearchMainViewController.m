@@ -53,7 +53,7 @@ static NSString *const reuseID = @"cell search term";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
-    [self setTitle:@""];
+    //[self setTitle:@""];
 
     [self.view addSubview:self.collectionView];
     [self.navigationController.navigationBar addSubview:_searchVC.searchBar];

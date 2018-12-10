@@ -10,16 +10,42 @@
 #import "ResponseRoot.h"
 #import "MMSearchContentViewController.h"
 
+
 @interface MMSearchData ()
 @property(nonatomic, strong)NSMutableArray<MMSearchContentViewController*> *cacheViewControllers;
 @end
 
+
+static NSString *const key = @"searchHistory";
 @implementation MMSearchData
 - (instancetype)init{
     if (self = [super init]) {
         _cacheViewControllers = [NSMutableArray array];
     }
     return self;
+}
+
+#pragma mark - 记录搜索历史
+- (NSArray<NSString *> *)searchHinstory{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:key];
+}
+
+- (void)addSearchHinstoryTerm:(NSString*)term {
+
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+
+    NSMutableArray *array = [def valueForKey:key];
+    if (!array) {
+        array = [NSMutableArray array];
+    }
+    if (array.count > 10) {
+        [array removeLastObject];
+    }
+
+    NSMutableArray *temp = [NSMutableArray arrayWithObject:term];
+    [temp addObjectsFromArray:array];
+    [def setValue:temp forKey:key];
+    [def synchronize];
 }
 
 
@@ -29,6 +55,7 @@
 }
 
 - (void)searchDataForTemr:(NSString *)term completion:(nonnull void (^)(BOOL))completion{
+    [self addSearchHinstoryTerm:term];  //记录搜索历史
     [[MusicKit new].catalog searchForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];
         //检查结果返回空结果字典

@@ -59,7 +59,6 @@
 
 
 //                [podcasts setGroupingType:MPMediaGroupingPodcastTitle];
-
 //                for (MPMediaItemCollection *item in podcasts.collections) {
 //                    NSLog(@"***********************************************");
 //                    for (MPMediaItem *i in item.items) {
