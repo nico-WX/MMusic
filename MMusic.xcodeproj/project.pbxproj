@@ -11,8 +11,6 @@
 		3B23AC751FF236A800F0A9CA /* RecommendationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B23AC741FF236A800F0A9CA /* RecommendationViewController.m */; };
 		3B2D6EFD2091F6D400E1B22C /* screening.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D6EFC2091F6D400E1B22C /* screening.plist */; };
 		3B353F4921B14B4F0072C424 /* MMLibraryContentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B353F4821B14B4F0072C424 /* MMLibraryContentCell.m */; };
-		3B353F5821B189810072C424 /* MMCloudLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B353F5721B189810072C424 /* MMCloudLibraryViewController.m */; };
-		3B353F6621B189990072C424 /* MMLocalLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B353F6521B189990072C424 /* MMLocalLibraryViewController.m */; };
 		3B353F6921B2C4A80072C424 /* UIView+LayerImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B353F6821B2C4A80072C424 /* UIView+LayerImage.m */; };
 		3B3D9981205512FA000F2E9E /* SongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9980205512FA000F2E9E /* SongCell.m */; };
 		3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D99E9205E990F000F2E9E /* NSString+Hash.m */; };
@@ -38,6 +36,8 @@
 		3B555EFE20E2225F00AFF9A2 /* MusicKitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B555EEE20E2218F00AFF9A2 /* MusicKitTest.m */; };
 		3B5D746B2164F6B000D16C4E /* ResourceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5D746A2164F6B000D16C4E /* ResourceCell.m */; };
 		3B648F2F21BBDF5E001BB801 /* UIControl+MMActionBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B648F2E21BBDF5E001BB801 /* UIControl+MMActionBlock.m */; };
+		3B648F7B21BFCE92001BB801 /* MMMyMusicPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B648F7A21BFCE92001BB801 /* MMMyMusicPageViewController.m */; };
+		3B648F7E21BFD0F2001BB801 /* MMModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B648F7D21BFD0F2001BB801 /* MMModelController.m */; };
 		3B64D0EE20ECE76200D831FE /* MMHeartSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */; };
 		3B66A22E2195CCDC00F7DC9E /* MMTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */; };
 		3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895820A9968C000C3403 /* LibraryAlbum.m */; };
@@ -235,10 +235,6 @@
 		3B2D6EFC2091F6D400E1B22C /* screening.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = screening.plist; sourceTree = "<group>"; };
 		3B353F4721B14B4F0072C424 /* MMLibraryContentCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMLibraryContentCell.h; sourceTree = "<group>"; };
 		3B353F4821B14B4F0072C424 /* MMLibraryContentCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMLibraryContentCell.m; sourceTree = "<group>"; };
-		3B353F5621B189810072C424 /* MMCloudLibraryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMCloudLibraryViewController.h; sourceTree = "<group>"; };
-		3B353F5721B189810072C424 /* MMCloudLibraryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMCloudLibraryViewController.m; sourceTree = "<group>"; };
-		3B353F6421B189990072C424 /* MMLocalLibraryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMLocalLibraryViewController.h; sourceTree = "<group>"; };
-		3B353F6521B189990072C424 /* MMLocalLibraryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMLocalLibraryViewController.m; sourceTree = "<group>"; };
 		3B353F6721B2C4A80072C424 /* UIView+LayerImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+LayerImage.h"; sourceTree = "<group>"; };
 		3B353F6821B2C4A80072C424 /* UIView+LayerImage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+LayerImage.m"; sourceTree = "<group>"; };
 		3B3D997F205512FA000F2E9E /* SongCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SongCell.h; sourceTree = "<group>"; };
@@ -291,6 +287,10 @@
 		3B5D746A2164F6B000D16C4E /* ResourceCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResourceCell.m; sourceTree = "<group>"; };
 		3B648F2D21BBDF5E001BB801 /* UIControl+MMActionBlock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIControl+MMActionBlock.h"; sourceTree = "<group>"; };
 		3B648F2E21BBDF5E001BB801 /* UIControl+MMActionBlock.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIControl+MMActionBlock.m"; sourceTree = "<group>"; };
+		3B648F7921BFCE92001BB801 /* MMMyMusicPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMMyMusicPageViewController.h; sourceTree = "<group>"; };
+		3B648F7A21BFCE92001BB801 /* MMMyMusicPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMMyMusicPageViewController.m; sourceTree = "<group>"; };
+		3B648F7C21BFD0F2001BB801 /* MMModelController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMModelController.h; sourceTree = "<group>"; };
+		3B648F7D21BFD0F2001BB801 /* MMModelController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMModelController.m; sourceTree = "<group>"; };
 		3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMHeartSwitch.m; sourceTree = "<group>"; };
 		3B64D0ED20ECE76200D831FE /* MMHeartSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMHeartSwitch.h; sourceTree = "<group>"; };
 		3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMTabBarController.m; sourceTree = "<group>"; };
@@ -575,6 +575,8 @@
 				3B6BE7BA21A808590004F3E5 /* MMSongListData.m */,
 				3B6BE7C821A822D30004F3E5 /* ChartsData.h */,
 				3B6BE7C921A822D30004F3E5 /* ChartsData.m */,
+				3B648F7C21BFD0F2001BB801 /* MMModelController.h */,
+				3B648F7D21BFD0F2001BB801 /* MMModelController.m */,
 				3B6BE7F721A95E160004F3E5 /* MMSearchData.h */,
 				3B6BE7F821A95E160004F3E5 /* MMSearchData.m */,
 				3B55342921AFE1EE00C15A0F /* MMTopPageLibraryData.h */,
@@ -745,10 +747,8 @@
 			children = (
 				3B9AA8871FB2E06C00720085 /* MyMusicViewController.h */,
 				3B9AA8881FB2E06C00720085 /* MyMusicViewController.m */,
-				3B353F5621B189810072C424 /* MMCloudLibraryViewController.h */,
-				3B353F5721B189810072C424 /* MMCloudLibraryViewController.m */,
-				3B353F6421B189990072C424 /* MMLocalLibraryViewController.h */,
-				3B353F6521B189990072C424 /* MMLocalLibraryViewController.m */,
+				3B648F7921BFCE92001BB801 /* MMMyMusicPageViewController.h */,
+				3B648F7A21BFCE92001BB801 /* MMMyMusicPageViewController.m */,
 				3B73F74321B1346000097801 /* MMLibraryContentViewController.h */,
 				3B73F74421B1346000097801 /* MMLibraryContentViewController.m */,
 			);
@@ -1283,9 +1283,11 @@
 				3B9AA8D81FB452FF00720085 /* ResponseRoot.m in Sources */,
 				3B9AA8D71FB452FF00720085 /* Resource.m in Sources */,
 				3B6BE7BB21A808590004F3E5 /* MMSongListData.m in Sources */,
+				3B648F7E21BFD0F2001BB801 /* MMModelController.m in Sources */,
 				3B6BE7CA21A822D30004F3E5 /* ChartsData.m in Sources */,
 				3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */,
 				3B90800021AAE25A00B205BD /* MMSearchContentArtistsCell.m in Sources */,
+				3B648F7B21BFCE92001BB801 /* MMMyMusicPageViewController.m in Sources */,
 				3B42110421B5220B0078ECAC /* MMCloseButton.m in Sources */,
 				3B907FB621AAB84300B205BD /* MMSearchContentViewController.m in Sources */,
 				3B9AA8E01FB461CD00720085 /* Activities.m in Sources */,
@@ -1321,9 +1323,7 @@
 				3B55342B21AFE1EE00C15A0F /* MMTopPageLibraryData.m in Sources */,
 				3B4D989120BA8A3D00139BE0 /* DBModel.m in Sources */,
 				3B23AC751FF236A800F0A9CA /* RecommendationViewController.m in Sources */,
-				3B353F5821B189810072C424 /* MMCloudLibraryViewController.m in Sources */,
 				3B9AA90D1FB47E0700720085 /* Storefront.m in Sources */,
-				3B353F6621B189990072C424 /* MMLocalLibraryViewController.m in Sources */,
 				3B5371E51FD148B6009AFE47 /* Genre.m in Sources */,
 				3B555EE720E0C23900AFF9A2 /* MusicKit.m in Sources */,
 				3B907FFD21AAE21200B205BD /* MMSearchContentMusicVideosCell.m in Sources */,

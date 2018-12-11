@@ -7,8 +7,10 @@
 //
 
 
-#import "MMLocalLibraryViewController.h"
-#import "MMCloudLibraryViewController.h"
+#import "MMMyMusicPageViewController.h"
+
+//#import "MMLocalLibraryViewController.h"
+//#import "MMCloudLibraryViewController.h"
 
 #import "MMTopPageLibraryData.h"
 #import "MMLibraryData.h"
@@ -37,33 +39,21 @@
 
 # pragma - mark help method
 //返回控制器对应的下标
-- (NSUInteger)indexOfViewController:(UIViewController*)viewController {
 
-    if ([viewController isKindOfClass:[MMLocalLibraryViewController class]]) {
-        MMLocalLibraryViewController *localVC = (MMLocalLibraryViewController*)viewController;
-        MMLocalLibraryData *data = localVC.localLibraryData;
-        for (NSDictionary<NSString*,id> *dict in _controllers){
-            if ([[dict allValues] firstObject] == data) {
-                return [_controllers indexOfObject:dict];
-            }
+- (NSUInteger)indexOfViewController:(UIViewController *)viewController{
+
+    MMMyMusicPageViewController *pageVC = (MMMyMusicPageViewController*)viewController;
+    for (NSDictionary<NSString*,MMModelController*> *dict in self.controllers) {
+        if (dict.allValues.firstObject == pageVC.modelController) {
+            return [_controllers indexOfObject:dict];
         }
     }
-
-    if ([viewController isKindOfClass:[MMCloudLibraryViewController  class]]) {
-        MMCloudLibraryViewController *iCloudVC = (MMCloudLibraryViewController*)viewController;
-        MMLibraryData *data = iCloudVC.iCloudLibraryData;
-        for (NSDictionary<NSString*,id> *dict in _controllers) {
-            if ([[dict allValues] firstObject] == data) {
-                return [_controllers indexOfObject:dict];
-            }
-        }
-    }
-
     return NSNotFound;
 }
 
 //按下标, 获取控制器
 - (UIViewController*)viewControllerAtIndex:(NSUInteger)index{
+  
     //没有内容 , 或者大于内容数量  直接返回nil
     if (self.controllers.count == 0 || index > self.controllers.count) return nil;
 
@@ -72,24 +62,31 @@
         return [self.cacheViewControllers objectAtIndex:index];
     }
 
-    NSDictionary<NSString*,id> *dict = [self.controllers objectAtIndex:index];
+    NSDictionary<NSString*,MMModelController*> *dict = [self.controllers objectAtIndex:index];
     NSString *title = [dict allKeys].firstObject;
-    id data = [dict allValues].firstObject;
+    MMModelController *data = [dict allValues].firstObject;
+
+    MMMyMusicPageViewController *myVC = [[MMMyMusicPageViewController alloc] initWithDataSourceModel:data];
+//    [myVC.pageViewController setDataSource:data];
+    [myVC setTitle:title];
+    [self.cacheViewControllers addObject:myVC];
+
+    return myVC;
 
 
-    if ([data isKindOfClass:[MMLibraryData class]]) {
-        MMCloudLibraryViewController *vc = [[MMCloudLibraryViewController alloc] initWithICloudLibraryData:data];
-        [vc setTitle:title];
-        [_cacheViewControllers addObject:vc];
-        return vc;
-    }
-    if ([data isKindOfClass:[MMLocalLibraryData class]]) {
-        MMLocalLibraryViewController *vc = [[MMLocalLibraryViewController alloc] initWithLocalLibraryData:data];
-        [vc setTitle:title];
-        [_cacheViewControllers addObject:vc];
-        return vc;
-    }
-    return nil;
+//    if ([data isKindOfClass:[MMLibraryData class]]) {
+//        MMCloudLibraryViewController *vc = [[MMCloudLibraryViewController alloc] initWithICloudLibraryData:data];
+//        [vc setTitle:title];
+//        [_cacheViewControllers addObject:vc];
+//        return vc;
+//    }
+//    if ([data isKindOfClass:[MMLocalLibraryData class]]) {
+//        MMLocalLibraryViewController *vc = [[MMLocalLibraryViewController alloc] initWithLocalLibraryData:data];
+//        [vc setTitle:title];
+//        [_cacheViewControllers addObject:vc];
+//        return vc;
+//    }
+//    return nil;
 }
 
 #pragma mark - UIPageViewControllerDataSource

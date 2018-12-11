@@ -49,7 +49,8 @@ static NSString *const key = @"searchHistory";
 }
 
 
-- (NSString*)pageTitleForIndex:(NSInteger)index{
+
+- (NSString *)titleWhitIndex:(NSInteger)index{
     NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:index];
     return [dict allKeys].firstObject;
 }

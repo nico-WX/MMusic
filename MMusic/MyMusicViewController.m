@@ -7,7 +7,6 @@
 //
 
 #import <Masonry.h>
-
 #import "MyMusicViewController.h"
 #import "MMSearchTopPageCell.h"
 
@@ -21,7 +20,6 @@
 @property(nonatomic, strong)UIPageViewController *pageViewController;
 
 @property(nonatomic, strong) MMTopPageLibraryData *topPageData;
-
 @end
 
 static NSString *reuseId = @"top cell identifier";
@@ -43,7 +41,8 @@ static NSString *reuseId = @"top cell identifier";
     [self.view addSubview:self.pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
 
-    //注意切换数据源
+
+    // 加载
     UIViewController *vc = [self.topPageData viewControllerAtIndex:0];
     [self.pageViewController setViewControllers:@[vc,] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
     [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
@@ -101,7 +100,7 @@ static NSString *reuseId = @"top cell identifier";
     if (completed && finished) {
         UIViewController *currentVC = pageViewController.viewControllers.firstObject;
         NSUInteger index = [self.topPageData indexOfViewController:currentVC];
-        NSLog(@"index=%lu",(unsigned long)index);
+    
 
         [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
     }

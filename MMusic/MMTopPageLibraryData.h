@@ -6,19 +6,16 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+
+#import "MMModelController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 // 一级分页 控制
-@interface MMTopPageLibraryData : NSObject<UIPageViewControllerDataSource>
+@interface MMTopPageLibraryData : MMModelController
 /**mymusic 顶部ICloud 和 Local 分页*/
-@property(nonatomic, strong, readonly) NSArray<NSDictionary<NSString*,id>*> *controllers;
+@property(nonatomic, strong, readonly) NSArray<NSDictionary<NSString*,MMModelController*>*> *controllers;
 
-- (NSString*)titleWhitIndex:(NSInteger)index;
-- (NSUInteger)indexOfViewController:(UIViewController*)viewController;
-- (UIViewController*)viewControllerAtIndex:(NSUInteger)index;
 @end
 
 NS_ASSUME_NONNULL_END

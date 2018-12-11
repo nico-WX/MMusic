@@ -25,8 +25,17 @@
     return self;
 }
 
+
+- (NSInteger)numberOfItemsInSection:(NSUInteger)section{
+   return self.results.count;
+}
+
 - (NSString *)titleWhitIndex:(NSInteger)index{
     return [[[self.results objectAtIndex:index] allKeys] firstObject];
+}
+
+- (void)importDataWithCompletion:(void (^)(BOOL))completion{
+    [self requestAllLibraryResource:completion];
 }
 
 - (void)requestAllLibraryResource:(Completion)completion{

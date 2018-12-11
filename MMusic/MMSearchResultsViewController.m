@@ -105,7 +105,7 @@ static NSString *const topCellID = @"top cell reuse identifier";
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     MMSearchTopPageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:topCellID forIndexPath:indexPath];
-    [cell.titleLabel setText:[self.searchData pageTitleForIndex:indexPath.row]];
+    [cell.titleLabel setText:[self.searchData titleWhitIndex:indexPath.row]];
     return cell;
 }
 # pragma mark  - UICollectionViewDelegate

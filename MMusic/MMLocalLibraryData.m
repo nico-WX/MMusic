@@ -27,6 +27,10 @@
     return self;
 }
 
+- (void)importDataWithCompletion:(void (^)(BOOL))completion{
+    [self requestAllData:completion];
+}
+
 - (void)requestAllData:(void (^)(BOOL))completion{
     [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
         switch (status) {
@@ -80,6 +84,10 @@
     }];
 }
 
+
+- (NSInteger)numberOfItemsInSection:(NSUInteger)section{
+    return self.results.count;
+}
 - (NSString *)titleWhitIndex:(NSInteger)index{
     return [[[self.results objectAtIndex:index] allKeys] firstObject];
 }
