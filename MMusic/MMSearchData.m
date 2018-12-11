@@ -10,7 +10,6 @@
 #import "ResponseRoot.h"
 #import "MMSearchContentViewController.h"
 
-
 @interface MMSearchData ()
 @property(nonatomic, strong)NSMutableArray<MMSearchContentViewController*> *cacheViewControllers;
 @end
@@ -32,28 +31,23 @@ static NSString *const key = @"searchHistory";
 
 - (void)addSearchHinstoryTerm:(NSString*)term {
 
-    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
-
-    NSMutableArray *array = [def valueForKey:key];
-    if (!array) {
-        array = [NSMutableArray array];
-    }
-    if (array.count > 10) {
-        [array removeLastObject];
-    }
-
-    NSMutableArray *temp = [NSMutableArray arrayWithObject:term];
-    [temp addObjectsFromArray:array];
-    [def setValue:temp forKey:key];
-    [def synchronize];
+//    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+//    NSMutableArray *array = [def valueForKey:key];
+//    if (!array) {
+//        array = [NSMutableArray array];
+//    }
+//    if (array.count > 10) {
+//        [array removeLastObject];
+//    }
+//
+//    NSMutableArray *temp = [NSMutableArray arrayWithObject:term];
+//    [temp addObjectsFromArray:array];
+//    [def setValue:temp forKey:key];
+//    [def synchronize];
 }
 
 
 
-- (NSString *)titleWhitIndex:(NSInteger)index{
-    NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:index];
-    return [dict allKeys].firstObject;
-}
 
 - (void)searchDataForTemr:(NSString *)term completion:(nonnull void (^)(BOOL))completion{
     [self addSearchHinstoryTerm:term];  //记录搜索历史
@@ -89,6 +83,11 @@ static NSString *const key = @"searchHistory";
 }
 
 # pragma - mark help method
+- (NSString *)titleWhitIndex:(NSInteger)index{
+    NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:index];
+    return [dict allKeys].firstObject;
+}
+
 //返回控制器对应的下标
 - (NSUInteger)indexOfViewController:(UIViewController*)viewController {
     for (NSDictionary<NSString*,ResponseRoot*> *dict in self.searchResults) {

@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MMLibraryContentCell : UITableViewCell
-@property(nonatomic, strong, readonly) UILabel *titleLabel;
-@property(nonatomic, strong, readonly) UILabel *subTitleLable;
+@property(nonatomic, strong) MPMediaItem *mediaItem;
+
+//@property(nonatomic, strong, readonly) UILabel *titleLabel;
+//@property(nonatomic, strong, readonly) UILabel *subTitleLable;
 @end
 
 NS_ASSUME_NONNULL_END

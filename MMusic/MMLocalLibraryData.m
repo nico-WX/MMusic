@@ -27,11 +27,10 @@
     return self;
 }
 
-- (void)importDataWithCompletion:(void (^)(BOOL))completion{
-    [self requestAllData:completion];
-}
+#pragma mark - overwrite superClass method
 
-- (void)requestAllData:(void (^)(BOOL))completion{
+- (void)importDataWithCompletion:(void (^)(BOOL))completion{
+
     [SKCloudServiceController requestAuthorization:^(SKCloudServiceAuthorizationStatus status) {
         switch (status) {
             case SKCloudServiceAuthorizationStatusAuthorized:{
@@ -85,7 +84,8 @@
 }
 
 
-- (NSInteger)numberOfItemsInSection:(NSUInteger)section{
+
+- (NSInteger)numberOfItemsInSection:(NSUInteger)section {
     return self.results.count;
 }
 - (NSString *)titleWhitIndex:(NSInteger)index{
@@ -150,7 +150,5 @@
     if (index==self.results.count) return nil;
     return [self viewControllerAtIndex:index];
 }
-
-
 
 @end

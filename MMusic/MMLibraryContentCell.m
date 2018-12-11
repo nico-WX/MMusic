@@ -15,21 +15,30 @@
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        _titleLabel = [[UILabel alloc] init];
+       // _titleLabel = [[UILabel alloc] init];
 
     }
     return self;
 }
 
 
--(void)layoutSubviews{
-    [super layoutSubviews];
+//-(void)layoutSubviews{
+//    [super layoutSubviews];
+//
+//    __weak typeof(self) weakSelf = self;
+//    [self.textLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+//
+//    }];
+//
+//}
 
-    __weak typeof(self) weakSelf = self;
-    [self.textLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        
-    }];
-
+- (void)setMediaItem:(MPMediaItem *)mediaItem{
+    if (_mediaItem != mediaItem) {
+        _mediaItem = mediaItem;
+        [self.textLabel setText:mediaItem.title];
+        [self.detailTextLabel setText:mediaItem.artist];
+        [self.imageView setImage:[mediaItem.artwork imageWithSize:self.bounds.size]];
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

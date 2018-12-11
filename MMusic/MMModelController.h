@@ -11,9 +11,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
+typedef void(^Completion)(BOOL success);
 @interface MMModelController : NSObject<UIPageViewControllerDataSource>
 
-- (void)importDataWithCompletion:(void(^)(BOOL success))completion;
+- (void)importDataWithCompletion:(Completion)completion;
 - (NSInteger)numberOfItemsInSection:(NSUInteger)section;
 - (NSString*)titleWhitIndex:(NSInteger)index;
 - (NSUInteger)indexOfViewController:(UIViewController*)viewController;

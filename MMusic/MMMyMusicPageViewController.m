@@ -14,7 +14,7 @@
 
 @interface MMMyMusicPageViewController ()<UIPageViewControllerDelegate,UICollectionViewDelegate, UICollectionViewDataSource>
 @property(nonatomic, strong) UICollectionView *topPageView;
-//@property(nonatomic, strong) MMModelController *modelController;
+
 @end
 
 
@@ -38,8 +38,7 @@ static NSString *const reuseIdentifier = @"top view reuse identifier";
     [self.view addSubview:self.pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
 
-
-    NSLog(@"datasource =%@",self.pageViewController.dataSource);
+    //导入数据
     MMModelController *controller = (MMModelController*)self.pageViewController.dataSource;
     [controller importDataWithCompletion:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -63,28 +62,18 @@ static NSString *const reuseIdentifier = @"top view reuse identifier";
     }];
 
     [self.pageViewController.view mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.topPageView.mas_bottom).offset(2);
+        make.top.mas_equalTo(weakSelf.topPageView.mas_bottom);
         make.left.bottom.right.mas_equalTo(weakSelf.view);
     }];
 
 }
 
-
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-//    MMModelController *controller = (MMModelController*)self.pageViewController.dataSource;
-//    NSLog(@"count =%ld datasource =%@",[controller numberOfItemsInSection:section],controller);
-//    return [controller numberOfItemsInSection:section];
     return [self.modelController numberOfItemsInSection:section];
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     MMSearchTopPageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
-
     [cell.titleLabel setText: [self.modelController titleWhitIndex:indexPath.row]];
-
-//    id obj = self.pageViewController.dataSource;
-//    if ([obj isMemberOfClass:[MMModelController class]]) {
-//        [cell.titleLabel setText:[((MMModelController*)obj) titleWhitIndex:indexPath.row]];
-//    }
     return cell;
 }
 

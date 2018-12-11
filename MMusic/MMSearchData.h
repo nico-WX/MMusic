@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param term 搜索文本
  @param completion 消息接受者
  */
-- (void)searchDataForTemr:(NSString*)term completion:(void(^)(BOOL success))completion;
+- (void)searchDataForTemr:(NSString*)term completion:(Completion)completion;
 
 @end
 
@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param term 关键字
  @param completion 消息接收者
  */
-- (void)searchHintForTerm:(NSString*)term complectin:(void(^)(BOOL success))completion;
+- (void)searchHintForTerm:(NSString*)term complectin:(Completion)completion;
 
 @end
 

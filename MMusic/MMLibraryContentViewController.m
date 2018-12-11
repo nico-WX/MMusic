@@ -7,9 +7,8 @@
 //
 
 #import <Masonry.h>
-#import <AVKit/AVKit.h>
-
 #import "MMLibraryContentViewController.h"
+#import "MMLibraryContentCell.h"
 
 
 @interface MMLibraryContentViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -39,7 +38,7 @@ static NSString *const cellIdentifier = @"tableView cell reuse identifier";
 
     UIView *superView = self.view;
     [self.tableView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superView);
+        make.edges.mas_equalTo(superView).insets(UIEdgeInsetsMake(0, 4, 0, 4));
     }];
 }
 
@@ -48,25 +47,15 @@ static NSString *const cellIdentifier = @"tableView cell reuse identifier";
     return self.items.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-    }
-
-    MPMediaItem *item = [self.items objectAtIndex:indexPath.row];
-    [cell.textLabel setText:item.title];
-    [cell.detailTextLabel setText:item.artist];
-    [cell.imageView setImage:[item.artwork imageWithSize:cell.bounds.size]];
-
+    MMLibraryContentCell *cell = (MMLibraryContentCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    [cell setMediaItem:[self.items objectAtIndex:indexPath.row]];
     return cell;
 }
-
-
 
 - (UITableView *)tableView{
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        //[_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:cellIdentifier];
+        [_tableView registerClass:[MMLibraryContentCell class] forCellReuseIdentifier:cellIdentifier];
         [_tableView setDelegate:self];
         [_tableView setDataSource:self];
     }

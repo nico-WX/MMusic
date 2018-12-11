@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 // 一级分页 控制
 @interface MMTopPageLibraryData : MMModelController
 /**mymusic 顶部ICloud 和 Local 分页*/
-@property(nonatomic, strong, readonly) NSArray<NSDictionary<NSString*,MMModelController*>*> *controllers;
+@property(nonatomic, strong, readonly) NSArray<NSDictionary<NSString*,MMModelController*>*> *modelControllers;
 
 @end
 

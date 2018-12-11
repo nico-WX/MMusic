@@ -13,19 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class MPMediaItem;
 @interface MMLocalLibraryData : MMModelController
-
 /**
  本地所有数据
  */
 @property(nonatomic, strong, readonly) NSArray<NSDictionary<NSString*,NSArray<MPMediaItem*>*>*> *results;
-
-
-/**
- 加载数据
-
- @param completion 加载结果回调
- */
-- (void)requestAllData:(void(^)(BOOL success))completion;
 
 @end
 

@@ -49,6 +49,7 @@ static Library* _instance;
             }
         }
     }
+    NSLog(@"path =%@",path);
 
     NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
     //Log(@"header %@",request.allHTTPHeaderFields);

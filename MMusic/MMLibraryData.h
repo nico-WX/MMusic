@@ -11,12 +11,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void(^Completion)(BOOL success);
 
 @interface MMLibraryData : MMModelController
 @property(nonatomic, strong, readonly)NSArray<NSDictionary<NSString*,ResponseRoot*> *> *results;
 
-//- (void)requestAllLibraryResource:(Completion)completion;
+
 
 @end
 

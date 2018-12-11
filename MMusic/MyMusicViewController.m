@@ -7,42 +7,42 @@
 //
 
 #import <Masonry.h>
+
 #import "MyMusicViewController.h"
 #import "MMSearchTopPageCell.h"
-
 #import "MMTopPageLibraryData.h"
-#import "MMLibraryData.h"
-#import "MMLocalLibraryData.h"
 
+
+/**
+ 1. 分本地和iCloud,
+ 2. 本视图控制器中,包含1个pageViewController, 该PageViewController显示另外的两个内容PageViewController
+
+ */
 
 @interface MyMusicViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIPageViewControllerDelegate>
-@property(nonatomic, strong) UICollectionView *topPageView;
-@property(nonatomic, strong)UIPageViewController *pageViewController;
+@property(nonatomic, strong) UICollectionView *topPageView; //iCloud & Local
+@property(nonatomic, strong) UIPageViewController *pageViewController;
 
-@property(nonatomic, strong) MMTopPageLibraryData *topPageData;
+@property(nonatomic, strong) MMTopPageLibraryData *topPageData; // 分页控制器的 dataSource
 @end
 
 static NSString *reuseId = @"top cell identifier";
 @implementation MyMusicViewController
 
 
-- (instancetype)init{
-    if (self = [super init]) {
-        _topPageData = [[MMTopPageLibraryData alloc] init];
-    }
-    return self;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setTitle:@"我的音乐"];
 
+    //初始化数据源
+    _topPageData = [[MMTopPageLibraryData alloc] init];
+
     [self.view addSubview:self.topPageView];
     [self.view addSubview:self.pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
 
-
-    // 加载
+    // 显示第一个分页
     UIViewController *vc = [self.topPageData viewControllerAtIndex:0];
     [self.pageViewController setViewControllers:@[vc,] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
     [self.topPageView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
@@ -66,13 +66,10 @@ static NSString *reuseId = @"top cell identifier";
 
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+#pragma mark - 集合视图 数据源 与 代理
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return self.topPageData.controllers.count;
+    return self.topPageData.modelControllers.count;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     MMSearchTopPageCell *cell = (MMSearchTopPageCell*)[collectionView dequeueReusableCellWithReuseIdentifier:reuseId forIndexPath:indexPath];
@@ -106,6 +103,7 @@ static NSString *reuseId = @"top cell identifier";
     }
 }
 
+#pragma mark - getter
 
 - (UICollectionView *)topPageView{
     if (!_topPageView) {

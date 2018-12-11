@@ -122,35 +122,46 @@ static NSString *const cellID = @" cell reuse identifier";
  -(void) loadNextPageData{
      NSURLRequest *request = [self createRequestWithHref:self.responseRoot.next];
      [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-         json =[json valueForKeyPath:@"results"];
 
-         //nextpage 加载 的数据
-         __block ResponseRoot *root;
-         [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-             root = [ResponseRoot instanceWithDict:obj];
-         }];
+         if ([json valueForKey:@"results"]) {
+             json =[json valueForKeyPath:@"results"];
+         }
 
-         dispatch_async(dispatch_get_main_queue(), ^{
+         NSLog(@"json== %@",json);
 
-             //添加前的最大下标
-             NSUInteger beforCount = self.responseRoot.data.count-1;
-             self.responseRoot.next = root.next;    //覆盖下一页地址
-             [self.responseRoot.data addObjectsFromArray:root.data];    //追加数据
+         if (json) {
+             //nextpage 加载 的数据
+             __block ResponseRoot *root;
+             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+                 root = [ResponseRoot instanceWithDict:obj];
+             }];
 
-             //记录要刷新的cell下标
-             NSMutableArray<NSIndexPath*> *items = [NSMutableArray array];
-             for (int i = 0 ; i<root.data.count; i++) {
-                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:++beforCount inSection:0];
-                 [items addObject:indexPath];
-             }
+             dispatch_async(dispatch_get_main_queue(), ^{
 
-             [self.collectionView reloadData];                      //刷新数据源,再刷新cell
-             [self.collectionView reloadItemsAtIndexPaths:items];   //刷新最后添加的cell
-             [self.collectionView.mj_footer endRefreshing];
-             //滚动到倒数第二行 , 倒数第一行, 会不断触发加载下一页
-             NSIndexPath *indexPath = [items objectAtIndex:items.count-2];
-             [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:YES];
-         });
+                 //添加前的最大下标
+                 NSUInteger beforCount = self.responseRoot.data.count-1;
+                 self.responseRoot.next = root.next;    //覆盖下一页地址
+                 [self.responseRoot.data addObjectsFromArray:root.data];    //追加数据
+
+                 //记录要刷新的cell下标
+                 NSMutableArray<NSIndexPath*> *items = [NSMutableArray array];
+                 for (int i = 0 ; i<root.data.count; i++) {
+                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:++beforCount inSection:0];
+                     [items addObject:indexPath];
+                 }
+
+                 [self.collectionView reloadData];                      //刷新数据源,再刷新cell
+                 [self.collectionView reloadItemsAtIndexPaths:items];   //刷新最后添加的cell
+                 [self.collectionView.mj_footer endRefreshing];
+                 //滚动到倒数第二行 , 倒数第一行, 会不断触发加载下一页
+                 NSIndexPath *indexPath = [items objectAtIndex:items.count-2];
+                 [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:YES];
+             });
+         }else{
+             dispatch_async(dispatch_get_main_queue(), ^{
+                   [self.collectionView.mj_footer endRefreshingWithNoMoreData];
+             });
+         }
      }];
  }
 @end

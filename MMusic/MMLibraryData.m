@@ -14,8 +14,10 @@
 
 @interface MMLibraryData ()
 @property(nonatomic, strong) NSMutableArray<UIViewController*> *cacheViewControllers;
-
 @end
+
+
+typedef void(^RequestDataCallback)(NSDictionary<NSString*,ResponseRoot*> *);
 @implementation MMLibraryData
 - (instancetype)init {
     if (self = [super init]) {
@@ -26,27 +28,59 @@
 }
 
 
-- (NSInteger)numberOfItemsInSection:(NSUInteger)section{
-   return self.results.count;
+- (void)requestAllAlbums:(RequestDataCallback)completion{
+    [MusicKit.new.library resource:@[] byType:CLibraryAlbums callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        if (json) {
+            ResponseRoot *root = [[ResponseRoot alloc] initWithDict:json];
+            completion(@{@"albums":root});
+        }else{
+            completion(nil);
+        }
+    }];
+}
+- (void)requestAllPlaylists:(RequestDataCallback)completion{
+    [MusicKit.new.library resource:nil byType:CLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        if (json) {
+            ResponseRoot *root = [[ResponseRoot alloc] initWithDict:json];
+            completion(@{@"playlists":root});
+        }else{
+            completion(nil);
+        }
+    }];
+}
+- (void)requestAllMusicVideos:(RequestDataCallback)completion{
+    [MusicKit.new.library resource:nil byType:CLibraryMusicVideos callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        if (json) {
+            ResponseRoot *root = [[ResponseRoot alloc] initWithDict:json];
+            completion(@{@"music-videos":root});
+        }else{
+            completion(nil);
+        }
+    }];
 }
 
-- (NSString *)titleWhitIndex:(NSInteger)index{
-    return [[[self.results objectAtIndex:index] allKeys] firstObject];
+
+- (void)requestAllLibrarySongs:(RequestDataCallback)completion{
+    [MusicKit.new.library resource:nil byType:CLibrarySongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        if (json) {
+            ResponseRoot *root = [[ResponseRoot alloc] initWithDict:json];
+            completion(@{@"songs":root});
+        }else{
+            completion(nil);
+        }
+    }];
 }
 
-- (void)importDataWithCompletion:(void (^)(BOOL))completion{
-    [self requestAllLibraryResource:completion];
-}
 
-- (void)requestAllLibraryResource:(Completion)completion{
+# pragma  mark - overwrite superClass method
+
+- (void)importDataWithCompletion:(Completion)completion{
     //music-videos
     //playlists
     //albums
     //songs
-
     NSMutableArray<NSDictionary<NSString*,ResponseRoot*>*> *array = [NSMutableArray array];
-
-    void(^callBack)(NSDictionary<NSString *,ResponseRoot *> *resource) = ^(NSDictionary<NSString *,ResponseRoot *> *resource) {
+    RequestDataCallback callBack = ^(NSDictionary<NSString *,ResponseRoot *> *resource) {
         if (resource) {
             [array addObject:resource];
             self->_results = array;
@@ -60,51 +94,14 @@
     [self requestAllMusicVideos:callBack];
     [self requestAllLibrarySongs:callBack];
 }
-- (void)requestAllAlbums:(void(^)(NSDictionary<NSString*,ResponseRoot*> *resource))completion{
-    [MusicKit.new.library resource:@[] byType:CLibraryAlbums callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (json) {
-            ResponseRoot *root = [[ResponseRoot alloc] initWithDict:json];
-            completion(@{@"albums":root});
-        }else{
-            completion(nil);
-        }
-    }];
-}
-- (void)requestAllPlaylists:(void(^)(NSDictionary<NSString*,ResponseRoot*> *resource))completion{
-    [MusicKit.new.library resource:nil byType:CLibraryPlaylists callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (json) {
-            ResponseRoot *root = [[ResponseRoot alloc] initWithDict:json];
-            completion(@{@"playlists":root});
-        }else{
-            completion(nil);
-        }
-    }];
-}
-- (void)requestAllMusicVideos:(void(^)(NSDictionary<NSString*,ResponseRoot*> *resource))completion{
-    [MusicKit.new.library resource:nil byType:CLibraryMusicVideos callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (json) {
-            ResponseRoot *root = [[ResponseRoot alloc] initWithDict:json];
-            completion(@{@"music-videos":root});
-        }else{
-            completion(nil);
-        }
-    }];
+- (NSInteger)numberOfItemsInSection:(NSUInteger)section{
+    return self.results.count;
 }
 
-
-- (void)requestAllLibrarySongs:(void(^)(NSDictionary<NSString*,ResponseRoot*> *resource))completion{
-    [MusicKit.new.library resource:nil byType:CLibrarySongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if (json) {
-            ResponseRoot *root = [[ResponseRoot alloc] initWithDict:json];
-            completion(@{@"songs":root});
-        }else{
-            completion(nil);
-        }
-    }];
+- (NSString *)titleWhitIndex:(NSInteger)index{
+    return [[[self.results objectAtIndex:index] allKeys] firstObject];
 }
 
-
-# pragma - mark help method
 //返回控制器对应的下标
 - (NSUInteger)indexOfViewController:(UIViewController*)viewController {
     for (NSDictionary<NSString*,ResponseRoot*> *dict in self.results) {
@@ -126,6 +123,8 @@
     NSDictionary<NSString*,ResponseRoot*> *dict = [self.results objectAtIndex:index];
     NSString *title = [dict allKeys].firstObject;
     ResponseRoot *root = [dict allValues].firstObject;
+
+    NSLog(@">>>>>>>>>>>>>>Root key=%@ =%@",title,root);
 
     //查找创建过的VC
     for (MMSearchContentViewController *vc in self.cacheViewControllers) {

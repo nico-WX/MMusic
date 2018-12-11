@@ -27,7 +27,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-   // [self.tabBar setHidden:YES];
+    [self.tabBar setHidden:YES];
 
     //初始化 popFrame
     _popFrame = ({
@@ -80,22 +80,13 @@
 
 
     //播放状态改变时, 隐藏或显示
-    [self popStateForState:MainPlayer.playbackState];
-    [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-        [self popStateForState:MainPlayer.playbackState];
-    }];
+//    [self popStateForState:MainPlayer.playbackState];
+//    [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+//        [self popStateForState:MainPlayer.playbackState];
+//    }];
 }
 
-- (UIVisualEffectView *)visualEffectView{
-    if (!_visualEffectView) {
-        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
-        _visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        [_visualEffectView.layer setCornerRadius:6.0f];
-        [_visualEffectView.layer setMasksToBounds:YES];
-        [_visualEffectView setFrame:_popFrame];
-    }
-    return _visualEffectView;
-}
+#pragma  mark - 辅助方法
 
 //处理手势
 - (void)handleSwipeGesture:(UISwipeGestureRecognizer*)swipeGesture {
@@ -154,7 +145,7 @@
         newFrame = self.popFrame;
     }
 
-    [UIView animateWithDuration:1.0 delay:0.0 usingSpringWithDamping:0.7 initialSpringVelocity:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+    [UIView animateWithDuration:0.8 delay:0.0 usingSpringWithDamping:0.5 initialSpringVelocity:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         [self.visualEffectView setFrame:newFrame];
     } completion:nil];
 }
@@ -197,5 +188,17 @@
     }
 }
 
+#pragma mark - getter
+
+- (UIVisualEffectView *)visualEffectView{
+    if (!_visualEffectView) {
+        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+        _visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        [_visualEffectView.layer setCornerRadius:6.0f];
+        [_visualEffectView.layer setMasksToBounds:YES];
+        [_visualEffectView setFrame:_popFrame];
+    }
+    return _visualEffectView;
+}
 
 @end
