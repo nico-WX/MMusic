@@ -17,6 +17,7 @@
 
 @implementation MMTabBarController
 
+
 - (instancetype)init{
     if (self =[super init]) {
         _impactFeedback = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
@@ -28,6 +29,8 @@
     [super viewDidLoad];
 
     [self.tabBar setHidden:YES];
+
+
 
     //初始化 popFrame
     _popFrame = ({
@@ -77,6 +80,7 @@
         [self.visualEffectView addGestureRecognizer:upSwipe];
         [self.visualEffectView addGestureRecognizer:downSwipe];
     });
+
 
 
     //播放状态改变时, 隐藏或显示
