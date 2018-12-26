@@ -15,6 +15,7 @@
 #import "RecommentationSectionView.h"
 #import "ResourceCell.h"
 
+//显示动画
 #import "MMDetailPoppingAnimator.h"
 #import "MMDetailPresentationController.h"
 
@@ -22,13 +23,16 @@
 #import "Resource.h"
 
 
-@interface RecommendationViewController()<UICollectionViewDelegate,UICollectionViewDataSource,
-UICollectionViewDataSourcePrefetching,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate>
+@interface RecommendationViewController()<UICollectionViewDelegate,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate,RecommendationDataSourceDelegate>
 
-@property(nonatomic, strong) UICollectionView *collectionView;                  //内容视图
-@property(nonatomic, strong) MMDetailPresentationController *presentationController;  //自定义呈现样式
-@property(nonatomic, strong) MMDetailPoppingAnimator *popupAnimator;                    //呈现动画
-@property(nonatomic, strong) RecommendationData *recommendationData;            //数据模型对象
+//内容视图
+@property(nonatomic, strong) UICollectionView *collectionView;
+//数据源
+@property(nonatomic, strong) RecommendationData *recommendationData;
+
+//动画
+@property(nonatomic, strong) MMDetailPresentationController *presentationController;
+@property(nonatomic, strong) MMDetailPoppingAnimator *popupAnimator;
 @end
 
 
@@ -37,14 +41,6 @@ UICollectionViewDataSourcePrefetching,MMDetailViewControllerDelegate,UIViewContr
 static NSString *const sectionIdentifier = @"sectionView";
 static NSString *const cellIdentifier = @"resourceCell";
 
-- (instancetype)init{
-    if (self = [super init]) {
-        _recommendationData = [[RecommendationData alloc] init];
-        _popupAnimator = [MMDetailPoppingAnimator new];
-    }
-    return self;
-}
-
 #pragma mark - cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -52,15 +48,16 @@ static NSString *const cellIdentifier = @"resourceCell";
     [self.view setBackgroundColor:UIColor.whiteColor];
     [self.view addSubview:self.collectionView];
 
-    //底部内容偏移量(底部浮动播放器窗口)
+    //底部偏移量(底部浮动播放器窗口)
     if ([self.tabBarController isKindOfClass:[MMTabBarController class]]) {
         MMTabBarController *tabBarController = (MMTabBarController*)self.tabBarController;
         CGFloat bottomInset = CGRectGetHeight(self.view.frame) - CGRectGetMinY(tabBarController.popFrame);
         [self.collectionView setContentInset:UIEdgeInsetsMake(0, 0, bottomInset, 0)];
     }
 
-    //请求数据
-    [self requestData];
+    self.popupAnimator = [[MMDetailPoppingAnimator alloc] init];
+    self.recommendationData = [[RecommendationData alloc] initWithCollectionView:self.collectionView cellIdentifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:self];
+
 
     if ([self.navigationController.navigationBar isHidden]) {
         [self.collectionView.mj_header setIgnoredScrollViewContentInsetTop:20];  //调整顶部距离
@@ -79,56 +76,38 @@ static NSString *const cellIdentifier = @"resourceCell";
 //    return YES;
 //}
 
-- (void)requestData{
+//- (void)requestData{
+//    JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
+//    [hud.textLabel setText:@"加载中.."];
+//    [hud showInView:self.collectionView animated:YES];
+//
+//    [self.recommendationData defaultRecommendataionWithCompletion:^(BOOL success) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            if (success) {
+//                [hud dismissAnimated:YES];
+//                [hud removeFromSuperview];
+//                [self.collectionView reloadData];
+//                [self.collectionView.mj_header endRefreshing]; //停止刷新控件
+//            }else{
+//                [hud.textLabel setText:@"数据加载失败!"];
+//                [hud dismissAfterDelay:2 animated:YES];
+//            }
+//        });
+//    }];
+//}
 
-    JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
-    [hud.textLabel setText:@"加载中.."];
-    [hud showInView:self.collectionView animated:YES];
 
-    [self.recommendationData defaultRecommendataionWithCompletion:^(BOOL success) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (success) {
-                [hud dismissAnimated:YES];
-                [hud removeFromSuperview];
-                [self.collectionView reloadData];
-                [self.collectionView.mj_header endRefreshing]; //停止刷新控件
-            }else{
-                [hud.textLabel setText:@"数据加载失败!"];
-                [hud dismissAfterDelay:2 animated:YES];
-            }
-        });
-    }];
-}
-
-
-#pragma mark - <UICollectionViewDataSource>
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return [self.recommendationData numberOfSection];
-
-}
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self.recommendationData numberOfItemsInSection:section];
-}
-
-//cell
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-
-    //dequeue cell
-    ResourceCell *cell = (ResourceCell*)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    [cell setResource:[self.recommendationData dataWithIndexPath:indexPath]];   //data
-    return cell;
-}
-
-//头尾
--(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-    //节头
-    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
-        RecommentationSectionView *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:sectionIdentifier forIndexPath:indexPath];
-        [header.titleLabel setText:[self.recommendationData titleWithSection:indexPath.section]];
-        return header;
+- (void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
+    if ([cell isKindOfClass:[ResourceCell class]]) {
+        [((ResourceCell*)cell) setResource:resource];
     }
-    return nil;
 }
+- (void)configureSupplementaryElement:(UICollectionReusableView *)reusableView object:(NSString *)title{
+    if ([reusableView isKindOfClass:[RecommentationSectionView class]]) {
+        [((RecommentationSectionView*)reusableView).titleLabel setText:title];
+    }
+}
+
 
 #pragma mark - <UICollectionViewDelegate>
 // 选中,  呈现专辑或者播放列表 歌曲信息
@@ -169,9 +148,6 @@ static NSString *const cellIdentifier = @"resourceCell";
     return self.presentationController;
 }
 
-#pragma mark - <UICollectionViewDataSourcePrefetching>  预取数据
-- (void)collectionView:(UICollectionView *)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths{
-}
 
 #pragma mark - lazy load
 -(UICollectionView *)collectionView{
@@ -205,13 +181,12 @@ static NSString *const cellIdentifier = @"resourceCell";
             [collectionView registerClass:[ResourceCell class] forCellWithReuseIdentifier:cellIdentifier];
             [collectionView registerClass:[RecommentationSectionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionIdentifier];
             [collectionView setBackgroundColor:[UIColor whiteColor]];
-            [collectionView setDataSource:self];
             [collectionView setDelegate: self];
             //刷新控件
             [collectionView setMj_header:[MJRefreshNormalHeader headerWithRefreshingBlock:^{
                 UIImpactFeedbackGenerator *impact = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
                 [impact impactOccurred];
-                [self requestData];
+                //[self requestData];
             }]];
 
             collectionView;

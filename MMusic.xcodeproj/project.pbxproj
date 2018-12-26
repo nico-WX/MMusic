@@ -109,6 +109,9 @@
 		3BE2A24F2198D25400AEA486 /* MMDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BE2A24E2198D25400AEA486 /* MMDetailViewController.m */; };
 		3BE2A2522198DA7E00AEA486 /* UIImageView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BE2A2512198DA7E00AEA486 /* UIImageView+Extension.m */; };
 		3BE2A2552198DC7900AEA486 /* NSString+Replace.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BE2A2542198DC7900AEA486 /* NSString+Replace.m */; };
+		3BEB3D3721C91A7500398A5B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB3D3521C91A7500398A5B /* Model.xcdatamodeld */; };
+		3BEB3D5621D3750500398A5B /* MMLikeSong.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB3D5521D3750500398A5B /* MMLikeSong.m */; };
+		3BEB3D5921D3760D00398A5B /* MMDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB3D5821D3760D00398A5B /* MMDataStack.m */; };
 		3BFB704E2109BA6F002B3A06 /* APIRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BFB704D2109BA6F002B3A06 /* APIRoot.m */; };
 /* End PBXBuildFile section */
 
@@ -436,6 +439,11 @@
 		3BE2A2512198DA7E00AEA486 /* UIImageView+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+Extension.m"; sourceTree = "<group>"; };
 		3BE2A2532198DC7900AEA486 /* NSString+Replace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Replace.h"; sourceTree = "<group>"; };
 		3BE2A2542198DC7900AEA486 /* NSString+Replace.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Replace.m"; sourceTree = "<group>"; };
+		3BEB3D3621C91A7500398A5B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		3BEB3D5421D3750500398A5B /* MMLikeSong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMLikeSong.h; sourceTree = "<group>"; };
+		3BEB3D5521D3750500398A5B /* MMLikeSong.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMLikeSong.m; sourceTree = "<group>"; };
+		3BEB3D5721D3760D00398A5B /* MMDataStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMDataStack.h; sourceTree = "<group>"; };
+		3BEB3D5821D3760D00398A5B /* MMDataStack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMDataStack.m; sourceTree = "<group>"; };
 		3BFB704C2109BA6F002B3A06 /* APIRoot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APIRoot.h; sourceTree = "<group>"; };
 		3BFB704D2109BA6F002B3A06 /* APIRoot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APIRoot.m; sourceTree = "<group>"; };
 		914C9E31CA7BED805770445B /* Pods-MMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MMusic.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MMusic/Pods-MMusic.debug.xcconfig"; sourceTree = "<group>"; };
@@ -775,6 +783,11 @@
 		3B9AA8CC1FB452AA00720085 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				3BEB3D3521C91A7500398A5B /* Model.xcdatamodeld */,
+				3BEB3D5721D3760D00398A5B /* MMDataStack.h */,
+				3BEB3D5821D3760D00398A5B /* MMDataStack.m */,
+				3BEB3D5421D3750500398A5B /* MMLikeSong.h */,
+				3BEB3D5521D3750500398A5B /* MMLikeSong.m */,
 				3B4DDC872193579600F70547 /* Model  Controller */,
 				3B9AA8DD1FB4619500720085 /* Resource Object */,
 				3B9AA8DC1FB4618300720085 /* CoreObject */,
@@ -1292,6 +1305,7 @@
 				3B907FB621AAB84300B205BD /* MMSearchContentViewController.m in Sources */,
 				3B9AA8E01FB461CD00720085 /* Activities.m in Sources */,
 				3B9AA8D61FB452FF00720085 /* Relationship.m in Sources */,
+				3BEB3D3721C91A7500398A5B /* Model.xcdatamodeld in Sources */,
 				3B6BE746219DACDD0004F3E5 /* MMDetailPresentationController.m in Sources */,
 				3B42114B21BBB0650078ECAC /* HeartStyleKit.m in Sources */,
 				3B9AA8E31FB463E800720085 /* Album.m in Sources */,
@@ -1314,6 +1328,7 @@
 				3BE2A23821985EAE00AEA486 /* Library+iCloud.m in Sources */,
 				3B6BE747219DACDD0004F3E5 /* MMDetailPoppingAnimator.m in Sources */,
 				3B87992E204FF7E000EE9D2A /* RecommentationSectionView.m in Sources */,
+				3BEB3D5921D3760D00398A5B /* MMDataStack.m in Sources */,
 				3BAAE02D20B45A9A00C82F4B /* ResultsCell.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
 				3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */,
@@ -1332,6 +1347,7 @@
 				3B4DDC8A219357DE00F70547 /* DataStore.m in Sources */,
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
 				3BE2A2522198DA7E00AEA486 /* UIImageView+Extension.m in Sources */,
+				3BEB3D5621D3750500398A5B /* MMLikeSong.m in Sources */,
 				3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */,
 				3BE2A23E21986B2D00AEA486 /* Catalog+Search.m in Sources */,
 				3BDFC19B20B5A93F0045B33A /* ResultsMusicVideoCell.m in Sources */,
@@ -1677,6 +1693,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		3BEB3D3521C91A7500398A5B /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				3BEB3D3621C91A7500398A5B /* Model.xcdatamodel */,
+			);
+			currentVersion = 3BEB3D3621C91A7500398A5B /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 3B9AA85F1FB04B5700720085 /* Project object */;
 }

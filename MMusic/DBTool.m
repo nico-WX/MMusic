@@ -99,7 +99,6 @@ static FMDatabase *_db;
     }else{
         //Log(@"有结果");
     }
-
 }
 
 

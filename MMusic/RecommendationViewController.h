@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 /**
- Apple Music个人推荐
+ Apple Music 每日推荐
  */
 
 @interface RecommendationViewController : UIViewController @end

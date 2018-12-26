@@ -15,25 +15,66 @@
 @interface RecommendationData ()
 // all data
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*>* dataArray;
-@property(nonatomic, strong) NSString *identifier;
+@property(nonatomic, copy) NSString *reuseIdentifier;
+@property(nonatomic, copy) NSString *sectionIdentifier;
+
+//@property(nonatomic, weak) UICollectionView *collectionView;
+@property(nonatomic, weak) id<RecommendationDataSourceDelegate> delegate;
 @end
 
 @implementation RecommendationData
 
-- (NSInteger)numberOfSection{
+- (instancetype)initWithCollectionView:(UICollectionView *)collectionView cellIdentifier:(nonnull NSString *)identifier sectionIdentifier:(nonnull NSString *)sectionIdentifier delegate:(nonnull id<RecommendationDataSourceDelegate>)delegate{
+    if (self = [super init]) {
+        collectionView.dataSource = self;
+        _sectionIdentifier = sectionIdentifier;
+        _reuseIdentifier = identifier;
+        _delegate = delegate;
+       // _collectionView.dataSource = self;
+       //_collectionView = collectionView;
+
+        [self defaultRecommendataionWithCompletion:^(BOOL success) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [collectionView reloadData];
+            });
+        }];
+    }
+    return self;
+}
+
+#pragma mark - collectionView DataSource
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return self.dataArray.count;
 }
-- (NSInteger)numberOfItemsInSection:(NSInteger)section{
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     NSDictionary<NSString*,NSArray<Resource*>*> * temp = [self.dataArray objectAtIndex:section];
     return [[[temp allValues] firstObject] count];
 }
-
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.reuseIdentifier forIndexPath:indexPath];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(configureCell:object:)]) {
+        [self.delegate configureCell:cell object:[self dataWithIndexPath:indexPath]];
+    }
+    return cell;
+}
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
+    //节头
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:self.sectionIdentifier forIndexPath:indexPath];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(configureSupplementaryElement:object:)]) {
+            [self.delegate configureSupplementaryElement:view object:[self titleWithSection:indexPath.section]];
+        }
+        return view;
+    }
+    return nil;
+}
 
 // section title
 - (NSString *)titleWithSection:(NSInteger)section{
     return [[[self.dataArray objectAtIndex:section] allKeys] firstObject];
 }
--(Resource *)dataWithIndexPath:(NSIndexPath *)indexPath{
+- (Resource *)dataWithIndexPath:(NSIndexPath *)indexPath{
     NSDictionary<NSString*,NSArray<Resource*>*> * temp = [self.dataArray objectAtIndex:indexPath.section];
     return [[[temp allValues] firstObject] objectAtIndex:indexPath.row];
 }
@@ -62,8 +103,9 @@
         }
     }];
 }
-/**解析JSON 数据的嵌套*/
--(NSArray<Resource*>*) serializationJSON:(NSDictionary*) json{
+
+/**解析JSON*/
+- (NSArray<Resource*>*)serializationJSON:(NSDictionary*)json{
     NSMutableArray<Resource*> *sectionList = [NSMutableArray array];  //section数据临时集合
     json = [json objectForKey:@"relationships"];
     NSDictionary *contents = [json objectForKey:@"contents"];  //如果这里有内容, 则不是组推荐,递归调用解析即可解析<组推荐json结构>
@@ -87,5 +129,4 @@
     }
     return sectionList;
 }
-
 @end

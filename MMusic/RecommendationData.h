@@ -11,25 +11,17 @@
 NS_ASSUME_NONNULL_BEGIN
 @class Resource;
 
-@interface RecommendationData : NSObject
+//配置cell 协议
+@protocol RecommendationDataSourceDelegate <NSObject>
 
-/**每一节数据count*/
-- (NSInteger)numberOfItemsInSection:(NSInteger)section;
-/**节count*/
-- (NSInteger)numberOfSection;
+- (void)configureCell:(UICollectionViewCell*)cell object:(Resource*)resource;
+- (void)configureSupplementaryElement:(UICollectionReusableView*)reusableView object:(NSString*)title ;
+@end
 
-/**对应下标数据*/
-- (Resource*)dataWithIndexPath:(NSIndexPath*)indexPath;
-/**节title*/
-- (NSString*)titleWithSection:(NSInteger)section;
+@interface RecommendationData : NSObject<UICollectionViewDataSource>
 
-
-/**
-  默认推荐数据请求方法, 数据取回后会调用回调
-
- @param completion 完成回调
- */
--(void)defaultRecommendataionWithCompletion:(void (^)(BOOL success))completion;
+//- (instancetype)initWithTableView:(UITableView*)tableView cellReuseIdentifier:(NSString*)identifier;
+- (instancetype)initWithCollectionView:(UICollectionView*)collectionView cellIdentifier:(NSString*)identifier sectionIdentifier:(NSString*)sectionIdentifier delegate:(id<RecommendationDataSourceDelegate>) delegate;
 
 @end
 

@@ -1,30 +1,11 @@
 
-
-
-
-
-
-
 #import "AuthManager.h"
 #import <StoreKit/StoreKit.h>
 
 //Token缓存Key
-NSString* const userTokenUserKey  = @"userTokenUserDefaultsKey";
-NSString* const developerTokenKey = @"developerTokenDefaultsKey";
-NSString* const storefrontKey     = @"storefrontDefaultsKey";
-
-
-@interface AuthManager()<SKCloudServiceSetupViewControllerDelegate>
-//订阅apple music会员视图控制器, 其内容通过网络加载
-@property(nonatomic, strong)SKCloudServiceSetupViewController* subscriptionViewController;
-@end
-
-static AuthManager* _instance;
-@implementation AuthManager
-
-@synthesize developerToken  = _developerToken;
-@synthesize userToken       = _userToken;
-@synthesize storefront      = _storefront;
+static NSString* const k_userTokenKey  = @"userTokenUserDefaultsKey";
+static NSString* const k_developerTokenKey = @"developerTokenDefaultsKey";
+static NSString* const k_storefrontKey     = @"storefrontDefaultsKey";
 
 
 //通知
@@ -33,6 +14,19 @@ NSString *const developerTokenUpdatedNotification = @"developerTokenUpdated";   
 NSString *const userTokenIssueNotification        = @"userTokenIssueOrNotAccepted";    //userToken  问题(未订阅,修改设置等)
 NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";               //userToken  更新
 
+@interface AuthManager()<SKCloudServiceSetupViewControllerDelegate>
+@property(nonatomic, strong)SKCloudServiceSetupViewController* subscriptionViewController;  //订阅apple music会员视图控制器, 其内容通过网络加载
+
+@end
+
+
+
+static AuthManager *_instance;
+@implementation AuthManager
+
+@synthesize developerToken  = _developerToken;
+@synthesize userToken       = _userToken;
+@synthesize storefront      = _storefront;
 
 # pragma mark 初始化及单例实现
 - (instancetype)init{
@@ -41,19 +35,20 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
         [self checkAuthorization];
 
         //开发者Token 过期消息 删除旧的developerToken  并请求一个新的
-        [[NSNotificationCenter defaultCenter] addObserverForName:developerTokenExpireNotification
-                                                          object:nil
-                                                           queue:[NSOperationQueue mainQueue]
-                                                      usingBlock:^(NSNotification * _Nonnull note) {
+        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        [center addObserverForName:developerTokenExpireNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            NSLog(@"收到开发者Token过期通知");
             //移除过期DeveloperToken
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:developerTokenKey];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:k_developerTokenKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             //请求新的开发Token
             [self requestDeveloperToken];
         }];
 
         //userToken 异常, 可能修改设置或者未订阅服务等
-        [[NSNotificationCenter defaultCenter] addObserverForName:userTokenIssueNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:userTokenUserKey];
+        [center addObserverForName:userTokenIssueNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:k_userTokenKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             NSLog(@"监听到 <userTokenIssueNotification> 消息");
             [self requestUserToken];
         }];
@@ -93,10 +88,10 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
     [[NSNotificationCenter defaultCenter] removeObserver:self name:userTokenIssueNotification object:nil];
 }
 
-#pragma mark layz
+#pragma mark getter
 - (NSString *)developerToken{
     if (!_developerToken) {
-        _developerToken = [[NSUserDefaults standardUserDefaults] objectForKey:developerTokenKey];
+        _developerToken = [[NSUserDefaults standardUserDefaults] objectForKey:k_developerTokenKey];
 #warning The token is set manually
         _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTQzMDUyODU1LCJleHAiOjE1NTg2MDQ4NTV9.619j4QOH2KxlK62tmQlMzlu-pbbLc7EmQoqk-dNsc8f2gmPDF2nxWhpADvPk7Rc_Jv9M7lh6Bgu4123swDm9lA";
         if (!_developerToken) {
@@ -108,7 +103,7 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
 
 - (NSString *)userToken{
     if (!_userToken) {
-        _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:userTokenUserKey];
+        _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:k_userTokenKey];
         Log(@"userToken: %@",_userToken);
         if (!_userToken) {
             //本地无Token,  网络请求
@@ -120,7 +115,7 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
 
 - (NSString *)storefront{
     if (!_storefront) {
-        _storefront = [[NSUserDefaults standardUserDefaults] objectForKey:storefrontKey];
+        _storefront = [[NSUserDefaults standardUserDefaults] objectForKey:k_storefrontKey];
         if (!_storefront) {
             [self requestStorefront];
         }
@@ -139,7 +134,7 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
                 NSString *token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 if (token) {
                     Log(@"request new DeveloperToken: %@",token);
-                    [[NSUserDefaults standardUserDefaults] setObject:token forKey:developerTokenKey];
+                    [[NSUserDefaults standardUserDefaults] setObject:token forKey:k_developerTokenKey];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenUpdatedNotification object:nil];
                 }
@@ -151,12 +146,11 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
 
 /**请求用户Token*/
 - (void)requestUserToken{
+    NSLog(@"请求用户Token begin!");
     [SKCloudServiceController.new requestUserTokenForDeveloperToken:self.developerToken completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
-
-        NSLog(@"SKCloud userToken Hnadler");
         if (userToken) {
             Log(@"userToken: %@",userToken);
-            [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:userTokenUserKey];
+            [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:k_userTokenKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [[NSNotificationCenter defaultCenter] postNotificationName:userTokenUpdatedNotification object:nil];
         }else{
@@ -170,7 +164,7 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
     [SKCloudServiceController.new requestStorefrontCountryCodeWithCompletionHandler:^(NSString * _Nullable storefrontCountryCode, NSError * _Nullable error) {
         if (!error && storefrontCountryCode) {
             self->_storefront = storefrontCountryCode;
-            [[NSUserDefaults standardUserDefaults] setObject:storefrontCountryCode forKey:storefrontKey];
+            [[NSUserDefaults standardUserDefaults] setObject:storefrontCountryCode forKey:k_storefrontKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
     }];
@@ -236,6 +230,8 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
     [self.subscriptionViewController loadWithOptions:infoDict completionHandler:^(BOOL result, NSError * _Nullable error) {
         if (result) {
             [[UIApplication sharedApplication].keyWindow addSubview:self.subscriptionViewController.view];
+        }else{
+            
         }
     }];
 }
@@ -245,6 +241,4 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
     [cloudServiceSetupViewController.view removeFromSuperview];
     self.subscriptionViewController = nil;
 }
-
-
 @end
