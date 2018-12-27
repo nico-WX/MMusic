@@ -1,18 +1,21 @@
 //
-//  RecommendationData.m
+//  RecommendationDataSource.m
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2018/11/23.
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import "RecommendationData.h"
+#import <JGProgressHUD.h>
+#import <MJRefresh.h>
+
+#import "RecommendationDataSource.h"
 #import "Resource.h"
 
 #import "ResourceCell.h"
 #import "RecommentationSectionView.h"
 
-@interface RecommendationData ()
+@interface RecommendationDataSource ()
 // all data
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*>* dataArray;
 @property(nonatomic, copy) NSString *reuseIdentifier;
@@ -22,7 +25,7 @@
 @property(nonatomic, weak) id<RecommendationDataSourceDelegate> delegate;
 @end
 
-@implementation RecommendationData
+@implementation RecommendationDataSource
 
 - (instancetype)initWithCollectionView:(UICollectionView *)collectionView cellIdentifier:(nonnull NSString *)identifier sectionIdentifier:(nonnull NSString *)sectionIdentifier delegate:(nonnull id<RecommendationDataSourceDelegate>)delegate{
     if (self = [super init]) {
@@ -33,13 +36,36 @@
        // _collectionView.dataSource = self;
        //_collectionView = collectionView;
 
+
+        //加载数据
+        JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
+        [hud.textLabel setText:@"加载中.."];
+        [hud showInView:collectionView animated:YES];
+
         [self defaultRecommendataionWithCompletion:^(BOOL success) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [collectionView reloadData];
+                if (success) {
+                    [hud dismissAnimated:YES];
+                    [hud removeFromSuperview];
+                    [collectionView reloadData];
+                    [collectionView.mj_header endRefreshing]; //停止刷新控件
+                }else{
+                    [hud.textLabel setText:@"数据加载失败!"];
+                    [hud dismissAfterDelay:2 animated:YES];
+                }
             });
         }];
     }
     return self;
+}
+- (void)refreshDataWithCompletion:(void (^)(void))completion{
+    [self defaultRecommendataionWithCompletion:^(BOOL success) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (success) {
+                completion();
+            }
+        });
+    }];
 }
 
 #pragma mark - collectionView DataSource
@@ -80,7 +106,7 @@
 }
 
 
-- (void)defaultRecommendataionWithCompletion:(void (^)(BOOL))completion{
+- (void)defaultRecommendataionWithCompletion:(void (^)(BOOL success))completion{
     [MusicKit.new.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         //数据临时集合 [{@"section title":[data]},...]
         NSMutableArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *array = [NSMutableArray array];

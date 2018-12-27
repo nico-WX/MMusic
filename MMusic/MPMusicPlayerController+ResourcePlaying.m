@@ -24,7 +24,7 @@
     [self setSongLists:songs];
     self.parametersQueue = [self playParametersQueueFromSongs:songs startPlayIndex:startIndex];
 
-    // 开始的歌曲 与当前歌曲相同, 不播放
+    // 开始的歌曲 与当前需要播放歌曲相同, 跳过h不执行操作;
     Song *song = [self.songLists objectAtIndex:startIndex];
     if (![song isEqualToMediaItem:self.nowPlayingItem]) {
         [self setQueueWithDescriptor:self.parametersQueue];
@@ -59,26 +59,27 @@
     [self prependQueueDescriptor:queue];
 }
 
-- (Song *)nowPlayingSong{
+- (Song*)nowPlayingSong {
 
     for (Song *song in self.songLists) {
         if ([song isEqualToMediaItem:self.nowPlayingItem]) {
             return song;
         }
     }
+    return nil;
 
-     __block Song *nowSong ;
-    if (!nowSong) {
-        [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-            json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
-            nowSong = [Song instanceWithDict:json];
-        }];
-    }
-    return nowSong;
+//    // ?? 同步还是异步?
+//     __block Song *nowSong = nil;
+//    [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+//            json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
+//            nowSong = [Song instanceWithDict:json];
+//    }];
+//
+//    return nowSong;
 }
 
 #pragma mark play mv
-- (void)playMusicVideos:(NSArray<MusicVideo *> *)mvs startIndex:(NSUInteger)startIndex{
+- (void)playMusicVideos:(NSArray<MusicVideo*> *)mvs startIndex:(NSUInteger)startIndex{
     NSMutableArray<MPMusicPlayerPlayParameters*> *array = [NSMutableArray array];
     for (MusicVideo *mv in mvs) {
         [array addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:mv.playParams]];
@@ -89,7 +90,7 @@
 }
 
 #pragma mark - MPSystemMusicPlayerController
--(void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor{
+- (void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor{
     UIApplication *app = [UIApplication sharedApplication];
     NSURL *url = [NSURL URLWithString:@"Music:prefs:root=MUSIC"];
     if ([app canOpenURL:url]) {

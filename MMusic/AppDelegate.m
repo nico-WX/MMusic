@@ -21,6 +21,8 @@
 
 #import "AuthManager.h"
 
+#import "MMDataStack.h"
+
 @interface AppDelegate ()
 
 @end
@@ -31,6 +33,7 @@
     // Override point for customization after application launch.
 
 
+    [MMDataStack shareDataStack];
 
     //主窗口
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -84,6 +87,11 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application{
     [MainPlayer endGeneratingPlaybackNotifications];
+
+    //保存托管对象
+    NSError *error = nil;
+    [[MMDataStack shareDataStack].context save:&error];
+    NSAssert(error, @"保存上下文错误");
 }
 
 @end

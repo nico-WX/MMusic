@@ -30,8 +30,6 @@
 
     [self.tabBar setHidden:YES];
 
-
-
     //初始化 popFrame
     _popFrame = ({
         UIEdgeInsets padding = UIEdgeInsetsMake(0, 8, 6, 8);

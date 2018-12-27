@@ -68,15 +68,17 @@ static MMDataStack *_instance;
         }
     });
 
-    //Core Data Stack
+    //2.Core Data Stack
 
-    // mo -> context -> mom -> psc -> ps
+    // (mo -> context) <- (mom -> psc -> ps)
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
     NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    NSAssert(mom, @"初始化托管对象模型失败");
 
     NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
     NSError *error = nil;
-    [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL URLWithString:path] options:nil error:&error];
+    //file URL
+    [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath:path] options:nil error:&error];
     if (error) {
         NSAssert(error, @"添加存储失败");
     }

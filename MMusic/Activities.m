@@ -15,6 +15,9 @@
 
 
 @implementation Activities
+
+@dynamic artwork,editorialNotes,name,url;
+
 @end
 
 

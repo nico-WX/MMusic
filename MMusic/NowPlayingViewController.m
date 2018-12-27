@@ -14,6 +14,9 @@
 #import "PlayProgressView.h"
 #import "MMHeartSwitch.h"
 
+#import "MMDataStack.h"
+#import "MMLikeSong.h"
+
 #import "DataStoreKit.h"
 #import "Artwork.h"
 #import "Song.h"
@@ -406,9 +409,17 @@ static NowPlayingViewController *_instance;
 
     NSString *identifier = MainPlayer.nowPlayingItem.playbackStoreID;
     if ([heart isOn]) {
+
         [DataStore.new addRatingToCatalogWith:identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
             [heart setOn:succeed];
         }];
+        //
+        NSManagedObjectContext *context = [MMDataStack shareDataStack].context;
+        MMLikeSong *addSong = [[MMLikeSong alloc] initWithContext:context];
+
+
+
+
     }else{
         [DataStore.new deleteRatingForCatalogWith:identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
             [heart setOn:!succeed];

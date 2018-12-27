@@ -18,10 +18,11 @@
 
 #import "SongCell.h"
 #import "MMSongListData.h"
+#import "MMDetaiData.h"
 #import "Resource.h"
 #import "Song.h"
 
-@interface MMDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface MMDetailViewController ()<UITableViewDelegate, DetailDataSourceDelegate>
 @property(nonatomic, strong) MMCloseButton *closeButton;
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, assign) CGFloat topOffset;
@@ -29,6 +30,7 @@
 //data
 @property(nonatomic, strong)Resource *resource;
 @property(nonatomic, strong)MMSongListData *resourceData;
+@property(nonatomic, strong)MMDetaiData *detailData;
 @end
 
 static NSString *const reuseIdentifier = @"tableview cell id";
@@ -45,12 +47,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
         [_titleLabel setTextAlignment:NSTextAlignmentCenter];
         [_titleLabel setTextColor:MainColor];
-
-        //添加子视图, 注意视图层次 &
-        [self.view addSubview:_imageView];
-        [self.view addSubview:_titleLabel];
-        [self.view addSubview:_tableView];
-        [self.view addSubview:_closeButton];
+        //[_titleLabel setText:resource.attributes[@"name"]];
     }
     return self;
 }
@@ -63,31 +60,42 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     [self.view.layer setMasksToBounds:YES];
 
 
-    [_titleLabel setText:[self.resource.attributes valueForKey:@"name"]];
-    NSString *path = [self.resource.attributes valueForKeyPath:@"artwork.url"];
-    [_imageView setImageWithURLPath:path];
+    //添加子视图, 注意视图层次 &
+    [self.view addSubview:self.imageView];
+    [self.view addSubview:self.titleLabel];
+    [self.view addSubview:self.tableView];
+    [self.view addSubview:self.closeButton];
 
-    JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
-    [hud.textLabel setText:@"loading"];
-    [hud showInView:self.tableView animated:YES];
-    [hud setPosition:JGProgressHUDPositionTopCenter];
+//    //
+//    NSString *path = [self.resource.attributes valueForKeyPath:@"artwork.url"];
+//    [_imageView setImageWithURLPath:path];
 
-    [self.resourceData resourceDataWithResource:self.resource completion:^(BOOL success) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (success) {
-                [hud removeFromSuperview];
-                [self.tableView reloadData];
-            }else{
-                [hud.textLabel setText:@"加载超时.."];
-                [hud dismissAfterDelay:2 animated:YES];
-            }
-        });
-    }];
+
+
+//    JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
+//    [hud.textLabel setText:@"loading"];
+//    [hud showInView:self.tableView animated:YES];
+//    [hud setPosition:JGProgressHUDPositionTopCenter];
+//
+//    [self.resourceData resourceDataWithResource:self.resource completion:^(BOOL success) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            if (success) {
+//                [hud removeFromSuperview];
+//                [self.tableView reloadData];
+//            }else{
+//                [hud.textLabel setText:@"加载超时.."];
+//                [hud dismissAfterDelay:2 animated:YES];
+//            }
+//        });
+//    }];
 
     //代理关闭
     [self.closeButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
         [self delegateDismissViewController];
     }];
+
+    self.detailData = [[MMDetaiData alloc] initWithTableView:_tableView resource:_resource cellIdentifier:reuseIdentifier delegate:self];
+
 }
 
 
@@ -128,17 +136,12 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     });
 }
 
+- (void)configureCell:(UITableViewCell *)cell object:(Song *)song withIndex:(NSUInteger)index{
+    if ([cell isKindOfClass:[SongCell class]]) {
+        [((SongCell*)cell) setSong:song withIndex:index];
+    }
+}
 
-#pragma mark - <TableView dataSource>
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.resourceData songCount];
-}
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    SongCell *cell = (SongCell*)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
-    NSInteger index = indexPath.row;
-    [cell setSong:[self.resourceData songWithIndex:index] withIndex:index];
-    return cell;
-}
 
 #pragma mark - <TableView Delegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -172,7 +175,6 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_tableView setDelegate:self];
-        [_tableView setDataSource:self];
         [_tableView registerClass:[SongCell class] forCellReuseIdentifier:reuseIdentifier];
         [_tableView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
         [_tableView setRowHeight:44.0f];

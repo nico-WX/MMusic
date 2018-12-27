@@ -8,6 +8,7 @@
 
 #import "Resource.h"
 #import <MJExtension.h>
+#import "MMDataStack.h"
 
 @implementation Resource
 
@@ -17,6 +18,7 @@
 }
 
 +(instancetype)instanceWithDict:(NSDictionary *)dict{
+
     return [[self alloc ]initWithDict:dict];
 }
 +(instancetype)instanceWithResource:(Resource *)resource{
@@ -24,7 +26,7 @@
 }
 
 -(instancetype)initWithDict:(NSDictionary *)dict{
-    if (self = [super init]) {
+    if (self = [super initWithContext:[MMDataStack shareDataStack].context]) {
         [self mj_setKeyValues:dict];
     }
     return self;

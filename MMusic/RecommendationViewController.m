@@ -19,7 +19,7 @@
 #import "MMDetailPoppingAnimator.h"
 #import "MMDetailPresentationController.h"
 
-#import "RecommendationData.h"
+#import "RecommendationDataSource.h"
 #import "Resource.h"
 
 
@@ -28,7 +28,7 @@
 //内容视图
 @property(nonatomic, strong) UICollectionView *collectionView;
 //数据源
-@property(nonatomic, strong) RecommendationData *recommendationData;
+@property(nonatomic, strong) RecommendationDataSource *recommendationData;
 
 //动画
 @property(nonatomic, strong) MMDetailPresentationController *presentationController;
@@ -56,7 +56,7 @@ static NSString *const cellIdentifier = @"resourceCell";
     }
 
     self.popupAnimator = [[MMDetailPoppingAnimator alloc] init];
-    self.recommendationData = [[RecommendationData alloc] initWithCollectionView:self.collectionView cellIdentifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:self];
+    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:self.collectionView cellIdentifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:self];
 
 
     if ([self.navigationController.navigationBar isHidden]) {
@@ -72,31 +72,8 @@ static NSString *const cellIdentifier = @"resourceCell";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-//- (BOOL)prefersStatusBarHidden {
-//    return YES;
-//}
 
-//- (void)requestData{
-//    JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
-//    [hud.textLabel setText:@"加载中.."];
-//    [hud showInView:self.collectionView animated:YES];
-//
-//    [self.recommendationData defaultRecommendataionWithCompletion:^(BOOL success) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            if (success) {
-//                [hud dismissAnimated:YES];
-//                [hud removeFromSuperview];
-//                [self.collectionView reloadData];
-//                [self.collectionView.mj_header endRefreshing]; //停止刷新控件
-//            }else{
-//                [hud.textLabel setText:@"数据加载失败!"];
-//                [hud dismissAfterDelay:2 animated:YES];
-//            }
-//        });
-//    }];
-//}
-
-
+# pragma mark - 数据源代理
 - (void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
     if ([cell isKindOfClass:[ResourceCell class]]) {
         [((ResourceCell*)cell) setResource:resource];
@@ -176,19 +153,11 @@ static NSString *const cellIdentifier = @"resourceCell";
 
         //集合视图对象
         _collectionView = ({
-
             UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
             [collectionView registerClass:[ResourceCell class] forCellWithReuseIdentifier:cellIdentifier];
             [collectionView registerClass:[RecommentationSectionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionIdentifier];
             [collectionView setBackgroundColor:[UIColor whiteColor]];
             [collectionView setDelegate: self];
-            //刷新控件
-            [collectionView setMj_header:[MJRefreshNormalHeader headerWithRefreshingBlock:^{
-                UIImpactFeedbackGenerator *impact = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
-                [impact impactOccurred];
-                //[self requestData];
-            }]];
-
             collectionView;
         });
     }

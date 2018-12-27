@@ -10,8 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-//容器, 播放器添加到这个容器中
+//播放器页面添加到这个容器中
 @interface MMTabBarController : UITabBarController
+/**浮动frame*/
 @property(nonatomic, assign,readonly)CGRect popFrame;
 
 - (void)addPopViewController:(UIViewController*)popViewController;
