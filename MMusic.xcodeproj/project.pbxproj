@@ -110,9 +110,11 @@
 		3BE2A2522198DA7E00AEA486 /* UIImageView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BE2A2512198DA7E00AEA486 /* UIImageView+Extension.m */; };
 		3BE2A2552198DC7900AEA486 /* NSString+Replace.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BE2A2542198DC7900AEA486 /* NSString+Replace.m */; };
 		3BEB3D3721C91A7500398A5B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB3D3521C91A7500398A5B /* Model.xcdatamodeld */; };
-		3BEB3D5621D3750500398A5B /* MMLikeSong.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB3D5521D3750500398A5B /* MMLikeSong.m */; };
+		3BEB3D5621D3750500398A5B /* MMCDMO_Song.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB3D5521D3750500398A5B /* MMCDMO_Song.m */; };
 		3BEB3D5921D3760D00398A5B /* MMDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB3D5821D3760D00398A5B /* MMDataStack.m */; };
 		3BEB3D5F21D3B19400398A5B /* MMDetaiData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB3D5E21D3B19400398A5B /* MMDetaiData.m */; };
+		3BEB3D7721D6388C00398A5B /* MMManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB3D7621D6388C00398A5B /* MMManagedObject.m */; };
+		3BEB3D8721D63C7F00398A5B /* MMCDMO_Artwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB3D8621D63C7F00398A5B /* MMCDMO_Artwork.m */; };
 		3BFB704E2109BA6F002B3A06 /* APIRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BFB704D2109BA6F002B3A06 /* APIRoot.m */; };
 /* End PBXBuildFile section */
 
@@ -441,12 +443,16 @@
 		3BE2A2532198DC7900AEA486 /* NSString+Replace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Replace.h"; sourceTree = "<group>"; };
 		3BE2A2542198DC7900AEA486 /* NSString+Replace.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Replace.m"; sourceTree = "<group>"; };
 		3BEB3D3621C91A7500398A5B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
-		3BEB3D5421D3750500398A5B /* MMLikeSong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMLikeSong.h; sourceTree = "<group>"; };
-		3BEB3D5521D3750500398A5B /* MMLikeSong.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMLikeSong.m; sourceTree = "<group>"; };
+		3BEB3D5421D3750500398A5B /* MMCDMO_Song.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMCDMO_Song.h; sourceTree = "<group>"; };
+		3BEB3D5521D3750500398A5B /* MMCDMO_Song.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMCDMO_Song.m; sourceTree = "<group>"; };
 		3BEB3D5721D3760D00398A5B /* MMDataStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMDataStack.h; sourceTree = "<group>"; };
 		3BEB3D5821D3760D00398A5B /* MMDataStack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMDataStack.m; sourceTree = "<group>"; };
 		3BEB3D5D21D3B19300398A5B /* MMDetaiData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMDetaiData.h; sourceTree = "<group>"; };
 		3BEB3D5E21D3B19400398A5B /* MMDetaiData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMDetaiData.m; sourceTree = "<group>"; };
+		3BEB3D7521D6388C00398A5B /* MMManagedObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMManagedObject.h; sourceTree = "<group>"; };
+		3BEB3D7621D6388C00398A5B /* MMManagedObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMManagedObject.m; sourceTree = "<group>"; };
+		3BEB3D8521D63C7F00398A5B /* MMCDMO_Artwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMCDMO_Artwork.h; sourceTree = "<group>"; };
+		3BEB3D8621D63C7F00398A5B /* MMCDMO_Artwork.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMCDMO_Artwork.m; sourceTree = "<group>"; };
 		3BFB704C2109BA6F002B3A06 /* APIRoot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APIRoot.h; sourceTree = "<group>"; };
 		3BFB704D2109BA6F002B3A06 /* APIRoot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APIRoot.m; sourceTree = "<group>"; };
 		914C9E31CA7BED805770445B /* Pods-MMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MMusic.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MMusic/Pods-MMusic.debug.xcconfig"; sourceTree = "<group>"; };
@@ -791,8 +797,12 @@
 				3BEB3D3521C91A7500398A5B /* Model.xcdatamodeld */,
 				3BEB3D5721D3760D00398A5B /* MMDataStack.h */,
 				3BEB3D5821D3760D00398A5B /* MMDataStack.m */,
-				3BEB3D5421D3750500398A5B /* MMLikeSong.h */,
-				3BEB3D5521D3750500398A5B /* MMLikeSong.m */,
+				3BEB3D7521D6388C00398A5B /* MMManagedObject.h */,
+				3BEB3D7621D6388C00398A5B /* MMManagedObject.m */,
+				3BEB3D5421D3750500398A5B /* MMCDMO_Song.h */,
+				3BEB3D5521D3750500398A5B /* MMCDMO_Song.m */,
+				3BEB3D8521D63C7F00398A5B /* MMCDMO_Artwork.h */,
+				3BEB3D8621D63C7F00398A5B /* MMCDMO_Artwork.m */,
 				3B4DDC872193579600F70547 /* Model  Controller */,
 				3B9AA8DD1FB4619500720085 /* Resource Object */,
 				3B9AA8DC1FB4618300720085 /* CoreObject */,
@@ -1338,6 +1348,7 @@
 				3BAAE02D20B45A9A00C82F4B /* ResultsCell.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
 				3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */,
+				3BEB3D8721D63C7F00398A5B /* MMCDMO_Artwork.m in Sources */,
 				3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */,
 				3B648F2F21BBDF5E001BB801 /* UIControl+MMActionBlock.m in Sources */,
 				3BE2A22421984BF400AEA486 /* Library+Rating.m in Sources */,
@@ -1353,7 +1364,7 @@
 				3B4DDC8A219357DE00F70547 /* DataStore.m in Sources */,
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
 				3BE2A2522198DA7E00AEA486 /* UIImageView+Extension.m in Sources */,
-				3BEB3D5621D3750500398A5B /* MMLikeSong.m in Sources */,
+				3BEB3D5621D3750500398A5B /* MMCDMO_Song.m in Sources */,
 				3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */,
 				3BE2A23E21986B2D00AEA486 /* Catalog+Search.m in Sources */,
 				3BDFC19B20B5A93F0045B33A /* ResultsMusicVideoCell.m in Sources */,
@@ -1384,6 +1395,7 @@
 				3B3D9981205512FA000F2E9E /* SongCell.m in Sources */,
 				3B9AA8E61FB46C7700720085 /* AppleCurator.m in Sources */,
 				3B73F75F21B1370300097801 /* MMLocalLibraryData.m in Sources */,
+				3BEB3D7721D6388C00398A5B /* MMManagedObject.m in Sources */,
 				3B9AA8F21FB4708E00720085 /* Curator.m in Sources */,
 				3BE2A24F2198D25400AEA486 /* MMDetailViewController.m in Sources */,
 			);

@@ -15,7 +15,7 @@
 #import "MMHeartSwitch.h"
 
 #import "MMDataStack.h"
-#import "MMLikeSong.h"
+#import "MMCDMO_Song.h"
 
 #import "DataStoreKit.h"
 #import "Artwork.h"
@@ -407,23 +407,79 @@ static NowPlayingViewController *_instance;
     //从 off --> on 时 表示要添加rating 到catalog
     // 播放器的 识别 llibrary 音乐  或者catalog 音乐
 
+    NSManagedObjectContext *moc = [MMDataStack shareDataStack].context;
+    __block Song *song = [MainPlayer nowPlayingSong];
+    if (!song) {
+        [MusicKit.new.catalog resources:@[MainPlayer.nowPlayingItem.playbackStoreID,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+                json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
+                song = [Song instanceWithDict:json];
+        }];
+    }
+
+
     NSString *identifier = MainPlayer.nowPlayingItem.playbackStoreID;
     if ([heart isOn]) {
 
         [DataStore.new addRatingToCatalogWith:identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
             [heart setOn:succeed];
         }];
-        //
-        NSManagedObjectContext *context = [MMDataStack shareDataStack].context;
-        MMLikeSong *addSong = [[MMLikeSong alloc] initWithContext:context];
 
-
-
-
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self addSongToCoreData:song];
+        });
     }else{
         [DataStore.new deleteRatingForCatalogWith:identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
             [heart setOn:!succeed];
         }];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self deleteSong:song];
+        });
+    }
+}
+
+- (void)addSongToCoreData:(Song*)song{
+    NSManagedObjectContext *moc = [MMDataStack shareDataStack].context;
+    MMCDMO_Song *addSong = [[MMCDMO_Song alloc] initWithSong:song];
+    NSLog(@"add song =%@",addSong);
+
+    NSError *saveError = nil;
+    if ([moc save:&saveError]) {
+         NSAssert(!saveError, @"保存成功");
+    }else{
+        NSAssert(saveError, @"保存歌曲失败");
+    }
+}
+- (void)deleteSong:(Song*)song{
+    NSManagedObjectContext *moc = [MMDataStack shareDataStack].context;
+    NSPredicate *namePre = [NSPredicate predicateWithFormat:@"%K == %@",@"name",song.name];
+    NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Song"]; //MMCDMO_Song
+    [fetch setPredicate:namePre];
+    [fetch setFetchLimit:5];
+    [fetch setReturnsObjectsAsFaults:NO]; //返回填充实例
+
+    NSError *fetchError = nil;
+
+    NSLog(@"begin fetch");
+
+    NSArray *fetchObjects = [moc executeFetchRequest:fetch error:&fetchError];
+    NSLog(@"end fetch");
+    NSLog(@"results =%@",fetchObjects);
+
+
+    if (fetchError) {
+        NSAssert(fetchError, @"获取失败");
+    }
+    if (fetchObjects.count > 0) {
+        //匹配播放参数ID, 删除
+        for (MMCDMO_Song *sqlSong in fetchObjects) {
+            NSString *lID = song.playParams[@"id"];
+            NSString *sqlID = sqlSong.playParams[@"id"];
+            if ([lID isEqualToString:sqlID]) {
+                [moc deleteObject:sqlSong];
+                NSLog(@"删除成功");
+            }
+        }
     }
 }
 

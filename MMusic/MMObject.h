@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 #import <MJExtension.h>
 
-@interface MMObject : NSManagedObject //NSObject
+@interface MMObject : NSObject
 
 -(instancetype) initWithDict:(NSDictionary*) dict;
 +(instancetype) instanceWithDict:(NSDictionary*) dict;

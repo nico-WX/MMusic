@@ -26,7 +26,7 @@
 }
 
 -(instancetype)initWithDict:(NSDictionary *)dict{
-    if (self = [super initWithContext:[MMDataStack shareDataStack].context]) {
+    if (self = [super initWithDict:dict]) {
         [self mj_setKeyValues:dict];
     }
     return self;

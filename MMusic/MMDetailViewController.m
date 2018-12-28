@@ -29,7 +29,7 @@
 
 //data
 @property(nonatomic, strong)Resource *resource;
-@property(nonatomic, strong)MMSongListData *resourceData;
+//@property(nonatomic, strong)MMSongListData *resourceData;
 @property(nonatomic, strong)MMDetaiData *detailData;
 @end
 
@@ -40,7 +40,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     if (self = [super init]) {
          _resource = resource;
 
-        _resourceData   = [[MMSongListData alloc] init];
+        //_resourceData   = [[MMSongListData alloc] init];
         _closeButton    = [[MMCloseButton alloc] init];
         _imageView      = [[UIImageView alloc] init];
         _titleLabel     = [[UILabel alloc] init];
@@ -145,7 +145,8 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
 #pragma mark - <TableView Delegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [MainPlayer playSongs:[self.resourceData songList] startIndex:indexPath.row];
+    //[MainPlayer playSongs:[self.resourceData songList] startIndex:indexPath.row];
+    [MainPlayer playSongs:self.detailData.songList startIndex:indexPath.row];
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 
     //[cell setHighlighted:YES animated:YES];

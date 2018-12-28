@@ -47,6 +47,8 @@
     return cell;
 }
 
-
+- (NSArray<Song *> *)songList{
+    return self.listData.songList;
+}
 
 @end

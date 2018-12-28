@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface MMDetaiData : NSObject
+@property(nonatomic, strong, readonly) NSArray<Song*> *songList;
+
 - (instancetype)initWithTableView:(UITableView*)tableView resource:(Resource*)resource cellIdentifier:(NSString*)cellIdentifier delegate:(id<DetailDataSourceDelegate>)delegate;
 @end
 
