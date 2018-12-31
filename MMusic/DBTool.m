@@ -176,7 +176,4 @@ static FMDatabase *_db;
     return models;
 }
 
-
-
-
 @end

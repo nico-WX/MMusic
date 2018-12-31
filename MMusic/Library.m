@@ -26,6 +26,7 @@ static Library* _instance;
 - (instancetype)init{
     if (self = [super init]) {
         _libraryPath = [self.rootPath stringByAppendingPathComponent:@"me"];
+        NSLog(@"lib Path = %@",_libraryPath);
     }
     return self;
 }

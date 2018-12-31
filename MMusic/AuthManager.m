@@ -53,8 +53,13 @@ static AuthManager *_instance;
             [self requestUserToken];
         }];
 
+
+
     }
     return self;
+}
++ (void)load{
+    
 }
 
 + (instancetype)shareManager{
@@ -87,6 +92,7 @@ static AuthManager *_instance;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:developerTokenExpireNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:userTokenIssueNotification object:nil];
 }
+
 
 #pragma mark getter
 - (NSString *)developerToken{
@@ -154,7 +160,7 @@ static AuthManager *_instance;
             [[NSUserDefaults standardUserDefaults] synchronize];
             [[NSNotificationCenter defaultCenter] postNotificationName:userTokenUpdatedNotification object:nil];
         }else{
-            Log(@"请求用户Token错误: %@",error.domain);
+            Log(@"请求用户Token错误: %@",error);
         }
     }];
 }

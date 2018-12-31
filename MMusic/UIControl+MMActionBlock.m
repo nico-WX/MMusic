@@ -10,9 +10,6 @@
 
 @implementation UIControl (MMActionBlock)
 
-
-//static char overviewKey;
-
 @dynamic event;
 
 //将Block 关联到对象中, 并在响应中,调用Block
@@ -22,7 +19,8 @@
 }
 
 - (void)callActionBlock:(id)sender {
-    ActionBlock block = (ActionBlock)objc_getAssociatedObject(self, @selector(callActionBlock:));  //取出关联的对象, 如果有定义,执行Block
+    //取出关联的对象, 如果有定义,执行Block
+    ActionBlock block = (ActionBlock)objc_getAssociatedObject(self, @selector(callActionBlock:));
     if (block) {
         block();
     }

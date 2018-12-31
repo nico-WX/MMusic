@@ -11,10 +11,21 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface MMManagedObject : NSManagedObject
 @property(nonatomic, readonly,strong) NSManagedObjectContext *mainMoc;
 //@property(nonatomic, readonly,strong) NSManagedObjectContext *backgroupMoc;
 
 @end
+
+
+@interface MMManagedObject (DefaultManaged)
+//+ (NSEntityDescription*)entity;
+//+ (NSString*)entityName;
++ (NSPredicate*)defaultPredicate;
++ (NSSortDescriptor*)defaultSortDescriptor;
+
+@end
+
 
 NS_ASSUME_NONNULL_END

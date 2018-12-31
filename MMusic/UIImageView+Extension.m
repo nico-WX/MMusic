@@ -20,8 +20,7 @@
         UIImage *placeholder = [UIImage imageNamed:@"placeholder"];
         path = [path stringReplacingImageURLSize:self.bounds.size];
         [self sd_setImageWithURL:[NSURL URLWithString:path] placeholderImage:placeholder options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            [self showImageToView:self withImageURL:path cacheToMemory:YES];    // 缓存 image
-
+            //[self showImageToView:self withImageURL:path cacheToMemory:YES];    // 缓存 image
         }];
     }
 }

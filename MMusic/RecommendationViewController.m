@@ -48,6 +48,9 @@ static NSString *const cellIdentifier = @"resourceCell";
     [self.view setBackgroundColor:UIColor.whiteColor];
     [self.view addSubview:self.collectionView];
 
+    self.popupAnimator = [[MMDetailPoppingAnimator alloc] init];
+    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:self.collectionView cellIdentifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:self];
+
     //底部偏移量(底部浮动播放器窗口)
     if ([self.tabBarController isKindOfClass:[MMTabBarController class]]) {
         MMTabBarController *tabBarController = (MMTabBarController*)self.tabBarController;
@@ -55,18 +58,11 @@ static NSString *const cellIdentifier = @"resourceCell";
         [self.collectionView setContentInset:UIEdgeInsetsMake(0, 0, bottomInset, 0)];
     }
 
-    self.popupAnimator = [[MMDetailPoppingAnimator alloc] init];
-    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:self.collectionView cellIdentifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:self];
-
-
     if ([self.navigationController.navigationBar isHidden]) {
         [self.collectionView.mj_header setIgnoredScrollViewContentInsetTop:20];  //调整顶部距离
     }
 }
 
-- (void)viewDidLayoutSubviews{
-    [super viewDidLayoutSubviews];
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -100,9 +96,9 @@ static NSString *const cellIdentifier = @"resourceCell";
     [detail.titleLabel setText:cell.titleLabel.text];
     [detail.imageView setImage:cell.imageView.image];
 
+    //动画相关
     CGRect startFram = cell.frame;
     startFram.origin.y -= collectionView.contentOffset.y; // 减去滚动偏移,动画消除动画弹出时的初始位置太大造成的晃动;
-
     [self.popupAnimator setStartFrame:startFram];
     [self presentViewController:detail animated:YES completion:nil];
 }

@@ -15,4 +15,23 @@
     return [MMDataStack shareDataStack].context;
 }
 
+
+- (NSSortDescriptor *)defaultSortDescriptor{
+    return [NSSortDescriptor sortDescriptorWithKey:@"" ascending:0];
+}
+-(NSPredicate *)defaultPredicate{
+    return [NSPredicate predicateWithValue:0];
+}
+@end
+
+@implementation MMManagedObject (DefaultManaged)
+
+
++ (NSPredicate *)defaultPredicate{
+    return [NSPredicate predicateWithValue:0];
+}
++(NSSortDescriptor *)defaultSortDescriptor{
+    return [NSSortDescriptor sortDescriptorWithKey:@"" ascending:0];
+}
+
 @end

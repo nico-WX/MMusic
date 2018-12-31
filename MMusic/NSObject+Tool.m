@@ -43,6 +43,8 @@ extern NSString *const userTokenIssueNotification;
 
     NSDictionary *json;
     NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
+
+    NSLog(@">>>>>>>>> code = %ld",res.statusCode);
     switch (res.statusCode) {
         case 200:
 
@@ -51,6 +53,7 @@ extern NSString *const userTokenIssueNotification;
                 if (error) Log(@"Serialization Error:%@",error);
             }
             break;
+        case 400:
         case 401:
             //开发者Token 问题
             //Log(@"授权过期");
