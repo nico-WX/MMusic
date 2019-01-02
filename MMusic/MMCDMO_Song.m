@@ -8,11 +8,20 @@
 
 #import "MMCDMO_Song.h"
 #import "MMDataStack.h"
-#import "Preview.h"
+#import "Artwork.h"
 
 @implementation MMCDMO_Song
 
-@dynamic name,movementName,composerName,genreNames,artistName,workName,contentRating,artwork,discNumber,durationInMillis,editorialNotes,isrc,movementNumber,movementCount,playParams,releaseDate,trackNumber,url;
+@dynamic name,movementName,composerName,genreNames,artistName,workName,contentRating,artwork,discNumber,durationInMillis,editorialNotes,isrc,movementNumber,movementCount,playParams,releaseDate,trackNumber,url,identifier;
+
+//+(instancetype)insertIntoContext:(NSManagedObjectContext *)context withSong:(Song *)song{
+//
+//    
+//    if (self = [[super alloc] initWithContext:context]) {
+//
+//    }
+//    return self;
+//}
 
 - (instancetype)initWithSong:(Song *)song{
     if (self = [super initWithContext:self.mainMoc]) {
@@ -23,7 +32,10 @@
             [self setValue:[song valueForKey:key] forKey:key];
         }
 
-        NSDictionary *dict = @{};
+        [self setValue:song.playParams[@"id"] forKey:@"identifier"];
+
+        Artwork *art = song.artwork;
+        NSDictionary *dict = @{@"url":art.url,@"height":@(art.height),@"width":@(art.width)};
         [self setValue:dict forKey:@"artwork"];
     }
     return self;

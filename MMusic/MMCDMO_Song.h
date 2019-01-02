@@ -15,10 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MMCDMO_Song : MMManagedObject
 
+//+ (instancetype)insertIntoContext:(NSManagedObjectContext*)context withSong:(Song*)song;
 /**内部注册在主托管上下文中*/
 - (instancetype)initWithSong:(Song *)song;
 
-
+@property(nonatomic, copy) NSString *identifier;
 /**艺人名称*/
 @property(nonatomic, copy) NSString *artistName;
 /**作家*/

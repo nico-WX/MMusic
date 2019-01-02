@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MMManagedObject (DefaultManaged)
 //+ (NSEntityDescription*)entity;
 //+ (NSString*)entityName;
+
 + (NSPredicate*)defaultPredicate;
 + (NSSortDescriptor*)defaultSortDescriptor;
 

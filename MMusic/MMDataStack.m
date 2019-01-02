@@ -78,10 +78,10 @@ static MMDataStack *_instance;
     NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
     NSError *error = nil;
     //file URL
-    [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath:path] options:nil error:&error];
-    if (error) {
-        NSAssert(error, @"添加存储失败");
-    }
+    NSPersistentStore *ps = [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath:path] options:nil error:&error];
+    NSLog(@"error ==> %@",error);
+    NSAssert(ps, @"添加存储失败");
+
 
     _context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     [_context setPersistentStoreCoordinator:psc];
