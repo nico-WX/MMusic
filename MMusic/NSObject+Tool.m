@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <MediaPlayer/MediaPlayer.h>
 
+#import "NSString+Replace.h"
 #import "NSObject+Tool.h"
 #import "AuthManager.h"
 
@@ -29,13 +30,6 @@ extern NSString *const developerTokenExpireNotification;
 extern NSString *const userTokenIssueNotification;
 @implementation NSObject (Tool)
 
-
-- (NSURLRequest *)createRequestWithHref:(NSString *)href {
-    NSString *path = @"https://api.music.apple.com";
-    path = [path stringByAppendingPathComponent:href];
-    return [self createRequestWithURLString:path setupUserToken:YES];
-}
-
 //统一解析响应体,处理异常等.
 - (NSDictionary *)serializationDataWithResponse:(NSURLResponse *)response data:(NSData *)data error:(NSError *)error {
 
@@ -45,6 +39,7 @@ extern NSString *const userTokenIssueNotification;
     NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
 
     NSLog(@">>>>>>>>> code = %ld",res.statusCode);
+
     switch (res.statusCode) {
         case 200:
 
@@ -88,50 +83,6 @@ extern NSString *const userTokenIssueNotification;
 }
 
 
-//替换封面URL中的占位字符串,
-- (NSString*)stringReplacingOfString:(NSString *)target height:(CGFloat)height width:(CGFloat)width {
-    //之前返回的图片像素太低了
-    CGFloat times =1; //[UIScreen mainScreen].scale;
-    NSString *w = [NSString stringWithFormat:@"%d",(int)(width * times)];
-    NSString *h = [NSString stringWithFormat:@"%d",(int)(height * times)]; //注意占位不能是浮点数, 只能是整数, 不然报CFNetwork 385错误
-    target = [target stringByReplacingOccurrencesOfString:@"{h}" withString:h];
-    target = [target stringByReplacingOccurrencesOfString:@"{w}" withString:w];
-
-    //NSLog(@"path=%@",target);
-    return target;
-}
-
-
-/**通过urlString 生成请求体 并设置请求头*/
-- (NSURLRequest*)createRequestWithURLString:(NSString*)urlString setupUserToken:(BOOL)setupUserToken {
-    //urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];//转换URL中文及空格 (有二次转码问题)
-
-    //移除 '%' 防止将'%' 重复编码成25
-    urlString = [urlString stringByRemovingPercentEncoding];
-    urlString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-
-    //设置请求头
-    NSString *devToken = AuthManager.shareManager.developerToken;
-    if (devToken) {
-        devToken = [NSString stringWithFormat:@"Bearer %@",devToken];
-        [request setValue:devToken forHTTPHeaderField:@"Authorization"];
-    }else
-        [self showHUDToMainWindowFromText:@"无法获得开发者Token"];
-
-    if (YES == setupUserToken) {
-        NSString *userToken = AuthManager.shareManager.userToken;
-        //NSLog(@"userToken:=%@",userToken);
-        if (userToken) {
-            [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];
-        }else
-            [self showHUDToMainWindowFromText:@"无法获得用户令牌"];
-    }
-    return request;
-}
-
-
 - (void)showImageToView:(UIImageView *)imageView withImageURL:(NSString *)url cacheToMemory:(BOOL)cache {
     dispatch_async(dispatch_get_main_queue(), ^{
         //cell 重用时,上次没加载完成的hud 未能隐藏, 遍历删除
@@ -167,7 +118,7 @@ extern NSString *const userTokenIssueNotification;
             [imageView addSubview:hud];
 
             //image url
-            NSString *urlStr = [self stringReplacingOfString:url height:h width:w];
+            NSString *urlStr = [url stringReplacingImageURLSize:imageView.bounds.size];
 
             //部分URL 多出@"{c}" 这个参数,  替换掉
             NSRange range = [urlStr rangeOfString:@"{c}"];
@@ -201,33 +152,6 @@ extern NSString *const userTokenIssueNotification;
     });
 }
 
-
-- (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueFromParams:(NSArray<NSDictionary *> *)playParamses
-                                                                      startAtIndexPath:(NSIndexPath *)indexPath {
-    NSMutableArray *list = NSMutableArray.new;
-    for (NSDictionary * playParams in playParamses) {
-        MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:playParams];
-        [list addObject:parameters];
-    }
-    MPMusicPlayerPlayParametersQueueDescriptor *queue =[[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:list];
-    [queue setStartItemPlayParameters:[list objectAtIndex:indexPath.row]];
-    return queue;
-}
-
-- (MPMusicPlayerPlayParametersQueueDescriptor *)playParametersQueueFromSongs:(NSArray<Song *> *)songs startPlayIndex:(NSUInteger)index {
-    NSMutableArray<MPMusicPlayerPlayParameters*> *list = [NSMutableArray array];
-    for (Song *song in songs) {
-        if (song.playParams) {
-            MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
-            [list addObject:parameters];
-        }
-    }
-    MPMusicPlayerPlayParametersQueueDescriptor *queue;
-    queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:list];
-    [queue setStartItemPlayParameters:[list objectAtIndex:index]];
-  
-    return queue;
-}
 
 - (void)showHUDToMainWindowFromText:(NSString *)text {
     dispatch_async(dispatch_get_main_queue(), ^{

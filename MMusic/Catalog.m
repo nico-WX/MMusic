@@ -8,6 +8,7 @@
 #import "AuthManager.h"
 #import "Resource.h"
 #import "Song.h"
+#import "NSURLRequest+CreateURLRequest.h"
 
 @interface Catalog()
 //@property(nonatomic, strong)NSString *root;
@@ -48,7 +49,7 @@ static Catalog* _instance;
         }
     }
 
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
 
@@ -58,7 +59,7 @@ static Catalog* _instance;
     path = [path stringByAppendingPathComponent:identifier];
     path = [path stringByAppendingPathComponent:name];
 
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
 
@@ -70,7 +71,7 @@ static Catalog* _instance;
         path = [path stringByAppendingString:[NSString stringWithFormat:@"%@,",isrc]];
     }
 
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
 - (void)songsByISRC:(NSArray<NSString *> *)ISRCs callBack:(RequestCallBack)handle {
@@ -81,7 +82,7 @@ static Catalog* _instance;
         path = [path stringByAppendingString:[NSString stringWithFormat:@"%@,",isrc]];
     }
 
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
 
@@ -105,7 +106,7 @@ static Catalog* _instance;
             break;
     }
 
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
 
@@ -147,7 +148,7 @@ static Catalog* _instance;
 }
 
 - (void)songListWithResource:(Resource *)resource completion:(RequestCallBack)handle{
-    NSURLRequest *request = [self createRequestWithHref:resource.href];
+    NSURLRequest *request = [NSURLRequest createRequestWithHref:resource.href];
     [self dataTaskWithRequest:request handler:handle];
 }
 

@@ -12,14 +12,14 @@
 #import "Song.h"
 #import "MusicVideo.h"
 
-@interface MPMusicPlayerController()<MPSystemMusicPlayerController>
+@interface MPMusicPlayerController()
+//联合
 @property(nonatomic, strong)MPMusicPlayerPlayParametersQueueDescriptor *parametersQueue;
 @end
 
 @implementation MPMusicPlayerController (ResourcePlaying)
 
-
-#pragma mark - play song method
+#pragma mark - foundation method
 - (void)playSongs:(NSArray<Song*> *)songs startIndex:(NSUInteger)startIndex{
     [self setSongLists:songs];
     self.parametersQueue = [self playParametersQueueFromSongs:songs startPlayIndex:startIndex];
@@ -59,47 +59,49 @@
     [self prependQueueDescriptor:queue];
 }
 
-- (Song*)nowPlayingSong {
-
+- (void)nowPlayingSong:(void (^)(Song * _Nonnull))completion{
     for (Song *song in self.songLists) {
         if ([song isEqualToMediaItem:self.nowPlayingItem]) {
-            return song;
+            completion(song);
+            return;
         }
     }
-    return nil;
 
-//    // ?? 同步还是异步?
-//     __block Song *nowSong = nil;
-//    [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-//            json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
-//            nowSong = [Song instanceWithDict:json];
-//    }];
-//
-//    return nowSong;
+    //异步加载
+    [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
+        completion([Song instanceWithDict:json]);
+    }];
 }
 
-#pragma mark play mv
+
 - (void)playMusicVideos:(NSArray<MusicVideo*> *)mvs startIndex:(NSUInteger)startIndex{
+    [self setMusicVideos:mvs];
     NSMutableArray<MPMusicPlayerPlayParameters*> *array = [NSMutableArray array];
     for (MusicVideo *mv in mvs) {
         [array addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:mv.playParams]];
     }
     MPMusicPlayerPlayParametersQueueDescriptor *queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:array];
     [queue setStartItemPlayParameters:[array objectAtIndex:startIndex]];
-    [self openToPlayQueueDescriptor:queue];
+    [MainPlayer openToPlayQueueDescriptor:queue];
 }
 
-#pragma mark - MPSystemMusicPlayerController
-- (void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor{
-    UIApplication *app = [UIApplication sharedApplication];
-    NSURL *url = [NSURL URLWithString:@"Music:prefs:root=MUSIC"];
-    if ([app canOpenURL:url]) {
-        [app openURL:url options:@{} completionHandler:^(BOOL success) {
-            [MainPlayer setQueueWithDescriptor:queueDescriptor];
-            [MainPlayer play];
-        }];
+#pragma mark - help
+- (MPMusicPlayerPlayParametersQueueDescriptor *)playParametersQueueFromSongs:(NSArray<Song *> *)songs
+                                                              startPlayIndex:(NSUInteger)index {
+    NSMutableArray<MPMusicPlayerPlayParameters*> *list = [NSMutableArray array];
+    for (Song *song in songs) {
+        if (song.playParams) {
+            MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
+            [list addObject:parameters];
+        }
     }
+    MPMusicPlayerPlayParametersQueueDescriptor *queue;
+    queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:list];
+    [queue setStartItemPlayParameters:[list objectAtIndex:index]];
+    return queue;
 }
+
 
 
 #pragma mark - 关联属性对象
@@ -123,6 +125,5 @@
 - (MPMusicPlayerPlayParametersQueueDescriptor *)parametersQueue{
     return objc_getAssociatedObject(self, _cmd);
 }
-
 
 @end

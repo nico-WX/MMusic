@@ -39,6 +39,7 @@
 		3B648F7B21BFCE92001BB801 /* MMMyMusicPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B648F7A21BFCE92001BB801 /* MMMyMusicPageViewController.m */; };
 		3B648F7E21BFD0F2001BB801 /* MMModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B648F7D21BFD0F2001BB801 /* MMModelController.m */; };
 		3B64D0EE20ECE76200D831FE /* MMHeartSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */; };
+		3B65B28B21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B28A21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m */; };
 		3B66A22E2195CCDC00F7DC9E /* MMTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */; };
 		3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895820A9968C000C3403 /* LibraryAlbum.m */; };
 		3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895B20A998B6000C3403 /* LibraryMusicVideo.m */; };
@@ -299,6 +300,8 @@
 		3B648F7D21BFD0F2001BB801 /* MMModelController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMModelController.m; sourceTree = "<group>"; };
 		3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMHeartSwitch.m; sourceTree = "<group>"; };
 		3B64D0ED20ECE76200D831FE /* MMHeartSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMHeartSwitch.h; sourceTree = "<group>"; };
+		3B65B28921DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+CreateURLRequest.h"; sourceTree = "<group>"; };
+		3B65B28A21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURLRequest+CreateURLRequest.m"; sourceTree = "<group>"; };
 		3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMTabBarController.m; sourceTree = "<group>"; };
 		3B66A22D2195CCDC00F7DC9E /* MMTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMTabBarController.h; sourceTree = "<group>"; };
 		3B69895720A9968C000C3403 /* LibraryAlbum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryAlbum.h; sourceTree = "<group>"; };
@@ -729,6 +732,8 @@
 				3B9AA9151FB588AF00720085 /* AuthManager.m */,
 				3B5371FC1FDBF50B009AFE47 /* NSObject+Tool.h */,
 				3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */,
+				3B65B28921DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.h */,
+				3B65B28A21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m */,
 				3B3D99E8205E990D000F2E9E /* NSString+Hash.h */,
 				3B3D99E9205E990F000F2E9E /* NSString+Hash.m */,
 				3BE2A2532198DC7900AEA486 /* NSString+Replace.h */,
@@ -1375,6 +1380,7 @@
 				3B9A371D219700E6000CB6B4 /* NowPlayingViewController.m in Sources */,
 				3B9AA8F51FB4719A00720085 /* MusicVideo.m in Sources */,
 				3B6BE7ED21A945330004F3E5 /* MMSearchViewController.m in Sources */,
+				3B65B28B21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m in Sources */,
 				3B4D989420BA8C1700139BE0 /* ArtistsModel.m in Sources */,
 				3B9AA8EC1FB46E7B00720085 /* Artwork.m in Sources */,
 				3B4DDC5E2192C5D700F70547 /* MPMediaItemArtwork+Exchange.m in Sources */,

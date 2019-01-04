@@ -1,12 +1,12 @@
 
 #import "AuthManager.h"
+#import "NSURLRequest+CreateURLRequest.h"
 #import <StoreKit/StoreKit.h>
 
 //Token缓存Key
-static NSString* const k_userTokenKey  = @"userTokenUserDefaultsKey";
-static NSString* const k_developerTokenKey = @"developerTokenDefaultsKey";
-static NSString* const k_storefrontKey     = @"storefrontDefaultsKey";
-
+static NSString* const k_userTokenKey       = @"userTokenUserDefaultsKey";
+static NSString* const k_developerTokenKey  = @"developerTokenDefaultsKey";
+static NSString* const k_storefrontKey      = @"storefrontDefaultsKey";
 
 //通知
 NSString *const developerTokenExpireNotification  = @"developerTokenExpire";           //开发者Token 过期
@@ -19,14 +19,45 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
 
 @end
 
-
-
 static AuthManager *_instance;
 @implementation AuthManager
 
 @synthesize developerToken  = _developerToken;
 @synthesize userToken       = _userToken;
 @synthesize storefront      = _storefront;
+
++ (void)checkAuthTokenWith:(void (^)(AuthManager *))completion{
+
+    //检查Token
+    NSString *dev = [[self shareManager] developerToken];
+    NSString *user = [[self shareManager] userToken];
+    NSString *front = [[self shareManager] storefront];
+    if (!dev) {
+        [[self shareManager] loadDeveloperTokenWith:^(NSString *token) {
+        }];
+    }
+    if (!user) {
+        [[self shareManager] loadUserTokenWith:^(NSString *token) {
+        }];
+    }
+    if (!front) {
+        [[self shareManager] loadStoreFrontWith:^(NSString *front) {
+        }];
+    }
+
+    //以下检查token 有效性
+    NSString *testAuthPath = @"https://api.music.apple.com/v1/me/library/playlists";
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:testAuthPath setupUserToken:YES];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        NSLog(@"check auth statusCode =%ld",response.statusCode);
+        if (response.statusCode == 403) {
+            //无效授权
+            [[self shareManager] loadUserTokenWith:^(NSString *token) {
+                completion([self shareManager]);
+            }];
+        }
+    }];
+}
 
 # pragma mark 初始化及单例实现
 - (instancetype)init{
@@ -38,29 +69,22 @@ static AuthManager *_instance;
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
         [center addObserverForName:developerTokenExpireNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             NSLog(@"收到开发者Token过期通知");
-            //移除过期DeveloperToken
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:k_developerTokenKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
             //请求新的开发Token
-            [self requestDeveloperToken];
+            [self loadDeveloperTokenWith:^(NSString *token) {
+            }];
         }];
+
 
         //userToken 异常, 可能修改设置或者未订阅服务等
         [center addObserverForName:userTokenIssueNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:k_userTokenKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
             NSLog(@"监听到 <userTokenIssueNotification> 消息");
-            [self requestUserToken];
+            [self loadUserTokenWith:^(NSString *token) {
+            }];
         }];
-
-
-
     }
     return self;
 }
-+ (void)load{
-    
-}
+
 
 + (instancetype)shareManager{
     static dispatch_once_t onceToken;
@@ -94,14 +118,16 @@ static AuthManager *_instance;
 }
 
 
-#pragma mark getter
+#pragma mark - getter
 - (NSString *)developerToken{
     if (!_developerToken) {
         _developerToken = [[NSUserDefaults standardUserDefaults] objectForKey:k_developerTokenKey];
-#warning The token is set manually
-        _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTQzMDUyODU1LCJleHAiOjE1NTg2MDQ4NTV9.619j4QOH2KxlK62tmQlMzlu-pbbLc7EmQoqk-dNsc8f2gmPDF2nxWhpADvPk7Rc_Jv9M7lh6Bgu4123swDm9lA";
+        #warning The token is set manually
+         _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTQ2NjAzODAwLCJleHAiOjE1NjIxNTU4MDB9.jmKfXTaCqwJrB-d0-7No5v539XHAx8aZ3tsaBBY4S9lmC5fL75q8JQWHysRnhdbmU8tilhW5nw587EtIP4L2gw";
         if (!_developerToken) {
-            [self requestDeveloperToken];
+            [self loadDeveloperTokenWith:^(NSString *token) {
+                self->_developerToken = token;
+            }];
         }
     }
     return _developerToken;
@@ -110,10 +136,11 @@ static AuthManager *_instance;
 - (NSString *)userToken{
     if (!_userToken) {
         _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:k_userTokenKey];
-        Log(@"userToken: %@",_userToken);
         if (!_userToken) {
             //本地无Token,  网络请求
-            [self requestUserToken];
+            [self loadUserTokenWith:^(NSString *token) {
+                self->_userToken = token;
+            }];
         }
     }
     return _userToken;
@@ -123,55 +150,54 @@ static AuthManager *_instance;
     if (!_storefront) {
         _storefront = [[NSUserDefaults standardUserDefaults] objectForKey:k_storefrontKey];
         if (!_storefront) {
-            [self requestStorefront];
+            [self loadStoreFrontWith:^(NSString *front) {
+                self->_storefront = front;
+            }];
         }
     }
     return _storefront;
 }
 
-#pragma mark - 从网络请求token /地区代码
-/**请求开发者Token 并缓存在默认设置*/
-- (void)requestDeveloperToken{
-#warning DeveloperTokenURL no set!
-    NSURL *url = [NSURL URLWithString:@"http://127.0.0.1:5000/jwt"];
-        [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-            if (res.statusCode == 200) {
-                NSString *token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                if (token) {
-                    Log(@"request new DeveloperToken: %@",token);
-                    [[NSUserDefaults standardUserDefaults] setObject:token forKey:k_developerTokenKey];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenUpdatedNotification object:nil];
-                }
-            }else{
-                Log(@"request Developer Token Error: %@",error);
-            }
-        }] resume];
-}
-
-/**请求用户Token*/
-- (void)requestUserToken{
-    NSLog(@"请求用户Token begin!");
-    [SKCloudServiceController.new requestUserTokenForDeveloperToken:self.developerToken completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
+#pragma mark - 从网络请求token
+- (void)loadUserTokenWith:(void(^)(NSString* token))completion{
+    [SKCloudServiceController.new requestUserTokenForDeveloperToken:self.developerToken
+                                                  completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
         if (userToken) {
-            Log(@"userToken: %@",userToken);
             [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:k_userTokenKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [[NSNotificationCenter defaultCenter] postNotificationName:userTokenUpdatedNotification object:nil];
+            completion(userToken);
         }else{
             Log(@"请求用户Token错误: %@",error);
         }
     }];
 }
+- (void)loadDeveloperTokenWith:(void(^)(NSString *token))completion{
+//    NSString *path = @"http://127.0.0.1:5000/jwt";
+//    NSURL *url = [NSURL URLWithString:path];
+//    [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//        NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
+//        if (res.statusCode == 200) {
+//            NSString *token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//            if (token) {
+//                [[NSUserDefaults standardUserDefaults] setObject:token forKey:k_developerTokenKey];
+//                [[NSUserDefaults standardUserDefaults] synchronize];
+//                [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenUpdatedNotification object:nil];
+//                completion(token);
+//            }
+//        }else{
+//            Log(@"request Developer Token Error: %@",error);
+//        }
+//    }] resume];
 
-- (void)requestStorefront{
-    //获取绑定的商店  并缓存
+}
+- (void)loadStoreFrontWith:(void(^)(NSString* front))completion{
     [SKCloudServiceController.new requestStorefrontCountryCodeWithCompletionHandler:^(NSString * _Nullable storefrontCountryCode, NSError * _Nullable error) {
         if (!error && storefrontCountryCode) {
-            self->_storefront = storefrontCountryCode;
             [[NSUserDefaults standardUserDefaults] setObject:storefrontCountryCode forKey:k_storefrontKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            self->_storefront = storefrontCountryCode;
+            completion(storefrontCountryCode);
         }
     }];
 }
@@ -210,15 +236,15 @@ static AuthManager *_instance;
             });
         }
 
-//        if (capabilities & SKCloudServiceCapabilityMusicCatalogSubscriptionEligible) {
-//            NSLog(@"合格订阅");
-//        }
-//        if (capabilities & SKCloudServiceCapabilityMusicCatalogPlayback) {
-//            NSLog(@"可以回放");
-//        }
-//        if (capabilities & SKCloudServiceCapabilityAddToCloudMusicLibrary) {
-//            NSLog(@"add 云音乐库");
-//        }
+        if (capabilities & SKCloudServiceCapabilityMusicCatalogSubscriptionEligible) {
+            NSLog(@"合格订阅者");
+        }
+        if (capabilities & SKCloudServiceCapabilityMusicCatalogPlayback) {
+            NSLog(@"可以回放");
+        }
+        if (capabilities & SKCloudServiceCapabilityAddToCloudMusicLibrary) {
+            NSLog(@"增加云音乐库");
+        }
     }];
 }
 

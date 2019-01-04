@@ -7,6 +7,7 @@
 //
 
 #import "Library+Rating.h"
+#import "NSURLRequest+CreateURLRequest.h"
 
 
 static NSString *const ratingPath = @"ratings";
@@ -20,7 +21,7 @@ static NSString *const ratingPath = @"ratings";
     NSDictionary *playload = @{@"type":@"rating",@"attributes":@{@"value":[NSNumber numberWithInt:1]}};
     NSData *data = [NSJSONSerialization dataWithJSONObject:playload options:NSJSONWritingSortedKeys error:nil];
 
-    NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+    NSMutableURLRequest *request = (NSMutableURLRequest*)[NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [request setHTTPMethod:@"PUT"];
     [request setHTTPBody:data];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
@@ -29,7 +30,7 @@ static NSString *const ratingPath = @"ratings";
 - (void)deleteRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RequestCallBack)callBack{
     NSString *path = [self makePathWith:identifier type:type];
 
-    NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+    NSMutableURLRequest *request = (NSMutableURLRequest*)[NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [request setHTTPMethod:@"DELETE"];
 
     //无响应体, 成功响应码:204
@@ -37,7 +38,7 @@ static NSString *const ratingPath = @"ratings";
 }
 - (void)requestRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RequestCallBack)callBack{
     NSString *path = [self makePathWith:identifier type:type];
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:callBack];
 }
 

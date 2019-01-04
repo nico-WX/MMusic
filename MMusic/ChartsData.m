@@ -8,6 +8,7 @@
 
 #import "ChartsData.h"
 #import "Chart.h"
+#import "NSURLRequest+CreateURLRequest.h"
 
 @interface ChartsData ()
 @property(nonatomic, strong) NSArray<Chart*> *chartList;
@@ -59,7 +60,7 @@
 - (void)requestHongKongMVDataWithCompletion:(void(^)(Chart* chart))callBack {
 
     NSString *path = @"https://api.music.apple.com/v1/catalog/hk/charts?types=music-videos";
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:NO];
 
     [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];

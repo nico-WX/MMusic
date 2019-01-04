@@ -9,6 +9,12 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "MMTabBarController.h"
 
+//vc
+#import "NowPlayingViewController.h"
+#import "RecommendationViewController.h"
+#import "MMSearchMainViewController.h"
+#import "MyMusicViewController.h"
+
 @interface MMTabBarController ()
 @property(nonatomic, strong)UIViewController *popViewController;        //强引用
 @property(nonatomic, strong)UIVisualEffectView *visualEffectView;       //背景效果
@@ -28,7 +34,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self.tabBar setHidden:YES];
+    //[self.tabBar setHidden:YES];
+
+
 
     //初始化 popFrame
     _popFrame = ({
@@ -86,6 +94,39 @@
 //    [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
 //        [self popStateForState:MainPlayer.playbackState];
 //    }];
+
+
+    //添加子视图控制器
+    ({
+        //播放器
+        [self addPopViewController:[NowPlayingViewController sharePlayerViewController]];
+
+        //first : 今日推荐
+        RecommendationViewController *todayCVC = [[RecommendationViewController alloc] init];
+        [todayCVC setTitle:@"今日推荐"];
+        UINavigationController *todayNav = [[UINavigationController alloc] initWithRootViewController:todayCVC];
+
+        //secon 搜索
+        MMSearchMainViewController *chartVC = [[MMSearchMainViewController alloc] init];
+        [chartVC setTitle:@"排行榜"];
+        UINavigationController *chartNav = [[UINavigationController alloc] initWithRootViewController:chartVC];
+
+        //three 我的音乐
+        MyMusicViewController  *mmusicVC =[[MyMusicViewController alloc] init];
+        UINavigationController *mmusicNavCtr = [[UINavigationController alloc] initWithRootViewController:mmusicVC];
+        [mmusicVC setTitle:@"我的音乐"];
+
+        //添加控制器
+        [self addChildViewController:todayNav];
+        [self addChildViewController:chartNav];
+        [self addChildViewController:mmusicNavCtr];
+
+        //设置item 图标
+        [todayCVC.tabBarItem setImage:[UIImage imageNamed:@"recom"]];
+        [chartNav.tabBarItem setImage:[UIImage imageNamed:@"Chart"]];
+        [mmusicNavCtr.tabBarItem setImage:[UIImage imageNamed:@"Library"]];
+    });
+
 }
 
 #pragma  mark - 辅助方法

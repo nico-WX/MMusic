@@ -145,6 +145,8 @@ static NowPlayingViewController *_instance;
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
 
+    
+
     if (CGRectGetHeight(self.view.frame) < 100) {
         [self popStateLayout];
     }else{
@@ -407,19 +409,9 @@ static NowPlayingViewController *_instance;
 }
 //红心按钮 添加喜欢或者删除喜欢
 - (void)changeLove:(MMHeartSwitch*)heart {
-
-    //删除或添加Song到数据库, 同时执行删除与添加Rating
-    __block Song *song = [MainPlayer nowPlayingSong];
-    if (song) {
+    [MainPlayer nowPlayingSong:^(Song * _Nonnull song) {
         [self updateState:heart withSong:song];
-    }else{
-        //从网络获取Song对象
-        [MusicKit.new.catalog resources:@[MainPlayer.nowPlayingItem.playbackStoreID,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-            json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
-            song = [Song instanceWithDict:json];
-            [self updateState:heart withSong:song];
-        }];
-    }
+    }];
 }
 
 - (void)updateState:(MMHeartSwitch*)heartswitch withSong:(Song*)song{

@@ -8,6 +8,7 @@
 
 #import "Library.h"
 #import "AuthManager.h"
+#import "NSURLRequest+CreateURLRequest.h"
 
 @interface Library()
 @end
@@ -52,7 +53,7 @@ static Library* _instance;
     }
     NSLog(@"path =%@",path);
 
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     //Log(@"header %@",request.allHTTPHeaderFields);
     [self dataTaskWithRequest:request handler:handle];
 }
@@ -64,7 +65,7 @@ static Library* _instance;
     path = [path stringByAppendingPathComponent:identifier];
     path = [path stringByAppendingPathComponent:name];
 
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:handle];
 }
 
@@ -91,14 +92,14 @@ static Library* _instance;
             break;
     }
 
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:handle];
 }
 
 
 - (void)defaultRecommendationsInCallBack:(RequestCallBack)handle {
     NSString *path = [self.libraryPath stringByAppendingPathComponent:@"recommendations"];
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:YES];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:handle];
 }
 

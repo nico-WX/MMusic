@@ -21,6 +21,7 @@
 #import "MMSearchContentArtistsCell.h"
 #import "MMSearchContentMusicVideosCell.h"
 
+#import "NSURLRequest+CreateURLRequest.h"
 #import "ResponseRoot.h"
 #import "Song.h"
 #import "MusicVideo.h"
@@ -120,7 +121,7 @@ static NSString *const cellID = @" cell reuse identifier";
 }
 
  -(void) loadNextPageData{
-     NSURLRequest *request = [self createRequestWithHref:self.responseRoot.next];
+     NSURLRequest *request = [NSURLRequest createRequestWithHref:self.responseRoot.next];
      [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
 
          if ([json valueForKey:@"results"]) {

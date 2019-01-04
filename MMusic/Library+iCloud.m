@@ -7,6 +7,7 @@
 //
 
 #import "Library+iCloud.h"
+#import "NSURLRequest+CreateURLRequest.h"
 
 @implementation Library (iCloud)
 
@@ -35,7 +36,7 @@
         path = [path stringByAppendingString:[NSString stringWithFormat:@"%@,",identifier]];
     }
 
-    NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+    NSMutableURLRequest *request = (NSMutableURLRequest*)[NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [request setHTTPMethod:@"POST"];
 
     //没有响应体 , 成功响应码:202
@@ -49,7 +50,7 @@
     NSString *path = [self.libraryPath stringByAppendingPathComponent:@"library/playlists"];
 
     NSData *bodyData = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingSortedKeys error:nil];
-    NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+    NSMutableURLRequest *request = (NSMutableURLRequest*)[NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:bodyData];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
@@ -66,7 +67,7 @@
     NSDictionary *playload = @{@"data":tracks};
     NSData *data = [NSJSONSerialization dataWithJSONObject:playload options:NSJSONWritingSortedKeys error:nil];
 
-    NSMutableURLRequest *request = (NSMutableURLRequest*)[self createRequestWithURLString:path setupUserToken:YES];
+    NSMutableURLRequest *request = (NSMutableURLRequest*)[NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:data];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
