@@ -7,7 +7,7 @@
 //
 
 #import "MMHeartSwitch.h"
-#import "HeartStyleKit.h"
+#import "ButtonStyleKit.h"
 
 @interface MMHeartSwitch()
 @property(nonatomic, strong) UIImpactFeedbackGenerator *impact;
@@ -28,9 +28,9 @@
 
 - (void)drawRect:(CGRect)rect{
     if(self.on){
-        [HeartStyleKit drawOnCanvasWithFrame:rect resizing:HeartStyleKitResizingBehaviorAspectFit];
+        [ButtonStyleKit drawOnCanvasWithFrame:rect resizing:ButtonStyleKitResizingBehaviorAspectFit];
     }else{
-        [HeartStyleKit drawOffCanvasWithFrame:rect resizing:HeartStyleKitResizingBehaviorAspectFit];
+        [ButtonStyleKit drawOffCanvasWithFrame:rect resizing:ButtonStyleKitResizingBehaviorAspectFit];
     }
 }
 

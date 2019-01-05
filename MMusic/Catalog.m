@@ -22,7 +22,6 @@ static Catalog* _instance;
         _catalogPath = [self.rootPath stringByAppendingPathComponent:@"catalog"];
         NSString *storeFront = [AuthManager shareManager].storefront;
         _catalogPath= [_catalogPath stringByAppendingPathComponent:storeFront];
-        
     }
     return self;
 }

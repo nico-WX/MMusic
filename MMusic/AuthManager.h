@@ -22,4 +22,5 @@
 + (instancetype)shareManager;
 
 + (void)checkAuthTokenWith:(void(^)(AuthManager *auth))completion;
+
 @end

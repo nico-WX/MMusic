@@ -14,8 +14,6 @@
         NSString *base = @"https://api.music.apple.com";
         NSString *version = @"v1";
         _rootPath = [base stringByAppendingPathComponent:version];
-        //_rootPath = @"https://api.music.apple.com/v1/";
-        NSLog(@"root Path =%@",_rootPath);
     }
     return self;
 }

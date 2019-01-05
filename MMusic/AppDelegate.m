@@ -19,17 +19,21 @@
 
 @implementation AppDelegate
 
+//-(BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
+//
+//    return YES;
+//}
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
 
-    [AuthManager checkAuthTokenWith:^(AuthManager *auth) {
 
+    [AuthManager checkAuthTokenWith:^(AuthManager *auth) {
+        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        MMTabBarController *root = [[MMTabBarController alloc] init];
+        [self.window setRootViewController:root];
+        [self.window makeKeyAndVisible];
     }];
 
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    MMTabBarController *root = [[MMTabBarController alloc] init];
-    [self.window setRootViewController:root];
-    [self.window makeKeyAndVisible];
 
     [MMDataStack shareDataStack];
     [MainPlayer beginGeneratingPlaybackNotifications];
