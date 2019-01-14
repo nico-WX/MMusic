@@ -548,8 +548,6 @@
 				3B4DDC5D2192C5D700F70547 /* MPMediaItemArtwork+Exchange.m */,
 				3B4DDC3F2191BE0D00F70547 /* MPMusicPlayerController+ResourcePlaying.h */,
 				3B4DDC402191BE0D00F70547 /* MPMusicPlayerController+ResourcePlaying.m */,
-				3BDFCB662082219900D85021 /* PlayProgressView.h */,
-				3BDFCB672082219900D85021 /* PlayProgressView.m */,
 			);
 			name = PlayerViewController;
 			sourceTree = "<group>";
@@ -917,6 +915,8 @@
 				3B9C426621E0ADD600ED6C79 /* MMPlayerView.m */,
 				3B9C426821E0B17800ED6C79 /* MMPlayerControlButtonView.h */,
 				3B9C426921E0B17800ED6C79 /* MMPlayerControlButtonView.m */,
+				3BDFCB662082219900D85021 /* PlayProgressView.h */,
+				3BDFCB672082219900D85021 /* PlayProgressView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";

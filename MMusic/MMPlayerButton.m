@@ -8,6 +8,7 @@
 
 #import "MMPlayerButton.h"
 #import "ButtonStyleKit.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @implementation MMPlayerButton
 
@@ -18,6 +19,12 @@
 - (instancetype)initWithButtonStyle:(MMPlayerButtonStyle)style{
     if (self = [super initWithFrame:CGRectZero]) {
         _style = style;
+
+        [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
+
+        [self handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+            [self animationButton:self];
+        }];
     }
     return self;
 }
@@ -28,26 +35,26 @@
 - (void)drawRect:(CGRect)rect {
     // Drawing code
 
-    ButtonStyleKitResizingBehavior resizing = ButtonStyleKitResizingBehaviorAspectFit;
+    ButtonStyleKitResizingBehavior resizing = ButtonStyleKitResizingBehaviorStretch;
     switch (self.style) {
         case MMPlayerButtonPreviousStyle:{
-            [ButtonStyleKit drawPreviousButtonWithFrame:rect resizing:resizing];
+            [ButtonStyleKit drawPreviousCanvasWithFrame:rect resizing:resizing];
         }
             break;
         case MMPlayerButtonPlayStyle:{
-            [ButtonStyleKit drawPlayButtonWithFrame:rect resizing:resizing];
+            [ButtonStyleKit drawPlayCanvasWithFrame:rect resizing:resizing];
         }
             break;
         case MMPlayerButtonPauseStyle:{
-            [ButtonStyleKit drawPauseButtonWithFrame:rect resizing:resizing];
+            [ButtonStyleKit drawPauseCanvasWithFrame:rect resizing:resizing];
         }
             break;
         case MMPlayerButtonStopStyle:{
-            [ButtonStyleKit drawStopButtonWithFrame:rect resizing:resizing];
+            [ButtonStyleKit drawStopCanvasWithFrame:rect resizing:resizing];
         }
             break;
         case MMPlayerButtonNextStyle:{
-            [ButtonStyleKit drawNextButtonWithFrame:rect resizing:resizing];
+            [ButtonStyleKit drawNextCanvasWithFrame:rect resizing:resizing];
         }
             break;
     }
@@ -59,5 +66,19 @@
         [self setNeedsDisplay];
     }
 }
+
+
+- (void)animationButton:(UIView*)sender{
+    [UIView animateWithDuration:0.2 animations:^{
+        [sender setTransform:CGAffineTransformMakeScale(0.88, 0.88)];
+    } completion:^(BOOL finished) {
+        //恢复
+        [UIView animateWithDuration:0.2 animations:^{
+            [sender setTransform:CGAffineTransformIdentity];
+        }];
+    }];
+}
+
+
 
 @end

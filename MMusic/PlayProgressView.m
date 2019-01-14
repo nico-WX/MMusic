@@ -9,6 +9,7 @@
 #import "PlayProgressView.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import <Masonry.h>
+#import "UIControl+MMActionBlock.h"
 
 @interface PlayProgressView()
 @property(nonatomic, strong) NSTimer *timer;
@@ -38,7 +39,13 @@
 
         //progress set
         ({
-            [_progressSlider addTarget:self action:@selector(sliderChange:) forControlEvents:UIControlEventValueChanged];
+            __weak typeof(self) weakSelf = self;
+            [_progressSlider handleControlEvent:UIControlEventValueChanged withBlock:^{
+                NSTimeInterval duration = MainPlayer.nowPlayingItem.playbackDuration;    //总时长
+                NSTimeInterval current = duration * weakSelf.progressSlider.value;                        //拖拽时长
+                [MainPlayer setCurrentPlaybackTime:current];
+            }];
+            //[_progressSlider addTarget:self action:@selector(sliderChange:) forControlEvents:UIControlEventValueChanged];
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
             [_progressSlider setThumbImage:[self imageFromView:view] forState:UIControlStateNormal];
 
@@ -78,9 +85,9 @@
     view.layer.masksToBounds = YES;
     [view setBackgroundColor:MainColor];
 
-    //转换到相同缩放大小的图片
+    //获取图片,
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, [UIScreen mainScreen].scale);
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];     //图层提交到上下文
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];     //图层渲染到上下文
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();   //上下文中取回照片
     UIGraphicsEndImageContext();
     return image;
@@ -100,10 +107,10 @@
     [self.durationTime setFrame:durationLabFrame];
 }
 
-//进度条拖拽事件
-- (void)sliderChange:(UISlider*)slider {
-    NSTimeInterval duration = MainPlayer.nowPlayingItem.playbackDuration;    //总时长
-    NSTimeInterval current = duration * slider.value;                        //拖拽时长
-    [MainPlayer setCurrentPlaybackTime:current];
-}
+////进度条拖拽事件
+//- (void)sliderChange:(UISlider*)slider {
+//    NSTimeInterval duration = MainPlayer.nowPlayingItem.playbackDuration;    //总时长
+//    NSTimeInterval current = duration * slider.value;                        //拖拽时长
+//    [MainPlayer setCurrentPlaybackTime:current];
+//}
 @end

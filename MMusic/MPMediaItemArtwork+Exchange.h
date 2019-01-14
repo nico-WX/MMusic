@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MPMediaItemArtwork (Exchange)
 
+- (void)loadArtworkImageWithSize:(CGSize)size  completion:(void(^)(UIImage* image))completion;
 @end
 
 NS_ASSUME_NONNULL_END

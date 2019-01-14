@@ -13,7 +13,7 @@
 #import "MusicVideo.h"
 
 @interface MPMusicPlayerController()
-//联合
+/**播放队列*/
 @property(nonatomic, strong)MPMusicPlayerPlayParametersQueueDescriptor *parametersQueue;
 @end
 
@@ -22,9 +22,10 @@
 #pragma mark - foundation method
 - (void)playSongs:(NSArray<Song*> *)songs startIndex:(NSUInteger)startIndex{
     [self setSongLists:songs];
+    //歌单生成播放队列
     self.parametersQueue = [self playParametersQueueFromSongs:songs startPlayIndex:startIndex];
 
-    // 开始的歌曲 与当前需要播放歌曲相同, 跳过h不执行操作;
+    // 开始的歌曲 与当前需要播放歌曲相同, 不执行操作;
     Song *song = [self.songLists objectAtIndex:startIndex];
     if (![song isEqualToMediaItem:self.nowPlayingItem]) {
         [self setQueueWithDescriptor:self.parametersQueue];
@@ -32,8 +33,8 @@
     }
 }
 - (void)insertSongAtEndItem:(Song *)song {
-    NSMutableArray *array = [NSMutableArray array];
-    [array addObjectsFromArray:self.songLists];
+    NSMutableArray *array = [NSMutableArray arrayWithArray:self.songLists];
+    //[array addObjectsFromArray:self.songLists];
     [array addObject:song];
     self.songLists = array;
 
@@ -47,8 +48,8 @@
 - (void)insertSongAtNextItem:(Song *)song {
 
     NSUInteger index = [self indexOfNowPlayingItem];
-    NSMutableArray *array = [NSMutableArray array];
-    [array addObject:self.songLists];
+    NSMutableArray *array = [NSMutableArray arrayWithArray:self.songLists];
+    //[array addObject:self.songLists];
     [array insertObject:song atIndex:index+1];
     self.songLists = array;
 
@@ -59,7 +60,7 @@
     [self prependQueueDescriptor:queue];
 }
 
-- (void)nowPlayingSong:(void (^)(Song * _Nonnull))completion{
+- (void)nowPlayingSong:(void (^)(Song * _Nullable))completion{
     for (Song *song in self.songLists) {
         if ([song isEqualToMediaItem:self.nowPlayingItem]) {
             completion(song);
@@ -67,11 +68,19 @@
         }
     }
 
-    //异步加载
-    [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
-        completion([Song instanceWithDict:json]);
-    }];
+
+    NSString *identifier = self.nowPlayingItem.playbackStoreID;
+    // "0"标识数据库无此歌曲
+    if (![identifier isEqualToString:@"0"]) {
+        //异步加载
+        [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+            json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
+
+            completion([Song instanceWithDict:json]);
+        }];
+    }else{
+        completion(NULL);
+    }
 }
 
 
@@ -87,13 +96,12 @@
 }
 
 #pragma mark - help
-- (MPMusicPlayerPlayParametersQueueDescriptor *)playParametersQueueFromSongs:(NSArray<Song *> *)songs
+- (MPMusicPlayerPlayParametersQueueDescriptor*)playParametersQueueFromSongs:(NSArray<Song*>*)songs
                                                               startPlayIndex:(NSUInteger)index {
     NSMutableArray<MPMusicPlayerPlayParameters*> *list = [NSMutableArray array];
     for (Song *song in songs) {
         if (song.playParams) {
-            MPMusicPlayerPlayParameters *parameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
-            [list addObject:parameters];
+            [list addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams]];
         }
     }
     MPMusicPlayerPlayParametersQueueDescriptor *queue;
@@ -105,6 +113,7 @@
 
 
 #pragma mark - 关联属性对象
+// song
 - (void)setSongLists:(NSArray<Song *> *)songLists{
     objc_setAssociatedObject(self, @selector(songLists), songLists, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
@@ -112,6 +121,7 @@
     return objc_getAssociatedObject(self, _cmd);
 }
 
+//MV
 - (void)setMusicVideos:(NSArray<MusicVideo *> *)musicVideos {
     objc_setAssociatedObject(self, @selector(musicVideos), musicVideos, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
@@ -119,6 +129,7 @@
     return objc_getAssociatedObject(self, _cmd);
 }
 
+//queue
 - (void)setParametersQueue:(MPMusicPlayerPlayParametersQueueDescriptor *)parametersQueue{
     objc_setAssociatedObject(self, @selector(parametersQueue), parametersQueue, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }

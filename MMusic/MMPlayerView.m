@@ -29,7 +29,6 @@
         _artistLabel = [UILabel new];
         _heartSwitch = [MMHeartSwitch new];
 
-
         _previous = _playerButtonView.previous;
         _play = _playerButtonView.play;
         _next = _playerButtonView.next;
@@ -40,6 +39,18 @@
         [self addSubview:_artistLabel];
         [self addSubview:_playerButtonView];
         [self addSubview:_heartSwitch];
+
+        [_imageView setBackgroundColor:[UIColor colorWithWhite:0.95 alpha:1]];
+
+        //text
+        // Llabel 文本 setter
+        [_nameLabel setAdjustsFontSizeToFitWidth:YES];
+        [_nameLabel setTextColor:MainColor];
+        [_nameLabel setFont:[UIFont systemFontOfSize:[UIFont buttonFontSize]]];
+
+        [_artistLabel setTextColor:UIColor.grayColor];
+        [_artistLabel setFont:[UIFont systemFontOfSize:[UIFont smallSystemFontSize]]];
+        [_artistLabel setAdjustsFontSizeToFitWidth:YES];
     }
     return self;
 }
@@ -74,7 +85,7 @@
     }];
 
     [_playerButtonView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.right.bottom.mas_equalTo(weakSelf);
+        make.top.right.bottom.mas_equalTo(weakSelf).insets(padding);
         make.width.mas_equalTo(itemW*2);
     }];
 
@@ -85,7 +96,7 @@
         make.top.mas_lessThanOrEqualTo(weakSelf).offset(padding.top);
     }];
 
-    [self.artistLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [_artistLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.nameLabel.mas_bottom);
         make.left.right.mas_equalTo(weakSelf.nameLabel);
         make.bottom.mas_lessThanOrEqualTo(weakSelf).inset(padding.bottom);

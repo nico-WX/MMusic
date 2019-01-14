@@ -17,3 +17,4 @@
 /**播放进度条*/
 @property(nonatomic, strong, readonly) UISlider *progressSlider;
 @end
+
