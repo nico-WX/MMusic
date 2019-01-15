@@ -32,14 +32,10 @@ extern NSString *const userTokenIssueNotification;
 
 //统一解析响应体,处理异常等.
 - (NSDictionary *)serializationDataWithResponse:(NSURLResponse *)response data:(NSData *)data error:(NSError *)error {
-
     if (error) Log(@"Location Error:%@",error.localizedDescription);
 
     NSDictionary *json;
     NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
-
-    NSLog(@">>>>>>>>> code = %ld",res.statusCode);
-
     switch (res.statusCode) {
         case 200:
 
@@ -128,9 +124,7 @@ extern NSString *const userTokenIssueNotification;
 
             NSURL *url = [NSURL URLWithString:urlStr];
             [imageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL){
-
-
-
+                
                 [imageView setNeedsDisplay];
                 [hud stopAnimating];
                 [hud setHidden:YES];

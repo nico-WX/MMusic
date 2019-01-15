@@ -8,15 +8,10 @@
 
 #import "MMPlayerView.h"
 #import "PlayProgressView.h"
-#import "MMPlayerControlButtonView.h"
 #import "MMHeartSwitch.h"
 #import "MMPlayerButton.h"
 
 #import <Masonry.h>
-
-@interface MMPlayerView ()
-@property(nonatomic, strong) MMPlayerControlButtonView *playerButtonView;
-@end
 
 @implementation MMPlayerView
 
@@ -24,25 +19,29 @@
     if (self = [super initWithFrame:frame]) {
         _imageView = [UIImageView new];
         _playProgressView  = [PlayProgressView new];
-        _playerButtonView = [MMPlayerControlButtonView new];
         _nameLabel = [UILabel new];
         _artistLabel = [UILabel new];
-        _heartSwitch = [MMHeartSwitch new];
 
-        _previous = _playerButtonView.previous;
-        _play = _playerButtonView.play;
-        _next = _playerButtonView.next;
+        _previous = [MMPlayerButton playerButtonWithStyle:MMPlayerButtonPreviousStyle];
+        _play = [MMPlayerButton playerButtonWithStyle:MMPlayerButtonPlayStyle];
+        _next = [MMPlayerButton playerButtonWithStyle:MMPlayerButtonNextStyle];
+
+         _heartSwitch = [MMHeartSwitch new];
+        //初始化偏移心型开关 避免出现在左上角
+        [_heartSwitch setFrame:CGRectMake(-100, 100, 44, 44)];
+        [_playProgressView setFrame:CGRectMake(-100, 100, 44, 44)];
 
         [self addSubview:_imageView];
         [self addSubview:_playProgressView];
         [self addSubview:_nameLabel];
         [self addSubview:_artistLabel];
-        [self addSubview:_playerButtonView];
+        [self addSubview:_previous];
+        [self addSubview:_play];
+        [self addSubview:_next];
         [self addSubview:_heartSwitch];
 
-        [_imageView setBackgroundColor:[UIColor colorWithWhite:0.95 alpha:1]];
+        [_imageView setBackgroundColor:[UIColor colorWithWhite:0.96 alpha:1]];
 
-        //text
         // Llabel 文本 setter
         [_nameLabel setAdjustsFontSizeToFitWidth:YES];
         [_nameLabel setTextColor:MainColor];
@@ -51,6 +50,7 @@
         [_artistLabel setTextColor:UIColor.grayColor];
         [_artistLabel setFont:[UIFont systemFontOfSize:[UIFont smallSystemFontSize]]];
         [_artistLabel setAdjustsFontSizeToFitWidth:YES];
+
     }
     return self;
 }
@@ -70,10 +70,9 @@
 // 窗口缩放在视图下部时
 - (void)popStateLayout{
     //更改文本对齐
-    [self.nameLabel setTextAlignment:NSTextAlignmentLeft];
-    [self.artistLabel setTextAlignment:NSTextAlignmentLeft];
-    [self.previous setHidden:YES];
-
+    [_nameLabel setTextAlignment:NSTextAlignmentLeft];
+    [_artistLabel setTextAlignment:NSTextAlignmentLeft];
+    [_previous setHidden:YES];
 
     UIEdgeInsets padding = UIEdgeInsetsMake(4, 4, 4, 4);
     __weak typeof(self) weakSelf = self;
@@ -84,16 +83,26 @@
         make.width.mas_equalTo(itemW);
     }];
 
-    [_playerButtonView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [_next mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.right.bottom.mas_equalTo(weakSelf).insets(padding);
-        make.width.mas_equalTo(itemW*2);
+        CGFloat w = CGRectGetHeight(weakSelf.bounds)-(padding.top+padding.bottom);
+        make.width.mas_equalTo(w);
+    }];
+    [_play mas_remakeConstraints:^(MASConstraintMaker *make) {
+//        make.top.bottom.mas_equalTo(weakSelf).insets(padding);
+//        make.right.mas_equalTo(weakSelf.next.mas_left).offset(padding.right);
+//        make.width.mas_equalTo(weakSelf.next);
+        CGFloat h = CGRectGetHeight(weakSelf.bounds)-(padding.top+padding.bottom)*2;
+        CGFloat w = h;
+        make.right.mas_equalTo(weakSelf.next.mas_left);//.inset(padding.right);
+        make.centerY.mas_equalTo(weakSelf);
+        make.size.mas_equalTo(CGSizeMake(w, h));
     }];
 
     [_nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(weakSelf.imageView.mas_right).offset(padding.left);
-        make.right.mas_equalTo(weakSelf.playerButtonView.mas_left).offset(-padding.right);
-        make.bottom.mas_equalTo(weakSelf).offset(-CGRectGetMidY(weakSelf.bounds));
-        make.top.mas_lessThanOrEqualTo(weakSelf).offset(padding.top);
+        make.top.mas_equalTo(weakSelf).offset(padding.top);
+        make.right.mas_equalTo(weakSelf.play.mas_left).offset(padding.right);
     }];
 
     [_artistLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -101,18 +110,28 @@
         make.left.right.mas_equalTo(weakSelf.nameLabel);
         make.bottom.mas_lessThanOrEqualTo(weakSelf).inset(padding.bottom);
     }];
+
 }
 
 // 视图全部打开状态
 - (void)poppingStateLayout{
+
     //更改文本对齐
-    [self.nameLabel setTextAlignment:NSTextAlignmentCenter];
-    [self.artistLabel setTextAlignment:NSTextAlignmentCenter];
-    [self.previous setHidden:NO];
+    [_nameLabel setTextAlignment:NSTextAlignmentCenter];
+    [_artistLabel setTextAlignment:NSTextAlignmentCenter];
+    [_previous setHidden:NO];
 
     //边距
     UIEdgeInsets padding = UIEdgeInsetsMake(40, 20, 20, 20);
     __weak typeof(self) weakSelf = self;
+
+    //消除布局冲突警告
+    [_play mas_remakeConstraints:^(MASConstraintMaker *make) {
+        [make removeExisting];
+    }];
+    [_next mas_remakeConstraints:^(MASConstraintMaker *make) {
+        [make removeExisting];
+    }];
 
     //重新布局
     [_imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -136,21 +155,40 @@
         make.left.right.mas_equalTo(weakSelf).insets(padding);
     }];
 
-    [_playerButtonView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.mas_equalTo(weakSelf).insets(padding);
+    //播放按钮
+    CGFloat h = 50;
+    CGFloat w = h;
+    CGSize size = CGSizeMake(w, h);
+
+    CGFloat centerX = CGRectGetMidX(self.bounds);
+    // masonry center 布局参照父视图center与给定CGPoint计算偏移
+    CGFloat x1 = -(centerX/2); // centerX 左边
+    CGFloat x2 = 0;
+    CGFloat x3 = centerX/2;     //centerX右边
+
+    //布局中间的按钮, 然后参照这个按钮 布局两边的两个
+    [_play mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.artistLabel.mas_bottom).offset(padding.top);
-        make.height.mas_equalTo(50);
+        make.centerX.mas_equalTo(x2);
+        make.size.mas_equalTo(size);
+    }];
+    [_previous mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.play);
+        make.centerX.mas_equalTo(x1);
+        make.size.mas_equalTo(size);
+    }];
+    [_next mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.play);
+        make.centerX.mas_equalTo(x3);
+        make.size.mas_equalTo(size);
     }];
 
     CGFloat heartW = 30.0f;
-    CGFloat x = CGRectGetMidX(self.bounds) - heartW/2;
-    [self.heartSwitch mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.playerButtonView.mas_bottom).offset(padding.top/2);
+    [_heartSwitch mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.play.mas_bottom).offset(padding.top/2);
         make.size.mas_equalTo(CGSizeMake(heartW, heartW));
-        make.left.mas_equalTo(x);
+        make.centerX.mas_equalTo(weakSelf);
     }];
 }
-
-
 
 @end

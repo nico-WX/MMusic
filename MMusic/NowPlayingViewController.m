@@ -12,9 +12,11 @@
 #import "NowPlayingViewController.h"
 #import "MPMusicPlayerController+ResourcePlaying.h"
 #import "MPMediaItemArtwork+Exchange.h"
+
 #import "PlayProgressView.h"
 #import "MMHeartSwitch.h"
 #import "MMPlayerView.h"
+#import "MMPlayerButton.h"
 
 #import "MMDataStack.h"
 #import "MMCDMO_Song.h"
@@ -51,49 +53,125 @@ static NowPlayingViewController *_instance;
 
 - (instancetype)init{
     if (self = [super init]) {
-        _playerView = [[MMPlayerView alloc] init];
-        [self.view addSubview:_playerView];
+
     }
     return self;
 }
 
 # pragma mark - lift cycle
 
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    [self updateCurrentItemMetadata];
-}
-
 - (void)viewDidLoad{
     [super viewDidLoad];
 
+    [self.view addSubview:self.playerView];
 
-
-
+    //播放器通知
     [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-        //[self updateButtonImage];
+        [self updateButtonStyle];
     }];
     [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-        [self updateCurrentItemMetadata];
-
+        [self updateUI];
         NSLog(@"now id =%@",MainPlayer.nowPlayingItem.playbackStoreID);
-
     }];
+
+    //按钮事件
+    [self.playerView.previous handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+        [self animationButton:self.playerView.previous];
+        [MainPlayer skipToPreviousItem];
+    }];
+    [self.playerView.next handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+        [self animationButton:self.playerView.next];
+        [MainPlayer skipToNextItem];
+    }];
+    [self.playerView.play handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+        [self animationButton:self.playerView.play];
+        switch (MainPlayer.playbackState) {
+            case MPMusicPlaybackStatePaused:
+            case MPMusicPlaybackStateStopped:
+            case MPMusicPlaybackStateInterrupted:
+                [MainPlayer play];
+                break;
+            case MPMusicPlaybackStatePlaying:
+                [MainPlayer pause];
+                break;
+
+            default:
+                break;
+        }
+    }];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [self updateUI];
+    [self updateButtonStyle];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+
+
+    [_playerView setFrame:self.view.bounds];
+    [self updateUI];
 }
 
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
+-(void)updateUI{
+    MPMediaItem *nowPlayingItem = MainPlayer.nowPlayingItem;
+    if (!nowPlayingItem) {
+        [self.playerView.heartSwitch setEnabled:NO];
+        [self.playerView.nameLabel setText:@"当前无歌曲播放"];
+        [self.playerView.artistLabel setText:@"----"];
+        return;
+    }
 
-    [_playerView setFrame:self.view.bounds];
+    //播放第三方音乐时没有playbackStoreID, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
+    [MainPlayer nowPlayingSong:^(Song * _Nullable song) {
+
+    }];
+
+    [self.playerView.heartSwitch setEnabled:YES];
+    [self.playerView.nameLabel setText:nowPlayingItem.title];
+    [self.playerView.artistLabel setText:nowPlayingItem.artist];
+
+    //延迟0.1秒加载图片,(不延迟,子视图还未布局好,就不能拿到最后的view的大小)
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [nowPlayingItem.artwork loadArtworkImageWithSize:self.playerView.imageView.bounds.size completion:^(UIImage * _Nonnull image) {
+            [self.playerView.imageView setImage:image];
+        }];
+    });
+}
+- (MMPlayerView *)playerView{
+    if (!_playerView) {
+        _playerView = [[MMPlayerView alloc] init];
+    }
+    return _playerView;
 }
 
+- (void)updateButtonStyle{
+    switch (MainPlayer.playbackState) {
+        case MPMusicPlaybackStatePlaying:
+            [self.playerView.play setStyle:MMPlayerButtonPauseStyle];
+            break;
 
-#pragma mark - button animation
-- (void)animationButton:(UIButton*)sender{
+        case MPMusicPlaybackStateStopped:
+            [self.playerView.play setStyle:MMPlayerButtonStopStyle];
+            break;
+        case MPMusicPlaybackStateInterrupted:
+        case MPMusicPlaybackStatePaused:
+            [self.playerView.play setStyle:MMPlayerButtonPlayStyle];
+            break;
+
+        default:
+            break;
+    }
+}
+
+//控制按钮动画
+- (void)animationButton:(UIView*)sender{
     [UIView animateWithDuration:0.2 animations:^{
         [sender setTransform:CGAffineTransformMakeScale(0.88, 0.88)];
     } completion:^(BOOL finished) {
@@ -102,33 +180,6 @@ static NowPlayingViewController *_instance;
             [sender setTransform:CGAffineTransformIdentity];
         }];
     }];
-}
-
-
-
--(void)updateCurrentItemMetadata{
-    MPMediaItem *nowPlayingItem = MainPlayer.nowPlayingItem;
-    NSString *identifier = MainPlayer.nowPlayingItem.playbackStoreID;
-
-    if (!nowPlayingItem) {
-        [self.playerView.heartSwitch setEnabled:NO];
-
-        [self.playerView.nameLabel setText:@"当前无歌曲播放"];
-        [self.playerView.artistLabel setText:@"----"];
-        return;
-    }
-
-
-//    //播放的时候, 有可能在播放第三方音乐, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
-    self.playerView.heartSwitch.enabled = identifier ? YES  : NO;
-
-    [self.playerView.nameLabel setText:nowPlayingItem.title];
-    [self.playerView.artistLabel setText:nowPlayingItem.artist];
-
-    [nowPlayingItem.artwork loadArtworkImageWithSize:self.playerView.imageView.bounds.size completion:^(UIImage * _Nonnull image) {
-        [self.playerView.imageView setImage:image];
-    }];
-
 }
 
 @end

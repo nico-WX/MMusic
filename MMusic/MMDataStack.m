@@ -33,7 +33,7 @@ static MMDataStack *_instance;
 }
 
 - (void)setupDataStack{
-    
+
     //2.Core Data Stack
     // (mo -> context) <- (mom -> psc -> ps)
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
@@ -45,7 +45,6 @@ static MMDataStack *_instance;
     [container loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription * _Nonnull storeDescription, NSError * _Nullable error) {
         self->_context = container.viewContext;
     }];
-
 
 }
 

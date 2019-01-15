@@ -1,5 +1,5 @@
 //
-//  MMDetaiData.h
+//  MMDetaiDataSource.h
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2018/12/26.
@@ -15,10 +15,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)configureCell:(UITableViewCell*)cell object:(Song*)song withIndex:(NSUInteger)index;
 @end
 
-@interface MMDetaiData : NSObject
+@interface MMDetaiDataSource : NSObject
 @property(nonatomic, strong, readonly) NSArray<Song*> *songList;
 
-- (instancetype)initWithTableView:(UITableView*)tableView resource:(Resource*)resource cellIdentifier:(NSString*)cellIdentifier delegate:(id<DetailDataSourceDelegate>)delegate;
+- (instancetype)initWithTableView:(UITableView*)tableView
+                         resource:(Resource*)resource
+                   cellIdentifier:(NSString*)cellIdentifier
+                         delegate:(id<DetailDataSourceDelegate>)delegate;
 @end
 
 NS_ASSUME_NONNULL_END

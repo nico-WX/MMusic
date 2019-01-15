@@ -19,7 +19,7 @@
 #import "MMDetailHeadView.h"
 #import "SongCell.h"
 #import "MMSongListData.h"
-#import "MMDetaiData.h"
+#import "MMDetaiDataSource.h"
 #import "Resource.h"
 #import "Song.h"
 
@@ -32,7 +32,7 @@
 //data
 @property(nonatomic, strong)Resource *resource;
 //@property(nonatomic, strong)MMSongListData *resourceData;
-@property(nonatomic, strong)MMDetaiData *detailData;
+@property(nonatomic, strong)MMDetaiDataSource *detailData;
 @end
 
 static NSString *const reuseIdentifier = @"tableview cell id";
@@ -73,7 +73,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     }];
 
     //数据源
-    self.detailData = [[MMDetaiData alloc] initWithTableView:_tableView resource:_resource cellIdentifier:reuseIdentifier delegate:self];
+    self.detailData = [[MMDetaiDataSource alloc] initWithTableView:_tableView resource:_resource cellIdentifier:reuseIdentifier delegate:self];
 }
 
 

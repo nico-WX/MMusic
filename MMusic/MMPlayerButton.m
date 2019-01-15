@@ -19,12 +19,7 @@
 - (instancetype)initWithButtonStyle:(MMPlayerButtonStyle)style{
     if (self = [super initWithFrame:CGRectZero]) {
         _style = style;
-
         [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
-
-        [self handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-            [self animationButton:self];
-        }];
     }
     return self;
 }
@@ -67,18 +62,9 @@
     }
 }
 
-
-- (void)animationButton:(UIView*)sender{
-    [UIView animateWithDuration:0.2 animations:^{
-        [sender setTransform:CGAffineTransformMakeScale(0.88, 0.88)];
-    } completion:^(BOOL finished) {
-        //恢复
-        [UIView animateWithDuration:0.2 animations:^{
-            [sender setTransform:CGAffineTransformIdentity];
-        }];
-    }];
+- (void)setHidden:(BOOL)hidden{
+    [super setHidden:hidden];
+    [self setNeedsDisplay];
 }
-
-
 
 @end

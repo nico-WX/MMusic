@@ -35,16 +35,21 @@
 
         [self stateWithSongIdentifier:MainPlayer.nowPlayingItem.playbackStoreID];
 
-        [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:self queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            NSLog(@"chage --->");
+            NSLog(@"id === %@",MainPlayer.nowPlayingItem.playbackStoreID);
             [self stateWithSongIdentifier:MainPlayer.nowPlayingItem.playbackStoreID];
         }];
 
-        [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerQueueDidChangeNotification object:self queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerQueueDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             NSLog(@"queue =%@",note.object);
         }];
 
     }
     return self;
+}
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)drawRect:(CGRect)rect{
@@ -101,23 +106,17 @@
 
     NSManagedObjectContext *moc = [MMDataStack shareDataStack].context;
 
-
     //查询, 如果已经添加, 跳过
     NSString *identifier = [song.playParams valueForKey:@"id"];
-    NSString *kind = [song.playParams valueForKey:@"kind"];
-    NSDictionary *value = @{@"id":identifier,@"kind":kind};
     NSPredicate *idPredicate = [NSPredicate predicateWithFormat:@"%K == %@",@"identifier",identifier];
     NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Song"];
     [fetch setPredicate:idPredicate];
-    [fetch setReturnsObjectsAsFaults:NO];
+    //[fetch setReturnsObjectsAsFaults:NO];
     NSError *error = nil;
 
     NSArray *results = [moc executeFetchRequest:fetch error:&error];
     if (results.count > 0) {
         NSLog(@"已经添加");
-        for (MMCDMO_Song *sqlSong in results) {
-            NSLog(@"song =%@",sqlSong);
-        }
         return;
     }
 
@@ -158,12 +157,16 @@
 }
 /**获取歌曲rating 状态, 并设置 红心开关状态*/
 -(void)stateWithSongIdentifier:(NSString*)identifier {
-    if (!identifier) return;
-    [DataStore.new requestRatingForCatalogWith:identifier type:RTCatalogSongs callBack:^(BOOL isRating) {
+    if (!identifier){
+        [self setOn:NO];
+        return;
+    }
+    [DataStore.new requestRatingForCatalogWith:identifier type:RTCatalogSongs callBack:^(BOOL isRating){
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"rating =%d",isRating);
             [self setOn:isRating];
             [self setEnabled:YES];
-            //self updateState:self withSong:<#(Song *)#>
+
         });
     }];
 }

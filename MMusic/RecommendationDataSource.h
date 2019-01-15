@@ -22,7 +22,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 //- (instancetype)initWithTableView:(UITableView*)tableView cellReuseIdentifier:(NSString*)identifier;
-- (instancetype)initWithCollectionView:(UICollectionView*)collectionView cellIdentifier:(NSString*)identifier sectionIdentifier:(NSString*)sectionIdentifier delegate:(id<RecommendationDataSourceDelegate>) delegate NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithCollectionView:(UICollectionView*)collectionView
+                        cellIdentifier:(NSString*)identifier
+                     sectionIdentifier:(NSString*)sectionIdentifier
+                              delegate:(id<RecommendationDataSourceDelegate>)delegate NS_DESIGNATED_INITIALIZER;
 
 - (void)refreshDataWithCompletion:(void(^)(void))completion;
 @end
