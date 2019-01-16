@@ -12,7 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @protocol ChartsCellDelegate <NSObject>
-
 @end
 
 @interface ChartsCell : UITableViewCell{
@@ -21,9 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 @property(nonatomic, strong) Chart *chart;
 @property(nonatomic, strong, readonly) UICollectionView *collectionView;
-//@property(nonatomic, weak)id<UICollectionViewDataSource> collectionViewDataSource;
-
-
+@property(nonatomic, strong, readonly) UIButton *showMoreButton;
 @end
 
 NS_ASSUME_NONNULL_END

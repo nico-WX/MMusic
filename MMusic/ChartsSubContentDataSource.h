@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface ChartsSubContentDataSource : NSObject
+
 - (instancetype)initWithChart:(Chart*)chart
                collectionView:(UICollectionView*)collectionView
               reuseIdentifier:(NSString*)identifier

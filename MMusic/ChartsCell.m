@@ -12,17 +12,13 @@
 
 @interface ChartsCell()<ChartsSubContentDataSourceDelegate>
 @property(nonatomic, strong) UILabel *titleLabel;
-@property(nonatomic, strong) UIButton *showMoreButton;
 @property(nonatomic, strong) ChartsSubContentDataSource *contentDataSource;
-
 @property(nonatomic, strong) UICollectionViewFlowLayout *layout;
 @end
 
 
 static NSString *const identifier = @"collectionView cell id";
 @implementation ChartsCell
-
-@synthesize collectionView = _collectionView;
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self =[super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
@@ -31,6 +27,7 @@ static NSString *const identifier = @"collectionView cell id";
 
         _layout = [[UICollectionViewFlowLayout alloc] init];
         [_layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
+        [_layout setMinimumLineSpacing:1];
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
         [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:identifier];
         [_collectionView setBackgroundColor:UIColor.whiteColor];
@@ -93,16 +90,19 @@ static NSString *const identifier = @"collectionView cell id";
         _contentDataSource = [[ChartsSubContentDataSource alloc] initWithChart:chart collectionView:_collectionView reuseIdentifier:identifier delegate:self];
 
         [_titleLabel setText:chart.name];
-        if (chart.next) {
-            [_showMoreButton setTitle:@"ShowMore" forState:UIControlStateNormal];
-        }else{
-            [_showMoreButton setTitle:@"" forState:UIControlStateNormal];
-        }
+
+        [_showMoreButton setTitle:@"ShowMore" forState:UIControlStateNormal];
+        BOOL displayButton = chart.next ? YES : NO; //如果没有更多, 隐藏按钮
+        [_showMoreButton setHidden:displayButton];
     }
 }
 
+- (void)loadCollectionView{
+    
+}
+
 #pragma mark -delegate
--(void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
+- (void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
     [cell.contentView setBackgroundColor:UIColor.grayColor];
 }
 

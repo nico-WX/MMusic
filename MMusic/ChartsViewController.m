@@ -23,7 +23,7 @@ static NSString *const identifier = @"cell reuseIdentifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view addSubview:self.tableView];
-    self.dataSource =[[ChartsDataSource alloc] initWithTableView:self.tableView reuseIdentifier:identifier delegate:self];
+    _dataSource =[[ChartsDataSource alloc] initWithTableView:_tableView reuseIdentifier:identifier delegate:self];
 }
 
 
@@ -39,17 +39,22 @@ static NSString *const identifier = @"cell reuseIdentifier";
 
 
 
-#pragma mark - delegate
+#pragma mark - ChartsDataSourceDelegate
 -(void)configureCell:(UITableViewCell *)cell object:(Chart *)chart{
     if ([cell isKindOfClass:[ChartsCell class]]) {
         ChartsCell *chartsCell = (ChartsCell*)cell;
         [chartsCell setChart:chart];
-        [chartsCell.collectionView setDelegate:self];
+        [chartsCell.collectionView setDelegate:self]; //tableViewCell 中的集合视图代理设置为self, 获取选中的数据, 入栈新的控制器;
     }
 }
 
-
+#pragma mark - UITableViewDelegate
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 300;
+}
+
+#pragma mark - UICollectionViewDelegate
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+
 }
 @end
