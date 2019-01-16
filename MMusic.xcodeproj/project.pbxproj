@@ -38,6 +38,9 @@
 		3B648F7B21BFCE92001BB801 /* MMMyMusicPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B648F7A21BFCE92001BB801 /* MMMyMusicPageViewController.m */; };
 		3B648F7E21BFD0F2001BB801 /* MMModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B648F7D21BFD0F2001BB801 /* MMModelController.m */; };
 		3B64B13A21EDF6730029C32E /* ChartsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B13921EDF6730029C32E /* ChartsViewController.m */; };
+		3B64B16A21EF15ED0029C32E /* ChartsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B16921EF15ED0029C32E /* ChartsCell.m */; };
+		3B64B17C21EF167C0029C32E /* ChartsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B17B21EF167C0029C32E /* ChartsDataSource.m */; };
+		3B64B18021EF4E240029C32E /* ChartsSubContentDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B17F21EF4E240029C32E /* ChartsSubContentDataSource.m */; };
 		3B64D0EE20ECE76200D831FE /* MMHeartSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */; };
 		3B65B28B21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B28A21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m */; };
 		3B65B29F21E0A88700C2C388 /* ButtonStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B29E21E0A88700C2C388 /* ButtonStyleKit.m */; };
@@ -301,6 +304,12 @@
 		3B648F7D21BFD0F2001BB801 /* MMModelController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMModelController.m; sourceTree = "<group>"; };
 		3B64B13821EDF6730029C32E /* ChartsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsViewController.h; sourceTree = "<group>"; };
 		3B64B13921EDF6730029C32E /* ChartsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsViewController.m; sourceTree = "<group>"; };
+		3B64B16821EF15ED0029C32E /* ChartsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsCell.h; sourceTree = "<group>"; };
+		3B64B16921EF15ED0029C32E /* ChartsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsCell.m; sourceTree = "<group>"; };
+		3B64B17A21EF167C0029C32E /* ChartsDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsDataSource.h; sourceTree = "<group>"; };
+		3B64B17B21EF167C0029C32E /* ChartsDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsDataSource.m; sourceTree = "<group>"; };
+		3B64B17E21EF4E240029C32E /* ChartsSubContentDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsSubContentDataSource.h; sourceTree = "<group>"; };
+		3B64B17F21EF4E240029C32E /* ChartsSubContentDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsSubContentDataSource.m; sourceTree = "<group>"; };
 		3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMHeartSwitch.m; sourceTree = "<group>"; };
 		3B64D0ED20ECE76200D831FE /* MMHeartSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMHeartSwitch.h; sourceTree = "<group>"; };
 		3B65B28921DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+CreateURLRequest.h"; sourceTree = "<group>"; };
@@ -540,8 +549,6 @@
 			children = (
 				3B9C425721E0ADB700ED6C79 /* View */,
 				3B65B29A21E0A84700C2C388 /* Button */,
-				3B66A22D2195CCDC00F7DC9E /* MMTabBarController.h */,
-				3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */,
 				3B9A3718219700E6000CB6B4 /* NowPlayingViewController.h */,
 				3B9A371B219700E6000CB6B4 /* NowPlayingViewController.m */,
 				3B4DDC5C2192C5D700F70547 /* MPMediaItemArtwork+Exchange.h */,
@@ -630,10 +637,50 @@
 		3B64B12621EDD2C80029C32E /* Charts */ = {
 			isa = PBXGroup;
 			children = (
+				3B64B17921EF163F0029C32E /* view */,
+				3B64B17821EF16350029C32E /* dataSource */,
 				3B64B13821EDF6730029C32E /* ChartsViewController.h */,
 				3B64B13921EDF6730029C32E /* ChartsViewController.m */,
 			);
 			name = Charts;
+			sourceTree = "<group>";
+		};
+		3B64B17821EF16350029C32E /* dataSource */ = {
+			isa = PBXGroup;
+			children = (
+				3B64B17A21EF167C0029C32E /* ChartsDataSource.h */,
+				3B64B17B21EF167C0029C32E /* ChartsDataSource.m */,
+				3B64B17E21EF4E240029C32E /* ChartsSubContentDataSource.h */,
+				3B64B17F21EF4E240029C32E /* ChartsSubContentDataSource.m */,
+			);
+			name = dataSource;
+			sourceTree = "<group>";
+		};
+		3B64B17921EF163F0029C32E /* view */ = {
+			isa = PBXGroup;
+			children = (
+				3B64B16821EF15ED0029C32E /* ChartsCell.h */,
+				3B64B16921EF15ED0029C32E /* ChartsCell.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		3B64B17D21EF2F3B0029C32E /* TabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				3B66A22D2195CCDC00F7DC9E /* MMTabBarController.h */,
+				3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */,
+				3B64B12621EDD2C80029C32E /* Charts */,
+				3B3D998620553CEB000F2E9E /* PlayerViewController */,
+				3BDE8FED20E3981300C962F7 /* Cell */,
+				3B23AC721FF2363300F0A9CA /* Recommendation */,
+				3B78629D2060F3CA00E9A26A /* Search */,
+				3B9AA8C61FB450B600720085 /* MyMusic */,
+				3B9AA8CC1FB452AA00720085 /* Model */,
+				3B9AA8CB1FB4512B00720085 /* Support */,
+				3B9AA8BE1FB4503200720085 /* Tool */,
+			);
+			name = TabBarController;
 			sourceTree = "<group>";
 		};
 		3B65B29A21E0A84700C2C388 /* Button */ = {
@@ -738,15 +785,7 @@
 		3B9AA8691FB04B5700720085 /* MMusic */ = {
 			isa = PBXGroup;
 			children = (
-				3B64B12621EDD2C80029C32E /* Charts */,
-				3B3D998620553CEB000F2E9E /* PlayerViewController */,
-				3BDE8FED20E3981300C962F7 /* Cell */,
-				3B23AC721FF2363300F0A9CA /* Recommendation */,
-				3B78629D2060F3CA00E9A26A /* Search */,
-				3B9AA8C61FB450B600720085 /* MyMusic */,
-				3B9AA8CC1FB452AA00720085 /* Model */,
-				3B9AA8CB1FB4512B00720085 /* Support */,
-				3B9AA8BE1FB4503200720085 /* Tool */,
+				3B64B17D21EF2F3B0029C32E /* TabBarController */,
 			);
 			path = MMusic;
 			sourceTree = "<group>";
@@ -1373,6 +1412,7 @@
 				3B9AA9011FB479B700720085 /* Preview.m in Sources */,
 				3B907FA821AA886A00B205BD /* MMSearchResultsViewController.m in Sources */,
 				3B64D0EE20ECE76200D831FE /* MMHeartSwitch.m in Sources */,
+				3B64B17C21EF167C0029C32E /* ChartsDataSource.m in Sources */,
 				3B9AA90A1FB47D6B00720085 /* Station.m in Sources */,
 				3B5371E81FD2BC60009AFE47 /* MMObject.m in Sources */,
 				3B9AA9041FB47A6C00720085 /* Recommendation.m in Sources */,
@@ -1386,6 +1426,7 @@
 				3BAAE02A20B437FB00C82F4B /* ClassifyCell.m in Sources */,
 				3B555EED20E0EDAF00AFF9A2 /* Library.m in Sources */,
 				3B9AA8FB1FB4769500720085 /* Playlist.m in Sources */,
+				3B64B18021EF4E240029C32E /* ChartsSubContentDataSource.m in Sources */,
 				3B92AFA22181BFA60016CE46 /* ChartsMainCell.m in Sources */,
 				3BE2A23821985EAE00AEA486 /* Library+iCloud.m in Sources */,
 				3B65B2A221E0A92000C2C388 /* MMPlayerButton.m in Sources */,
@@ -1439,6 +1480,7 @@
 				3B4E3AD6208F46B90042498C /* MMSearchMainViewController.m in Sources */,
 				3B66A22E2195CCDC00F7DC9E /* MMTabBarController.m in Sources */,
 				3B9AA9161FB588AF00720085 /* AuthManager.m in Sources */,
+				3B64B16A21EF15ED0029C32E /* ChartsCell.m in Sources */,
 				3B555EEA20E0C25100AFF9A2 /* Catalog.m in Sources */,
 				3B3D9981205512FA000F2E9E /* SongCell.m in Sources */,
 				3B9AA8E61FB46C7700720085 /* AppleCurator.m in Sources */,

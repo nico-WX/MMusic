@@ -1,0 +1,110 @@
+//
+//  ChartsCell.m
+//  MMusic
+//
+//  Created by 🐙怪兽 on 2019/1/16.
+//  Copyright © 2019 com.😈. All rights reserved.
+//
+
+#import "ChartsCell.h"
+#import "ChartsSubContentDataSource.h"
+#import <Masonry.h>
+
+@interface ChartsCell()<ChartsSubContentDataSourceDelegate>
+@property(nonatomic, strong) UILabel *titleLabel;
+@property(nonatomic, strong) UIButton *showMoreButton;
+@property(nonatomic, strong) ChartsSubContentDataSource *contentDataSource;
+
+@property(nonatomic, strong) UICollectionViewFlowLayout *layout;
+@end
+
+
+static NSString *const identifier = @"collectionView cell id";
+@implementation ChartsCell
+
+@synthesize collectionView = _collectionView;
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
+    if (self =[super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+        _titleLabel = [[UILabel alloc] init];
+        _showMoreButton = [[UIButton alloc] init];
+
+        _layout = [[UICollectionViewFlowLayout alloc] init];
+        [_layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
+        [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:identifier];
+        [_collectionView setBackgroundColor:UIColor.whiteColor];
+
+        [self.contentView addSubview:_titleLabel];
+        [self.contentView addSubview:_showMoreButton];
+        [self.contentView addSubview:_collectionView];
+
+        // text set
+        [_titleLabel setTextColor:[UIColor darkTextColor]];
+        UIFont *font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+        [_titleLabel setFont:font];
+
+        [_showMoreButton setTitleColor:MainColor forState:UIControlStateNormal];
+    }
+    return self;
+}
+
+- (void)layoutSubviews{
+    [super layoutSubviews];
+
+    UIEdgeInsets padding = UIEdgeInsetsMake(40, 0, 1, 0);
+    __weak typeof(self) weakSelf = self;
+
+    [_collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(weakSelf).insets(padding);
+    }];
+
+    [_titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(200);
+        // 顶部空间居中布置
+        CGFloat centerY = CGRectGetMidY(self.contentView.bounds);
+        centerY = (-centerY) + padding.top/2;
+        make.centerY.mas_equalTo(centerY);
+
+        make.left.mas_equalTo(weakSelf).inset(4);
+    }];
+    [_showMoreButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.mas_equalTo(weakSelf);
+        make.width.mas_equalTo(100);
+        make.bottom.mas_equalTo(weakSelf.collectionView.mas_top);
+    }];
+
+    CGFloat h = CGRectGetHeight(_collectionView.bounds);
+    CGFloat w = h;
+    [_layout setItemSize:CGSizeMake(w, h)];
+
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+
+    // Configure the view for the selected state
+}
+
+- (void)setChart:(Chart *)chart{
+    if (_chart != chart) {
+        _chart = chart;
+
+        _contentDataSource = [[ChartsSubContentDataSource alloc] initWithChart:chart collectionView:_collectionView reuseIdentifier:identifier delegate:self];
+
+        [_titleLabel setText:chart.name];
+        if (chart.next) {
+            [_showMoreButton setTitle:@"ShowMore" forState:UIControlStateNormal];
+        }else{
+            [_showMoreButton setTitle:@"" forState:UIControlStateNormal];
+        }
+    }
+}
+
+#pragma mark -delegate
+-(void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
+    [cell.contentView setBackgroundColor:UIColor.grayColor];
+}
+
+
+@end

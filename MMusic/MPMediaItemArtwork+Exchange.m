@@ -37,14 +37,15 @@
         [MainPlayer nowPlayingSong:^(Song * _Nonnull song) {
             NSString *urlStr = song.artwork.url;
             urlStr = [urlStr stringReplacingImageURLSize:size];
-            NSLog(@"load artwork image url = %@",urlStr);
+            //NSLog(@"load artwork image url = %@",urlStr);
 
-            [[UIImageView new] sd_setImageWithURL:[NSURL URLWithString:urlStr]
-                                        completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-                completion(image);
-            }];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIImageView new] sd_setImageWithURL:[NSURL URLWithString:urlStr]
+                                            completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+                                                completion(image);
+                                            }];
+            });
         }];
     }
 }
-
 @end

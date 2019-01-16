@@ -14,6 +14,7 @@
 #import "RecommendationViewController.h"
 #import "MMSearchMainViewController.h"
 #import "MyMusicViewController.h"
+#import "ChartsViewController.h"
 
 @interface MMTabBarController ()
 @property(nonatomic, strong)UIViewController *popViewController;        //强引用
@@ -35,9 +36,6 @@
     [super viewDidLoad];
 
     //[self.tabBar setHidden:YES];
-
-
-
     //初始化 popFrame
     _popFrame = ({
         UIEdgeInsets padding = UIEdgeInsetsMake(0, 8, 6, 8);
@@ -106,10 +104,17 @@
         [todayCVC setTitle:@"今日推荐"];
         UINavigationController *todayNav = [[UINavigationController alloc] initWithRootViewController:todayCVC];
 
+        //排行榜
+        ChartsViewController *chartsViewController = [[ChartsViewController alloc] init];
+        [chartsViewController setTitle:@"排行榜"];
+        UINavigationController *chartsNav = [[UINavigationController alloc] initWithRootViewController:chartsViewController];
+
         //secon 搜索
-        MMSearchMainViewController *chartVC = [[MMSearchMainViewController alloc] init];
-        [chartVC setTitle:@"排行榜"];
-        UINavigationController *chartNav = [[UINavigationController alloc] initWithRootViewController:chartVC];
+        MMSearchMainViewController *searchViewController = [[MMSearchMainViewController alloc] init];
+        [searchViewController setTitle:@"搜索"];
+        UINavigationController *searchNav = [[UINavigationController alloc] initWithRootViewController:searchViewController];
+        UITabBarItem *searchItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:2];
+        [searchNav setTabBarItem:searchItem];
 
         //three 我的音乐
         MyMusicViewController  *mmusicVC =[[MyMusicViewController alloc] init];
@@ -118,12 +123,13 @@
 
         //添加控制器
         [self addChildViewController:todayNav];
-        [self addChildViewController:chartNav];
+        [self addChildViewController:chartsNav];
+        [self addChildViewController:searchNav];
         [self addChildViewController:mmusicNavCtr];
 
         //设置item 图标
         [todayCVC.tabBarItem setImage:[UIImage imageNamed:@"recom"]];
-        [chartNav.tabBarItem setImage:[UIImage imageNamed:@"Chart"]];
+        [chartsNav.tabBarItem setImage:[UIImage imageNamed:@"Chart"]];
         [mmusicNavCtr.tabBarItem setImage:[UIImage imageNamed:@"Library"]];
     });
 
