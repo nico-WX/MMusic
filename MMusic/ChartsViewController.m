@@ -7,6 +7,8 @@
 //
 
 #import "ChartsViewController.h"
+#import "ChartsSubContentCell.h"
+#import "MMDetailViewController.h"
 #import "ChartsCell.h"
 #import "ChartsDataSource.h"
 
@@ -37,8 +39,6 @@ static NSString *const identifier = @"cell reuseIdentifier";
     return _tableView;
 }
 
-
-
 #pragma mark - ChartsDataSourceDelegate
 -(void)configureCell:(UITableViewCell *)cell object:(Chart *)chart{
     if ([cell isKindOfClass:[ChartsCell class]]) {
@@ -55,6 +55,11 @@ static NSString *const identifier = @"cell reuseIdentifier";
 
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
+        Resource *resource = [((ChartsSubContentCell*)cell) resource];
+        MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:resource];
+        [self.navigationController pushViewController:detail animated:YES];
+    }
 }
 @end

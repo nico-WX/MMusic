@@ -34,7 +34,6 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
 //};
 
 
-
 @interface NSObject (Tool)
 
 /**
@@ -60,3 +59,5 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
 - (void)showHUDToMainWindowFromText:(NSString*)text;
 
 @end
+
+

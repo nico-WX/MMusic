@@ -73,7 +73,10 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     }];
 
     //数据源
-    self.detailData = [[MMDetaiDataSource alloc] initWithTableView:_tableView resource:_resource cellIdentifier:reuseIdentifier delegate:self];
+    self.detailData = [[MMDetaiDataSource alloc] initWithTableView:_tableView
+                                                          resource:_resource
+                                                    cellIdentifier:reuseIdentifier
+                                                          delegate:self];
 }
 
 

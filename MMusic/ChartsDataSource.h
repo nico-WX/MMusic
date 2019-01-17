@@ -12,11 +12,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol ChartsDataSourceDelegate <NSObject>
-
 - (void)configureCell:(UITableViewCell*)cell object:(Chart*)chart;
 @end
 
-@interface ChartsDataSource : NSObject
+@interface ChartsDataSource : NSObject <TableViewDataSource>
 
 - (instancetype)initWithTableView:(UITableView*)tableView
                   reuseIdentifier:(NSString*)identifier

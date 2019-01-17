@@ -17,6 +17,7 @@
 @end
 
 @implementation ChartsSubContentDataSource
+
 - (instancetype)initWithChart:(Chart*)chart
                collectionView:(UICollectionView *)collectionView
               reuseIdentifier:(NSString *)identifier
@@ -37,7 +38,9 @@
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_identifier forIndexPath:indexPath];
-    [_delegate configureCell:cell object:[_chart.data objectAtIndex:indexPath.row]];
+    if ([_delegate respondsToSelector:@selector(configureTableViewCell:resourceObject:)]) {
+        [_delegate configureCell:cell object:[_chart.data objectAtIndex:indexPath.row]];
+    }
     return cell;
 }
 

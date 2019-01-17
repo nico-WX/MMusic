@@ -7,7 +7,9 @@
 //
 
 #import "ChartsCell.h"
+#import "ChartsSubContentCell.h"
 #import "ChartsSubContentDataSource.h"
+
 #import <Masonry.h>
 
 @interface ChartsCell()<ChartsSubContentDataSourceDelegate>
@@ -15,7 +17,6 @@
 @property(nonatomic, strong) ChartsSubContentDataSource *contentDataSource;
 @property(nonatomic, strong) UICollectionViewFlowLayout *layout;
 @end
-
 
 static NSString *const identifier = @"collectionView cell id";
 @implementation ChartsCell
@@ -29,7 +30,7 @@ static NSString *const identifier = @"collectionView cell id";
         [_layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
         [_layout setMinimumLineSpacing:1];
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
-        [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:identifier];
+        [_collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
         [_collectionView setBackgroundColor:UIColor.whiteColor];
 
         [self.contentView addSubview:_titleLabel];
@@ -58,7 +59,7 @@ static NSString *const identifier = @"collectionView cell id";
 
     [_titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(200);
-        // 顶部空间居中布置
+        // 顶部空间Y轴居中布置
         CGFloat centerY = CGRectGetMidY(self.contentView.bounds);
         centerY = (-centerY) + padding.top/2;
         make.centerY.mas_equalTo(centerY);
@@ -72,7 +73,7 @@ static NSString *const identifier = @"collectionView cell id";
     }];
 
     CGFloat h = CGRectGetHeight(_collectionView.bounds);
-    CGFloat w = h;
+    CGFloat w = h-40; // -60
     [_layout setItemSize:CGSizeMake(w, h)];
 
 }
@@ -87,12 +88,14 @@ static NSString *const identifier = @"collectionView cell id";
     if (_chart != chart) {
         _chart = chart;
 
-        _contentDataSource = [[ChartsSubContentDataSource alloc] initWithChart:chart collectionView:_collectionView reuseIdentifier:identifier delegate:self];
+        _contentDataSource = [[ChartsSubContentDataSource alloc] initWithChart:chart
+                                                                collectionView:_collectionView
+                                                               reuseIdentifier:identifier
+                                                                      delegate:self];
 
         [_titleLabel setText:chart.name];
-
         [_showMoreButton setTitle:@"ShowMore" forState:UIControlStateNormal];
-        BOOL displayButton = chart.next ? YES : NO; //如果没有更多, 隐藏按钮
+        BOOL displayButton = chart.next ? NO : YES; //如果没有更多, 隐藏按钮
         [_showMoreButton setHidden:displayButton];
     }
 }
@@ -103,7 +106,11 @@ static NSString *const identifier = @"collectionView cell id";
 
 #pragma mark -delegate
 - (void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
-    [cell.contentView setBackgroundColor:UIColor.grayColor];
+    //[cell.contentView setBackgroundColor:UIColor.grayColor];
+    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
+        ChartsSubContentCell *subCell = (ChartsSubContentCell*)cell;
+        [subCell setResource:resource];
+    }
 }
 
 

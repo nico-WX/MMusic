@@ -24,6 +24,7 @@
 #import "UIButton+BlockButton.h"
 #import "MusicKit.h"
 #import "UIControl+MMActionBlock.h"
+#import "DataSourceManage.h"
 
 //NSCachesDirectory
 //NSLibraryDirectory
