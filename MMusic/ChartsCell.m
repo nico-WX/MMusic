@@ -75,6 +75,7 @@ static NSString *const identifier = @"collectionView cell id";
     }];
 
 
+    //不同的类型, 设置不同的大小与cell 类型
     Resource *resource = _chart.data.firstObject;
     if ([resource.type isEqualToString:@"songs"]) {
         CGFloat h = CGRectGetHeight(_collectionView.bounds)/4;
@@ -98,17 +99,13 @@ static NSString *const identifier = @"collectionView cell id";
     // Configure the view for the selected state
 }
 
-- (void)resetCollectionViewWithChart:(Chart*)chart{
-
-}
-
 #pragma mark - setter/getter
 - (void)setChart:(Chart *)chart{
     if (_chart != chart) {
         _chart = chart;
 
         [_titleLabel setText:chart.name];
-        [_showMoreButton setTitle:@"ShowMore" forState:UIControlStateNormal];
+        [_showMoreButton setTitle:@"Show More" forState:UIControlStateNormal];
         BOOL displayButton = chart.next ? NO : YES; //如果没有更多, 隐藏按钮
         [_showMoreButton setHidden:displayButton];
 

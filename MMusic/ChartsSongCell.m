@@ -33,7 +33,6 @@
     UIView *superView = self.contentView;
     __weak typeof(self) weakSelf = self;
 
-
     [_lineView mas_remakeConstraints:^(MASConstraintMaker *make) {
         UIEdgeInsets lineInsets = UIEdgeInsetsMake(0, 40, 0, 20);
         make.top.mas_equalTo(superView);
