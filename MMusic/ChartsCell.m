@@ -9,7 +9,8 @@
 #import "ChartsCell.h"
 #import "ChartsSubContentCell.h"
 #import "ChartsSubContentDataSource.h"
-
+#import "ChartsSongCell.h"
+#import "Resource.h"
 #import <Masonry.h>
 
 @interface ChartsCell()<ChartsSubContentDataSourceDelegate>
@@ -29,6 +30,7 @@ static NSString *const identifier = @"collectionView cell id";
         _layout = [[UICollectionViewFlowLayout alloc] init];
         [_layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
         [_layout setMinimumLineSpacing:1];
+
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
         [_collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
         [_collectionView setBackgroundColor:UIColor.whiteColor];
@@ -72,10 +74,22 @@ static NSString *const identifier = @"collectionView cell id";
         make.bottom.mas_equalTo(weakSelf.collectionView.mas_top);
     }];
 
-    CGFloat h = CGRectGetHeight(_collectionView.bounds);
-    CGFloat w = h-40; // -60
-    [_layout setItemSize:CGSizeMake(w, h)];
 
+    Resource *resource = _chart.data.firstObject;
+    if ([resource.type isEqualToString:@"songs"]) {
+        CGFloat h = CGRectGetHeight(_collectionView.bounds)/4;
+        [_layout setItemSize:CGSizeMake(400,h)];
+        [_layout setMinimumInteritemSpacing:0];
+        [_collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
+    }else if ([resource.type isEqualToString:@"music-videos"]) {
+        CGFloat w = CGRectGetWidth(_collectionView.bounds) * 0.8;
+        CGFloat h = CGRectGetHeight(_collectionView.bounds);//w * 0.8;
+        [_layout setItemSize:CGSizeMake(w, h)];
+    }else{
+        CGFloat h = CGRectGetHeight(_collectionView.bounds);
+        CGFloat w = h-40; // -60
+        [_layout setItemSize:CGSizeMake(w, h)];
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -84,24 +98,25 @@ static NSString *const identifier = @"collectionView cell id";
     // Configure the view for the selected state
 }
 
+- (void)resetCollectionViewWithChart:(Chart*)chart{
+
+}
+
+#pragma mark - setter/getter
 - (void)setChart:(Chart *)chart{
     if (_chart != chart) {
         _chart = chart;
-
-        _contentDataSource = [[ChartsSubContentDataSource alloc] initWithChart:chart
-                                                                collectionView:_collectionView
-                                                               reuseIdentifier:identifier
-                                                                      delegate:self];
 
         [_titleLabel setText:chart.name];
         [_showMoreButton setTitle:@"ShowMore" forState:UIControlStateNormal];
         BOOL displayButton = chart.next ? NO : YES; //如果没有更多, 隐藏按钮
         [_showMoreButton setHidden:displayButton];
-    }
-}
 
-- (void)loadCollectionView{
-    
+        _contentDataSource = [[ChartsSubContentDataSource alloc] initWithChart:chart
+                                                                collectionView:_collectionView
+                                                               reuseIdentifier:identifier
+                                                                      delegate:self];
+    }
 }
 
 #pragma mark -delegate

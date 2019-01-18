@@ -6,22 +6,20 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import "ResourceCell.h"
 #import <Masonry.h>
+
+#import "ResourceCell.h"
 #import "EditorialNotes.h"
 #import "Artwork.h"
 #import "MMDetailViewController.h"
 #import "MMDetailPoppingAnimator.h"
 
-@interface ResourceCell ()
-
-@end
 
 @implementation ResourceCell
+
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
 
-        //[self setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
 
         _imageView = [[UIImageView alloc] init];
         _titleLabel = [[UILabel alloc] init];
@@ -31,7 +29,6 @@
         [_titleLabel setTextColor:MainColor];
         [_titleLabel setFont:[UIFont systemFontOfSize:[UIFont labelFontSize]]];
 
-        
         [self.contentView addSubview:_imageView];
         [self.contentView addSubview:_titleLabel];
 
@@ -48,11 +45,13 @@
 - (void)layoutSubviews{
     [super layoutSubviews];
 
+    UIEdgeInsets insets = UIEdgeInsetsMake(4, 4, 4, 4);
     UIView *superView = self.contentView;
     __weak typeof(self) weakSelf = self;
     [_imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.mas_equalTo(superView);
-        make.height.mas_equalTo(CGRectGetWidth(superView.frame));
+        make.top.left.right.mas_equalTo(superView).insets(insets);
+        CGFloat h = CGRectGetWidth(superView.bounds) - (insets.left+insets.right);
+        make.height.mas_equalTo(h);
     }];
 
     [_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -69,6 +68,8 @@
     _titleLabel.text = NULL;
 }
 
+#pragma mark - setter / getter
+
 - (void)setResource:(Resource *)resource{
     if (_resource != resource) {
         _resource = resource;
@@ -77,7 +78,20 @@
         [_imageView setImageWithURLPath:[resource valueForKeyPath:@"attributes.artwork.url"]];
     }
 }
-
+- (void)setAlbum:(Album *)album{
+    if (_album != album) {
+        _album = album;
+        [_titleLabel setText:album.name];
+        [_imageView setImageWithURLPath:album.artwork.url];
+    }
+}
+- (void)setPlaylists:(Playlist *)playlists{
+    if (_playlists != playlists) {
+        _playlists = playlists;
+        [_titleLabel setText:playlists.name];
+        [_imageView setImageWithURLPath:playlists.artwork.url];
+    }
+}
 
 
 @end

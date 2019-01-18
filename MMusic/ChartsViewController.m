@@ -44,7 +44,8 @@ static NSString *const identifier = @"cell reuseIdentifier";
     if ([cell isKindOfClass:[ChartsCell class]]) {
         ChartsCell *chartsCell = (ChartsCell*)cell;
         [chartsCell setChart:chart];
-        [chartsCell.collectionView setDelegate:self]; //tableViewCell 中的集合视图代理设置为self, 获取选中的数据, 入栈新的控制器;
+        //tableViewCell 中的集合视图代理设置为self, 获取选中的数据, 入栈新的控制器;
+        [chartsCell.collectionView setDelegate:self];
     }
 }
 

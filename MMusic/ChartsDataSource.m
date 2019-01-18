@@ -22,13 +22,6 @@
 
 @implementation ChartsDataSource
 
-
-- (instancetype)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)identifier delegate:(id<DataSourceDelegate>)delegate configure:(void (^)(UITableViewCell * _Nonnull, id _Nonnull))configureCell{
-
-    return self;
-}
-
-
 - (instancetype)initWithTableView:(UITableView *)tableView
                   reuseIdentifier:(NSString *)identifier
                          delegate:(id<ChartsDataSourceDelegate>)delegate{

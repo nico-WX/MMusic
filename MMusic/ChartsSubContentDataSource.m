@@ -38,7 +38,7 @@
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_identifier forIndexPath:indexPath];
-    if ([_delegate respondsToSelector:@selector(configureTableViewCell:resourceObject:)]) {
+    if ([_delegate respondsToSelector:@selector(configureCell:object:)]) {
         [_delegate configureCell:cell object:[_chart.data objectAtIndex:indexPath.row]];
     }
     return cell;

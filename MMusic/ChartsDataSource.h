@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)configureCell:(UITableViewCell*)cell object:(Chart*)chart;
 @end
 
-@interface ChartsDataSource : NSObject <TableViewDataSource>
+@interface ChartsDataSource : NSObject
 
 - (instancetype)initWithTableView:(UITableView*)tableView
                   reuseIdentifier:(NSString*)identifier

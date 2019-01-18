@@ -14,9 +14,6 @@
 #import "Resource.h"
 
 @interface ChartsSubContentCell ()
-@property(nonatomic, strong) UIImageView *imageView;
-@property(nonatomic, strong) UILabel *titleLabel;
-@property(nonatomic, strong) UILabel *subTitleLable;
 @end
 
 @implementation ChartsSubContentCell
@@ -45,34 +42,26 @@
     //设置数据才布局
     UIView *superView = self.contentView;
     __weak typeof(self) weakSelf = self;
-    if (self.resource) {
-        NSString *type = self.resource.type;
-        if ([type isEqualToString:@"music-videos"]) {
 
-        }else if ([type isEqualToString:@"songs"]){
-
-        }else{
-            [_imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.left.top.right.mas_equalTo(superView);
-                make.height.mas_equalTo(CGRectGetWidth(superView.bounds));
-            }];
-            [_titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.left.right.mas_equalTo(superView).insets(UIEdgeInsetsMake(0, 4, 0, 4));
-                make.top.mas_equalTo(weakSelf.imageView.mas_bottom);
-            }];
-            [_subTitleLable mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.left.right.mas_equalTo(superView).insets(UIEdgeInsetsMake(0, 4, 0, 4));
-                make.top.mas_equalTo(weakSelf.titleLabel.mas_bottom);
-            }];
-        }
-    }
+    [_imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.right.mas_equalTo(superView);
+        make.height.mas_equalTo(CGRectGetWidth(superView.bounds));
+    }];
+    [_titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(superView).insets(UIEdgeInsetsMake(0, 4, 0, 4));
+        make.top.mas_equalTo(weakSelf.imageView.mas_bottom);
+    }];
+    [_subTitleLable mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(superView).insets(UIEdgeInsetsMake(0, 4, 0, 4));
+        make.top.mas_equalTo(weakSelf.titleLabel.mas_bottom);
+    }];
 }
 
 
 - (void)setResource:(Resource *)resource{
     if (_resource != resource) {
         _resource = resource;
-
+        
         [_titleLabel setText:[resource.attributes valueForKey:@"name"]];
         [_subTitleLable setText:[resource.attributes valueForKey:@"curatorName"]];
         NSString *url = [resource.attributes valueForKeyPath:@"artwork.url"];

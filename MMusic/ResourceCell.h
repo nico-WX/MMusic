@@ -13,13 +13,13 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ResourceCell : UICollectionViewCell
-@property(nonatomic, strong,readonly) UIImageView    *imageView;
-@property(nonatomic, strong,readonly) UILabel        *titleLabel;
+@property(nonatomic, strong,readonly) UIImageView *imageView;
+@property(nonatomic, strong,readonly) UILabel     *titleLabel;
 
 /**播放列表或者专辑Resource对象*/
-@property(nonatomic, strong)Resource    *resource;
-@property(nonatomic, strong) Album      *album;
-@property(nonatomic, strong) Playlist   *playlists;
+@property(nonatomic, strong) Resource *resource;
+@property(nonatomic, strong) Album    *album;
+@property(nonatomic, strong) Playlist *playlists;
 @end
 
 NS_ASSUME_NONNULL_END
