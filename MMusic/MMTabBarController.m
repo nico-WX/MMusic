@@ -85,15 +85,6 @@
         [self.visualEffectView addGestureRecognizer:downSwipe];
     });
 
-
-
-    //播放状态改变时, 隐藏或显示
-//    [self popStateForState:MainPlayer.playbackState];
-//    [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-//        [self popStateForState:MainPlayer.playbackState];
-//    }];
-
-
     //添加子视图控制器
     ({
         //播放器
@@ -212,30 +203,7 @@
 
 }
 
-//播放状态改变时, 隐藏u或显示pop 视图
-- (void)popStateForState:(MPMusicPlaybackState)state{
 
-    // 打开状态下, 暂停或者停止不隐藏
-    if (CGRectGetHeight(self.visualEffectView.contentView.bounds) < 100) {
-        switch (state) {
-            case MPMusicPlaybackStateStopped:
-            case MPMusicPlaybackStatePaused:{
-                CGRect frame = self.popFrame;
-                frame.origin.y = CGRectGetMaxY([UIScreen mainScreen].bounds);
-                [UIView animateWithDuration:0.5 animations:^{
-                    [self.visualEffectView setFrame:frame];
-                }];
-            }
-                break;
-
-            default:
-                [UIView animateWithDuration:0.3 animations:^{
-                    [self.visualEffectView setFrame:self.popFrame];
-                }];
-                break;
-        }
-    }
-}
 
 #pragma mark - getter
 

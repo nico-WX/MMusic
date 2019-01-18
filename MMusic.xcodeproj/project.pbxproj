@@ -691,9 +691,6 @@
 				3B23AC721FF2363300F0A9CA /* Recommendation */,
 				3B78629D2060F3CA00E9A26A /* Search */,
 				3B9AA8C61FB450B600720085 /* MyMusic */,
-				3B9AA8CC1FB452AA00720085 /* Model */,
-				3B9AA8CB1FB4512B00720085 /* Support */,
-				3B9AA8BE1FB4503200720085 /* Tool */,
 			);
 			name = TabBarController;
 			sourceTree = "<group>";
@@ -801,6 +798,9 @@
 			isa = PBXGroup;
 			children = (
 				3B64B17D21EF2F3B0029C32E /* TabBarController */,
+				3B9AA8CC1FB452AA00720085 /* Model */,
+				3B9AA8CB1FB4512B00720085 /* Support */,
+				3B9AA8BE1FB4503200720085 /* Tool */,
 			);
 			path = MMusic;
 			sourceTree = "<group>";

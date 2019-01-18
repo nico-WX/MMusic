@@ -57,17 +57,20 @@
             }];
         }
 
-        //没有本地MV数据, 请求香港地区数据
-        if (![json valueForKey:@"music-videos"]){
-            [self requestHongKongMVDataWithCompletion:^(Chart *chart) {
-                [chartArray addObject:chart];
-                self.charts = chartArray;
-                if (completion) completion();
-            }];
-        }else{
-            self.charts = chartArray;
-            if (completion) completion();
-        }
+        self.charts = chartArray;
+        completion();
+
+//        //没有本地MV数据, 请求香港地区数据
+//        if (![json valueForKey:@"music-videos"]){
+//            [self requestHongKongMVDataWithCompletion:^(Chart *chart) {
+//                [chartArray addObject:chart];
+//                self.charts = chartArray;
+//                if (completion) completion();
+//            }];
+//        }else{
+//            self.charts = chartArray;
+//            if (completion) completion();
+//        }
     }];
 }
 
