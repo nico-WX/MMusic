@@ -26,29 +26,25 @@
 @interface MMDetailViewController ()<UITableViewDelegate, DetailDataSourceDelegate>
 @property(nonatomic, strong) MMCloseButton *closeButton;
 @property(nonatomic, strong) UITableView *tableView;
-//@property(nonatomic, assign) CGFloat topOffset;
 @property(nonatomic, strong) MMDetailHeadView *headView;
 
 //data
 @property(nonatomic, strong)Resource *resource;
-//@property(nonatomic, strong)MMSongListData *resourceData;
 @property(nonatomic, strong)MMDetaiDataSource *detailData;
 @end
 
+static CGFloat headHeight = 240;
 static NSString *const reuseIdentifier = @"tableview cell id";
 @implementation MMDetailViewController
 
 - (instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
-         _resource = resource;
-
-        //_resourceData   = [[MMSongListData alloc] init];
-        _closeButton    = [[MMCloseButton alloc] init];
+         _resource  = resource;
+        _closeButton = [[MMCloseButton alloc] init];
         //头部视图(image 和 title)
         _headView = [[MMDetailHeadView alloc] initWithFrame:CGRectZero];
         _imageView = _headView.imageView;
         _titleLabel = _headView.label;
-
     }
     return self;
 }
@@ -59,7 +55,6 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     [self.view setBackgroundColor:UIColor.whiteColor];
     [self.view.layer setCornerRadius:6.0f];
     [self.view.layer setMasksToBounds:YES];
-
 
     //添加子视图, 注意视图层次
     [self.view addSubview:_headView];
@@ -73,7 +68,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     }];
 
     //数据源
-    self.detailData = [[MMDetaiDataSource alloc] initWithTableView:_tableView
+    self.detailData = [[MMDetaiDataSource alloc] initWithTableView:self.tableView
                                                           resource:_resource
                                                     cellIdentifier:reuseIdentifier
                                                           delegate:self];
@@ -84,10 +79,9 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     [super viewDidLayoutSubviews];
 
     UIView *superView = self.view;
-
     [self.headView  mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.mas_equalTo(superView);
-        make.height.mas_equalTo(240);
+        make.height.mas_equalTo(headHeight);
     }];
 
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -95,52 +89,38 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     }];
 
     [self.closeButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superView).offset(8);
-        make.right.mas_equalTo(superView).offset(-8);
+        make.top.right.mas_equalTo(superView).inset(8);
         make.size.mas_equalTo(CGSizeMake(35, 35));
     }];
-
-    //布局完成,计算contentInset
-    CGFloat offset = CGRectGetMaxY(_headView.frame)+8;
-    [self.tableView setContentInset:UIEdgeInsetsMake(offset, 0, 0, 0)];
 }
 
+#pragma mark dataSourceDelegate
 - (void)configureCell:(UITableViewCell *)cell object:(Song *)song withIndex:(NSUInteger)index{
     if ([cell isKindOfClass:[SongCell class]]) {
         [((SongCell*)cell) setSong:song withIndex:index];
     }
 }
 
-
 #pragma mark - <TableView Delegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    //[MainPlayer playSongs:[self.resourceData songList] startIndex:indexPath.row];
     [MainPlayer playSongs:self.detailData.songList startIndex:indexPath.row];
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-
-    //[cell setHighlighted:YES animated:YES];
-    [cell setSelected:YES animated:YES];
+    [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
 }
 
 #pragma mark - <scroll delegate>
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
 
-    CGFloat y = scrollView.contentOffset.y;
-    CGFloat topOffset = scrollView.contentInset.top;
+    CGFloat yOffset = scrollView.contentOffset.y;
     //往下拉100点, 关闭视图
-    if ( y < -(topOffset+100)) {
-        //下拉一段距离  关闭VC
+    if ( yOffset < -(headHeight+100)) {
         [self delegateDismissViewController];
+        return;
     }
 
-    //向上滑, 移动头视图;
-    if (y >= -(topOffset) && y <= 0) {
-        //计算向上偏移多少点
-        CGFloat offsetY = -topOffset - y; //(-topOffset) - y; 基于原始偏移与当前滚动点数;
-        CGRect frame = self.headView.frame;
-        frame.origin.y = offsetY;
-        self.headView.frame = frame;
-    }
+    //头部视图跟随滚动
+    CGRect newFrame = self.headView.frame;
+    newFrame.origin.y = -(yOffset+headHeight);
+    self.headView.frame = newFrame;
 }
 
 #pragma mark - <Dismiss ViewController dlelegate>
@@ -159,6 +139,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         [_tableView registerClass:[SongCell class] forCellReuseIdentifier:reuseIdentifier];
         [_tableView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]]; //透明白色, 看到后面的视图层
         [_tableView setRowHeight:44.0f];
+        [_tableView setContentInset:UIEdgeInsetsMake(headHeight, 0, 0, 0)];
     }
     return _tableView;
 }

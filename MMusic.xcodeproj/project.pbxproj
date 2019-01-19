@@ -538,16 +538,17 @@
 		3B23AC721FF2363300F0A9CA /* Recommendation */ = {
 			isa = PBXGroup;
 			children = (
+				3B4210F121B5220A0078ECAC /* MMCloseButton.h */,
+				3B42110321B5220B0078ECAC /* MMCloseButton.m */,
 				3B23AC731FF236A800F0A9CA /* RecommendationViewController.h */,
 				3B23AC741FF236A800F0A9CA /* RecommendationViewController.m */,
 				3BE2A24D2198D25300AEA486 /* MMDetailViewController.h */,
 				3BE2A24E2198D25400AEA486 /* MMDetailViewController.m */,
-				3B4210F121B5220A0078ECAC /* MMCloseButton.h */,
-				3B42110321B5220B0078ECAC /* MMCloseButton.m */,
 				3B6BE745219DACDD0004F3E5 /* MMDetailPresentationController.h */,
 				3B6BE742219DACDD0004F3E5 /* MMDetailPresentationController.m */,
 				3B6BE743219DACDD0004F3E5 /* MMDetailPoppingAnimator.h */,
 				3B6BE744219DACDD0004F3E5 /* MMDetailPoppingAnimator.m */,
+				3B64B1D621F328AC0029C32E /* DataSource */,
 				3B469ADB1FF2462C0035E138 /* View */,
 			);
 			name = Recommendation;
@@ -612,8 +613,6 @@
 				3B4DDC89219357DE00F70547 /* DataStore.m */,
 				3BE2A21E2197324200AEA486 /* DataStore+Rating.h */,
 				3BE2A21F2197324200AEA486 /* DataStore+Rating.m */,
-				3B6BE7A721A7F38A0004F3E5 /* RecommendationDataSource.h */,
-				3B6BE7A821A7F38A0004F3E5 /* RecommendationDataSource.m */,
 				3BEB3D5D21D3B19300398A5B /* MMDetaiDataSource.h */,
 				3BEB3D5E21D3B19400398A5B /* MMDetaiDataSource.m */,
 				3B6BE7B921A808590004F3E5 /* MMSongListData.h */,
@@ -685,14 +684,23 @@
 			children = (
 				3B66A22D2195CCDC00F7DC9E /* MMTabBarController.h */,
 				3B66A22C2195CCDC00F7DC9E /* MMTabBarController.m */,
-				3B64B12621EDD2C80029C32E /* Charts */,
-				3B3D998620553CEB000F2E9E /* PlayerViewController */,
-				3BDE8FED20E3981300C962F7 /* Cell */,
 				3B23AC721FF2363300F0A9CA /* Recommendation */,
+				3B64B12621EDD2C80029C32E /* Charts */,
 				3B78629D2060F3CA00E9A26A /* Search */,
 				3B9AA8C61FB450B600720085 /* MyMusic */,
+				3B3D998620553CEB000F2E9E /* PlayerViewController */,
+				3BDE8FED20E3981300C962F7 /* Cell */,
 			);
 			name = TabBarController;
+			sourceTree = "<group>";
+		};
+		3B64B1D621F328AC0029C32E /* DataSource */ = {
+			isa = PBXGroup;
+			children = (
+				3B6BE7A721A7F38A0004F3E5 /* RecommendationDataSource.h */,
+				3B6BE7A821A7F38A0004F3E5 /* RecommendationDataSource.m */,
+			);
+			name = DataSource;
 			sourceTree = "<group>";
 		};
 		3B65B29A21E0A84700C2C388 /* Button */ = {

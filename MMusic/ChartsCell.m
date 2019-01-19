@@ -79,9 +79,12 @@ static NSString *const identifier = @"collectionView cell id";
     Resource *resource = _chart.data.firstObject;
     if ([resource.type isEqualToString:@"songs"]) {
         CGFloat h = CGRectGetHeight(_collectionView.bounds)/4;
-        [_layout setItemSize:CGSizeMake(400,h)];
+        CGFloat w = CGRectGetWidth(_collectionView.bounds) -8;
+        [_layout setItemSize:CGSizeMake(w,h)];
         [_layout setMinimumInteritemSpacing:0];
         [_collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
+        [_collectionView setPagingEnabled:YES];
+        
     }else if ([resource.type isEqualToString:@"music-videos"]) {
         CGFloat w = CGRectGetWidth(_collectionView.bounds) * 0.8;
         CGFloat h = CGRectGetHeight(_collectionView.bounds);//w * 0.8;

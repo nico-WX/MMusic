@@ -4,7 +4,7 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <JGProgressHUD.h>
+//#import <JGProgressHUD.h>
 #import <MJRefresh.h>
 #import <Masonry.h>
 
@@ -49,7 +49,10 @@ static NSString *const cellIdentifier = @"resourceCell";
     [self.view addSubview:self.collectionView];
 
     self.popupAnimator = [[MMDetailPoppingAnimator alloc] init];
-    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:self.collectionView cellIdentifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:self];
+    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:self.collectionView
+                                                                        cellIdentifier:cellIdentifier
+                                                                     sectionIdentifier:sectionIdentifier
+                                                                              delegate:self];
 
     //底部偏移量(底部浮动播放器窗口)
     if ([self.tabBarController isKindOfClass:[MMTabBarController class]]) {
@@ -122,40 +125,38 @@ static NSString *const cellIdentifier = @"resourceCell";
 }
 
 
-#pragma mark - lazy load
+#pragma mark -  getter / setter
 -(UICollectionView *)collectionView{
     if (!_collectionView) {
 
-        //布局对象
-        UICollectionViewFlowLayout *layout = ({
+        UIEdgeInsets insets = UIEdgeInsetsMake(0, 8, 0, 8);
 
-            UICollectionViewFlowLayout *flow = [UICollectionViewFlowLayout new];
-            //两列
-            CGFloat spacing = 8.0f;
-            CGFloat cw = (CGRectGetWidth(self.view.frame) - spacing*3)/2;
-            CGFloat ch = cw+32;
-            CGSize itemSize = CGSizeMake(cw, ch);
-            CGSize headerSize = CGSizeMake(CGRectGetWidth(self.view.bounds),44.0f);
+        UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
+        //两列
+        CGFloat spacing = 8.0f;
+        CGFloat w = CGRectGetWidth(self.view.bounds); //(CGRectGetWidth(self.view.frame) - spacing*3)/2;
+        w = (w - insets.left*3)/2;
+        CGFloat h = w+30;
+        CGSize itemSize = CGSizeMake(w, h);
+        CGSize headerSize = CGSizeMake(CGRectGetWidth(self.view.bounds),44.0f);
 
-            [flow setItemSize:itemSize];
-            [flow setHeaderReferenceSize:headerSize];
-            [flow setMinimumLineSpacing:spacing*2];
-            [flow setMinimumInteritemSpacing:spacing];
-            [flow setSectionInset:UIEdgeInsetsMake(0, spacing, spacing, spacing)]; //cell 与头尾间距
-            [flow setScrollDirection:UICollectionViewScrollDirectionVertical];
-
-            flow;
-        });
+        [layout setItemSize:itemSize];
+        [layout setHeaderReferenceSize:headerSize];
+        [layout setMinimumLineSpacing:spacing*2];
+        [layout setMinimumInteritemSpacing:spacing/2];
+        [layout setSectionInset:insets]; //cell 与头尾间距
+        [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
 
         //集合视图对象
-        _collectionView = ({
-            UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
-            [collectionView registerClass:[ResourceCell class] forCellWithReuseIdentifier:cellIdentifier];
-            [collectionView registerClass:[RecommentationSectionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionIdentifier];
-            [collectionView setBackgroundColor:[UIColor whiteColor]];
-            [collectionView setDelegate: self];
-            collectionView;
-        });
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
+        [_collectionView registerClass:[ResourceCell class] forCellWithReuseIdentifier:cellIdentifier];
+        [_collectionView registerClass:[RecommentationSectionView class]
+            forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                   withReuseIdentifier:sectionIdentifier];
+
+        [_collectionView setBackgroundColor:[UIColor whiteColor]];
+        [_collectionView setDelegate: self];
+
     }
     return _collectionView;
 }

@@ -12,30 +12,30 @@
 #import "RecommendationDataSource.h"
 #import "Resource.h"
 
-#import "ResourceCell.h"
-#import "RecommentationSectionView.h"
 
 @interface RecommendationDataSource ()
 // all data
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*>* dataArray;
+
 @property(nonatomic, copy) NSString *reuseIdentifier;
 @property(nonatomic, copy) NSString *sectionIdentifier;
-
-//@property(nonatomic, weak) UICollectionView *collectionView;
+@property(nonatomic, weak) UICollectionView *collectionView;
 @property(nonatomic, weak) id<RecommendationDataSourceDelegate> delegate;
 @end
 
 @implementation RecommendationDataSource
 
-- (instancetype)initWithCollectionView:(UICollectionView *)collectionView cellIdentifier:(nonnull NSString *)identifier sectionIdentifier:(nonnull NSString *)sectionIdentifier delegate:(nonnull id<RecommendationDataSourceDelegate>)delegate{
+
+- (instancetype)initWithCollectionView:(UICollectionView *)collectionView
+                        cellIdentifier:(nonnull NSString *)identifier
+                     sectionIdentifier:(nonnull NSString *)sectionIdentifier
+                              delegate:(nonnull id<RecommendationDataSourceDelegate>)delegate{
     if (self = [super init]) {
+        _collectionView = collectionView;
         collectionView.dataSource = self;
         _sectionIdentifier = sectionIdentifier;
         _reuseIdentifier = identifier;
         _delegate = delegate;
-       // _collectionView.dataSource = self;
-       //_collectionView = collectionView;
-
 
         //加载数据
         JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
@@ -58,19 +58,10 @@
     }
     return self;
 }
-- (void)refreshDataWithCompletion:(void (^)(void))completion{
-    [self defaultRecommendataionWithCompletion:^(BOOL success) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (success) {
-                completion();
-            }
-        });
-    }];
-}
 
 #pragma mark - collectionView DataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    return self.dataArray.count;
+    return [[self dataArray] count];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
@@ -78,33 +69,36 @@
     return [[[temp allValues] firstObject] count];
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.reuseIdentifier forIndexPath:indexPath];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(configureCell:object:)]) {
-        [self.delegate configureCell:cell object:[self dataWithIndexPath:indexPath]];
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_reuseIdentifier forIndexPath:indexPath];
+    if (_delegate && [_delegate respondsToSelector:@selector(configureCell:object:)]) {
+        [_delegate configureCell:cell object:[self dataWithIndexPath:indexPath]];
     }
     return cell;
 }
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     //节头
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
-        UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:self.sectionIdentifier forIndexPath:indexPath];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(configureSupplementaryElement:object:)]) {
-            [self.delegate configureSupplementaryElement:view object:[self titleWithSection:indexPath.section]];
+        UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                            withReuseIdentifier:_sectionIdentifier
+                                                                                   forIndexPath:indexPath];
+
+        if (_delegate && [_delegate respondsToSelector:@selector(configureSupplementaryElement:object:)]) {
+            [_delegate configureSupplementaryElement:view object:[self titleWithSection:indexPath.section]];
         }
         return view;
     }
     return nil;
 }
 
+#pragma  mark - help
 // section title
 - (NSString *)titleWithSection:(NSInteger)section{
-    return [[[self.dataArray objectAtIndex:section] allKeys] firstObject];
+    return [[[_dataArray objectAtIndex:section] allKeys] firstObject];
 }
 - (Resource *)dataWithIndexPath:(NSIndexPath *)indexPath{
-    NSDictionary<NSString*,NSArray<Resource*>*> * temp = [self.dataArray objectAtIndex:indexPath.section];
+    NSDictionary<NSString*,NSArray<Resource*>*> * temp = [_dataArray objectAtIndex:indexPath.section];
     return [[[temp allValues] firstObject] objectAtIndex:indexPath.row];
 }
-
 
 - (void)defaultRecommendataionWithCompletion:(void (^)(BOOL success))completion{
     [MusicKit.new.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
@@ -120,9 +114,9 @@
             }
 
             NSArray *resources = [self serializationJSON:subJSON];
-            NSDictionary *dict = @{title:resources};
-            [array addObject:dict];
+            [array addObject:@{title:resources}];
         }
+
         self.dataArray = array;
         if (completion) {
             completion(self.dataArray.count > 0);
