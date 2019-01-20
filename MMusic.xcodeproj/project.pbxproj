@@ -44,6 +44,10 @@
 		3B64B18321F077720029C32E /* ChartsSubContentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B18221F077720029C32E /* ChartsSubContentCell.m */; };
 		3B64B1C221F1F7230029C32E /* ChartsSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B1C121F1F7230029C32E /* ChartsSongCell.m */; };
 		3B64B1C521F1FDBF0029C32E /* ChartsMusicVideosCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B1C421F1FDBF0029C32E /* ChartsMusicVideosCell.m */; };
+		3B64B1FF21F460450029C32E /* SearchHistoryDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B1FE21F460440029C32E /* SearchHistoryDataSource.m */; };
+		3B64B20321F46B700029C32E /* SearchResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B20221F46B700029C32E /* SearchResultsController.m */; };
+		3B64B21421F46D5B0029C32E /* SearchResultsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B21321F46D5B0029C32E /* SearchResultsDataSource.m */; };
+		3B64B22521F49AFD0029C32E /* SearchHintsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B22421F49AFD0029C32E /* SearchHintsDataSource.m */; };
 		3B64D0EE20ECE76200D831FE /* MMHeartSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */; };
 		3B65B28B21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B28A21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m */; };
 		3B65B29F21E0A88700C2C388 /* ButtonStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B29E21E0A88700C2C388 /* ButtonStyleKit.m */; };
@@ -319,6 +323,14 @@
 		3B64B1C121F1F7230029C32E /* ChartsSongCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsSongCell.m; sourceTree = "<group>"; };
 		3B64B1C321F1FDBF0029C32E /* ChartsMusicVideosCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartsMusicVideosCell.h; sourceTree = "<group>"; };
 		3B64B1C421F1FDBF0029C32E /* ChartsMusicVideosCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChartsMusicVideosCell.m; sourceTree = "<group>"; };
+		3B64B1FD21F460440029C32E /* SearchHistoryDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchHistoryDataSource.h; sourceTree = "<group>"; };
+		3B64B1FE21F460440029C32E /* SearchHistoryDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchHistoryDataSource.m; sourceTree = "<group>"; };
+		3B64B20121F46B700029C32E /* SearchResultsController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchResultsController.h; sourceTree = "<group>"; };
+		3B64B20221F46B700029C32E /* SearchResultsController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResultsController.m; sourceTree = "<group>"; };
+		3B64B21221F46D5B0029C32E /* SearchResultsDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchResultsDataSource.h; sourceTree = "<group>"; };
+		3B64B21321F46D5B0029C32E /* SearchResultsDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResultsDataSource.m; sourceTree = "<group>"; };
+		3B64B22321F49AFD0029C32E /* SearchHintsDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchHintsDataSource.h; sourceTree = "<group>"; };
+		3B64B22421F49AFD0029C32E /* SearchHintsDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchHintsDataSource.m; sourceTree = "<group>"; };
 		3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMHeartSwitch.m; sourceTree = "<group>"; };
 		3B64D0ED20ECE76200D831FE /* MMHeartSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMHeartSwitch.h; sourceTree = "<group>"; };
 		3B65B28921DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+CreateURLRequest.h"; sourceTree = "<group>"; };
@@ -703,6 +715,19 @@
 			name = DataSource;
 			sourceTree = "<group>";
 		};
+		3B64B1EF21F45FC40029C32E /* DataSource */ = {
+			isa = PBXGroup;
+			children = (
+				3B64B1FD21F460440029C32E /* SearchHistoryDataSource.h */,
+				3B64B1FE21F460440029C32E /* SearchHistoryDataSource.m */,
+				3B64B21221F46D5B0029C32E /* SearchResultsDataSource.h */,
+				3B64B21321F46D5B0029C32E /* SearchResultsDataSource.m */,
+				3B64B22321F49AFD0029C32E /* SearchHintsDataSource.h */,
+				3B64B22421F49AFD0029C32E /* SearchHintsDataSource.m */,
+			);
+			name = DataSource;
+			sourceTree = "<group>";
+		};
 		3B65B29A21E0A84700C2C388 /* Button */ = {
 			isa = PBXGroup;
 			children = (
@@ -743,8 +768,12 @@
 		3B78629D2060F3CA00E9A26A /* Search */ = {
 			isa = PBXGroup;
 			children = (
+				3B7862A12060F8F700E9A26A /* View */,
+				3B64B1EF21F45FC40029C32E /* DataSource */,
 				3B4E3AD4208F46B90042498C /* MMSearchMainViewController.h */,
 				3B4E3AD5208F46B90042498C /* MMSearchMainViewController.m */,
+				3B64B20121F46B700029C32E /* SearchResultsController.h */,
+				3B64B20221F46B700029C32E /* SearchResultsController.m */,
 				3B6BE7EB21A945320004F3E5 /* MMSearchViewController.h */,
 				3B6BE7E921A945320004F3E5 /* MMSearchViewController.m */,
 				3B907FA621AA886A00B205BD /* MMSearchResultsViewController.h */,
@@ -753,12 +782,11 @@
 				3B907FB521AAB84300B205BD /* MMSearchContentViewController.m */,
 				3B6BE7E621A945320004F3E5 /* MMSearchViewControllerAnimation.h */,
 				3B6BE7E821A945320004F3E5 /* MMSearchViewControllerAnimation.m */,
-				3B7862A12060F8F700E9A26A /* Cell */,
 			);
 			name = Search;
 			sourceTree = "<group>";
 		};
-		3B7862A12060F8F700E9A26A /* Cell */ = {
+		3B7862A12060F8F700E9A26A /* View */ = {
 			isa = PBXGroup;
 			children = (
 				3B92AFA02181BFA60016CE46 /* ChartsMainCell.h */,
@@ -774,7 +802,7 @@
 				3B907FFB21AAE21200B205BD /* MMSearchContentMusicVideosCell.h */,
 				3B907FFC21AAE21200B205BD /* MMSearchContentMusicVideosCell.m */,
 			);
-			name = Cell;
+			name = View;
 			sourceTree = "<group>";
 		};
 		3B9AA85E1FB04B5700720085 = {
@@ -1447,8 +1475,10 @@
 				3BEB3D5F21D3B19400398A5B /* MMDetaiDataSource.m in Sources */,
 				3B9AA8EF1FB46F9300720085 /* Chart.m in Sources */,
 				3BAAE02A20B437FB00C82F4B /* ClassifyCell.m in Sources */,
+				3B64B22521F49AFD0029C32E /* SearchHintsDataSource.m in Sources */,
 				3B555EED20E0EDAF00AFF9A2 /* Library.m in Sources */,
 				3B9AA8FB1FB4769500720085 /* Playlist.m in Sources */,
+				3B64B21421F46D5B0029C32E /* SearchResultsDataSource.m in Sources */,
 				3B64B18021EF4E240029C32E /* ChartsSubContentDataSource.m in Sources */,
 				3B92AFA22181BFA60016CE46 /* ChartsMainCell.m in Sources */,
 				3BE2A23821985EAE00AEA486 /* Library+iCloud.m in Sources */,
@@ -1474,6 +1504,7 @@
 				3B6BE7A921A7F38A0004F3E5 /* RecommendationDataSource.m in Sources */,
 				3B4DDC8A219357DE00F70547 /* DataStore.m in Sources */,
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
+				3B64B1FF21F460450029C32E /* SearchHistoryDataSource.m in Sources */,
 				3B64B18321F077720029C32E /* ChartsSubContentCell.m in Sources */,
 				3B64B1C221F1F7230029C32E /* ChartsSongCell.m in Sources */,
 				3BE2A2522198DA7E00AEA486 /* UIImageView+Extension.m in Sources */,
@@ -1495,6 +1526,7 @@
 				3B4DDC5E2192C5D700F70547 /* MPMediaItemArtwork+Exchange.m in Sources */,
 				3B9AA8E91FB46D6100720085 /* Artist.m in Sources */,
 				3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */,
+				3B64B20321F46B700029C32E /* SearchResultsController.m in Sources */,
 				3B9AA8FE1FB478C700720085 /* PlayParameters.m in Sources */,
 				3B69896220A99DDC000C3403 /* LibrarySong.m in Sources */,
 				3B353F4921B14B4F0072C424 /* MMLibraryContentCell.m in Sources */,

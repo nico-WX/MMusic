@@ -45,10 +45,10 @@ extern NSString *const userTokenIssueNotification;
             }
             break;
         case 400:
+            [self showHUDToMainWindowFromText:@"400 请求错误"];
+            break;
         case 401:
             //开发者Token 问题
-            //Log(@"授权过期");
-
             [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenExpireNotification object:nil];
             [self showHUDToMainWindowFromText:@"开发者令牌授权过期"];
             break;
@@ -56,7 +56,6 @@ extern NSString *const userTokenIssueNotification;
             //userToken 问题
             [[NSNotificationCenter defaultCenter] postNotificationName:userTokenIssueNotification object:nil];
             [self showHUDToMainWindowFromText:@"用户令牌授权过期"];
-
             break;
 
         default:
