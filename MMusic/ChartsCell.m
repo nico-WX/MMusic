@@ -25,18 +25,19 @@ static NSString *const identifier = @"collectionView cell id";
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self =[super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         _titleLabel = [[UILabel alloc] init];
-        _showMoreButton = [[UIButton alloc] init];
+        _showAllButton = [[UIButton alloc] init];
 
         _layout = [[UICollectionViewFlowLayout alloc] init];
         [_layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
-        [_layout setMinimumLineSpacing:1];
+        [_layout setMinimumLineSpacing:6];
 
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
         [_collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
         [_collectionView setBackgroundColor:UIColor.whiteColor];
 
+
         [self.contentView addSubview:_titleLabel];
-        [self.contentView addSubview:_showMoreButton];
+        [self.contentView addSubview:_showAllButton];
         [self.contentView addSubview:_collectionView];
 
         // text set
@@ -44,7 +45,7 @@ static NSString *const identifier = @"collectionView cell id";
         UIFont *font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
         [_titleLabel setFont:font];
 
-        [_showMoreButton setTitleColor:MainColor forState:UIControlStateNormal];
+        [_showAllButton setTitleColor:MainColor forState:UIControlStateNormal];
     }
     return self;
 }
@@ -52,23 +53,22 @@ static NSString *const identifier = @"collectionView cell id";
 - (void)layoutSubviews{
     [super layoutSubviews];
 
-    UIEdgeInsets padding = UIEdgeInsetsMake(40, 0, 1, 0);
+    UIEdgeInsets padding = UIEdgeInsetsMake(40, 0, 1, 0); // 顶部40 留给title 与 "全部"按钮
     __weak typeof(self) weakSelf = self;
-
+    UIView *superView = self.contentView;
     [_collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(weakSelf).insets(padding);
+        make.edges.mas_equalTo(superView).insets(padding);
     }];
 
     [_titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(200);
         // 顶部空间Y轴居中布置
-        CGFloat centerY = CGRectGetMidY(self.contentView.bounds);
+        CGFloat centerY = CGRectGetMidY(weakSelf.contentView.bounds);
         centerY = (-centerY) + padding.top/2;
         make.centerY.mas_equalTo(centerY);
-
         make.left.mas_equalTo(weakSelf).inset(4);
     }];
-    [_showMoreButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [_showAllButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.right.mas_equalTo(weakSelf);
         make.width.mas_equalTo(100);
         make.bottom.mas_equalTo(weakSelf.collectionView.mas_top);
@@ -78,8 +78,8 @@ static NSString *const identifier = @"collectionView cell id";
     //不同的类型, 设置不同的大小与cell 类型
     Resource *resource = _chart.data.firstObject;
     if ([resource.type isEqualToString:@"songs"]) {
-        CGFloat h = CGRectGetHeight(_collectionView.bounds)/4;
-        CGFloat w = CGRectGetWidth(_collectionView.bounds) -8;
+        CGFloat h = CGRectGetHeight(_collectionView.bounds)/4; //每列4行
+        CGFloat w = CGRectGetWidth(_collectionView.bounds) -8; //
         [_layout setItemSize:CGSizeMake(w,h)];
         [_layout setMinimumInteritemSpacing:0];
         [_collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
@@ -94,6 +94,7 @@ static NSString *const identifier = @"collectionView cell id";
         CGFloat w = h-40; // -60
         [_layout setItemSize:CGSizeMake(w, h)];
     }
+
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -108,9 +109,9 @@ static NSString *const identifier = @"collectionView cell id";
         _chart = chart;
 
         [_titleLabel setText:chart.name];
-        [_showMoreButton setTitle:@"Show More" forState:UIControlStateNormal];
+        [_showAllButton setTitle:@"全部 >" forState:UIControlStateNormal];
         BOOL displayButton = chart.next ? NO : YES; //如果没有更多, 隐藏按钮
-        [_showMoreButton setHidden:displayButton];
+        [_showAllButton setHidden:displayButton];
 
         _contentDataSource = [[ChartsSubContentDataSource alloc] initWithChart:chart
                                                                 collectionView:_collectionView
@@ -121,7 +122,6 @@ static NSString *const identifier = @"collectionView cell id";
 
 #pragma mark -delegate
 - (void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
-    //[cell.contentView setBackgroundColor:UIColor.grayColor];
     if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
         ChartsSubContentCell *subCell = (ChartsSubContentCell*)cell;
         [subCell setResource:resource];

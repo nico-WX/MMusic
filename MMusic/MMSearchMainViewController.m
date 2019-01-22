@@ -73,7 +73,6 @@ static NSString *const identifier = @"cell identifier";
         NSLog(@"resTable");
     }
 
-
 }
 
 #pragma mark - getter / setter

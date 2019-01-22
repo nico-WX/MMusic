@@ -29,7 +29,6 @@
 @property(nonatomic, strong) UICollectionView *collectionView;
 //数据源
 @property(nonatomic, strong) RecommendationDataSource *recommendationData;
-
 //动画
 @property(nonatomic, strong) MMDetailPresentationController *presentationController;
 @property(nonatomic, strong) MMDetailPoppingAnimator *popupAnimator;
@@ -53,19 +52,16 @@ static NSString *const cellIdentifier = @"resourceCell";
                                                                         cellIdentifier:cellIdentifier
                                                                      sectionIdentifier:sectionIdentifier
                                                                               delegate:self];
-
-    //底部偏移量(底部浮动播放器窗口)
-    if ([self.tabBarController isKindOfClass:[MMTabBarController class]]) {
-        MMTabBarController *tabBarController = (MMTabBarController*)self.tabBarController;
-        CGFloat bottomInset = CGRectGetHeight(self.view.frame) - CGRectGetMinY(tabBarController.popFrame);
-        [self.collectionView setContentInset:UIEdgeInsetsMake(0, 0, bottomInset, 0)];
-    }
-
-    if ([self.navigationController.navigationBar isHidden]) {
-        [self.collectionView.mj_header setIgnoredScrollViewContentInsetTop:20];  //调整顶部距离
-    }
 }
 
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+
+    UIView *superView = self.view;
+    [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(superView);
+    }];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -84,14 +80,13 @@ static NSString *const cellIdentifier = @"resourceCell";
     }
 }
 
-
 #pragma mark - <UICollectionViewDelegate>
-// 选中,  呈现专辑或者播放列表 歌曲信息
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
     ResourceCell *cell = (ResourceCell*)[collectionView cellForItemAtIndexPath:indexPath];
     MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:cell.resource];
 
+    //显示动画
     [detail setDisMissDelegate:self];
     [detail setTransitioningDelegate:self];
     [detail setModalPresentationStyle:UIModalPresentationCustom];
@@ -130,10 +125,11 @@ static NSString *const cellIdentifier = @"resourceCell";
     if (!_collectionView) {
 
         UIEdgeInsets insets = UIEdgeInsetsMake(0, 8, 0, 8);
+        CGFloat spacing = insets.left;
 
         UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
+
         //两列
-        CGFloat spacing = 8.0f;
         CGFloat w = CGRectGetWidth(self.view.bounds); //(CGRectGetWidth(self.view.frame) - spacing*3)/2;
         w = (w - insets.left*3)/2;
         CGFloat h = w+30;
@@ -156,7 +152,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 
         [_collectionView setBackgroundColor:[UIColor whiteColor]];
         [_collectionView setDelegate: self];
-
+        [_collectionView setContentInset:UIEdgeInsetsMake(0, 0, PlayerPopSize.height, 0)];
     }
     return _collectionView;
 }

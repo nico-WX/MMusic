@@ -61,7 +61,7 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
         [self.searchBar setText:term];
         [self searchBarSearchButtonClicked:self.searchBar];
     }else{
-        NSLog(@"self.nav = %@",self.navigationController);
+
     }
 }
 
@@ -80,9 +80,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 }
 
 #pragma mark - UISearchBarDelegate
-//- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
-//    NSLog(@"begin editing");
-//}
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     [self.searchResultsView removeFromSuperview];
     if (self.hintsTableView.superview != self.view) {

@@ -17,7 +17,7 @@
 #import "ChartsViewController.h"
 
 @interface MMTabBarController ()
-@property(nonatomic, strong)UIViewController *popViewController;        //强引用
+@property(nonatomic, strong)UIViewController *popViewController;       
 @property(nonatomic, strong)UIVisualEffectView *visualEffectView;       //背景效果
 @property(nonatomic, strong)UIImpactFeedbackGenerator *impactFeedback;  //手势反馈
 @end
@@ -38,23 +38,28 @@
     //[self.tabBar setHidden:YES];
     [self.view setBackgroundColor:UIColor.whiteColor];
 
-    CGFloat w = CGRectGetWidth(self.view.bounds);
-    CGFloat h = 55.0f;
-    CGFloat x = 0;
-    CGFloat y = CGRectGetMinY(self.tabBar.frame) - h;
-    if ([self.tabBar isHidden]) {
-        y = CGRectGetMaxY(self.view.frame)-h;
-    }
+    _popFrame = ({
 
-    BOOL isiPhoneX = CGRectGetHeight([UIScreen mainScreen].bounds);
-    if ([self.tabBar isHidden] && isiPhoneX) {
-        y = CGRectGetMaxY(self.view.frame)-(h+34);
-    }
-    _popFrame = CGRectMake(x, y, w, h);
+        CGFloat w = PlayerPopSize.width;
+        CGFloat h = PlayerPopSize.height;
+        CGFloat x = 0;
+        CGFloat y = CGRectGetMinY(self.tabBar.frame) - h;
+        if ([self.tabBar isHidden]) {
+            y += CGRectGetHeight(self.tabBar.frame);
+
+            // 无Home 键 Y偏移 -34点
+            BOOL isiPhoneX = CGRectGetHeight([UIScreen mainScreen].bounds) > 812;
+            if (isiPhoneX) {
+                y -= 34;
+            }
+        }
+        CGRectMake(x, y, w, h);
+    });
+
+    
 
     // 添加效果视图
     [self.view addSubview:self.visualEffectView];
-    // 添加播放器视图到 效果视图中
     [self addPopViewController:[NowPlayingViewController sharePlayerViewController]];
 
     //安装手势
@@ -63,7 +68,7 @@
     [self setupChildViewController];
 }
 
-#pragma  mark - helpe
+#pragma  mark - help
 
 - (void)setupGesture{
     UISwipeGestureRecognizer *rightSwipe = [UISwipeGestureRecognizer new];
@@ -91,6 +96,7 @@
 }
 
 - (void)setupChildViewController{
+
     //今日推荐
     RecommendationViewController *todayVC = [[RecommendationViewController alloc] init];
     [todayVC setTitle:@"今日推荐"];
@@ -174,12 +180,8 @@
 - (void)poppingViewController:(BOOL)popping{
     [self.impactFeedback impactOccurred];
 
-    CGRect newFrame;
-    if (popping) {
-        newFrame = [[UIScreen mainScreen] bounds];
-    }else{
-        newFrame = self.popFrame;
-    }
+    //当前状态 frame
+    CGRect newFrame = popping ? [UIScreen mainScreen].bounds : _popFrame;
 
     [UIView animateWithDuration:0.8
                           delay:0.0
@@ -187,14 +189,13 @@
           initialSpringVelocity:0.1
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
-
         [self.visualEffectView setFrame:newFrame];
     } completion:nil];
 }
 
 - (void)addPopViewController:(UIViewController *)popViewController{
 
-    self.popViewController = popViewController; // 持有该视图控制器
+    self.popViewController = popViewController;
     [self.visualEffectView.contentView addSubview:popViewController.view];
 
     //布局
