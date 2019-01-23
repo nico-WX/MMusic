@@ -7,6 +7,8 @@
 //
 
 #import "SearchResultsController.h"
+#import "SearchResultsCell.h"
+#import "SearchResultsSectionView.h"
 
 #import "SearchHintsDataSource.h"
 #import "SearchResultsDataSource.h"
@@ -44,8 +46,13 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-    [_searchResultsView setFrame:self.view.bounds];
-    [_hintsTableView setFrame:self.view.bounds];
+
+    CGRect frame = self.view.bounds;
+    frame.origin.y = CGRectGetMaxY(self.searchBar.frame);
+    frame.size.height -= frame.origin.y;
+
+    [self.searchResultsView setFrame:frame];
+    [self.hintsTableView setFrame:frame];
 }
 
 
@@ -54,6 +61,7 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     if (!_hintsTableView) {
         _hintsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_hintsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:hintsIdentifier];
+        //[_hintsTableView registerClass:[UILabel class] forHeaderFooterViewReuseIdentifier:hintsIdentifier];
         [_hintsTableView setDelegate:self];
     }
     return _hintsTableView;
@@ -61,7 +69,9 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 - (UITableView *)searchResultsView{
     if (!_searchResultsView) {
         _searchResultsView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        [_searchResultsView registerClass:[UITableViewCell class] forCellReuseIdentifier:resultsIdentifier];
+        [_searchResultsView registerClass:[SearchResultsCell class] forCellReuseIdentifier:resultsIdentifier];
+        //[_searchResultsView registerClass:[SearchResultsSectionView class] forHeaderFooterViewReuseIdentifier:resultsSectionIdentifier];
+        [_searchResultsView setRowHeight:55];
         //代理在主搜索视图中
     }
     return _searchResultsView;
@@ -86,6 +96,20 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
         [self.searchBar.delegate searchBarSearchButtonClicked:self.searchBar];
     }
 }
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    if (tableView == self.searchResultsView) {
+        SearchResultsSectionView *sectionView = [[SearchResultsSectionView alloc] initWithFrame:CGRectMake(0, 0, 55, 414)];
+        return sectionView;
+        //return [tableView dequeueReusableHeaderFooterViewWithIdentifier:resultsSectionIdentifier];
+    }
+    return nil;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    if (tableView == self.searchResultsView) {
+        return 60;
+    }
+    return 0;
+}
 
 #pragma mark - SearchHintsDataSourceDelegate
 - (void)configureCell:(UITableViewCell *)cell hintsString:(NSString *)term{
@@ -94,7 +118,10 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 
 #pragma mark - SearchResultsDataSourceDelegate;
 -(void)configureCell:(UITableViewCell *)cell object:(Resource *)resource{
-    [cell.textLabel setText:[resource.attributes valueForKey:@"name"]];
+
+    if ([cell isKindOfClass:[SearchResultsCell class]]) {
+        [((SearchResultsCell*)cell) setResource:resource];
+    }
 }
 
 #pragma mark - UISearchResultsUpdating

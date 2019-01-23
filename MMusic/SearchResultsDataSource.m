@@ -72,6 +72,7 @@
 }
 
 #pragma mark - UITableViewDataSource
+
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return [self.searchResults count];
 }
@@ -86,8 +87,11 @@
         Resource *res = [temp.allValues.firstObject.data objectAtIndex:indexPath.row];
         [_delegate configureCell:cell object:res];
     }
-
     return cell;
 }
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+//    NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:section];
+//    return [dict allKeys].firstObject;
+//}
 
 @end
