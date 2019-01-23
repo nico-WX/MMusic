@@ -13,7 +13,7 @@
 @property(nonatomic, weak)UICollectionView *collectionView;
 @property(nonatomic, copy)NSString *identifier;
 @property(nonatomic, weak)id<ChartsSubContentDataSourceDelegate> delegate;
-@property(nonatomic, strong)Chart *chart;
+
 @end
 
 @implementation ChartsSubContentDataSource

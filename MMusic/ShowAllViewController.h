@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
+@class Chart;
 
 @interface ShowAllViewController : UIViewController
 
+- (instancetype)initWithChart:(Chart*)chart;
 @end
 
 NS_ASSUME_NONNULL_END

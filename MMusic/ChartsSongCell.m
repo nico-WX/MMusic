@@ -8,10 +8,15 @@
 
 #import "ChartsSongCell.h"
 #import "Resource.h"
+#import "Song.h"
+
 #import <Masonry.h>
+#import <NAKPlaybackIndicatorView.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface ChartsSongCell ()
 @property(nonatomic, strong)UIImageView *lineView;
+@property(nonatomic, strong)NAKPlaybackIndicatorView *playbackIndicatorView;
 @end
 
 @implementation ChartsSongCell
@@ -21,7 +26,20 @@
         _lineView = [[UIImageView alloc] initWithFrame:CGRectZero];
         [_lineView setBackgroundColor:UIColor.lightGrayColor];
         [_lineView setAlpha:0.3]; //线条视觉更细
+
+        NAKPlaybackIndicatorViewStyle *style = [NAKPlaybackIndicatorViewStyle iOS10Style];
+        _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
+
+        [self.contentView addSubview:_playbackIndicatorView];
         [self.contentView addSubview:_lineView];
+
+        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        [center addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            [self stateForSong:[Song instanceWithResource:self.resource]];
+        }];
+        [center addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            [self stateForSong:[Song instanceWithResource:self.resource]];
+        }];
     }
     return self;
 }
@@ -45,9 +63,14 @@
         CGFloat w = CGRectGetHeight(superView.bounds)-(insets.top+insets.bottom);
         make.width.mas_equalTo(w);
     }];
+
+    [_playbackIndicatorView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(weakSelf.imageView);
+    }];
+
+
     [self.titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(superView.mas_centerY);
-        //make.top.mas_equalTo(superView).inset(insets.top);
         make.left.mas_equalTo(weakSelf.imageView.mas_right).inset(insets.left);
     }];
     [self.subTitleLable mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -55,11 +78,50 @@
         make.left.mas_equalTo(weakSelf.imageView.mas_right).inset(insets.left);
     }];
 
+//    CGRect bgBounds = self.contentView.bounds;
+//    bgBounds.size.width  -= insets.left *2;
+//    bgBounds.size.height -= insets.top *2;
+//    UIView *bgView = [[UIView alloc] initWithFrame:bgBounds];
+//    [bgView setBackgroundColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1]];
+//    [self setSelectedBackgroundView:bgView];
 }
 
+- (void)stateForSong:(Song*)song {
+
+    BOOL isNowPlaying = [song isEqualToMediaItem:MainPlayer.nowPlayingItem];
+
+    [UIView animateWithDuration:1 animations:^{
+        [self.imageView setAlpha:!isNowPlaying];
+    } completion:^(BOOL finished) {
+        [self.imageView setHighlighted:isNowPlaying];
+    }];
+
+    //[self.imageView setHidden:isNowPlaying]; //item 相等, 显示播放指示视图, 隐藏imageview
+
+    if (isNowPlaying) {
+        switch (MainPlayer.playbackState) {
+            case MPMusicPlaybackStatePlaying:
+            case MPMusicPlaybackStateSeekingForward:
+            case MPMusicPlaybackStateSeekingBackward:
+                [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
+                break;
+
+            default:
+                [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
+                break;
+        }
+    }else{
+        [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
+    }
+
+    [self setNeedsDisplay];
+}
+
+#pragma mark - setter/getter
 - (void)setResource:(Resource *)resource{
     [super setResource:resource];
 
+    [self stateForSong:[Song instanceWithResource:resource]];
     if ([resource.type isEqualToString:@"songs"]) {
         [self.subTitleLable setText:[resource.attributes valueForKey:@"artistName"]];
     }

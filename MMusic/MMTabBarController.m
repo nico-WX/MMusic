@@ -12,7 +12,7 @@
 //vc
 #import "NowPlayingViewController.h"
 #import "RecommendationViewController.h"
-#import "MMSearchMainViewController.h"
+#import "SearchViewController.h"
 #import "MyMusicViewController.h"
 #import "ChartsViewController.h"
 
@@ -56,8 +56,6 @@
         CGRectMake(x, y, w, h);
     });
 
-    
-
     // 添加效果视图
     [self.view addSubview:self.visualEffectView];
     [self addPopViewController:[NowPlayingViewController sharePlayerViewController]];
@@ -68,7 +66,17 @@
     [self setupChildViewController];
 }
 
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+
+    UIView *transition = [self.view.subviews objectAtIndex:0];
+    CGRect frame = transition.frame;
+    frame.size.height -= _popFrame.size.height;
+    [transition setFrame:frame];
+}
+
 #pragma  mark - help
+
 
 - (void)setupGesture{
     UISwipeGestureRecognizer *rightSwipe = [UISwipeGestureRecognizer new];
@@ -108,7 +116,7 @@
     UINavigationController *chartsNav = [[UINavigationController alloc] initWithRootViewController:chartsViewController];
 
     //搜索
-    MMSearchMainViewController *searchViewController = [[MMSearchMainViewController alloc] init];
+    SearchViewController *searchViewController = [[SearchViewController alloc] init];
     [searchViewController setTitle:@"搜索"];
     UINavigationController *searchNav = [[UINavigationController alloc] initWithRootViewController:searchViewController];
 

@@ -34,7 +34,7 @@ static NSString *const identifier = @"collectionView cell id";
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
         [_collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
         [_collectionView setBackgroundColor:UIColor.whiteColor];
-
+        [_collectionView setContentInset:UIEdgeInsetsMake(0, 8, 0, 8)];
 
         [self.contentView addSubview:_titleLabel];
         [self.contentView addSubview:_showAllButton];
@@ -42,10 +42,10 @@ static NSString *const identifier = @"collectionView cell id";
 
         // text set
         [_titleLabel setTextColor:[UIColor darkTextColor]];
-        UIFont *font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
-        [_titleLabel setFont:font];
+        [_titleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:22.0]];
 
         [_showAllButton setTitleColor:MainColor forState:UIControlStateNormal];
+        [_showAllButton setTitle:@"全部 >" forState:UIControlStateNormal];
     }
     return self;
 }
@@ -66,7 +66,7 @@ static NSString *const identifier = @"collectionView cell id";
         CGFloat centerY = CGRectGetMidY(weakSelf.contentView.bounds);
         centerY = (-centerY) + padding.top/2;
         make.centerY.mas_equalTo(centerY);
-        make.left.mas_equalTo(weakSelf).inset(4);
+        make.left.mas_equalTo(weakSelf).inset(8);
     }];
     [_showAllButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.right.mas_equalTo(weakSelf);
@@ -84,17 +84,12 @@ static NSString *const identifier = @"collectionView cell id";
         [_layout setMinimumInteritemSpacing:0];
         [_collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
         [_collectionView setPagingEnabled:YES];
-        
-    }else if ([resource.type isEqualToString:@"music-videos"]) {
-        CGFloat w = CGRectGetWidth(_collectionView.bounds) * 0.8;
-        CGFloat h = CGRectGetHeight(_collectionView.bounds);//w * 0.8;
-        [_layout setItemSize:CGSizeMake(w, h)];
+
     }else{
         CGFloat h = CGRectGetHeight(_collectionView.bounds);
         CGFloat w = h-40; // -60
         [_layout setItemSize:CGSizeMake(w, h)];
     }
-
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -109,10 +104,8 @@ static NSString *const identifier = @"collectionView cell id";
         _chart = chart;
 
         [_titleLabel setText:chart.name];
-        [_showAllButton setTitle:@"全部 >" forState:UIControlStateNormal];
         BOOL displayButton = chart.next ? NO : YES; //如果没有更多, 隐藏按钮
         [_showAllButton setHidden:displayButton];
-
         _contentDataSource = [[ChartsSubContentDataSource alloc] initWithChart:chart
                                                                 collectionView:_collectionView
                                                                reuseIdentifier:identifier
@@ -127,6 +120,5 @@ static NSString *const identifier = @"collectionView cell id";
         [subCell setResource:resource];
     }
 }
-
 
 @end

@@ -12,20 +12,19 @@
 #import "SearchResultsDataSource.h"
 #import "Resource.h"
 
+
 @interface SearchResultsController ()<UISearchBarDelegate,UITableViewDelegate,SearchHintsDataSourceDelegate,SearchResultsDataSourceDelegate>
-@property(nonatomic, strong) UISearchBar *searchBar;
-
+@property(nonatomic,strong) UISearchBar *searchBar;
 @property(nonatomic,strong) UITableView *hintsTableView;
-
 
 @property(nonatomic,strong) SearchHintsDataSource *hintsDataSource;
 @property(nonatomic,strong) SearchResultsDataSource *resultsDataSource;
 @end
 
-
 static NSString *const hintsIdentifier = @"hints cell identifier";
 static NSString *const resultsIdentifier = @"search results identifier";
 static NSString *const resultsSectionIdentifier = @"search secetion identifier";
+
 @implementation SearchResultsController
 
 @synthesize searchResultsView = _searchResultsView;
@@ -45,23 +44,46 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-    CGFloat y =  CGRectGetMaxY(self.searchBar.frame);
-    CGRect frame = self.view.bounds;
-    frame.origin.y = y;
-    [self.hintsTableView setFrame:frame];
-    [self.searchResultsView setFrame:frame];
+    [_searchResultsView setFrame:self.view.bounds];
+    [_hintsTableView setFrame:self.view.bounds];
 }
+
+
+#pragma mark - getter / setter
+-(UITableView *)hintsTableView{
+    if (!_hintsTableView) {
+        _hintsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        [_hintsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:hintsIdentifier];
+        [_hintsTableView setDelegate:self];
+    }
+    return _hintsTableView;
+}
+- (UITableView *)searchResultsView{
+    if (!_searchResultsView) {
+        _searchResultsView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        [_searchResultsView registerClass:[UITableViewCell class] forCellReuseIdentifier:resultsIdentifier];
+        //代理在主搜索视图中
+    }
+    return _searchResultsView;
+}
+
+// set
+- (void)setSearchBar:(UISearchBar *)searchBar{
+    if (_searchBar != searchBar) {
+        _searchBar = searchBar;
+        [_searchBar setDelegate:self];
+    }
+}
+
+#pragma mark  - ********************Delegate
 
 #pragma mark - UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-
     if (tableView == self.hintsTableView) {
         NSString *term = cell.textLabel.text;
         [self.searchBar setText:term];
-        [self searchBarSearchButtonClicked:self.searchBar];
-    }else{
-
+        [self.searchBar.delegate searchBarSearchButtonClicked:self.searchBar];
     }
 }
 
@@ -69,6 +91,7 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 - (void)configureCell:(UITableViewCell *)cell hintsString:(NSString *)term{
     [cell.textLabel setText:term];
 }
+
 #pragma mark - SearchResultsDataSourceDelegate;
 -(void)configureCell:(UITableViewCell *)cell object:(Resource *)resource{
     [cell.textLabel setText:[resource.attributes valueForKey:@"name"]];
@@ -82,47 +105,15 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 #pragma mark - UISearchBarDelegate
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     [self.searchResultsView removeFromSuperview];
-    if (self.hintsTableView.superview != self.view) {
-        [self.view addSubview:self.hintsTableView];
-    }
-
+    [self.view addSubview:self.hintsTableView];
     [self.hintsDataSource searchHintsWithTerm:searchText];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
     [self.hintsTableView removeFromSuperview];
-    if (self.searchResultsView.superview != self.view) {
-        [self.view addSubview:self.searchResultsView];
-    }
+    [self.view addSubview:self.searchResultsView];
     [self.resultsDataSource searchTerm:searchBar.text];
-    [self.searchBar resignFirstResponder];
-}
-
-
-#pragma mark - getter / setter
--(UITableView *)hintsTableView{
-    if (!_hintsTableView) {
-        _hintsTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        [_hintsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:hintsIdentifier];
-        [_hintsTableView setDelegate:self];
-    }
-    return _hintsTableView;
-}
-- (UITableView *)searchResultsView{
-    if (!_searchResultsView) {
-        _searchResultsView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-        [_searchResultsView registerClass:[UITableViewCell class] forCellReuseIdentifier:resultsIdentifier];
-        [_searchResultsView setDelegate:self];
-    }
-    return _searchResultsView;
-}
-
-// set
-- (void)setSearchBar:(UISearchBar *)searchBar{
-    if (_searchBar != searchBar) {
-        _searchBar = searchBar;
-        [_searchBar setDelegate:self];
-    }
+    [searchBar resignFirstResponder];
 }
 
 @end

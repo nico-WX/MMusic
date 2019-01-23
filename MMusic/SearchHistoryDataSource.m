@@ -68,7 +68,8 @@ static NSString *const _historyKey = @"search history key";
     if (!_termList) {
          _termList = [[NSUserDefaults standardUserDefaults] valueForKey:_historyKey];
         if (!_termList) {
-            _termList = [NSArray array];
+            _termList = @[@"A",@"B",@"C",@"D",@"E",@"F"];
+            //_termList = [NSArray array];
         }
     }
 

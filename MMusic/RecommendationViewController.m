@@ -130,7 +130,7 @@ static NSString *const cellIdentifier = @"resourceCell";
         UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
 
         //两列
-        CGFloat w = CGRectGetWidth(self.view.bounds); //(CGRectGetWidth(self.view.frame) - spacing*3)/2;
+        CGFloat w = CGRectGetWidth(self.view.bounds);
         w = (w - insets.left*3)/2;
         CGFloat h = w+30;
         CGSize itemSize = CGSizeMake(w, h);
@@ -152,7 +152,6 @@ static NSString *const cellIdentifier = @"resourceCell";
 
         [_collectionView setBackgroundColor:[UIColor whiteColor]];
         [_collectionView setDelegate: self];
-        [_collectionView setContentInset:UIEdgeInsetsMake(0, 0, PlayerPopSize.height, 0)];
     }
     return _collectionView;
 }

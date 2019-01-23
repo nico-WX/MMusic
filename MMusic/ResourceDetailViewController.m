@@ -60,7 +60,11 @@ static NSString *const identifier = @"cell identifier";
                                                                  resource:self.resource
                                                                  delegate:self];
 }
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
 
+    [_tableView setFrame:self.view.bounds];
+}
 
 #pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -79,7 +83,7 @@ static NSString *const identifier = @"cell identifier";
 #pragma mark - settter/gettter
 - (UITableView *)tableView{
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_tableView registerClass:[ResourceDetailSongCell class] forCellReuseIdentifier:identifier];
         [_tableView setRowHeight:55];
         [_tableView setDelegate:self];

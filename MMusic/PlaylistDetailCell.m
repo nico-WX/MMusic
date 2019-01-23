@@ -97,10 +97,15 @@
 
 
 - (void)stateForSong:(Song*)song {
-    if ([song isEqualToMediaItem:MainPlayer.nowPlayingItem]) {
-        [_artworkView setHidden:YES];
+
+    BOOL isNowPlaying = [song isEqualToMediaItem:MainPlayer.nowPlayingItem];
+    [_artworkView setHidden:isNowPlaying]; //item 相等, 显示播放指示视图, 隐藏imageview
+
+    if (isNowPlaying) {
         switch (MainPlayer.playbackState) {
             case MPMusicPlaybackStatePlaying:
+            case MPMusicPlaybackStateSeekingForward:
+            case MPMusicPlaybackStateSeekingBackward:
                 [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
                 break;
 
@@ -109,9 +114,9 @@
                 break;
         }
     }else{
-        [_artworkView setHidden:NO];
         [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
     }
+
     [self setNeedsDisplay];
 }
 

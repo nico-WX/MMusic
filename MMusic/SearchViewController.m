@@ -1,5 +1,5 @@
 //
-//  MMSearchMainViewController.m
+//  SearchViewController.m
 //  MMusic
 //
 //  Copyright © 2018年 com.😈. All rights reserved.
@@ -7,17 +7,16 @@
 #import <Masonry.h>
 #import <MJRefresh.h>
 
-#import "MMSearchMainViewController.h"
-#import "MMSearchViewController.h"
-#import "MMSearchViewControllerAnimation.h"
-#import "MMSearchResultsViewController.h"
-#import "MMTabBarController.h"
-
+#import "SearchViewController.h"
 #import "SearchResultsController.h"
+
 #import "SearchHistoryDataSource.h"
 
+//实现代理分类
+@interface SearchViewController (Delegate)<UITableViewDelegate,SearchHistoryDataSourceDelegate>
+@end
 
-@interface MMSearchMainViewController ()<UITableViewDelegate,MMSearchViewControllerDelegate,UIViewControllerTransitioningDelegate,SearchHistoryDataSourceDelegate>
+@interface SearchViewController ()
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) UISearchController *searchController;
 @property(nonatomic, strong) SearchHistoryDataSource *searchHistoryDataSource;
@@ -25,7 +24,7 @@
 @end
 
 static NSString *const identifier = @"cell identifier";
-@implementation MMSearchMainViewController
+@implementation SearchViewController
 
 
 - (void)viewDidLoad {
@@ -33,17 +32,24 @@ static NSString *const identifier = @"cell identifier";
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
 
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:identifier];
-    [self.tableView setDelegate:self];
     [self.view addSubview:self.tableView];
-
-    self.tableView.tableHeaderView = self.searchController.searchBar;
-    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    //[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
     self.searchHistoryDataSource = [[SearchHistoryDataSource alloc] initWithTableView:self.tableView
                                                                            identifier:identifier
                                                                              delegate:self];
+
+    //[self.navigationController.navigationBar setPrefersLargeTitles:YES];
+    //[self.navigationItem setSearchController:self.searchController];
+    //[self.navigationItem setHidesSearchBarWhenScrolling:NO];
+
+    [self.tableView setTableHeaderView:self.searchController.searchBar];
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+
+    [_tableView setFrame:self.view.bounds];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -51,7 +57,31 @@ static NSString *const identifier = @"cell identifier";
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - getter / setter
+-(UITableView *)tableView{
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:identifier];
+        [_tableView setDelegate:self];
+    }
+    return _tableView;
+}
 
+- (UISearchController *)searchController{
+    if (!_searchController) {
+        SearchResultsController *vc = [[SearchResultsController alloc] init];
+        [vc.searchResultsView setDelegate:self]; //获取选中的结果,入栈显示
+
+        _searchController = [[UISearchController alloc] initWithSearchResultsController:vc];
+        [_searchController setSearchResultsUpdater:vc];
+    }
+    return _searchController;
+}
+
+@end
+
+
+@implementation SearchViewController (Delegate)
 
 #pragma mark SearchHistoryDataSourceDelegate
 -(void)configureCell:(UITableViewCell *)cell object:(nonnull NSString *)obj{
@@ -67,23 +97,11 @@ static NSString *const identifier = @"cell identifier";
         UISearchBar *searchBar = self.searchController.searchBar;
         [searchBar setText:term];
         [searchBar.delegate searchBarSearchButtonClicked:searchBar];
-        //[self.searchController.searchBar setText:term];
-        //[self.searchController.searchBar becomeFirstResponder];
     }else{
-        NSLog(@"resTable");
+        NSLog(@"res");
+    
     }
 
-}
-
-#pragma mark - getter / setter
-- (UISearchController *)searchController{
-    if (!_searchController) {
-        SearchResultsController *vc = [[SearchResultsController alloc] init];
-        _searchController = [[UISearchController alloc] initWithSearchResultsController:vc];
-        [_searchController setSearchResultsUpdater:vc];
-        [_searchController setDelegate:vc];
-    }
-    return _searchController;
 }
 
 @end

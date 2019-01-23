@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface ChartsSubContentDataSource : NSObject
+@property(nonatomic, strong, readonly)Chart *chart;
 
 - (instancetype)initWithChart:(Chart*)chart
                collectionView:(UICollectionView*)collectionView

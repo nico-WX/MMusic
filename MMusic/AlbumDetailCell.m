@@ -84,8 +84,11 @@
 
 
 - (void)stateForSong:(Song*)song {
-    if ([song isEqualToMediaItem:MainPlayer.nowPlayingItem]) {
-        [_indexLabel setHidden:YES];
+
+    BOOL isNowPlaying = [song isEqualToMediaItem:MainPlayer.nowPlayingItem];
+    [_indexLabel setHidden:isNowPlaying];
+
+    if (isNowPlaying) {
         switch (MainPlayer.playbackState) {
             case MPMusicPlaybackStatePlaying:
                 [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
@@ -96,7 +99,6 @@
                 break;
         }
     }else{
-        [_indexLabel setHidden:NO];
         [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
     }
     [self setNeedsDisplay];

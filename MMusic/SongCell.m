@@ -18,11 +18,10 @@
 @interface SongCell()
 
 @property(nonatomic, strong) NAKPlaybackIndicatorView   *playbackIndicatorView;
-
-@property(nonatomic, strong) UILabel          *nameLabel;
-@property(nonatomic, strong) UILabel          *artistLabel;
-@property(nonatomic, strong) UILabel          *durationLabel;
-@property(nonatomic, strong) UILabel          *numberLabel;
+@property(nonatomic, strong) UILabel *nameLabel;
+@property(nonatomic, strong) UILabel *artistLabel;
+@property(nonatomic, strong) UILabel *durationLabel;
+@property(nonatomic, strong) UILabel *numberLabel;
 @end
 
 @implementation SongCell
@@ -35,17 +34,20 @@
         _playbackIndicatorView = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
 
         _numberLabel = UILabel.new;
+        _nameLabel = UILabel.new;
+        _artistLabel = UILabel.new;
+        _durationLabel = UILabel.new;
+
+        // set
         [_numberLabel setTextAlignment:NSTextAlignmentCenter];
         [_numberLabel setFont:[UIFont boldSystemFontOfSize:16]];
+        [_numberLabel setTextColor:UIColor.grayColor];
 
-        _nameLabel = UILabel.new;
         [_nameLabel setAdjustsFontSizeToFitWidth:YES];
 
-        _artistLabel = UILabel.new;
         [_artistLabel setFont:[UIFont systemFontOfSize:12]];
         [_artistLabel setTextColor:[UIColor grayColor]];
 
-        _durationLabel = UILabel.new;
         [_durationLabel setTextAlignment:NSTextAlignmentCenter];
         [_durationLabel setFont:[UIFont italicSystemFontOfSize:12]];
 
@@ -55,7 +57,6 @@
         [self.contentView addSubview:_artistLabel];
         [self.contentView addSubview:_durationLabel];
 
-        //[self setupLayout];
 
         //播放项目改变  修改播放指示cell
         [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
@@ -74,28 +75,15 @@
 }
 
 
--(void)prepareForReuse{
-    [super prepareForReuse];
-    _numberLabel.text = nil;
-    _nameLabel.text = nil;
-    _artistLabel.text = nil;
-    _durationLabel.text = nil;
-    _song = nil;
-
-}
-
 - (void)layoutSubviews{
     [super layoutSubviews];
 
     UIEdgeInsets padding = UIEdgeInsetsMake(2, 2, 2, 2);
-    NSUInteger timer = 3;
     UIView *superview = self.contentView;
     __weak typeof(self) weakSelf = self;
 
     [self.numberLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superview).offset(padding.top);
-        make.left.mas_equalTo(superview).offset(padding.left);
-        make.bottom.mas_equalTo(superview).offset(-padding.bottom);
+        make.top.left.bottom.mas_equalTo(superview).insets(padding);
         CGFloat w = CGRectGetHeight(superview.bounds)-(padding.top+padding.bottom);
         make.width.mas_equalTo(w);
     }];
@@ -105,28 +93,19 @@
     }];
 
     [self.durationLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superview.mas_top);
-        make.right.mas_equalTo(superview.mas_right);
-        make.bottom.mas_equalTo(superview.mas_bottom);
+        make.top.right.bottom.mas_equalTo(superview).insets(padding);
         make.width.mas_equalTo(CGRectGetHeight(superview.frame));
     }];
 
     [self.nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(weakSelf.numberLabel.mas_right).offset(padding.left*timer);
-        make.right.mas_equalTo(weakSelf.durationLabel.mas_left).offset(-padding.right);
-        make.bottom.mas_equalTo(superview).offset(-CGRectGetMidY(superview.bounds));
-        make.top.lessThanOrEqualTo(superview).offset(padding.top);
-
-//        make.top.mas_equalTo(superview.mas_top);
-//        CGFloat h = CGRectGetHeight(superview.frame)*0.6;
-//        make.height.mas_equalTo(h);
+        make.bottom.mas_equalTo(superview.mas_centerY);
+        make.left.mas_equalTo(weakSelf.numberLabel.mas_right).inset(padding.left*3);
+        make.right.mas_equalTo(weakSelf.durationLabel.mas_left).inset(padding.right);
     }];
 
     [self.artistLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.nameLabel.mas_bottom);
-        make.left.mas_equalTo(weakSelf.nameLabel.mas_left);
-        make.right.mas_equalTo(weakSelf.nameLabel.mas_right);
-        make.bottom.mas_equalTo(superview.mas_bottom).mas_offset(-padding.bottom);
+        make.top.mas_equalTo(superview.mas_centerY);
+        make.left.right.mas_equalTo(weakSelf.nameLabel);
     }];
 }
 
@@ -152,8 +131,10 @@
 
 - (void)stateForSong:(Song*)song {
 
-    if ([song isEqualToMediaItem:MainPlayer.nowPlayingItem]) {
-        [_numberLabel setHidden:YES];
+    BOOL isNowPlaying = [song isEqualToMediaItem:MainPlayer.nowPlayingItem];
+    [_numberLabel setHidden:isNowPlaying];
+
+    if (isNowPlaying) {
         switch (MainPlayer.playbackState) {
             case MPMusicPlaybackStatePlaying:
                 [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
@@ -164,7 +145,6 @@
                 break;
         }
     }else{
-        [_numberLabel setHidden:NO];
         [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
     }
     [self setNeedsDisplay];

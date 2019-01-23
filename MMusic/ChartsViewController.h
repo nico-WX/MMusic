@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ChartsViewController : UIViewController<UICollectionViewDelegate>
+@interface ChartsViewController : UIViewController
 @end
 
 NS_ASSUME_NONNULL_END
