@@ -117,7 +117,7 @@ static AuthManager *_instance;
     if (!_developerToken) {
         _developerToken = [[NSUserDefaults standardUserDefaults] objectForKey:k_developerTokenKey];
         #warning The token is set manually
-         _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTQ2NjAzODAwLCJleHAiOjE1NjIxNTU4MDB9.jmKfXTaCqwJrB-d0-7No5v539XHAx8aZ3tsaBBY4S9lmC5fL75q8JQWHysRnhdbmU8tilhW5nw587EtIP4L2gw";
+         _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTQ3OTg5MDI4LCJleHAiOjE1NjM1NDEwMjh9.WMdZ1XSwfm2xG27CY9KbdiZXKKaQzfjl5YPUL_kZW46aoGDZ8H24k6mtGlqK616XUkbW1WqQYLTlBQuEt4t7tQ";
     }
     return _developerToken;
 }

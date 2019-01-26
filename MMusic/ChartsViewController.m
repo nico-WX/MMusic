@@ -12,6 +12,8 @@
 #import "ChartsCell.h"
 #import "ChartsDataSource.h"
 
+#import "ResourceDetailViewController.h"
+
 @interface ChartsViewController ()<UITableViewDelegate,ChartsDataSourceDelegate,UICollectionViewDelegate>
 @property(nonatomic, strong)UITableView *tableView;
 @property(nonatomic, strong)ChartsDataSource *dataSource;
@@ -27,7 +29,6 @@ static NSString *const identifier = @"cell reuseIdentifier";
     [self.view addSubview:self.tableView];
     _dataSource =[[ChartsDataSource alloc] initWithTableView:_tableView reuseIdentifier:identifier delegate:self];
 }
-
 
 #pragma mark - getter
 - (UITableView *)tableView{
@@ -59,7 +60,8 @@ static NSString *const identifier = @"cell reuseIdentifier";
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
     if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
         Resource *resource = [((ChartsSubContentCell*)cell) resource];
-        MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:resource];
+        ResourceDetailViewController *detail = [[ResourceDetailViewController alloc] initWithResource:resource];
+        //MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:resource];
         [self.navigationController pushViewController:detail animated:YES];
     }
 }

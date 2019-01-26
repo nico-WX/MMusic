@@ -25,6 +25,9 @@
 #import "MusicKit.h"
 #import "UIControl+MMActionBlock.h"
 
+//播放器大小
+#define PlayerPopSize CGSizeMake(CGRectGetWidth([UIScreen mainScreen].bounds), 55.0f)
+
 //NSCachesDirectory
 //NSLibraryDirectory
 /**Artwork 目录*/

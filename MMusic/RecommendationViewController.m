@@ -4,7 +4,7 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <JGProgressHUD.h>
+//#import <JGProgressHUD.h>
 #import <MJRefresh.h>
 #import <Masonry.h>
 
@@ -29,7 +29,6 @@
 @property(nonatomic, strong) UICollectionView *collectionView;
 //数据源
 @property(nonatomic, strong) RecommendationDataSource *recommendationData;
-
 //动画
 @property(nonatomic, strong) MMDetailPresentationController *presentationController;
 @property(nonatomic, strong) MMDetailPoppingAnimator *popupAnimator;
@@ -49,20 +48,20 @@ static NSString *const cellIdentifier = @"resourceCell";
     [self.view addSubview:self.collectionView];
 
     self.popupAnimator = [[MMDetailPoppingAnimator alloc] init];
-    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:self.collectionView cellIdentifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:self];
-
-    //底部偏移量(底部浮动播放器窗口)
-    if ([self.tabBarController isKindOfClass:[MMTabBarController class]]) {
-        MMTabBarController *tabBarController = (MMTabBarController*)self.tabBarController;
-        CGFloat bottomInset = CGRectGetHeight(self.view.frame) - CGRectGetMinY(tabBarController.popFrame);
-        [self.collectionView setContentInset:UIEdgeInsetsMake(0, 0, bottomInset, 0)];
-    }
-
-    if ([self.navigationController.navigationBar isHidden]) {
-        [self.collectionView.mj_header setIgnoredScrollViewContentInsetTop:20];  //调整顶部距离
-    }
+    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:self.collectionView
+                                                                        cellIdentifier:cellIdentifier
+                                                                     sectionIdentifier:sectionIdentifier
+                                                                              delegate:self];
 }
 
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+
+    UIView *superView = self.view;
+    [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(superView);
+    }];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -81,14 +80,13 @@ static NSString *const cellIdentifier = @"resourceCell";
     }
 }
 
-
 #pragma mark - <UICollectionViewDelegate>
-// 选中,  呈现专辑或者播放列表 歌曲信息
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
     ResourceCell *cell = (ResourceCell*)[collectionView cellForItemAtIndexPath:indexPath];
     MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:cell.resource];
 
+    //显示动画
     [detail setDisMissDelegate:self];
     [detail setTransitioningDelegate:self];
     [detail setModalPresentationStyle:UIModalPresentationCustom];
@@ -122,40 +120,39 @@ static NSString *const cellIdentifier = @"resourceCell";
 }
 
 
-#pragma mark - lazy load
+#pragma mark -  getter / setter
 -(UICollectionView *)collectionView{
     if (!_collectionView) {
 
-        //布局对象
-        UICollectionViewFlowLayout *layout = ({
+        UIEdgeInsets insets = UIEdgeInsetsMake(0, 8, 0, 8);
+        CGFloat spacing = insets.left;
 
-            UICollectionViewFlowLayout *flow = [UICollectionViewFlowLayout new];
-            //两列
-            CGFloat spacing = 8.0f;
-            CGFloat cw = (CGRectGetWidth(self.view.frame) - spacing*3)/2;
-            CGFloat ch = cw+32;
-            CGSize itemSize = CGSizeMake(cw, ch);
-            CGSize headerSize = CGSizeMake(CGRectGetWidth(self.view.bounds),44.0f);
+        UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
 
-            [flow setItemSize:itemSize];
-            [flow setHeaderReferenceSize:headerSize];
-            [flow setMinimumLineSpacing:spacing*2];
-            [flow setMinimumInteritemSpacing:spacing];
-            [flow setSectionInset:UIEdgeInsetsMake(0, spacing, spacing, spacing)]; //cell 与头尾间距
-            [flow setScrollDirection:UICollectionViewScrollDirectionVertical];
+        //两列
+        CGFloat w = CGRectGetWidth(self.view.bounds); //(CGRectGetWidth(self.view.frame) - spacing*3)/2;
+        w = (w - insets.left*3)/2;
+        CGFloat h = w+30;
+        CGSize itemSize = CGSizeMake(w, h);
+        CGSize headerSize = CGSizeMake(CGRectGetWidth(self.view.bounds),44.0f);
 
-            flow;
-        });
+        [layout setItemSize:itemSize];
+        [layout setHeaderReferenceSize:headerSize];
+        [layout setMinimumLineSpacing:spacing*2];
+        [layout setMinimumInteritemSpacing:spacing/2];
+        [layout setSectionInset:insets]; //cell 与头尾间距
+        [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
 
         //集合视图对象
-        _collectionView = ({
-            UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
-            [collectionView registerClass:[ResourceCell class] forCellWithReuseIdentifier:cellIdentifier];
-            [collectionView registerClass:[RecommentationSectionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:sectionIdentifier];
-            [collectionView setBackgroundColor:[UIColor whiteColor]];
-            [collectionView setDelegate: self];
-            collectionView;
-        });
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
+        [_collectionView registerClass:[ResourceCell class] forCellWithReuseIdentifier:cellIdentifier];
+        [_collectionView registerClass:[RecommentationSectionView class]
+            forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                   withReuseIdentifier:sectionIdentifier];
+
+        [_collectionView setBackgroundColor:[UIColor whiteColor]];
+        [_collectionView setDelegate: self];
+        [_collectionView setContentInset:UIEdgeInsetsMake(0, 0, PlayerPopSize.height, 0)];
     }
     return _collectionView;
 }

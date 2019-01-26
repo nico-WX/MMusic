@@ -24,6 +24,7 @@
         typeof(self) weakSelf = self;
         [_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.mas_equalTo(weakSelf).insets(UIEdgeInsetsMake(0, spacing, 0, spacing));
+            make.centerY.mas_equalTo(weakSelf);
         }];
     }
     return self;

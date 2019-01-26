@@ -20,14 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RecommendationDataSource : NSObject<UICollectionViewDataSource>
 
-
-//- (instancetype)initWithTableView:(UITableView*)tableView cellReuseIdentifier:(NSString*)identifier;
 - (instancetype)initWithCollectionView:(UICollectionView*)collectionView
                         cellIdentifier:(NSString*)identifier
                      sectionIdentifier:(NSString*)sectionIdentifier
-                              delegate:(id<RecommendationDataSourceDelegate>)delegate NS_DESIGNATED_INITIALIZER;
-
-- (void)refreshDataWithCompletion:(void(^)(void))completion;
+                              delegate:(id<RecommendationDataSourceDelegate>)delegate;
 @end
 
 NS_ASSUME_NONNULL_END
