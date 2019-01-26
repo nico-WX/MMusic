@@ -58,6 +58,8 @@
 		3B64B2BE21F855EC0029C32E /* ShowAllDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2BD21F855EB0029C32E /* ShowAllDataSource.m */; };
 		3B64B2C121F89D290029C32E /* SearchResultsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2C021F89D290029C32E /* SearchResultsCell.m */; };
 		3B64B2C421F8A7940029C32E /* SearchResultsSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2C321F8A7940029C32E /* SearchResultsSectionView.m */; };
+		3B64B2C721F9D4A00029C32E /* ShowAllSearchResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2C621F9D4A00029C32E /* ShowAllSearchResultsViewController.m */; };
+		3B64B2CA21F9D4C40029C32E /* ShowAllSearchResultsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2C921F9D4C40029C32E /* ShowAllSearchResultsDataSource.m */; };
 		3B64D0EE20ECE76200D831FE /* MMHeartSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */; };
 		3B65B28B21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B28A21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m */; };
 		3B65B29F21E0A88700C2C388 /* ButtonStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B29E21E0A88700C2C388 /* ButtonStyleKit.m */; };
@@ -349,6 +351,10 @@
 		3B64B2C021F89D290029C32E /* SearchResultsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResultsCell.m; sourceTree = "<group>"; };
 		3B64B2C221F8A7940029C32E /* SearchResultsSectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchResultsSectionView.h; sourceTree = "<group>"; };
 		3B64B2C321F8A7940029C32E /* SearchResultsSectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResultsSectionView.m; sourceTree = "<group>"; };
+		3B64B2C521F9D4A00029C32E /* ShowAllSearchResultsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShowAllSearchResultsViewController.h; sourceTree = "<group>"; };
+		3B64B2C621F9D4A00029C32E /* ShowAllSearchResultsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShowAllSearchResultsViewController.m; sourceTree = "<group>"; };
+		3B64B2C821F9D4C40029C32E /* ShowAllSearchResultsDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShowAllSearchResultsDataSource.h; sourceTree = "<group>"; };
+		3B64B2C921F9D4C40029C32E /* ShowAllSearchResultsDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShowAllSearchResultsDataSource.m; sourceTree = "<group>"; };
 		3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMHeartSwitch.m; sourceTree = "<group>"; };
 		3B64D0ED20ECE76200D831FE /* MMHeartSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMHeartSwitch.h; sourceTree = "<group>"; };
 		3B65B28921DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+CreateURLRequest.h"; sourceTree = "<group>"; };
@@ -722,6 +728,8 @@
 				3B64B21321F46D5B0029C32E /* SearchResultsDataSource.m */,
 				3B64B22321F49AFD0029C32E /* SearchHintsDataSource.h */,
 				3B64B22421F49AFD0029C32E /* SearchHintsDataSource.m */,
+				3B64B2C821F9D4C40029C32E /* ShowAllSearchResultsDataSource.h */,
+				3B64B2C921F9D4C40029C32E /* ShowAllSearchResultsDataSource.m */,
 			);
 			name = DataSource;
 			sourceTree = "<group>";
@@ -772,6 +780,8 @@
 				3B4E3AD5208F46B90042498C /* SearchViewController.m */,
 				3B64B20121F46B700029C32E /* SearchResultsController.h */,
 				3B64B20221F46B700029C32E /* SearchResultsController.m */,
+				3B64B2C521F9D4A00029C32E /* ShowAllSearchResultsViewController.h */,
+				3B64B2C621F9D4A00029C32E /* ShowAllSearchResultsViewController.m */,
 			);
 			name = Search;
 			sourceTree = "<group>";
@@ -1472,6 +1482,7 @@
 				3B6BE747219DACDD0004F3E5 /* MMDetailPoppingAnimator.m in Sources */,
 				3B87992E204FF7E000EE9D2A /* RecommentationSectionView.m in Sources */,
 				3BEB3D5921D3760D00398A5B /* MMDataStack.m in Sources */,
+				3B64B2CA21F9D4C40029C32E /* ShowAllSearchResultsDataSource.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
 				3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */,
 				3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */,
@@ -1501,6 +1512,7 @@
 				3BE2A23E21986B2D00AEA486 /* Catalog+Search.m in Sources */,
 				3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */,
 				3B73F74521B1346000097801 /* MMLibraryContentViewController.m in Sources */,
+				3B64B2C721F9D4A00029C32E /* ShowAllSearchResultsViewController.m in Sources */,
 				3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */,
 				3BE2A23B2198630100AEA486 /* Library+RecentHistory.m in Sources */,
 				3B9A371D219700E6000CB6B4 /* NowPlayingViewController.m in Sources */,

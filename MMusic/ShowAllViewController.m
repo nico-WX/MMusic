@@ -40,7 +40,6 @@ static NSString *const identifier = @"cell dientifier";
     // Do any additional setup after loading the view.
     [self.view addSubview:self.collectionView];
 
-
     NSString *type = self.chart.data.firstObject.type;
     if ([type isEqualToString:@"songs"]) {
         [self.collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];

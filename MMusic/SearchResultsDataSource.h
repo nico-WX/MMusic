@@ -14,10 +14,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)configureCell:(UITableViewCell*)cell object:(Resource*)resource;
 @end
+
 @interface SearchResultsDataSource : NSObject
 
 - (void)searchTerm:(NSString*)term;
-//- (void)searchHintForTerm:(NSString*)term;
+
+- (NSString*)titleAtSection:(NSUInteger)section;
+- (ResponseRoot*)dataWithSection:(NSUInteger)section;
+- (NSArray<Resource*>*)allResurceAtSection:(NSUInteger)section;
 
 - (instancetype)initWithTableView:(UITableView*)tableView
                    cellIdentifier:(NSString*)cellIdentifier

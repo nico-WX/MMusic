@@ -19,7 +19,12 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         _titleLable = [[UILabel alloc] init];
+        _showMoreButton = [[UIButton alloc] init];
         [self addSubview:_titleLable];
+        [self addSubview:_showMoreButton];
+
+        [_showMoreButton setTitleColor:MainColor forState:UIControlStateNormal];
+        [_showMoreButton setTitle:@"全部 >" forState:UIControlStateNormal];
     }
     return self;
 }
@@ -28,9 +33,15 @@
     [super layoutSubviews];
 
     __weak typeof(self) weakSelf = self;
-    UIEdgeInsets insets = UIEdgeInsetsMake(8, 8, 8, 80);
+    UIEdgeInsets insets = UIEdgeInsetsMake(8, 8, 8, 8);
     [_titleLable mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(weakSelf).insets(insets);
+        make.top.left.bottom.mas_equalTo(weakSelf).insets(insets);
+        make.width.mas_equalTo(200);
+        //make.edges.mas_equalTo(weakSelf).insets(insets);
+    }];
+    [_showMoreButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.right.bottom.mas_equalTo(weakSelf).insets(insets);
+        make.width.mas_equalTo(80);
     }];
 }
 

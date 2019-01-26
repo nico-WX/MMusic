@@ -37,6 +37,12 @@
 }
 
 - (void)searchTerm:(NSString *)term{
+
+    //无字符串,跳出栈
+    if ([term isEqualToString:@""] || !term) {
+        return;
+    }
+
     [self searchDataForTemr:term completion:^(BOOL success) {
         if (success) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -46,7 +52,7 @@
     }];
 }
 
-- (void)searchDataForTemr:(NSString *)term completion:(nonnull void (^)(BOOL))completion{
+- (void)searchDataForTemr:(NSString *)term completion:(nonnull void (^)(BOOL success))completion{
 
     [[MusicKit new].catalog searchForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];
@@ -71,6 +77,19 @@
     }];
 }
 
+- (NSString *)titleAtSection:(NSUInteger)section{
+    NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:section];
+    return [dict allKeys].firstObject;
+}
+- (ResponseRoot *)dataWithSection:(NSUInteger)section{
+    NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:section];
+    return [dict allValues].firstObject;
+}
+- (NSArray<Resource *> *)allResurceAtSection:(NSUInteger)section{
+    NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:section];
+    return dict.allValues.firstObject.data;
+}
+
 #pragma mark - UITableViewDataSource
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -89,9 +108,14 @@
     }
     return cell;
 }
+
+
+
 //- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
 //    NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:section];
 //    return [dict allKeys].firstObject;
 //}
+
+
 
 @end

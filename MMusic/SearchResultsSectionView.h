@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SearchResultsSectionView : UITableViewHeaderFooterView
 @property(nonatomic,copy)NSString *title;
+@property(nonatomic,strong,readonly) UIButton *showMoreButton;
 @end
 
 NS_ASSUME_NONNULL_END

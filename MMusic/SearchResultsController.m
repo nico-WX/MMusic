@@ -61,7 +61,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     if (!_hintsTableView) {
         _hintsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_hintsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:hintsIdentifier];
-        //[_hintsTableView registerClass:[UILabel class] forHeaderFooterViewReuseIdentifier:hintsIdentifier];
         [_hintsTableView setDelegate:self];
     }
     return _hintsTableView;
@@ -70,7 +69,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     if (!_searchResultsView) {
         _searchResultsView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_searchResultsView registerClass:[SearchResultsCell class] forCellReuseIdentifier:resultsIdentifier];
-        //[_searchResultsView registerClass:[SearchResultsSectionView class] forHeaderFooterViewReuseIdentifier:resultsSectionIdentifier];
         [_searchResultsView setRowHeight:55];
         //代理在主搜索视图中
     }
@@ -95,20 +93,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
         [self.searchBar setText:term];
         [self.searchBar.delegate searchBarSearchButtonClicked:self.searchBar];
     }
-}
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    if (tableView == self.searchResultsView) {
-        SearchResultsSectionView *sectionView = [[SearchResultsSectionView alloc] initWithFrame:CGRectMake(0, 0, 55, 414)];
-        return sectionView;
-        //return [tableView dequeueReusableHeaderFooterViewWithIdentifier:resultsSectionIdentifier];
-    }
-    return nil;
-}
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    if (tableView == self.searchResultsView) {
-        return 60;
-    }
-    return 0;
 }
 
 #pragma mark - SearchHintsDataSourceDelegate
