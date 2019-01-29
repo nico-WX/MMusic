@@ -75,13 +75,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     return _searchResultsView;
 }
 
-// set
-- (void)setSearchBar:(UISearchBar *)searchBar{
-    if (_searchBar != searchBar) {
-        _searchBar = searchBar;
-        [_searchBar setDelegate:self];
-    }
-}
 
 #pragma mark  - ********************Delegate
 
@@ -111,6 +104,7 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController{
     self.searchBar = searchController.searchBar;
+    self.searchBar.delegate = self;
 }
 
 #pragma mark - UISearchBarDelegate

@@ -1,5 +1,5 @@
 //
-//  MMDataStack.h
+//  CoreDataStack.h
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2018/12/26.
@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MMDataStack : NSObject
+@interface CoreDataStack : NSObject
 @property(nonatomic, strong, readonly) NSManagedObjectContext *context;
 
 + (instancetype)shareDataStack;

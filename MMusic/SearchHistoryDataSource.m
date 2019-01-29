@@ -6,18 +6,22 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
+#import <CoreData/CoreData.h>
+
 #import "SearchHistoryDataSource.h"
+#import "SearchHistoryManageObject.h"
+#import "CoreDataStack.h"
 
 @interface SearchHistoryDataSource ()<UITableViewDataSource>
 @property(nonatomic,weak)UITableView *tableView;
 @property(nonatomic,weak)id<SearchHistoryDataSourceDelegate> delegate;
 @property(nonatomic,copy)NSString *identifier;
 
-@property(nonatomic,strong) NSArray<NSString*> *termList;
+@property(nonatomic,strong) NSArray<SearchHistoryManageObject*> *termes;
+@property(nonatomic,strong) id observer;
+
 @end
 
-
-static NSString *const _historyKey = @"search history key";
 @implementation SearchHistoryDataSource
 
 - (instancetype)initWithTableView:(UITableView *)tableView
@@ -25,55 +29,85 @@ static NSString *const _historyKey = @"search history key";
                          delegate:(id<SearchHistoryDataSourceDelegate>)delegate{
     if (self = [super init]) {
         _tableView = tableView;
+        _tableView.dataSource = self;
         _delegate = delegate;
         _identifier = identifier;
-        tableView.dataSource = self;
-        [tableView reloadData];
+
+        [self loadDataWithCompletion:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                 [tableView reloadData];
+            });
+        }];
+
+
+        //监听上下文改变
+       _observer = [[NSNotificationCenter defaultCenter] addObserverForName:NSManagedObjectContextDidSaveNotification
+                                                                     object:nil
+                                                                      queue:nil
+                                                                 usingBlock:^(NSNotification * _Nonnull note)
+        {
+            [self loadDataWithCompletion:^{
+                 [tableView reloadData];
+            }];
+        }];
+
     }
     return self;
 }
 
-- (void)addSearchHistoryTerm:(NSString *)term{
-    NSMutableArray *array = [NSMutableArray array];
-    [array addObjectsFromArray:self.termList];
-    [array addObject:term];
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:_observer];
+    _observer = nil;
+}
 
-    if (array.count > 5) {
-        [array removeObjectAtIndex:0];
-    }
-    [[NSUserDefaults standardUserDefaults] setValue:array forKey:_historyKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+- (void)loadDataWithCompletion:(void(^)(void))completion{
+    NSManagedObjectContext *moc = [CoreDataStack shareDataStack].context;
 
-    //刷新
-    if (self.tableView) {
-        self.termList = nil;
-        [self.tableView reloadData];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[SearchHistoryManageObject name]];
+    NSSortDescriptor *sortDescriptor = [SearchHistoryManageObject defaultSortDescriptor];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+
+    NSError *error = nil;
+    _termes = [moc executeFetchRequest:fetchRequest error:&error];
+    if (_termes == nil) {
+        NSLog(@"fetch obje error =%@",_termes);
+    }else{
+        completion();
     }
 }
 
+
+
 #pragma mark - dataSource
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [self.termList count];
+    return  self.termes.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:_identifier];
     if ([_delegate respondsToSelector:@selector(configureCell:object:)]) {
-        [_delegate configureCell:cell object:[self.termList objectAtIndex:indexPath.row]];
+        NSString *term = [self.termes objectAtIndex:indexPath.row].term;
+        [_delegate configureCell:cell object:term];
     }
     return cell;
 }
-
-#pragma mark - setter/getter
--(NSArray<NSString *> *)termList{
-    if (!_termList) {
-         _termList = [[NSUserDefaults standardUserDefaults] valueForKey:_historyKey];
-        if (!_termList) {
-            _termList = @[@"A",@"B",@"C",@"D",@"E",@"F"];
-            //_termList = [NSArray array];
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    switch (editingStyle) {
+        case UITableViewCellEditingStyleDelete:{
+            SearchHistoryManageObject *delete = [_termes objectAtIndex:indexPath.row];
+            NSManagedObjectContext *moc = delete.managedObjectContext;
+            [moc deleteObject:delete];
+            [moc save:nil];
+            //直接刷新数据源
+            [self loadDataWithCompletion:^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [tableView reloadData];
+                });
+            }];
         }
+            break;
+
+        default:
+            break;
     }
-
-    return _termList;
 }
-
 @end

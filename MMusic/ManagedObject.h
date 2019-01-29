@@ -1,5 +1,5 @@
 //
-//  MMManagedObject.h
+//  ManagedObject.h
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2018/12/28.
@@ -12,19 +12,20 @@
 NS_ASSUME_NONNULL_BEGIN
 
 
-@interface MMManagedObject : NSManagedObject
+@interface ManagedObject : NSManagedObject
 @property(nonatomic, readonly,strong) NSManagedObjectContext *mainMoc;
 //@property(nonatomic, readonly,strong) NSManagedObjectContext *backgroupMoc;
 
 @end
 
 
-@interface MMManagedObject (DefaultManaged)
+@interface ManagedObject (DefaultManaged)
 //+ (NSEntityDescription*)entity;
 //+ (NSString*)entityName;
 
 + (NSPredicate*)defaultPredicate;
 + (NSSortDescriptor*)defaultSortDescriptor;
++ (NSString*)name;
 
 @end
 

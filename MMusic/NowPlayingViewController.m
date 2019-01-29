@@ -18,8 +18,8 @@
 #import "MMPlayerView.h"
 #import "MMPlayerButton.h"
 
-#import "MMDataStack.h"
-#import "MMCDMO_Song.h"
+#import "CoreDataStack.h"
+#import "SongManageObject.h"
 
 #import "DataStoreKit.h"
 #import "Artwork.h"

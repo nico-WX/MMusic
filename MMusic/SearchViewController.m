@@ -23,12 +23,13 @@
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
 
-//实现代理分类
+//分割代理方法
 @interface SearchViewController (Delegate)<UITableViewDelegate,SearchHistoryDataSourceDelegate>
 @end
 
 @interface SearchViewController ()
-@property(nonatomic, strong) UITableView *tableView;
+/**搜索历史*/
+@property(nonatomic, strong) UITableView *searchHistoryView;
 @property(nonatomic, strong) UISearchController *searchController;
 @property(nonatomic, strong) SearchHistoryDataSource *searchHistoryDataSource;
 
@@ -43,10 +44,10 @@ static NSString *const identifier = @"cell identifier";
     // Do any additional setup after loading the view.
     self.view.backgroundColor = UIColor.whiteColor;
 
-    [self.view addSubview:self.tableView];
+    [self.view addSubview:self.searchHistoryView];
     //[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
-    self.searchHistoryDataSource = [[SearchHistoryDataSource alloc] initWithTableView:self.tableView
+    self.searchHistoryDataSource = [[SearchHistoryDataSource alloc] initWithTableView:self.searchHistoryView
                                                                            identifier:identifier
                                                                              delegate:self];
 
@@ -61,7 +62,7 @@ static NSString *const identifier = @"cell identifier";
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
 
-    [_tableView setFrame:self.view.bounds];
+    [_searchHistoryView setFrame:self.view.bounds];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -70,23 +71,23 @@ static NSString *const identifier = @"cell identifier";
 }
 
 #pragma mark - getter / setter
--(UITableView *)tableView{
-    if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:identifier];
-        [_tableView setDelegate:self];
+-(UITableView *)searchHistoryView{
+    if (!_searchHistoryView) {
+        _searchHistoryView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        [_searchHistoryView registerClass:[UITableViewCell class] forCellReuseIdentifier:identifier];
+        [_searchHistoryView setDelegate:self];
     }
-    return _tableView;
+    return _searchHistoryView;
 }
 
 - (UISearchController *)searchController{
     if (!_searchController) {
         SearchResultsController *vc = [[SearchResultsController alloc] init];
-        [vc.searchResultsView setDelegate:self]; //获取选中的结果,入栈显示
+        [vc.searchResultsView setDelegate:self]; //选中时 push入栈导航控制器;
 
         _searchController = [[UISearchController alloc] initWithSearchResultsController:vc];
         [_searchController setSearchResultsUpdater:vc];
-        [_searchController.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
+        //[_searchController.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
         [_searchController setDimsBackgroundDuringPresentation:NO];
     }
     return _searchController;
@@ -105,14 +106,16 @@ static NSString *const identifier = @"cell identifier";
 #pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 
-    if (tableView == self.tableView) {
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+
+    if (tableView == self.searchHistoryView) {
         NSString *term = cell.textLabel.text;
         UISearchBar *searchBar = self.searchController.searchBar;
         [searchBar setText:term];
+        [searchBar becomeFirstResponder];
         [searchBar.delegate searchBarSearchButtonClicked:searchBar];
     }else{
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+
         if ([cell isKindOfClass:[SearchResultsCell class]]) {
             Resource *res = ((SearchResultsCell*)cell).resource;
 
@@ -126,7 +129,6 @@ static NSString *const identifier = @"cell identifier";
                 [MainPlayer playSongs:songs startIndex:indexPath.row];
                 
             }else{
-
                 ResourceDetailViewController *detail = [[ResourceDetailViewController alloc] initWithResource:res];
                 //详细视图不显示大的导航栏
                 [detail.navigationItem setLargeTitleDisplayMode:UINavigationItemLargeTitleDisplayModeNever];
@@ -138,13 +140,13 @@ static NSString *const identifier = @"cell identifier";
 
 //搜索 结果分节
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    if (tableView != self.tableView) {
-        return 50;
+    if (tableView != self.searchHistoryView) {
+        return 60;
     }
     return 0;
 }
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    if (tableView != self.tableView) {
+    if (tableView != self.searchHistoryView) {
         SearchResultsSectionView *view = [[SearchResultsSectionView alloc] init];
         [view.showMoreButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
             if ([tableView.dataSource isKindOfClass:[SearchResultsDataSource class]]) {
@@ -162,5 +164,10 @@ static NSString *const identifier = @"cell identifier";
     }
     return nil;
 }
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return UITableViewCellEditingStyleDelete;
+}
+
 
 @end

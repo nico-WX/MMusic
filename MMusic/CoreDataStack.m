@@ -6,11 +6,11 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import "MMDataStack.h"
+#import "CoreDataStack.h"
 #import <CoreData/CoreData.h>
 
-static MMDataStack *_instance;
-@implementation MMDataStack
+static CoreDataStack *_instance;
+@implementation CoreDataStack
 
 + (instancetype)shareDataStack{
     return [[self alloc] init];

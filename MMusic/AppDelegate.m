@@ -12,7 +12,7 @@
 //Controller
 #import "MMTabBarController.h"
 #import "AuthManager.h"
-#import "MMDataStack.h"
+#import "CoreDataStack.h"
 
 @interface AppDelegate ()
 @end
@@ -35,7 +35,7 @@
     }];
 
 
-    [MMDataStack shareDataStack];
+    [CoreDataStack shareDataStack];
     [MainPlayer beginGeneratingPlaybackNotifications];
 
     return YES;
@@ -46,7 +46,7 @@
     [MainPlayer endGeneratingPlaybackNotifications];
     //保存托管对象
     NSError *error = nil;
-    [[MMDataStack shareDataStack].context save:&error];
+    [[CoreDataStack shareDataStack].context save:&error];
     NSAssert(error, @"保存上下文错误");
 }
 

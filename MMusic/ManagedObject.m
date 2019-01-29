@@ -6,13 +6,13 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import "MMManagedObject.h"
-#import "MMDataStack.h"
+#import "ManagedObject.h"
+#import "CoreDataStack.h"
 
-@implementation MMManagedObject
+@implementation ManagedObject
 
 - (NSManagedObjectContext *)mainMoc{
-    return [MMDataStack shareDataStack].context;
+    return [CoreDataStack shareDataStack].context;
 }
 
 
@@ -24,7 +24,7 @@
 }
 @end
 
-@implementation MMManagedObject (DefaultManaged)
+@implementation ManagedObject (DefaultManaged)
 
 
 + (NSPredicate *)defaultPredicate{
@@ -34,4 +34,7 @@
     return [NSSortDescriptor sortDescriptorWithKey:@"" ascending:0];
 }
 
++(NSString *)name{
+    return NSStringFromClass(self);
+}
 @end

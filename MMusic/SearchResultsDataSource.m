@@ -8,6 +8,8 @@
 
 #import "SearchResultsDataSource.h"
 #import "ResponseRoot.h"
+#import "SearchHistoryManageObject.h"
+#import "CoreDataStack.h"
 
 @interface SearchResultsDataSource ()<UITableViewDataSource>
 @property(nonatomic, weak)UITableView *tableView;
@@ -39,10 +41,10 @@
 - (void)searchTerm:(NSString *)term{
 
     //无字符串,跳出栈
-    if ([term isEqualToString:@""] || !term) {
+    if ([term isEqualToString:@" "] || !term) {
         return;
     }
-
+    //搜索
     [self searchDataForTemr:term completion:^(BOOL success) {
         if (success) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -50,8 +52,33 @@
             });
         }
     }];
+
+    //记录 搜索记录
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[SearchHistoryManageObject name]];
+    NSManagedObjectContext *moc = [[CoreDataStack shareDataStack] context];
+
+    NSArray<SearchHistoryManageObject*> *results = [moc executeFetchRequest:request error:nil];
+    if (results.count > 0) {
+        for (SearchHistoryManageObject *history in results) {
+            if ([history.term isEqualToString:term]) {
+                // 匹配到, 刷新日期, 不再重复添加
+                history.date = [NSDate date];
+                [moc save:nil];
+                return;
+            }
+        }
+    }
+
+    SearchHistoryManageObject *history = [[SearchHistoryManageObject alloc] initWithTerm:term];
+    moc = history.managedObjectContext;
+    NSError *error = nil;
+    if (![moc save:&error]) {
+        NSLog(@"error =%@",error);
+    }
+
 }
 
+// 搜索结果  json
 - (void)searchDataForTemr:(NSString *)term completion:(nonnull void (^)(BOOL success))completion{
 
     [[MusicKit new].catalog searchForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
@@ -108,14 +135,5 @@
     }
     return cell;
 }
-
-
-
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-//    NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:section];
-//    return [dict allKeys].firstObject;
-//}
-
-
 
 @end

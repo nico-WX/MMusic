@@ -93,4 +93,7 @@ static NSString *const identifier = @"cell identifier";
 }
 
 #pragma mark - UICollectionViewDelegate
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+}
 @end

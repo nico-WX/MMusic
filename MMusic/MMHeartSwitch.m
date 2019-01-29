@@ -10,8 +10,8 @@
 #import "ButtonStyleKit.h"
 #import "MPMusicPlayerController+ResourcePlaying.h"
 #import "DataStoreKit.h"
-#import "MMDataStack.h"
-#import "MMCDMO_Song.h"
+#import "CoreDataStack.h"
+#import "SongManageObject.h"
 
 @interface MMHeartSwitch()
 @property(nonatomic, strong) UIImpactFeedbackGenerator *impact;
@@ -104,7 +104,7 @@
 
 - (void)addSongToCoreData:(Song*)song{
 
-    NSManagedObjectContext *moc = [MMDataStack shareDataStack].context;
+    NSManagedObjectContext *moc = [CoreDataStack shareDataStack].context;
 
     //查询, 如果已经添加, 跳过
     NSString *identifier = [song.playParams valueForKey:@"id"];
@@ -120,7 +120,7 @@
         return;
     }
 
-    MMCDMO_Song *addSong = [[MMCDMO_Song alloc] initWithSong:song];
+    SongManageObject *addSong = [[SongManageObject alloc] initWithSong:song];
 
     NSAssert(addSong, @"生成托管对象失败");
     NSError *saveError = nil;
@@ -131,7 +131,7 @@
     }
 }
 - (void)deleteSong:(Song*)song{
-    NSManagedObjectContext *moc = [MMDataStack shareDataStack].context;
+    NSManagedObjectContext *moc = [CoreDataStack shareDataStack].context;
     NSPredicate *namePre = [NSPredicate predicateWithFormat:@"%K == %@",@"name",song.name];
     NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Song"]; //MMCDMO_Song 类映射到模型文件中的 Song实体
     [fetch setPredicate:namePre];
@@ -146,7 +146,7 @@
 //        return;
 //    }
     //匹配播放参数ID, 删除
-    for (MMCDMO_Song *sqlSong in fetchObjects) {
+    for (SongManageObject *sqlSong in fetchObjects) {
         NSString *lID = song.playParams[@"id"];
         NSString *sqlID = sqlSong.playParams[@"id"];
         if ([lID isEqualToString:sqlID]) {

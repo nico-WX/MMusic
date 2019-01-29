@@ -6,19 +6,16 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import "MMCDMO_Song.h"
-#import "MMDataStack.h"
+#import "SongManageObject.h"
+#import "CoreDataStack.h"
 #import "Artwork.h"
 
-@implementation MMCDMO_Song
+@implementation SongManageObject
 
 @dynamic name,movementName,composerName,genreNames,artistName,workName,contentRating,artwork,discNumber,durationInMillis,editorialNotes,isrc,movementNumber,movementCount,playParams,releaseDate,trackNumber,url,identifier;
 
-//+(instancetype)insertIntoContext:(NSManagedObjectContext *)context withSong:(Song *)song{
-//
-//    
+//+(instancetype)insertIntoContext:(NSManagedObjectContext *)context withSong:(Song *)song{    
 //    if (self = [[super alloc] initWithContext:context]) {
-//
 //    }
 //    return self;
 //}
@@ -50,13 +47,13 @@
 
 @end
 
-@implementation MMCDMO_Song (DefaultManaged)
+@implementation SongManageObject (DefaultManaged)
 
 + (NSSortDescriptor *)defaultSortDescriptor{
     return [NSSortDescriptor sortDescriptorWithKey:@"artistName" ascending:0];
 }
-//+(NSPredicate *)defaultPredicate{
-//
-//}
++(NSString *)name{
+    return @"Song";
+}
 
 @end

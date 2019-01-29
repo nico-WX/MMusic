@@ -18,8 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SearchHistoryDataSource : NSObject
 
-- (void)addSearchHistoryTerm:(NSString*)term;
-
 - (instancetype)initWithTableView:(UITableView*)tableView
                        identifier:(NSString*)identifier
                          delegate:(id<SearchHistoryDataSourceDelegate>)delegate;

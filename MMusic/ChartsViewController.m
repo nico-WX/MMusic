@@ -34,6 +34,7 @@ static NSString *const identifier = @"cell reuseIdentifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view addSubview:self.tableView];
+
     _dataSource =[[ChartsDataSource alloc] initWithTableView:_tableView reuseIdentifier:identifier delegate:self];
 }
 
@@ -62,11 +63,11 @@ static NSString *const identifier = @"cell reuseIdentifier";
         [chartsCell.collectionView setDelegate:self];
         [chartsCell setSelectionStyle:UITableViewCellSelectionStyleNone];
 
-
+        __weak typeof(self) weakSelf = self; //UIContr通过联合持有Block
         [chartsCell.showAllButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
             ShowAllViewController *all = [[ShowAllViewController alloc] initWithChart:chart];
             [all setTitle:chart.name];
-            [self.navigationController pushViewController:all animated:YES];
+            [weakSelf.navigationController pushViewController:all animated:YES];
         }];
     }
 }

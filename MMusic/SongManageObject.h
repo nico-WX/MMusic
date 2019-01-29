@@ -1,5 +1,5 @@
 //
-//  MMCDMO_Song.h
+//  SongManageObject.h
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2018/12/26.
@@ -7,13 +7,13 @@
 //
 
 
-#import "MMManagedObject.h"
+#import "ManagedObject.h"
 #import "Song.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MMCDMO_Song : MMManagedObject
+@interface SongManageObject : ManagedObject
 
 //+ (instancetype)insertIntoContext:(NSManagedObjectContext*)context withSong:(Song*)song;
 /**内部注册在主托管上下文中*/

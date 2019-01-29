@@ -8,7 +8,7 @@
 
 #import "Resource.h"
 #import <MJExtension.h>
-#import "MMDataStack.h"
+#import "CoreDataStack.h"
 
 @implementation Resource
 
