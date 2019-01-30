@@ -6,13 +6,13 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import "MMModelController.h"
+
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class MPMediaItem;
-@interface MMLocalLibraryData : MMModelController
+@interface MMLocalLibraryData : NSObject
 /**
  本地所有数据
  */

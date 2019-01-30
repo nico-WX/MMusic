@@ -28,7 +28,8 @@
         [self.contentView addSubview:_titleLabel];
         [self.contentView addSubview:_subTitleLable];
 
-        [_titleLabel adjustsFontSizeToFitWidth];
+        
+        [_titleLabel setAdjustsFontSizeToFitWidth:YES];
         [_subTitleLable setTextColor:UIColor.grayColor];
         UIFont *subTitleFont = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
         [_subTitleLable setFont:subTitleFont];

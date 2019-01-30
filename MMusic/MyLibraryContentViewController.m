@@ -8,10 +8,15 @@
 
 #import "MyLibraryContentViewController.h"
 
-@interface MyLibraryContentViewController ()
+@interface MyLibraryContentViewController ()<UICollectionViewDelegate>
 @property(nonatomic,assign) LibraryType type;
+
+@property(nonatomic,strong)UICollectionView *collectionView;
+@property(nonatomic,strong)UICollectionViewFlowLayout *layout;
 @end
 
+
+static NSString *const identifier = @"reuseIdentifier";
 @implementation MyLibraryContentViewController
 
 - (instancetype)initWithType:(LibraryType)type{
@@ -45,8 +50,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-
-
 }
 
+
+#pragma mark - getter / setter
+- (UICollectionView *)collectionView{
+    if (!_collectionView) {
+        _layout = [[UICollectionViewFlowLayout alloc] init];
+
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
+        [_collectionView setDelegate:self];
+    }
+    return _collectionView;
+}
 @end

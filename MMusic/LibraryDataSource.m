@@ -8,6 +8,13 @@
 
 #import "LibraryDataSource.h"
 
+@interface LibraryDataSource ()
+@property(nonatomic,assign) LibraryType type;
+
+@end
+
 @implementation LibraryDataSource
+
+
 
 @end

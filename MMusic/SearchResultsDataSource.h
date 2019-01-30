@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString*)titleAtSection:(NSUInteger)section;
 - (ResponseRoot*)dataWithSection:(NSUInteger)section;
 - (NSArray<Resource*>*)allResurceAtSection:(NSUInteger)section;
+- (void)clearData;
 
 - (instancetype)initWithTableView:(UITableView*)tableView
                    cellIdentifier:(NSString*)cellIdentifier

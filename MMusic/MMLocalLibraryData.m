@@ -10,7 +10,6 @@
 #import <StoreKit/StoreKit.h>
 #import <MediaPlayer/MediaPlayer.h>
 
-#import "MMLibraryContentViewController.h"
 #import "MMLocalLibraryData.h"
 
 @interface MMLocalLibraryData ()
@@ -94,61 +93,61 @@
 
 # pragma - mark help method
 //返回控制器对应的下标
-- (NSUInteger)indexOfViewController:(UIViewController*)viewController {
-    for (NSDictionary<NSString*,NSArray<MPMediaItem*> *> *dict in self.results) {
-        if ([viewController isKindOfClass:MMLibraryContentViewController.class]) {
-            MMLibraryContentViewController *scVC = (MMLibraryContentViewController*)viewController;
-            if (scVC.items == [dict allValues].firstObject) {
-                return [self.results indexOfObject:dict];
-            }
-        }
-    }
-    return NSNotFound;
-}
+//- (NSUInteger)indexOfViewController:(UIViewController*)viewController {
+////    for (NSDictionary<NSString*,NSArray<MPMediaItem*> *> *dict in self.results) {
+////        if ([viewController isKindOfClass:MMLibraryContentViewController.class]) {
+////            MMLibraryContentViewController *scVC = (MMLibraryContentViewController*)viewController;
+////            if (scVC.items == [dict allValues].firstObject) {
+////                return [self.results indexOfObject:dict];
+////            }
+////        }
+////    }
+////    return NSNotFound;
+//}
 
-//按下标, 获取控制器
-- (UIViewController*)viewControllerAtIndex:(NSUInteger)index{
-    //没有内容 , 或者大于内容数量  直接返回nil
-    if (self.results.count == 0 || index > self.results.count) return nil;
+////按下标, 获取控制器
+//- (UIViewController*)viewControllerAtIndex:(NSUInteger)index{
+//    //没有内容 , 或者大于内容数量  直接返回nil
+//    if (self.results.count == 0 || index > self.results.count) return nil;
+//
+//    NSDictionary<NSString*,NSArray<MPMediaItem*>*> *dict = [self.results objectAtIndex:index];
+//    NSString *title = [dict allKeys].firstObject;
+//    NSArray<MPMediaItem*> *items = [dict allValues].firstObject;
+//
+//    //查找创建过的VC
+//    for (MMLibraryContentViewController * vc in self.cacheViewControllers) {
+//        if (vc.items == items) {
+//            return vc;
+//        }
+//    }
+//
+//    //数组中没有创建过的控制器, 创建新的,并添加到数组
+//    MMLibraryContentViewController *contentVC = [[MMLibraryContentViewController alloc] initWithMediaItems:items];
+//    [contentVC setTitle:title];
+//    [self.cacheViewControllers addObject:contentVC]; //添加缓存
+//    return contentVC;
+//}
 
-    NSDictionary<NSString*,NSArray<MPMediaItem*>*> *dict = [self.results objectAtIndex:index];
-    NSString *title = [dict allKeys].firstObject;
-    NSArray<MPMediaItem*> *items = [dict allValues].firstObject;
-
-    //查找创建过的VC
-    for (MMLibraryContentViewController * vc in self.cacheViewControllers) {
-        if (vc.items == items) {
-            return vc;
-        }
-    }
-
-    //数组中没有创建过的控制器, 创建新的,并添加到数组
-    MMLibraryContentViewController *contentVC = [[MMLibraryContentViewController alloc] initWithMediaItems:items];
-    [contentVC setTitle:title];
-    [self.cacheViewControllers addObject:contentVC]; //添加缓存
-    return contentVC;
-}
-
-#pragma mark - UIPageViewControllerDataSource
-//返回左边控制器
--(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
-    MMLibraryContentViewController *resultsVC = (MMLibraryContentViewController*) viewController;
-
-    NSUInteger index = [self indexOfViewController:resultsVC];
-    if (index == 0 || index == NSNotFound) return nil;
-    index--;
-    return [self viewControllerAtIndex:index];
-}
-
-//返回右边控制器
--(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
-    MMLibraryContentViewController *resultsVC = (MMLibraryContentViewController*) viewController;
-    NSUInteger index = [self indexOfViewController:resultsVC];
-    if (index== NSNotFound) return nil;
-
-    index++;
-    if (index==self.results.count) return nil;
-    return [self viewControllerAtIndex:index];
-}
+//#pragma mark - UIPageViewControllerDataSource
+////返回左边控制器
+//-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
+//    MMLibraryContentViewController *resultsVC = (MMLibraryContentViewController*) viewController;
+//
+//    NSUInteger index = [self indexOfViewController:resultsVC];
+//    if (index == 0 || index == NSNotFound) return nil;
+//    index--;
+//    return [self viewControllerAtIndex:index];
+//}
+//
+////返回右边控制器
+//-(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
+//    MMLibraryContentViewController *resultsVC = (MMLibraryContentViewController*) viewController;
+//    NSUInteger index = [self indexOfViewController:resultsVC];
+//    if (index== NSNotFound) return nil;
+//
+//    index++;
+//    if (index==self.results.count) return nil;
+//    return [self viewControllerAtIndex:index];
+//}
 
 @end

@@ -87,7 +87,7 @@ static NSString *const identifier = @"cell identifier";
 
         _searchController = [[UISearchController alloc] initWithSearchResultsController:vc];
         [_searchController setSearchResultsUpdater:vc];
-        //[_searchController.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
+        [_searchController.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
         [_searchController setDimsBackgroundDuringPresentation:NO];
     }
     return _searchController;
@@ -109,10 +109,12 @@ static NSString *const identifier = @"cell identifier";
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 
     if (tableView == self.searchHistoryView) {
+        // 选中搜索历史cell 搜索字段
         NSString *term = cell.textLabel.text;
-        UISearchBar *searchBar = self.searchController.searchBar;
+
+        [_searchController setActive:YES];  // 激活搜索控制器
+        UISearchBar *searchBar = _searchController.searchBar;
         [searchBar setText:term];
-        [searchBar becomeFirstResponder];
         [searchBar.delegate searchBarSearchButtonClicked:searchBar];
     }else{
 

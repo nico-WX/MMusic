@@ -8,14 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import "MyLibraryContentViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 
-
 @interface LibraryDataSource : NSObject
 
-- (instancetype)initWithQuery:(MPMediaQuery*)query;
+
+
 
 @end
 

@@ -68,6 +68,15 @@
             }
         }
     }
+    //只添加5 个; 超过5 个, 用最后一个修改数据保存
+    if (results.count >= 5) {
+        SearchHistoryManageObject *history = results.lastObject;
+        history.term = term;
+        history.date = [NSDate date];
+        NSManagedObjectContext *moc = history.managedObjectContext;
+        [moc save:nil];
+        return;
+    }
 
     SearchHistoryManageObject *history = [[SearchHistoryManageObject alloc] initWithTerm:term];
     moc = history.managedObjectContext;
@@ -115,6 +124,10 @@
 - (NSArray<Resource *> *)allResurceAtSection:(NSUInteger)section{
     NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:section];
     return dict.allValues.firstObject.data;
+}
+- (void)clearData{
+    _searchResults = nil;
+    [_tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource

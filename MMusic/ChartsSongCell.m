@@ -72,18 +72,13 @@
     [self.titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(superView.mas_centerY);
         make.left.mas_equalTo(weakSelf.imageView.mas_right).inset(insets.left);
+        make.right.mas_equalTo(superView);
     }];
     [self.subTitleLable mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(weakSelf.titleLabel.mas_bottom).inset(0);
         make.left.mas_equalTo(weakSelf.imageView.mas_right).inset(insets.left);
     }];
 
-//    CGRect bgBounds = self.contentView.bounds;
-//    bgBounds.size.width  -= insets.left *2;
-//    bgBounds.size.height -= insets.top *2;
-//    UIView *bgView = [[UIView alloc] initWithFrame:bgBounds];
-//    [bgView setBackgroundColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1]];
-//    [self setSelectedBackgroundView:bgView];
 }
 
 - (void)stateForSong:(Song*)song {
@@ -96,7 +91,6 @@
         [self.imageView setHighlighted:isNowPlaying];
     }];
 
-    //[self.imageView setHidden:isNowPlaying]; //item 相等, 显示播放指示视图, 隐藏imageview
 
     if (isNowPlaying) {
         switch (MainPlayer.playbackState) {

@@ -29,7 +29,7 @@
         _resource = resource;
         [_tableView setDataSource:self];
 
-        [self resourceDataWithResource:resource completion:^(BOOL success) {
+        [self loadDataWithResource:resource completion:^(BOOL success) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
             });
@@ -40,7 +40,7 @@
 
 
 
-- (void)resourceDataWithResource:(Resource *)resource completion:(nonnull void (^)(BOOL))completion{
+- (void)loadDataWithResource:(Resource *)resource completion:(nonnull void (^)(BOOL))completion{
     [MusicKit.new.catalog songListWithResource:resource completion:^(NSDictionary *json, NSHTTPURLResponse *response) {
         self->_songLists = [self serializationJSON:json];
         if (completion) {

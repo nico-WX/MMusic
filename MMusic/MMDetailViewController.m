@@ -12,25 +12,27 @@
 #import <MediaPlayer/MediaPlayer.h>
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
+
 #import "MMDetailViewController.h"
 #import "MMCloseButton.h"
 #import "UIButton+BlockButton.h"
 
 #import "MMDetailHeadView.h"
 #import "SongCell.h"
-#import "MMSongListData.h"
-#import "MMDetaiDataSource.h"
+
+#import "ResourceDetailDataSource.h"
 #import "Resource.h"
 #import "Song.h"
 
-@interface MMDetailViewController ()<UITableViewDelegate, DetailDataSourceDelegate>
+@interface MMDetailViewController ()<UITableViewDelegate, ResourceDetailDataSourceDelegate>
 @property(nonatomic, strong) MMCloseButton *closeButton;
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) MMDetailHeadView *headView;
 
 //data
 @property(nonatomic, strong)Resource *resource;
-@property(nonatomic, strong)MMDetaiDataSource *detailData;
+@property(nonatomic,strong)ResourceDetailDataSource *dataSource;
+//@property(nonatomic, strong)MMDetaiDataSource *detailData;
 @end
 
 static CGFloat headHeight = 240;
@@ -68,10 +70,10 @@ static NSString *const reuseIdentifier = @"tableview cell id";
     }];
 
     //数据源
-    self.detailData = [[MMDetaiDataSource alloc] initWithTableView:self.tableView
-                                                          resource:_resource
-                                                    cellIdentifier:reuseIdentifier
-                                                          delegate:self];
+    _dataSource = [[ResourceDetailDataSource alloc] initWithTableView:_tableView
+                                                           identifier:reuseIdentifier
+                                                             resource:_resource
+                                                             delegate:self];
 }
 
 
@@ -95,15 +97,16 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 }
 
 #pragma mark dataSourceDelegate
-- (void)configureCell:(UITableViewCell *)cell object:(Song *)song withIndex:(NSUInteger)index{
+- (void)configureCell:(UITableViewCell *)cell object:(Song *)song atIndex:(NSUInteger)index{
     if ([cell isKindOfClass:[SongCell class]]) {
         [((SongCell*)cell) setSong:song withIndex:index];
     }
 }
 
+
 #pragma mark - <TableView Delegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [MainPlayer playSongs:self.detailData.songList startIndex:indexPath.row];
+    [MainPlayer playSongs:self.dataSource.songLists startIndex:indexPath.row];
     [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
 }
 

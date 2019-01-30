@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
                          delegate:(id<SearchHintsDataSourceDelegate>)delegate;
 
 - (void)searchHintsWithTerm:(NSString*)term;
+- (void)clearData;
 @end
 
 NS_ASSUME_NONNULL_END
