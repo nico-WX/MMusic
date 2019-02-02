@@ -17,12 +17,19 @@
 @interface ChartsSongCell ()
 @property(nonatomic, strong)UIImageView *lineView;
 @property(nonatomic, strong)NAKPlaybackIndicatorView *playbackIndicatorView;
+
+@property(nonatomic) id stateObserver;
+@property(nonatomic) id changeObserver;
 @end
 
 @implementation ChartsSongCell
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
+
+        [self.titleLabel setTextAlignment:NSTextAlignmentLeft];
+        [self.subTitleLable setTextAlignment:NSTextAlignmentLeft];
+
         _lineView = [[UIImageView alloc] initWithFrame:CGRectZero];
         [_lineView setBackgroundColor:UIColor.lightGrayColor];
         [_lineView setAlpha:0.3]; //线条视觉更细
@@ -34,14 +41,20 @@
         [self.contentView addSubview:_lineView];
 
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        [center addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        _stateObserver = [center addObserverForName:MPMusicPlayerControllerPlaybackStateDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             [self stateForSong:[Song instanceWithResource:self.resource]];
         }];
-        [center addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        _changeObserver = [center addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             [self stateForSong:[Song instanceWithResource:self.resource]];
         }];
     }
     return self;
+}
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:_stateObserver];
+    [[NSNotificationCenter defaultCenter] removeObserver:_changeObserver];
+    _stateObserver = nil;
+    _changeObserver = nil;
 }
 
 - (void)layoutSubviews{
@@ -56,6 +69,16 @@
         make.top.mas_equalTo(superView);
         make.left.right.mas_equalTo(superView).insets(lineInsets);
         make.height.mas_equalTo(1);
+    }];
+
+    [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        [make removeExisting];
+    }];
+    [self.titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        [make removeExisting];
+    }];
+    [self.subTitleLable mas_remakeConstraints:^(MASConstraintMaker *make) {
+        [make removeExisting];
     }];
 
     [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -78,6 +101,7 @@
         make.top.mas_equalTo(weakSelf.titleLabel.mas_bottom).inset(0);
         make.left.mas_equalTo(weakSelf.imageView.mas_right).inset(insets.left);
     }];
+
 
 }
 

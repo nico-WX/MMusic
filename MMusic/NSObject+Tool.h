@@ -11,7 +11,7 @@
 
 @class Album;
 @class Artist;
-@class Activities;
+@class Activity;
 @class AppleCurator;
 @class Curator;
 @class Song;

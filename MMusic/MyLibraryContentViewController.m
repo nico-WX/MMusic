@@ -8,18 +8,26 @@
 
 #import "MyLibraryContentViewController.h"
 
-@interface MyLibraryContentViewController ()<UICollectionViewDelegate>
-@property(nonatomic,assign) LibraryType type;
+#import "ChartsSubContentCell.h"
+#import "ChartsSongCell.h"
+
+#import "LibraryDataSource.h"
+#import <MediaPlayer/MediaPlayer.h>
+
+@interface MyLibraryContentViewController ()<UICollectionViewDelegate,LibraryDataSourceDelegate>
+@property(nonatomic,assign) LibraryContentType type;
 
 @property(nonatomic,strong)UICollectionView *collectionView;
 @property(nonatomic,strong)UICollectionViewFlowLayout *layout;
+
+@property(nonatomic,strong)LibraryDataSource *libraryDataSource;
 @end
 
 
 static NSString *const identifier = @"reuseIdentifier";
 @implementation MyLibraryContentViewController
 
-- (instancetype)initWithType:(LibraryType)type{
+- (instancetype)initWithType:(LibraryContentType)type{
     if (self = [super init]) {
         _type = type;
 
@@ -50,17 +58,105 @@ static NSString *const identifier = @"reuseIdentifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
+    [self.view addSubview:self.collectionView];
+
+
+    //数据源
+    switch (_type) {
+        case LibraryLocalSongType:
+            break;
+        case LibraryMyLikeSongType:
+            break;
+        case LibraryAlbumType:{
+            MPMediaQuery *query = [MPMediaQuery albumsQuery];
+            _libraryDataSource = [[LibraryDataSource alloc] initWithCollectionView:_collectionView
+                                                                        identifier:identifier
+                                                                        mediaQuery:query
+                                                                          delegate:self];
+
+        }
+            break;
+        case LibrarySongType:{
+            MPMediaQuery *query = [MPMediaQuery songsQuery];
+            _libraryDataSource = [[LibraryDataSource alloc] initWithCollectionView:_collectionView
+                                                                        identifier:identifier
+                                                                        mediaQuery:query
+                                                                          delegate:self];
+        }
+
+            break;
+        case LibraryPlaylistType:{
+            MPMediaQuery *query = [MPMediaQuery playlistsQuery];
+            _libraryDataSource = [[LibraryDataSource alloc] initWithCollectionView:_collectionView
+                                                                        identifier:identifier
+                                                                        mediaQuery:query
+                                                                          delegate:self];
+        }
+            break;
+        case LibraryPodcastsType:{
+            MPMediaQuery *query = [MPMediaQuery podcastsQuery];
+            _libraryDataSource = [[LibraryDataSource alloc] initWithCollectionView:_collectionView
+                                                                        identifier:identifier
+                                                                        mediaQuery:query
+                                                                          delegate:self];
+        }
+            break;
+    }
+
+    // cell 样式 和 类型
+    switch (_type) {
+        case LibrarySongType:
+        case LibraryLocalSongType:
+        case LibraryPodcastsType:
+        case LibraryMyLikeSongType:{
+            CGFloat w = CGRectGetWidth(self.view.bounds);
+            CGFloat h = 56;
+
+            [_layout setItemSize:CGSizeMake(w, h)];
+            [_layout setMinimumLineSpacing:0];
+            [_collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
+        }
+            break;
+
+        case LibraryAlbumType:
+        case LibraryPlaylistType:{
+            CGFloat w = CGRectGetWidth(self.view.bounds)/2;
+            CGFloat h = w+40;
+            [_layout setItemSize:CGSizeMake(w, h)];
+            [_collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
+        }
+
+            break;
+    }
+
 }
 
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+
+
+    [_collectionView setFrame:self.view.bounds];
+}
 
 #pragma mark - getter / setter
 - (UICollectionView *)collectionView{
     if (!_collectionView) {
         _layout = [[UICollectionViewFlowLayout alloc] init];
+        [_layout setItemSize:CGSizeMake(200, 240)];
 
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
+        [_collectionView setBackgroundColor:UIColor.whiteColor];
+        [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:identifier];
+
         [_collectionView setDelegate:self];
     }
     return _collectionView;
+}
+
+#pragma mark - LibraryDataSourceDelegate
+-(void)configureCell:(UICollectionViewCell *)cell object:(MPMediaItem *)item{
+    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
+        [((ChartsSubContentCell*)cell) setMediaItem:item];
+    }
 }
 @end

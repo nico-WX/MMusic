@@ -27,13 +27,15 @@
     // Override point for customization after application launch.
 
 
-    [AuthManager checkAuthTokenWith:^(AuthManager *auth) {
-        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        MMTabBarController *root = [[MMTabBarController alloc] init];
-        [self.window setRootViewController:root];
-        [self.window makeKeyAndVisible];
-    }];
+//    //授权检查
+//    [AuthManager checkAuthTokenWith:^(AuthManager *auth) {
+//
+//    }];
 
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    MMTabBarController *root = [[MMTabBarController alloc] init];
+    [self.window setRootViewController:root];
+    [self.window makeKeyAndVisible];
 
     [CoreDataStack shareDataStack];
     [MainPlayer beginGeneratingPlaybackNotifications];

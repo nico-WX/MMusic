@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //@"本地歌曲",@"我喜欢的",@"专辑",@"歌曲",@"播放列表",@"广播"
-typedef NS_ENUM(NSUInteger, LibraryType) {
+typedef NS_ENUM(NSUInteger, LibraryContentType) {
     LibraryLocalSongType,
     LibraryMyLikeSongType,
     LibraryAlbumType,
@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, LibraryType) {
 };
 
 @interface MyLibraryContentViewController : UIViewController
-- (instancetype)initWithType:(LibraryType)type;
+- (instancetype)initWithType:(LibraryContentType)type;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -57,10 +57,11 @@ static NSString *const cellIdentifier = @"resourceCell";
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
 
-    UIView *superView = self.view;
-    [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superView);
-    }];
+    [_collectionView setFrame:self.view.bounds];
+//    UIView *superView = self.view;
+//    [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
+//        make.edges.mas_equalTo(superView);
+//    }];
 }
 
 - (void)didReceiveMemoryWarning {

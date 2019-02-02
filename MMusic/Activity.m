@@ -1,5 +1,5 @@
 //
-//  Activities.m
+//  Activity.m
 //  MMusic
 //
 //  Created by Magician on 2017/11/9.
@@ -7,16 +7,16 @@
 //
 
 
-#import "Activities.h"
+#import "Activity.h"
 
 #import "Artwork.h"
 #import "Playlist.h"
 #import "EditorialNotes.h"
 
 
-@implementation Activities
+@implementation Activity
 
-@dynamic artwork,editorialNotes,name,url;
+//@dynamic artwork,editorialNotes,name,url;
 
 @end
 

@@ -11,11 +11,10 @@
 @class Error;
 
 @interface ResponseRoot : MMObject
-/**分页URL(子路径)*/
+
 @property(nonatomic, copy) NSString  *next;
-/**当前资源地址(子路径)*/
 @property(nonatomic, copy) NSString  *href;
-/**资源对象数组*/
+
 @property(nonatomic, strong) NSMutableArray<Resource*> *data;
 @property(nonatomic, strong) NSArray<Error*> *errors;
 

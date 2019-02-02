@@ -11,6 +11,10 @@
 @class Artwork;
 @class EditorialNotes;
 
+@interface Attributes ()
+
+@end
+
 /**专辑*/
 @interface Album : Resource
 /**歌手*/

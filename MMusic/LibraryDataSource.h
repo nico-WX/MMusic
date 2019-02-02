@@ -7,16 +7,24 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <MediaPlayer/MediaPlayer.h>
-#import "MyLibraryContentViewController.h"
+
+@class MPMediaQuery;
+@class MPMediaItem;
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol LibraryDataSourceDelegate <NSObject>
+
+- (void)configureCell:(UICollectionViewCell*)cell object:(MPMediaItem*)item;
+
+@end
 
 @interface LibraryDataSource : NSObject
 
-
-
+- (instancetype)initWithCollectionView:(UICollectionView*)collectionView
+                            identifier:(NSString*)identifier
+                            mediaQuery:(MPMediaQuery*)query
+                              delegate:(id<LibraryDataSourceDelegate>) delegate;
 
 @end
 

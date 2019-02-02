@@ -1,5 +1,5 @@
 //
-//  Activities.h
+//  Activity.h
 //  MMusic
 //
 //  Created by Magician on 2017/11/9.
@@ -10,17 +10,24 @@
 @class Artwork;
 @class EditorialNotes;
 
-/**活动*/
-@interface Activities : Resource
 
-/**活动海报*/
+@interface Attributes ()
 @property(nonatomic, strong) Artwork *artwork;
-/**在iTunes Store上的注释*/
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
-/**本地活动名称*/
 @property(nonatomic, copy) NSString *name;
-/**iTuens Store URL*/
 @property(nonatomic, copy) NSString *url;
-
 @end
+
+@interface Activity : Resource
+
+/*
+
+@property(nonatomic, strong) Artwork *artwork;
+@property(nonatomic, strong) EditorialNotes *editorialNotes;
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, copy) NSString *url;
+*/
+@end
+
+
 
