@@ -52,6 +52,7 @@
             self.root.next = newRoot.next;
             [self.root.data addObjectsFromArray:newRoot.data];
             if (self.root.next) {
+                NSLog(@"next =%@",self.root.next);
                 [self loadNextPageWithPath:self.root.next completion:completion];
             }else{
                 completion();

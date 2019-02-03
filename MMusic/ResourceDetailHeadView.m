@@ -24,6 +24,14 @@
         _nameLabel = [[UILabel alloc] init];
         _artistLabel = [[UILabel alloc] init];
 
+
+        [_nameLabel setFont:[UIFont boldSystemFontOfSize:24]];
+        [_nameLabel setAdjustsFontSizeToFitWidth:YES];
+
+        [_artistLabel setAdjustsFontSizeToFitWidth:YES];
+        [_artistLabel setFont:[UIFont systemFontOfSize:[UIFont smallSystemFontSize]]];
+        [_artistLabel setTextColor:UIColor.grayColor];
+
         [self addSubview:_imageView];
         [self addSubview:_nameLabel];
         [self addSubview:_artistLabel];

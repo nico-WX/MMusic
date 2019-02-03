@@ -150,10 +150,12 @@ static NSString *const identifier = @"cell identifier";
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     if (tableView != self.searchHistoryView) {
         SearchResultsSectionView *view = [[SearchResultsSectionView alloc] init];
+         //更多按钮事件
         [view.showMoreButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
             if ([tableView.dataSource isKindOfClass:[SearchResultsDataSource class]]) {
                 ResponseRoot *root = [((SearchResultsDataSource*)tableView.dataSource) dataWithSection:section];
                 ShowAllSearchResultsViewController *allVC = [[ShowAllSearchResultsViewController alloc] initWithResponseRoot:root];
+                [allVC setTitle:view.title];
                 [self.navigationController pushViewController:allVC animated:YES];
             }
         }];

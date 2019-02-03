@@ -45,27 +45,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
                                                           sectionIdentifier:resultsSectionIdentifier
                                                                    delegate:self];
 
-
-//    __weak typeof(self) weakSelf = self;
-//    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-//    _showObserver = [center addObserverForName:UIKeyboardDidShowNotification
-//                                        object:nil
-//                                        queue:nil
-//                                   usingBlock:^(NSNotification * _Nonnull note)
-//    {
-//        CGRect keyBoardFrame = [[note.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-//        CGRect bounds = weakSelf.view.bounds;
-//        bounds.size.height -= keyBoardFrame.size.height;
-//        [weakSelf.view setBounds:bounds];
-//    }];
-//    _hideObserver = [center addObserverForName:UIKeyboardDidHideNotification
-//                                        object:nil
-//                                         queue:nil
-//                                    usingBlock:^(NSNotification * _Nonnull note)
-//    {
-//
-//    }];
-
 }
 
 - (void)viewDidLayoutSubviews{
@@ -75,10 +54,15 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     frame.origin.y = CGRectGetMaxY(self.searchBar.frame);
     frame.size.height -= frame.origin.y;
 
-
     [self.searchResultsView setFrame:frame];
     [self.hintsTableView setFrame:frame];
 }
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+
+    [self.searchResultsView setNeedsDisplay];
+}
+
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:_showObserver];
     [[NSNotificationCenter defaultCenter] removeObserver:_hideObserver];
@@ -137,6 +121,8 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     self.searchBar.delegate = self;
 }
 
+
+
 #pragma mark - UISearchBarDelegate
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     [self.searchResultsView removeFromSuperview];
@@ -148,9 +134,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     [self.hintsTableView removeFromSuperview];
     [self.view addSubview:self.searchResultsView];
     [self.resultsDataSource searchTerm:searchBar.text];
-
-    NSLog(@"search===");
-
     [searchBar resignFirstResponder];
 }
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{

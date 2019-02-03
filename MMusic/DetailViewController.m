@@ -13,7 +13,7 @@
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
 
-#import "MMDetailViewController.h"
+#import "DetailViewController.h"
 #import "MMCloseButton.h"
 #import "UIButton+BlockButton.h"
 
@@ -24,7 +24,7 @@
 #import "Resource.h"
 #import "Song.h"
 
-@interface MMDetailViewController ()<UITableViewDelegate, ResourceDetailDataSourceDelegate>
+@interface DetailViewController ()<UITableViewDelegate, ResourceDetailDataSourceDelegate>
 @property(nonatomic, strong) MMCloseButton *closeButton;
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) MMDetailHeadView *headView;
@@ -32,12 +32,11 @@
 //data
 @property(nonatomic, strong)Resource *resource;
 @property(nonatomic,strong)ResourceDetailDataSource *dataSource;
-//@property(nonatomic, strong)MMDetaiDataSource *detailData;
 @end
 
 static CGFloat headHeight = 240;
 static NSString *const reuseIdentifier = @"tableview cell id";
-@implementation MMDetailViewController
+@implementation DetailViewController
 
 - (instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
@@ -47,6 +46,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         _headView = [[MMDetailHeadView alloc] initWithFrame:CGRectZero];
         _imageView = _headView.imageView;
         _titleLabel = _headView.label;
+
     }
     return self;
 }
@@ -128,11 +128,12 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 
 #pragma mark - <Dismiss ViewController dlelegate>
 - (void)delegateDismissViewController{
-    if (self.disMissDelegate && [self.disMissDelegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
-        [self.disMissDelegate detailViewControllerDidDismiss:self];
-    }else{
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+//    if (self.disMissDelegate && [self.disMissDelegate respondsToSelector:@selector(detailViewControllerDidDismiss:)]) {
+//        [self.disMissDelegate detailViewControllerDidDismiss:self];
+//    }else{
+//        [self dismissViewControllerAnimated:YES completion:nil];
+//    }
 }
 
 - (UITableView *)tableView{

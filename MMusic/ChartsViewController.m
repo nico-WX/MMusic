@@ -8,7 +8,7 @@
 
 #import "ChartsViewController.h"
 #import "ChartsSubContentCell.h"
-#import "MMDetailViewController.h"
+#import "DetailViewController.h"
 #import "ChartsCell.h"
 
 #import "ChartsDataSource.h"

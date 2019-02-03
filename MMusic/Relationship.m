@@ -10,4 +10,11 @@
 #import <MJExtension.h>
 
 @implementation Relationship
+
+- (instancetype)initWithDict:(NSDictionary *)dict{
+    if (self = [super initWithDict:dict]) {
+        [self mj_setKeyValues:dict];
+    }
+    return self;
+}
 @end

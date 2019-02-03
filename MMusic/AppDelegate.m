@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 
 //Controller
-#import "MMTabBarController.h"
+#import "TabBarController.h"
 #import "AuthManager.h"
 #import "CoreDataStack.h"
 
@@ -33,7 +33,7 @@
 //    }];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    MMTabBarController *root = [[MMTabBarController alloc] init];
+    TabBarController *root = [[TabBarController alloc] init];
     [self.window setRootViewController:root];
     [self.window makeKeyAndVisible];
 

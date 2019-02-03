@@ -12,7 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ResourceDetailViewController : UIViewController
 
-
 - (instancetype)initWithResource:(Resource*)resource;
 @end
 

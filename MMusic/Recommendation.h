@@ -10,8 +10,9 @@
 
 
 @interface RecommendationAttributes : MMObject
+
 @property(nonatomic,assign) BOOL isGroupRecommendation;
-@property(nonatomic,strong) NSDate *nextUpdateDate;
+@property(nonatomic,copy) NSString *nextUpdateDate;
 @property(nonatomic,copy) NSString *reason;
 @property(nonatomic,copy) NSString *title;
 @property(nonatomic,strong) NSArray<NSString*> *resourceTypes;

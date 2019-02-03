@@ -9,6 +9,8 @@
 #import "ShowAllSearchResultsViewController.h"
 #import "ShowAllSearchResultsDataSource.h"
 
+#import "ResourceDetailViewController.h"
+
 #import "ChartsSongCell.h"
 #import "ChartsSubContentCell.h"
 
@@ -37,7 +39,7 @@ static NSString *const identifier = @"cell identifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-    [self.navigationItem setLargeTitleDisplayMode:UINavigationItemLargeTitleDisplayModeNever];
+    [self.navigationItem setLargeTitleDisplayMode:UINavigationItemLargeTitleDisplayModeAlways];
     [self.view addSubview:self.collectionView];
 
     _dataSource = [[ShowAllSearchResultsDataSource alloc] initWithView:self.collectionView
@@ -94,6 +96,18 @@ static NSString *const identifier = @"cell identifier";
 
 #pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    Resource *res = self.responseRoot.data.firstObject;
+
+    if ([res.type isEqualToString:@"songs"]) {
+
+    }else if ([res.type isEqualToString:@"music-videos"]){
+
+    }else{
+        Resource *res = [((ChartsSubContentCell*)cell) resource];
+        ResourceDetailViewController *detailVC = [[ResourceDetailViewController alloc] initWithResource:res];
+        [detailVC.navigationItem setLargeTitleDisplayMode:UINavigationItemLargeTitleDisplayModeNever];
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }
 }
 @end
