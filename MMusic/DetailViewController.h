@@ -1,5 +1,5 @@
 //
-//  MMDetailViewController.h
+//  DetailViewController.h
 //  ScrollPage
 //
 //  Created by 🐙怪兽 on 2018/11/12.
@@ -10,15 +10,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class MMDetailViewController;
+@class DetailViewController;
 @class Resource;
 
 //dismiss
 @protocol MMDetailViewControllerDelegate <NSObject>
-- (void)detailViewControllerDidDismiss:(MMDetailViewController*)detailVC;
+- (void)detailViewControllerDidDismiss:(DetailViewController*)detailVC;
 @end
 
-@interface MMDetailViewController : UIViewController
+@interface DetailViewController : UIViewController
 
 @property (nonatomic, weak) id<MMDetailViewControllerDelegate> disMissDelegate;
 @property (nonatomic, strong, readonly) UIImageView *imageView;

@@ -49,9 +49,9 @@
 - (void)setSong:(Song *)song{
     if (_song != song) {
         _song = song;
-        [self.textLabel setText:song.name];
-        [self.detailTextLabel setText:song.artistName];
-        [self.imageView setImageWithURLPath:song.artwork.url];
+        [self.textLabel setText:song.attributes.name];
+        [self.detailTextLabel setText:song.attributes.artistName];
+        [self.imageView setImageWithURLPath:song.attributes.artwork.url];
     }
 }
 

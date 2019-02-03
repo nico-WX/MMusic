@@ -15,7 +15,13 @@
 #import "Artwork.h"
 #import "EditorialNotes.h"
 
-
 @implementation AppleCurator
+
+@synthesize attributes = _attributes;
+@synthesize relationships = _relationships;
+
+@end
+
+@implementation AppleCuratorAttributes
 
 @end

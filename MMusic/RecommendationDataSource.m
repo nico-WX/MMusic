@@ -10,11 +10,14 @@
 #import <MJRefresh.h>
 
 #import "RecommendationDataSource.h"
+#import "ResponseRoot.h"
 #import "Resource.h"
+
+#import "Recommendation.h"
 
 
 @interface RecommendationDataSource ()
-// all data
+
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*>* dataArray;
 
 @property(nonatomic, copy) NSString *reuseIdentifier;
@@ -38,25 +41,36 @@
         _delegate = delegate;
 
         //加载数据
-        JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
-        [hud.textLabel setText:@"加载中.."];
-        [hud showInView:collectionView animated:YES];
-
-        [self defaultRecommendataionWithCompletion:^(BOOL success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (success) {
-                    [hud dismissAnimated:YES];
-                    [hud removeFromSuperview];
-                    [collectionView reloadData];
-                    [collectionView.mj_header endRefreshing]; //停止刷新控件
-                }else{
-                    [hud.textLabel setText:@"数据加载失败!"];
-                    [hud dismissAfterDelay:2 animated:YES];
-                }
-            });
-        }];
+        [self loadDataWithCollectionView:collectionView];
     }
     return self;
+}
+
+- (void)loadDataWithCollectionView:(UICollectionView*)view{
+
+    //加载数据
+    JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
+    [hud.textLabel setText:@"加载中.."];
+    [hud showInView:view animated:YES];
+
+    [self defaultRecommendataionWithCompletion:^(BOOL success) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (success) {
+                [hud dismissAnimated:YES];
+                [hud removeFromSuperview];
+                [view reloadData];
+                [view.mj_header endRefreshing]; //停止刷新控件
+            }else{
+                [hud.textLabel setText:@"数据加载失败!"];
+                [hud dismissAfterDelay:2 animated:YES];
+
+                //加载失败, 设置刷新控件
+                [view setMj_header:[MJRefreshNormalHeader headerWithRefreshingBlock:^{
+                    [self loadDataWithCollectionView:view];
+                }]];
+            }
+        });
+    }];
 }
 
 #pragma mark - collectionView DataSource
@@ -102,21 +116,26 @@
 
 - (void)defaultRecommendataionWithCompletion:(void (^)(BOOL success))completion{
     [MusicKit.new.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        //数据临时集合 [{@"section title":[data]},...]
+        // @{@"data":@[Recommendation*]}
+        // ResponseRoot.data<Recommendation*>
+
         NSMutableArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *array = [NSMutableArray array];
         for (NSDictionary *subJSON in [json objectForKey:@"data"]) {
-            //获取 section title
+
+            //section title
             NSString *title = [subJSON valueForKeyPath:@"attributes.title.stringForDisplay"];
             if (!title) {
-                //部分情况下无显示名称, 向下获取歌单维护者
+                //部分情况下无显示名称, 向下获取歌单维护者名称
                 NSArray *list = [subJSON valueForKeyPath:@"relationships.contents.data"];
                 title = [list.firstObject valueForKeyPath:@"attributes.curatorName"];
             }
 
+            //分组推荐时, sunJSON 内部还包含多组subJSON, 在方法内部判断, 递归解析;
             NSArray *resources = [self serializationJSON:subJSON];
             [array addObject:@{title:resources}];
         }
 
+        //保存数据
         self.dataArray = array;
         if (completion) {
             completion(self.dataArray.count > 0);
@@ -126,25 +145,26 @@
 
 /**解析JSON*/
 - (NSArray<Resource*>*)serializationJSON:(NSDictionary*)json{
-    NSMutableArray<Resource*> *sectionList = [NSMutableArray array];  //section数据临时集合
+
+    NSMutableArray<Resource*> *sectionList = [NSMutableArray array];
+
     json = [json objectForKey:@"relationships"];
-    NSDictionary *contents = [json objectForKey:@"contents"];  //如果这里有内容, 则不是组推荐,递归调用解析即可解析<组推荐json结构>
+    NSDictionary *contents = [json objectForKey:@"contents"];  //如果这里有内容, 则不是组推荐
     if (contents) {
         //非组推荐
         for (NSDictionary *sourceDict in [contents objectForKey:@"data"]) {
-            Resource *resouce = [Resource instanceWithDict:sourceDict];
-            [sectionList addObject:resouce];
+            [sectionList addObject:[Resource instanceWithDict:sourceDict]];
         }
     }else{
         //组推荐
         NSDictionary *recommendations = [json objectForKey:@"recommendations"];
-        if (recommendations) {
-            for (NSDictionary *subJSON  in [recommendations objectForKey:@"data"]) {
-                //递归
-                NSArray *temp =[self serializationJSON: subJSON];
-                //数据添加
-                [sectionList addObjectsFromArray:temp];
-            }
+        //if (recommendations) {}
+
+        for (NSDictionary *subJSON in [recommendations objectForKey:@"data"]) {
+            //递归
+            NSArray *temp =[self serializationJSON:subJSON];
+            //数据添加
+            [sectionList addObjectsFromArray:temp];
         }
     }
     return sectionList;

@@ -10,8 +10,14 @@
 
 @implementation Album
 
+@synthesize attributes = _attributes;
+@synthesize relationships = _relationships;
+@end
+
+
+@implementation AlbumAttributes
+
 +(NSDictionary *)mj_objectClassInArray{
     return @{@"genreNames":@"NSString"};
 }
-
 @end

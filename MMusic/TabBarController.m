@@ -1,36 +1,26 @@
 //
-//  MMTabBarController.m
+//  TabBarController.m
 //
 //  Created by 🐙怪兽 on 2018/11/8.
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import <Masonry.h>
-#import <MediaPlayer/MediaPlayer.h>
-#import "MMTabBarController.h"
+#import "TabBarController.h"
 
-//vc
+//chile vc
 #import "NowPlayingViewController.h"
 #import "RecommendationViewController.h"
 #import "SearchViewController.h"
 #import "MyMusicViewController.h"
 #import "ChartsViewController.h"
 
-@interface MMTabBarController ()
+@interface TabBarController ()
 @property(nonatomic, strong)UIViewController *popViewController;       
 @property(nonatomic, strong)UIVisualEffectView *visualEffectView;       //背景效果
 @property(nonatomic, strong)UIImpactFeedbackGenerator *impactFeedback;  //手势反馈
 @end
 
-@implementation MMTabBarController
-
-
-- (instancetype)init{
-    if (self =[super init]) {
-        _impactFeedback = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
-    }
-    return self;
-}
+@implementation TabBarController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -39,7 +29,6 @@
     [self.view setBackgroundColor:UIColor.whiteColor];
 
     _popFrame = ({
-
         CGFloat w = PlayerPopSize.width;
         CGFloat h = PlayerPopSize.height;
         CGFloat x = 0;
@@ -71,12 +60,11 @@
 
     UIView *transition = [self.view.subviews objectAtIndex:0];
     CGRect frame = transition.frame;
-    frame.size.height -= _popFrame.size.height;
+    frame.size.height -= self.popFrame.size.height;
     [transition setFrame:frame];
 }
 
 #pragma  mark - help
-
 
 - (void)setupGesture{
     UISwipeGestureRecognizer *rightSwipe = [UISwipeGestureRecognizer new];
@@ -205,12 +193,7 @@
 
     self.popViewController = popViewController;
     [self.visualEffectView.contentView addSubview:popViewController.view];
-
-    //布局
-    UIView *superView = self.visualEffectView.contentView;
-    [popViewController.view mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superView);
-    }];
+    popViewController.view.frame = self.visualEffectView.contentView.bounds;
 }
 
 #pragma mark - getter
@@ -223,6 +206,13 @@
         [_visualEffectView setFrame:_popFrame];
     }
     return _visualEffectView;
+}
+
+- (UIImpactFeedbackGenerator *)impactFeedback{
+    if (!_impactFeedback) {
+        _impactFeedback = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
+    }
+    return _impactFeedback;
 }
 
 @end

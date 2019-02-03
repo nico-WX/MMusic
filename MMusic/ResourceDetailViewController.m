@@ -6,18 +6,20 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-//#import <MediaPlayer/MediaPlayer.h>
 #import "MPMusicPlayerController+ResourcePlaying.h"
 
 #import "ResourceDetailViewController.h"
+
 #import "ResourceDetailHeadView.h"
 #import "ResourceDetailSongCell.h"
+#import "AlbumDetailCell.h"
+#import "PlaylistDetailCell.h"
+
 #import "ResourceDetailDataSource.h"
 #import "SongCell.h"
 #import "Resource.h"
 
-#import "AlbumDetailCell.h"
-#import "PlaylistDetailCell.h"
+
 
 @interface ResourceDetailViewController ()<UITableViewDelegate,ResourceDetailDataSourceDelegate>
 @property(nonatomic, strong) Resource *resource;
@@ -45,7 +47,7 @@ static NSString *const identifier = @"cell identifier";
     [self.headView setFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), 200)];
     [self.headView setResource:_resource];
 
-    //更换cell 类型
+    //注册不同的类型cell
     Class cellClass;
     if ([_resource.type isEqualToString:@"playlists"]) {
         cellClass = [PlaylistDetailCell class];

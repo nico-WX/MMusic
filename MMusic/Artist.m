@@ -9,13 +9,22 @@
 /*@class EditorialNotes;*/
 
 #import "Artist.h"
-#import <MJExtension.h>
+//#import <MJExtension.h>
+
 
 @implementation Artist
+@synthesize attributes = _attributes;
+@synthesize relationships = _relationships;
+
+@end
+
+@implementation ArtistAttributes
 
 +(NSDictionary *)mj_objectClassInArray{
     return @{@"genreNames":@"NSString"};
 }
 
+@end
 
+@implementation ArtistRelationship
 @end

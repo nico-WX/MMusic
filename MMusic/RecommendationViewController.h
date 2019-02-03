@@ -8,8 +8,5 @@
 
 #import <UIKit/UIKit.h>
 
-/**
- Apple Music 每日推荐
- */
-
-@interface RecommendationViewController : UIViewController @end
+@interface RecommendationViewController : UIViewController
+@end

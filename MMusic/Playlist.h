@@ -12,7 +12,7 @@
 @class EditorialNotes;
 @class PlayParameters;
 
-@interface Playlist : Resource
+@interface PlaylistAttributes : MMObject
 @property(nonatomic, copy) NSString *curatorName;
 @property(nonatomic, copy) NSString *url;
 @property(nonatomic, copy) NSString *playlistType;
@@ -22,6 +22,15 @@
 @property(nonatomic, strong) Artwork *artwork;
 @property(nonatomic, strong) EditorialNotes *editorialNotes; //description
 @property(nonatomic, strong) NSDictionary *playParams;
+@end
+
+@interface PlaylistRelationships : Relationship
+
+@end
+
+@interface Playlist : Resource
+@property(nonatomic,strong)PlaylistAttributes *attributes;
+@property(nonatomic,strong)PlaylistRelationships *relationships;
 
 @end
 

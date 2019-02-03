@@ -8,8 +8,10 @@
 
 #import "Resource.h"
 
-@interface Genre : Resource
-/**本地流派名称*/
+@interface GenreAttributes : MMObject
 @property(nonatomic,copy) NSString *name;
+@end
 
+@interface Genre : Resource
+@property(nonatomic,strong)GenreAttributes *attributes;
 @end

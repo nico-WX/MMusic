@@ -6,10 +6,12 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
+#import <MediaPlayer/MediaPlayer.h>
 #import <Masonry.h>
 #import <UIImageView+WebCache.h>
-#import "UIImageView+Extension.h"
 
+#import "UIImageView+Extension.h"
+#import "MPMediaItemArtwork+Exchange.h"
 #import "ChartsSubContentCell.h"
 #import "Resource.h"
 
@@ -28,9 +30,12 @@
         [self.contentView addSubview:_titleLabel];
         [self.contentView addSubview:_subTitleLable];
 
-        
+
         [_titleLabel setAdjustsFontSizeToFitWidth:YES];
+        [_titleLabel setTextAlignment:NSTextAlignmentCenter];
+
         [_subTitleLable setTextColor:UIColor.grayColor];
+        [_subTitleLable setTextAlignment:NSTextAlignmentCenter];
         UIFont *subTitleFont = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
         [_subTitleLable setFont:subTitleFont];
     }
@@ -67,7 +72,28 @@
         [_subTitleLable setText:[resource.attributes valueForKey:@"curatorName"]];
         NSString *url = [resource.attributes valueForKeyPath:@"artwork.url"];
         [_imageView setImageWithURLPath:url];
-        [self setNeedsLayout];
+
+        [self setNeedsDisplay];
+        //[self setNeedsLayout];
+    }
+}
+
+- (void)setMediaItem:(MPMediaItem *)mediaItem{
+    if (_mediaItem != mediaItem) {
+        _mediaItem = mediaItem;
+
+        [_titleLabel setText:mediaItem.title];
+        [_subTitleLable setText:mediaItem.artist];
+        if (!_subTitleLable.text) {
+            [_subTitleLable setText:mediaItem.albumTitle];
+        }
+
+        MPMediaItemArtwork *artwork = mediaItem.artwork;
+        [artwork loadArtworkImageWithSize:_imageView.bounds.size completion:^(UIImage * _Nonnull image) {
+            [self->_imageView setImage:image];
+        }];
+        //[self setNeedsLayout];
+        [self setNeedsDisplay];
     }
 }
 @end

@@ -8,9 +8,19 @@
 
 #import "MusicVideo.h"
 
-@implementation MusicVideo
+@implementation MusicVideoRelationships
+@end
+
+@implementation MusicVideoAttributes
 
 +(NSDictionary *)mj_objectClassInArray{
     return @{@"previews":@"Preview"};
 }
+
+@end
+
+@implementation MusicVideo
+@synthesize attributes = _attributes;
+@synthesize relationships = _relationships;
+
 @end

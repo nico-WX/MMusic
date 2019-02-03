@@ -8,5 +8,9 @@
 
 #import "Storefront.h"
 
+@implementation StorefrontAttributes
+@end
+
 @implementation Storefront
+@synthesize attributes = _attributes;
 @end

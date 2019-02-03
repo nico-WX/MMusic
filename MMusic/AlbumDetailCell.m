@@ -76,7 +76,7 @@
     if (_song != song) {
         _song = song;
 
-        [_nameLabel setText:song.name];
+        [_nameLabel setText:song.attributes.name];
         [_indexLabel setText:[NSString stringWithFormat:@"%02ld",index+1]];
         [self stateForSong:song];
     }

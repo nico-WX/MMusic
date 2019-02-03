@@ -9,21 +9,15 @@
 #import "MMObject.h"
 #import "Relationship.h"
 
-
 @interface Resource : MMObject
-/**资源id*/
-@property(nonatomic, copy) NSString *identifier;  // id
-/**资源类型*/
+
+@property(nonatomic, copy) NSString *identifier;  // json key => id
 @property(nonatomic, copy) NSString *type;
-/**获取的资源的子路径*/
 @property(nonatomic, copy) NSString *href;
 
-/**具体的资源*/
-@property(nonatomic, strong) NSDictionary *attributes;
-/**(可选)关于请求或者响应的后台参数*/
-@property(nonatomic, strong) NSDictionary *meta;
+@property(nonatomic, strong) NSObject *attributes;  // 子类定义不同的类型, 手动合成实例变量
 
-/**有关系的资源(个人推荐数据)*/
+@property(nonatomic, strong) NSDictionary *meta;
 @property(nonatomic, strong) Relationship *relationships;
 
 /**该方法只能在Resource 子类初始中调用*/

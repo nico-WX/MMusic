@@ -4,13 +4,13 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-//#import <JGProgressHUD.h>
+
 #import <MJRefresh.h>
-#import <Masonry.h>
 
 #import "RecommendationViewController.h"
-#import "MMDetailViewController.h"
-#import "MMTabBarController.h"
+
+#import "DetailViewController.h"
+#import "TabBarController.h"
 
 #import "RecommentationSectionView.h"
 #import "ResourceCell.h"
@@ -21,7 +21,6 @@
 
 #import "RecommendationDataSource.h"
 #import "Resource.h"
-
 
 @interface RecommendationViewController()<UICollectionViewDelegate,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate,RecommendationDataSourceDelegate>
 
@@ -57,10 +56,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
 
-    UIView *superView = self.view;
-    [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superView);
-    }];
+    [_collectionView setFrame:self.view.bounds];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -84,7 +80,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
     ResourceCell *cell = (ResourceCell*)[collectionView cellForItemAtIndexPath:indexPath];
-    MMDetailViewController *detail = [[MMDetailViewController alloc] initWithResource:cell.resource];
+    DetailViewController *detail = [[DetailViewController alloc] initWithResource:cell.resource];
 
     //显示动画
     [detail setDisMissDelegate:self];
@@ -101,7 +97,7 @@ static NSString *const cellIdentifier = @"resourceCell";
     [self presentViewController:detail animated:YES completion:nil];
 }
 #pragma mark - <DetailViewControllerDelegate>
-- (void)detailViewControllerDidDismiss:(MMDetailViewController *)detailVC{
+- (void)detailViewControllerDidDismiss:(DetailViewController *)detailVC{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

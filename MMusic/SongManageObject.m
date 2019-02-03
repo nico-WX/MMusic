@@ -26,12 +26,14 @@
         //映射属性 <artwork另外生成对象> // @"previews"
         NSArray *propertyes = @[@"name",@"movementName",@"composerName",@"genreNames",@"artistName",@"workName",@"contentRating",@"discNumber",@"durationInMillis",@"editorialNotes",@"isrc",@"movementNumber",@"movementCount",@"playParams",@"releaseDate",@"trackNumber",@"url"];
         for (NSString *key in propertyes) {
-            [self setValue:[song valueForKey:key] forKey:key];
+            if ([song.attributes valueForKey:key]) {
+                [self setValue:[song.attributes valueForKey:key] forKey:key];
+            }
         }
 
-        [self setValue:song.playParams[@"id"] forKey:@"identifier"];
+        [self setValue:song.attributes.playParams[@"id"] forKey:@"identifier"];
 
-        Artwork *art = song.artwork;
+        Artwork *art = song.attributes.artwork;
         NSDictionary *dict = @{@"url":art.url,@"height":@(art.height),@"width":@(art.width)};
         [self setValue:dict forKey:@"artwork"];
     }
