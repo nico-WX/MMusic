@@ -10,11 +10,13 @@
 #import <MJRefresh.h>
 
 #import "RecommendationDataSource.h"
+#import "ResponseRoot.h"
 #import "Resource.h"
 
 
 @interface RecommendationDataSource ()
 // all data
+@property(nonatomic, strong) ResponseRoot *root;
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*>* dataArray;
 
 @property(nonatomic, copy) NSString *reuseIdentifier;
@@ -103,6 +105,10 @@
 - (void)defaultRecommendataionWithCompletion:(void (^)(BOOL success))completion{
     [MusicKit.new.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         //数据临时集合 [{@"section title":[data]},...]
+
+        //ResponseRoot *root = [ResponseRoot instanceWithDict:json];
+        //NSLog(@"root =%@",root);
+
         NSMutableArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *array = [NSMutableArray array];
         for (NSDictionary *subJSON in [json objectForKey:@"data"]) {
             //获取 section title

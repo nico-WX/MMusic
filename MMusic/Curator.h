@@ -11,10 +11,21 @@
 @class Artwork;
 @class EditorialNotes;
 
-@interface Curator : Resource
+@interface CuratorAttribute : MMObject
+
 @property(nonatomic, strong) Artwork *artwork;
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *url;
+
+@end
+
+@interface CuratorRelationship : Relationship
+
+@end
+
+@interface Curator : Resource
+@property(nonatomic,strong)CuratorAttribute *attributes;
+@property(nonatomic,strong)CuratorRelationship *relationships;
 
 @end

@@ -107,7 +107,7 @@
     NSManagedObjectContext *moc = [CoreDataStack shareDataStack].context;
 
     //查询, 如果已经添加, 跳过
-    NSString *identifier = [song.playParams valueForKey:@"id"];
+    NSString *identifier = [song.attributes.playParams valueForKey:@"id"];
     NSPredicate *idPredicate = [NSPredicate predicateWithFormat:@"%K == %@",@"identifier",identifier];
     NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Song"];
     [fetch setPredicate:idPredicate];
@@ -132,7 +132,7 @@
 }
 - (void)deleteSong:(Song*)song{
     NSManagedObjectContext *moc = [CoreDataStack shareDataStack].context;
-    NSPredicate *namePre = [NSPredicate predicateWithFormat:@"%K == %@",@"name",song.name];
+    NSPredicate *namePre = [NSPredicate predicateWithFormat:@"%K == %@",@"name",song.attributes.name];
     NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Song"]; //MMCDMO_Song 类映射到模型文件中的 Song实体
     [fetch setPredicate:namePre];
     [fetch setFetchLimit:5];
@@ -147,7 +147,7 @@
 //    }
     //匹配播放参数ID, 删除
     for (SongManageObject *sqlSong in fetchObjects) {
-        NSString *lID = song.playParams[@"id"];
+        NSString *lID = song.attributes.playParams[@"id"];
         NSString *sqlID = sqlSong.playParams[@"id"];
         if ([lID isEqualToString:sqlID]) {
             [moc deleteObject:sqlSong];

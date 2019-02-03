@@ -8,9 +8,20 @@
 
 #import "ResponseRoot.h"
 #import "Resource.h"
-#import <MJExtension.h>
+//#import <MJExtension.h>
 
 @implementation ResponseRoot
+
+- (instancetype)initWithDict:(NSDictionary *)dict{
+    if (self = [super initWithDict:dict]) {
+
+        [self mj_setKeyValues:dict];
+    }
+    return self;
+}
++(instancetype)instanceWithDict:(NSDictionary *)dict{
+    return [[self alloc] initWithDict:dict];
+}
 
 +(NSDictionary *)mj_objectClassInArray{
     return @{@"data":@"Resource"};

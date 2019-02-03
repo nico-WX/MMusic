@@ -12,6 +12,7 @@
 
 -(instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [super init]) {
+     
         [self mj_setKeyValues:dict];
     }
     return self;

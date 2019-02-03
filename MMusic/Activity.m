@@ -15,9 +15,29 @@
 
 
 @implementation Activity
+@synthesize attributes = _attributes;
+@synthesize relationships = _relationships;
 
-//@dynamic artwork,editorialNotes,name,url;
+- (instancetype)initWithDict:(NSDictionary *)dict{
+    if (self = [super initWithDict:dict]) {
+    
+    }
+    return self;
+}
 
 @end
+
+
+@implementation ActivityRelationships
+//@synthesize data = _data;
+
+@end
+
+
+
+
+@implementation ActivityAttributes
+@end
+
 
 

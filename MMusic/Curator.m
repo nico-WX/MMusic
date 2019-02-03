@@ -11,7 +11,16 @@
 #import "EditorialNotes.h"
 
 
+@implementation CuratorRelationship
+@end
+
+@implementation CuratorAttribute
+@end
+
 
 @implementation Curator
+
+@synthesize attributes = _attributes;
+@synthesize relationships = _relationships;
 
 @end

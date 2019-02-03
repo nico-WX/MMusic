@@ -81,15 +81,15 @@
 - (void)setAlbum:(Album *)album{
     if (_album != album) {
         _album = album;
-        [_titleLabel setText:album.name];
-        [_imageView setImageWithURLPath:album.artwork.url];
+        [_titleLabel setText:album.attributes.name];
+        [_imageView setImageWithURLPath:album.attributes.artwork.url];
     }
 }
 - (void)setPlaylists:(Playlist *)playlists{
     if (_playlists != playlists) {
         _playlists = playlists;
-        [_titleLabel setText:playlists.name];
-        [_imageView setImageWithURLPath:playlists.artwork.url];
+        [_titleLabel setText:playlists.attributes.name];
+        [_imageView setImageWithURLPath:playlists.attributes.artwork.url];
     }
 }
 

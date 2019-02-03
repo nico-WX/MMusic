@@ -35,7 +35,7 @@
         completion(image);
     }else{
         [MainPlayer nowPlayingSong:^(Song * _Nonnull song) {
-            NSString *urlStr = song.artwork.url;
+            NSString *urlStr = song.attributes.artwork.url;
             urlStr = [urlStr stringReplacingImageURLSize:size];
             //NSLog(@"load artwork image url = %@",urlStr);
 

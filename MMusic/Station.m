@@ -9,4 +9,5 @@
 #import "Station.h"
 
 @implementation Station
+@synthesize attributes = _attributes;
 @end

@@ -9,10 +9,21 @@
 #import "Resource.h"
 
 
+@interface RecommendationAttributes : MMObject
+@property(nonatomic,assign) BOOL isGroupRecommendation;
+@property(nonatomic,strong) NSDate *nextUpdateDate;
+@property(nonatomic,copy) NSString *reason;
+@property(nonatomic,copy) NSString *title;
+@property(nonatomic,strong) NSArray<NSString*> *resourceTypes;
+@end
+
+@interface RecommendationRelationships : Relationship
+
+@end
+
 @interface Recommendation : Resource
-
-@property(nonatomic, copy) NSString *next;
-
+@property(nonatomic,strong)RecommendationAttributes *attributes;
+@property(nonatomic,strong)RecommendationRelationships *relationships;
 
 @end
 

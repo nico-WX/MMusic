@@ -11,22 +11,22 @@
 @class EditorialNotes;
 
 
-@interface Attributes ()
+@interface ActivityAttributes : MMObject
 @property(nonatomic, strong) Artwork *artwork;
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *url;
 @end
 
+@interface ActivityRelationships : Relationship
+//@property(nonatomic,strong)NSArray<Playlist*> *data;
+@end
+
 @interface Activity : Resource
 
-/*
+@property(nonatomic,strong)ActivityAttributes *attributes;
+@property(nonatomic,strong)ActivityRelationships *relationships;
 
-@property(nonatomic, strong) Artwork *artwork;
-@property(nonatomic, strong) EditorialNotes *editorialNotes;
-@property(nonatomic, copy) NSString *name;
-@property(nonatomic, copy) NSString *url;
-*/
 @end
 
 

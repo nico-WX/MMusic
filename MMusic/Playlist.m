@@ -8,10 +8,19 @@
 
 #import "Playlist.h"
 
-@implementation Playlist
 
+@implementation PlaylistAttributes
 +(NSDictionary*)mj_replacedKeyFromPropertyName{
     return @{@"editorialNotes":@"description"};
 }
+
+@end
+
+@implementation PlaylistRelationships
+@end
+
+@implementation Playlist
+@synthesize attributes = _attributes;
+@synthesize relationships = _relationships;
 
 @end

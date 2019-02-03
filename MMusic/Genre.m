@@ -7,7 +7,8 @@
 //
 
 #import "Genre.h"
-#import <MJExtension.h>
+
 @implementation Genre
+@synthesize attributes = _attributes;
 
 @end

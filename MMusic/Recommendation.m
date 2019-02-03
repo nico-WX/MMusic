@@ -8,9 +8,21 @@
 
 #import "Recommendation.h"
 
+@implementation RecommendationAttributes
+//
+//+ (NSDictionary *)mj_objectClassInArray{
+//
+//}
+
+@end
+
+@implementation RecommendationRelationships
+
+@end
 
 @implementation Recommendation
-
+@synthesize attributes = _attributes;
+@synthesize relationships = _relationships;
 @end
 
 

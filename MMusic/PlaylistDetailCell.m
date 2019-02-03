@@ -88,9 +88,9 @@
     if (_song != song) {
         _song = song;
 
-        [_nameLabel setText:song.name];
-        [_artistLabel setText:song.artistName];
-        [_artworkView setImageWithURLPath:song.artwork.url];
+        [_nameLabel setText:song.attributes.name];
+        [_artistLabel setText:song.attributes.artistName];
+        [_artworkView setImageWithURLPath:song.attributes.artwork.url];
         [self stateForSong:song];
     }
 }

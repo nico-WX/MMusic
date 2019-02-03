@@ -14,16 +14,13 @@
 @class Preview;
 @class MPMediaItem;
 
-@interface Song : Resource
-/**艺人名称*/
-@property(nonatomic, copy) NSString *artistName;
-/**作家*/
-@property(nonatomic, copy) NSString *composerName;
-/**内容评级*/
-@property(nonatomic, copy) NSString *contentRating;
-/**国际标准录音编码*/
-@property(nonatomic, copy) NSString *isrc;
 
+@interface SongAttributes : MMObject
+
+@property(nonatomic, copy) NSString *artistName;
+@property(nonatomic, copy) NSString *composerName;
+@property(nonatomic, copy) NSString *contentRating;
+@property(nonatomic, copy) NSString *isrc;
 @property(nonatomic, copy) NSString *movementName;
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *releaseDate;
@@ -43,11 +40,20 @@
 @property(nonatomic, assign) int movementNumber;
 @property(nonatomic, assign) int trackNumber;
 
+@end
+
+@interface SongRelationships : Relationship
+@end
+
+@interface Song : Resource
+
+@property(nonatomic,strong)SongAttributes *attributes;
+@property(nonatomic,strong)SongRelationships *relationships;
+
 /**
  比较两个对象的 playbackStoreID
  @param mediaItem 媒体对象
  @return 是否为相同的歌曲
  */
 -(BOOL) isEqualToMediaItem:(MPMediaItem*) mediaItem;
-
 @end
