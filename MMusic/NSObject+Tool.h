@@ -22,16 +22,8 @@
 @class ResponseRoot;
 @class MPMusicPlayerPlayParametersQueueDescriptor;
 
-/**数据回调声明*/
+//请求数据回调
 typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
-
-//
-////状态码映射
-//typedef NS_ENUM(NSUInteger, NSInteger) {
-//    <#MyEnumValueA#>,
-//    <#MyEnumValueB#>,
-//    <#MyEnumValueC#>,
-//};
 
 
 @interface NSObject (Tool)
@@ -39,7 +31,9 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
 /**
 统一处理响应头信息,处理授权Token 解析响应体 并返回字典(如果有返回)
  */
-- (NSDictionary*_Nullable)serializationDataWithResponse:(NSURLResponse* _Nullable)response data:(NSData*_Nullable)data error:(NSError*_Nullable)error;
+- (NSDictionary*_Nullable)serializationDataWithResponse:(NSURLResponse* _Nullable)response
+                                                   data:(NSData*_Nullable)data
+                                                  error:(NSError*_Nullable)error;
 
 /**
  封装请求操作 通过回调返回json数据

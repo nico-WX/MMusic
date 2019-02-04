@@ -13,4 +13,12 @@
 
 @implementation Storefront
 @synthesize attributes = _attributes;
+
+- (instancetype)initWithDict:(NSDictionary *)dict{
+    if (self = [super initWithDict:dict]) {
+        _attributes = [StorefrontAttributes instanceWithDict:dict];
+    }
+    return self;
+}
+
 @end

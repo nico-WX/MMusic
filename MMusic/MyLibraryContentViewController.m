@@ -60,12 +60,12 @@ static NSString *const identifier = @"reuseIdentifier";
 
     [self.view addSubview:self.collectionView];
 
-
     //数据源
     switch (_type) {
         case LibraryLocalSongType:
             break;
         case LibraryMyLikeSongType:
+            
             break;
         case LibraryAlbumType:{
             MPMediaQuery *query = [MPMediaQuery albumsQuery];
@@ -120,7 +120,7 @@ static NSString *const identifier = @"reuseIdentifier";
 
         case LibraryAlbumType:
         case LibraryPlaylistType:{
-            CGFloat w = CGRectGetWidth(self.view.bounds)/2;
+            CGFloat w = CGRectGetWidth(self.view.bounds)/2 - 24;
             CGFloat h = w+40;
             [_layout setItemSize:CGSizeMake(w, h)];
             [_collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
@@ -133,7 +133,6 @@ static NSString *const identifier = @"reuseIdentifier";
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-
 
     [_collectionView setFrame:self.view.bounds];
 }
@@ -158,5 +157,13 @@ static NSString *const identifier = @"reuseIdentifier";
     if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
         [((ChartsSubContentCell*)cell) setMediaItem:item];
     }
+}
+
+#pragma mark - UICollectionViewDelegate
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+
+
+
+
 }
 @end

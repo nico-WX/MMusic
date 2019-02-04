@@ -60,7 +60,7 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 
-    [self.searchResultsView setNeedsDisplay];
+    //[self.searchResultsView setNeedsDisplay];
 }
 
 - (void)dealloc{
@@ -83,7 +83,7 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     if (!_searchResultsView) {
         _searchResultsView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_searchResultsView registerClass:[SearchResultsCell class] forCellReuseIdentifier:resultsIdentifier];
-        [_searchResultsView setRowHeight:55];
+        [_searchResultsView setRowHeight:80];
         //代理在主搜索视图中
     }
     return _searchResultsView;
@@ -95,6 +95,7 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 #pragma mark - UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //选中hints cell 执行搜索
     if (tableView == self.hintsTableView) {
         NSString *term = cell.textLabel.text;
         [self.searchBar setText:term];
@@ -120,7 +121,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     self.searchBar = searchController.searchBar;
     self.searchBar.delegate = self;
 }
-
 
 
 #pragma mark - UISearchBarDelegate

@@ -36,10 +36,11 @@
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-//    if (_query.groupingType == MPMediaGroupingPodcastTitle) {
-//        NSLog(@">>>>>");
-//        return _query.collections.count;
-//    }
+
+    //NSLog(@"items cout =%",_query.items.count);
+    NSLog(@"item setcion =%@",_query.itemSections);
+    NSLog(@"collection =%@",_query.collections);
+    NSLog(@"collec setcion =%@",_query.collectionSections);
 
     return _query.items.count;
 }
@@ -47,9 +48,7 @@
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_identifier forIndexPath:indexPath];
     if ([_delegate respondsToSelector:@selector(configureCell:object:)]) {
         //
-
         MPMediaItem *item = [_query.items objectAtIndex:indexPath.row];
-
         [_delegate configureCell:cell object:item];
     }
     return cell;

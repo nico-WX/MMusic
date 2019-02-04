@@ -14,8 +14,11 @@
 #import "ChartsSongCell.h"
 #import "ChartsSubContentCell.h"
 
+#import "MPMusicPlayerController+ResourcePlaying.h"
 #import "ResponseRoot.h"
 #import "Resource.h"
+#import "Song.h"
+#import "MusicVideo.h"
 
 @interface ShowAllSearchResultsViewController ()<UICollectionViewDelegate,ShowAllSearchResultsDataSourceDelegate>
 @property(nonatomic,strong)ResponseRoot *responseRoot;
@@ -53,10 +56,11 @@ static NSString *const identifier = @"cell identifier";
 
     [self.collectionView setFrame:self.view.bounds];
 
+    // 不同的类型, 不同的cellSize  和cell 类型
     Resource *res = self.responseRoot.data.firstObject;
     if ([res.type isEqualToString:@"songs"]) {
         [self.collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
-        CGFloat h = 55;
+        CGFloat h = 80;
         CGFloat w = CGRectGetWidth(self.view.bounds);
         [self.layout setItemSize:CGSizeMake(w, h)];
         [self.layout setMinimumInteritemSpacing:1];
@@ -88,7 +92,7 @@ static NSString *const identifier = @"cell identifier";
 
 
 #pragma mark - ShowAllSearchResultsDataSourceDelegate
-- (void)configureCollectionCell:(UICollectionViewCell *)cell object:(Resource *)resource{
+- (void)configureCollectionCell:(UICollectionViewCell *)cell object:(Resource   *)resource{
     if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
         [((ChartsSubContentCell*)cell) setResource:resource];
     }
@@ -97,11 +101,26 @@ static NSString *const identifier = @"cell identifier";
 #pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    Resource *res = self.responseRoot.data.firstObject;
+
+    NSArray<Resource*> *data = self.dataSource.data;
+    Resource *res = data.firstObject;
 
     if ([res.type isEqualToString:@"songs"]) {
 
+        NSMutableArray *songList = [NSMutableArray array];
+        for (Resource *resource in data) {
+            Song *song = [Song instanceWithResource:resource];
+            [songList addObject:song];
+        }
+        [MainPlayer playSongs:songList startIndex:indexPath.row];
+
     }else if ([res.type isEqualToString:@"music-videos"]){
+        NSMutableArray<MusicVideo*> *musicVideoList = [NSMutableArray array];
+        for (Resource *resource in data) {
+            MusicVideo *mv = [MusicVideo instanceWithResource:resource];
+            [musicVideoList addObject:mv];
+        }
+        [MainPlayer playMusicVideos:musicVideoList startIndex:indexPath.row];
 
     }else{
         Resource *res = [((ChartsSubContentCell*)cell) resource];

@@ -68,6 +68,7 @@
 		3B65B2A221E0A92000C2C388 /* MMPlayerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B2A121E0A92000C2C388 /* MMPlayerButton.m */; };
 		3B66A22E2195CCDC00F7DC9E /* TabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B66A22C2195CCDC00F7DC9E /* TabBarController.m */; };
 		3B679FB42206DDBB006CBCDF /* Rating.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FB32206DDBB006CBCDF /* Rating.m */; };
+		3B679FB922088002006CBCDF /* MyLikeSongDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FB822088002006CBCDF /* MyLikeSongDataSource.m */; };
 		3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895820A9968C000C3403 /* LibraryAlbum.m */; };
 		3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895B20A998B6000C3403 /* LibraryMusicVideo.m */; };
 		3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895E20A99AA5000C3403 /* LibraryPlaylist.m */; };
@@ -369,6 +370,8 @@
 		3B66A22D2195CCDC00F7DC9E /* TabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarController.h; sourceTree = "<group>"; };
 		3B679FB22206DDBB006CBCDF /* Rating.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rating.h; sourceTree = "<group>"; };
 		3B679FB32206DDBB006CBCDF /* Rating.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Rating.m; sourceTree = "<group>"; };
+		3B679FB722088002006CBCDF /* MyLikeSongDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyLikeSongDataSource.h; sourceTree = "<group>"; };
+		3B679FB822088002006CBCDF /* MyLikeSongDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyLikeSongDataSource.m; sourceTree = "<group>"; };
 		3B69895720A9968C000C3403 /* LibraryAlbum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryAlbum.h; sourceTree = "<group>"; };
 		3B69895820A9968C000C3403 /* LibraryAlbum.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibraryAlbum.m; sourceTree = "<group>"; };
 		3B69895A20A998B6000C3403 /* LibraryMusicVideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryMusicVideo.h; sourceTree = "<group>"; };
@@ -723,6 +726,8 @@
 				3B64B2CD21FCBD4C0029C32E /* MyMusicDataSource.m */,
 				3B64B2CF21FCC3D40029C32E /* LibraryDataSource.h */,
 				3B64B2D021FCC3D40029C32E /* LibraryDataSource.m */,
+				3B679FB722088002006CBCDF /* MyLikeSongDataSource.h */,
+				3B679FB822088002006CBCDF /* MyLikeSongDataSource.m */,
 			);
 			name = DataSource;
 			sourceTree = "<group>";
@@ -1528,6 +1533,7 @@
 				3B3D9981205512FA000F2E9E /* SongCell.m in Sources */,
 				3B9AA8E61FB46C7700720085 /* AppleCurator.m in Sources */,
 				3B73F75F21B1370300097801 /* MMLocalLibraryData.m in Sources */,
+				3B679FB922088002006CBCDF /* MyLikeSongDataSource.m in Sources */,
 				3B64B27121F6F6000029C32E /* ResourceDetailDataSource.m in Sources */,
 				3B64B2F522058FB30029C32E /* LibraryContentCell.m in Sources */,
 				3BEB3D7721D6388C00398A5B /* ManagedObject.m in Sources */,

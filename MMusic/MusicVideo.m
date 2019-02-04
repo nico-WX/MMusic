@@ -20,7 +20,17 @@
 @end
 
 @implementation MusicVideo
+
 @synthesize attributes = _attributes;
 @synthesize relationships = _relationships;
+
+- (instancetype)initWithDict:(NSDictionary *)dict{
+    if (self = [super initWithDict:dict]) {
+        _attributes = [MusicVideoAttributes instanceWithDict:dict];
+        _relationships = [MusicVideoRelationships instanceWithDict:dict];
+        
+    }
+    return self;
+}
 
 @end

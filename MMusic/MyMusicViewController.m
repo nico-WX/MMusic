@@ -57,7 +57,7 @@ static NSString *identifier = @"cell identifier";
 #pragma mark UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     MyMusicTableCell *cell = (MyMusicTableCell*)[tableView cellForRowAtIndexPath:indexPath];
-    UIViewController *vc = cell.viewController;
-    [self.navigationController pushViewController:vc animated:YES];
+    //UIViewController *vc = cell.viewController;
+    [self.navigationController pushViewController:cell.viewController animated:YES];
 }
 @end

@@ -38,6 +38,9 @@
         [_albumLabel setTextColor:color];
         [_artistLabel setFont:font];
         [_albumLabel setFont:font];
+
+        [_artworkView.layer setCornerRadius:4.0];
+        [_artworkView.layer setMasksToBounds:YES];
     }
     return self;
 }
@@ -50,11 +53,20 @@
     UIView *superView = self.contentView;
     __weak typeof(self) weakSelf = self;
 
-    [_artworkView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.bottom.mas_equalTo(superView).insets(insets);
-        CGFloat w = CGRectGetHeight(superView.bounds) - (insets.top+insets.bottom);
-        make.width.mas_equalTo(w);
-    }];
+    //MV 类型图片为长方形  16:9
+    if (_resource && [_resource.type isEqualToString:@"music-videos"]) {
+        [_artworkView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.bottom.mas_equalTo(superView).insets(insets);
+            CGFloat w = CGRectGetHeight(superView.bounds)*1.8;
+            make.width.mas_equalTo(w);
+        }];
+    }else{
+        [_artworkView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.bottom.mas_equalTo(superView).insets(insets);
+            CGFloat w = CGRectGetHeight(superView.bounds) - (insets.top+insets.bottom);
+            make.width.mas_equalTo(w);
+        }];
+    }
 
     [_nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(superView).inset(insets.top);

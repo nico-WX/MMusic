@@ -35,7 +35,6 @@
 @end
 
 @interface MusicVideoRelationships : Relationship
-
 @end
 
 @interface MusicVideo : Resource

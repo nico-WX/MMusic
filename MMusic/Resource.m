@@ -15,11 +15,10 @@
     return @{@"identifier":@"id"};
 }
 
-
+//子类方便调用
 +(instancetype)instanceWithResource:(Resource *)resource{
     return [[self alloc] initWithResource:resource];
 }
-
 -(instancetype)initWithResource:(Resource *)resource{
     //非子类调用, 抛出异常
 
