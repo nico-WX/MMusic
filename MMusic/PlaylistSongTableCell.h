@@ -1,5 +1,5 @@
 //
-//  PlaylistDetailCell.h
+//  PlaylistSongTableCell.h
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2019/1/22.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PlaylistDetailCell : UITableViewCell
+@interface PlaylistSongTableCell : UITableViewCell
 @property(nonatomic, strong)Song *song;
 
 @end

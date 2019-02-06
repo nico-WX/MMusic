@@ -10,9 +10,9 @@
 
 @class Artwork;
 @class EditorialNotes;
-@class PlayParameters;
 @class Preview;
 @class MPMediaItem;
+@class SongManageObject;
 
 
 @interface SongAttributes : MMObject
@@ -56,4 +56,7 @@
  @return 是否为相同的歌曲
  */
 -(BOOL) isEqualToMediaItem:(MPMediaItem*) mediaItem;
+
++ (instancetype)instanceWithSongManageObject:(SongManageObject*)songManageObject;
+- (instancetype)initWithSongManageObject:(SongManageObject*)songManageObject;
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "ChartsViewController.h"
-#import "ChartsSubContentCell.h"
+#import "ResourceCollectionCell.h"
 #import "DetailViewController.h"
 #import "ChartsCell.h"
 
@@ -42,6 +42,11 @@ static NSString *const identifier = @"cell reuseIdentifier";
     [super viewDidLayoutSubviews];
 
     [_tableView setFrame:self.view.bounds];
+}
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+
+    [_tableView setNeedsDisplay];
 }
 
 #pragma mark - getter
@@ -80,8 +85,8 @@ static NSString *const identifier = @"cell reuseIdentifier";
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
-        Resource *resource = [((ChartsSubContentCell*)cell) resource];
+    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
+        Resource *resource = [((ResourceCollectionCell*)cell) resource];
 
         //选中歌曲播放, 其他显示资源详细
         if ([resource.type isEqualToString:@"songs"]) {

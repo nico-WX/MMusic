@@ -1,5 +1,5 @@
 //
-//  AlbumDetailCell.h
+//  AlbumSongTableCell.h
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2019/1/22.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AlbumDetailCell : UITableViewCell
+@interface AlbumSongTableCell : UITableViewCell
 @property(nonatomic,strong,readonly)Song *song;
 - (void)setSong:(Song*)song withIndex:(NSUInteger)index;
 @end

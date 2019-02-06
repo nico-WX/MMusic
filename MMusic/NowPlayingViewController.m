@@ -51,12 +51,6 @@ static NowPlayingViewController *_instance;
     return _instance;
 }
 
-- (instancetype)init{
-    if (self = [super init]) {
-
-    }
-    return self;
-}
 
 # pragma mark - lift cycle
 
@@ -109,7 +103,6 @@ static NowPlayingViewController *_instance;
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-
 
     [_playerView setFrame:self.view.bounds];
     [self updateUI];

@@ -8,7 +8,7 @@
 
 #import "ShowAllViewController.h"
 #import "ShowAllDataSource.h"
-#import "ChartsSongCell.h"
+#import "SongCollectionCell.h"
 #import "ResourceDetailViewController.h"
 
 #import "Chart.h"
@@ -42,13 +42,13 @@ static NSString *const identifier = @"cell dientifier";
 
     NSString *type = self.chart.data.firstObject.type;
     if ([type isEqualToString:@"songs"]) {
-        [self.collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
+        [self.collectionView registerClass:[SongCollectionCell class] forCellWithReuseIdentifier:identifier];
         CGFloat w = CGRectGetWidth(self.view.bounds);
         CGFloat h = 55.0f;
         [self.flowLayout setItemSize:CGSizeMake(w, h)];
         [self.flowLayout setMinimumInteritemSpacing:0];
     }else{
-        [self.collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
+        [self.collectionView registerClass:[ResourceCollectionCell class] forCellWithReuseIdentifier:identifier];
         UIEdgeInsets insets = UIEdgeInsetsMake(0, 8, 0, 8);
         [self.collectionView setContentInset:insets];
         CGFloat w = CGRectGetWidth(self.view.bounds)/2 - insets.left*3;
@@ -88,8 +88,8 @@ static NSString *const identifier = @"cell dientifier";
 
 #pragma mark - ShowAllDataSourceDelegate
 -(void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
-    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
-        [((ChartsSubContentCell*)cell) setResource:resource];
+    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
+        [((ResourceCollectionCell*)cell) setResource:resource];
     }
 }
 

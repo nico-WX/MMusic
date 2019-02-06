@@ -30,8 +30,8 @@
                 [self setValue:[song.attributes valueForKey:key] forKey:key];
             }
         }
-
-        [self setValue:song.attributes.playParams[@"id"] forKey:@"identifier"];
+        self.addDate = [NSDate date];
+        [self setValue:song.identifier forKey:@"identifier"];
 
         Artwork *art = song.attributes.artwork;
         NSDictionary *dict = @{@"url":art.url,@"height":@(art.height),@"width":@(art.width)};

@@ -13,8 +13,12 @@
 #import "CoreDataStack.h"
 #import "SongManageObject.h"
 
+#import "DataManager.h"
+
 @interface MMHeartSwitch()
 @property(nonatomic, strong) UIImpactFeedbackGenerator *impact;
+
+@property(nonatomic,strong) id observer;
 @end
 
 @implementation MMHeartSwitch
@@ -25,31 +29,33 @@
         _impact = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
         [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
 
-        //内部直接绑定事件, 处理请求, 分散代码
+        //处理事件
         __weak typeof(self) weakSelf = self;
         [self handleControlEvent:UIControlEventTouchUpInside withBlock:^{
             [weakSelf.impact impactOccurred];
-            weakSelf.on = !weakSelf.isOn;
+            BOOL now = weakSelf.isOn;
+            [weakSelf setOn:!now];
         }];
 
-
-        [self stateWithSongIdentifier:MainPlayer.nowPlayingItem.playbackStoreID];
-
-        [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            NSLog(@"chage --->");
-            NSLog(@"id === %@",MainPlayer.nowPlayingItem.playbackStoreID);
-            [self stateWithSongIdentifier:MainPlayer.nowPlayingItem.playbackStoreID];
+        //初始状态
+        [self enableStateWithIdentifier:MainPlayer.nowPlayingItem.playbackStoreID];
+        [MainPlayer nowPlayingSong:^(Song * _Nullable song) {
+            [self updateWithSong:song];
         }];
 
-        [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerQueueDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            NSLog(@"queue =%@",note.object);
+        // 播放item 改变, 更新状态
+        _observer = [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            [MainPlayer nowPlayingSong:^(Song * _Nullable song) {
+                [self updateWithSong:song];
+            }];
+            [self enableStateWithIdentifier:MainPlayer.nowPlayingItem.playbackStoreID];
         }];
-
     }
     return self;
 }
 - (void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:_observer];
+    _observer = nil;
 }
 
 - (void)drawRect:(CGRect)rect{
@@ -68,111 +74,51 @@
             [self animationButton:self];
 
             [MainPlayer nowPlayingSong:^(Song * _Nullable song) {
-                //可能返回空值
-                if (song) {
-                    [self updateState:self withSong:song];
+                if (on) {
+                    [DataStore.new addRatingToCatalogWith:song.identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
+                        //网络上添加不成功, 设置no
+                        if (!succeed){
+                            self->_on = NO;
+                        }
+                    }];
+                    [[DataManager shareDataManager] addItem:song];
                 }else{
-                    self->_on = NO;
+                    [DataStore.new deleteRatingForCatalogWith:song.identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
+                        self->_on = !succeed; // 成功删除, 设置为NO
+                    }];
+                    [[DataManager shareDataManager] deleteItem:song];
                 }
             }];
         });
     }
 }
 
-- (void)updateState:(MMHeartSwitch*)heartswitch withSong:(Song*)song{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        //更新远程及本地数据库
-        NSString *identifier = MainPlayer.nowPlayingItem.playbackStoreID;
-        if ([identifier isEqualToString:@"0"]) {
-            return ;
+//网络更新
+- (void)updateWithSong:(Song*)song{
+    mainDispatch(^{
+        if (!song) {
+            [self setOn:NO];
+            [self setEnabled:NO];
+            return;
         }
 
-        if ([heartswitch isOn]) {
-            [DataStore.new addRatingToCatalogWith:identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
-                [heartswitch setOn:succeed];
-            }];
-            [self addSongToCoreData:song];
-
-        }else{
-            [DataStore.new deleteRatingForCatalogWith:identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
-                [heartswitch setOn:!succeed];
-            }];
-            [self deleteSong:song];
-        }
-    });
-}
-
-- (void)addSongToCoreData:(Song*)song{
-
-    NSManagedObjectContext *moc = [CoreDataStack shareDataStack].context;
-
-    //查询, 如果已经添加, 跳过
-    NSString *identifier = [song.attributes.playParams valueForKey:@"id"];
-    NSPredicate *idPredicate = [NSPredicate predicateWithFormat:@"%K == %@",@"identifier",identifier];
-    NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Song"];
-    [fetch setPredicate:idPredicate];
-    //[fetch setReturnsObjectsAsFaults:NO];
-    NSError *error = nil;
-
-    NSArray *results = [moc executeFetchRequest:fetch error:&error];
-    if (results.count > 0) {
-        NSLog(@"已经添加");
-        return;
-    }
-
-    SongManageObject *addSong = [[SongManageObject alloc] initWithSong:song];
-
-    NSAssert(addSong, @"生成托管对象失败");
-    NSError *saveError = nil;
-    if (![moc save:&saveError]) {
-        NSLog(@"保存失败 error =%@",saveError);
-    }else{
-        NSLog(@"保存成功");
-    }
-}
-- (void)deleteSong:(Song*)song{
-    NSManagedObjectContext *moc = [CoreDataStack shareDataStack].context;
-    NSPredicate *namePre = [NSPredicate predicateWithFormat:@"%K == %@",@"name",song.attributes.name];
-    NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Song"]; //MMCDMO_Song 类映射到模型文件中的 Song实体
-    [fetch setPredicate:namePre];
-    [fetch setFetchLimit:5];
-    [fetch setReturnsObjectsAsFaults:NO]; //返回填充实例,不使用惰值
-
-    NSError *fetchError = nil;
-    NSArray *fetchObjects = [moc executeFetchRequest:fetch error:&fetchError];
-
-    //NSAssert(fetchError, @"获取失败");
-//    if (!fetchObjects) {
-//        return;
-//    }
-    //匹配播放参数ID, 删除
-    for (SongManageObject *sqlSong in fetchObjects) {
-        NSString *lID = song.attributes.playParams[@"id"];
-        NSString *sqlID = sqlSong.playParams[@"id"];
-        if ([lID isEqualToString:sqlID]) {
-            [moc deleteObject:sqlSong];
-            NSLog(@"删除成功");
-        }
-    }
-}
-/**获取歌曲rating 状态, 并设置 红心开关状态*/
--(void)stateWithSongIdentifier:(NSString*)identifier {
-    if (!identifier){
-        [self setOn:NO];
-        return;
-    }
-    [DataStore.new requestRatingForCatalogWith:identifier type:RTCatalogSongs callBack:^(BOOL isRating){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"rating =%d",isRating);
+        [self setEnabled:YES];
+        [DataStore.new requestRatingForCatalogWith:song.identifier type:RTCatalogSongs callBack:^(BOOL isRating) {
             [self setOn:isRating];
-            [self setEnabled:YES];
+        }];
+    });
 
-        });
-    }];
 }
 
 
-//简单的缩小-->恢复原始状态
+// 有identifier  可以启用按钮
+-(void)enableStateWithIdentifier:(NSString*)identifier {
+    BOOL enable = (identifier && ![identifier isEqualToString:@"0"]) ? YES : NO;
+    [self setEnabled:enable];
+}
+
+
+//简单的缩小-->恢复原始状态 动画
 - (void)animationButton:(MMHeartSwitch*)sender {
 
     [UIView animateWithDuration:0.2 animations:^{

@@ -36,12 +36,6 @@
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-
-    //NSLog(@"items cout =%",_query.items.count);
-    NSLog(@"item setcion =%@",_query.itemSections);
-    NSLog(@"collection =%@",_query.collections);
-    NSLog(@"collec setcion =%@",_query.collectionSections);
-
     return _query.items.count;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{

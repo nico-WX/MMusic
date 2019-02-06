@@ -39,7 +39,6 @@
 }
 
 
-
 - (void)loadDataWithResource:(Resource *)resource completion:(nonnull void (^)(BOOL))completion{
     [MusicKit.new.catalog songListWithResource:resource completion:^(NSDictionary *json, NSHTTPURLResponse *response) {
         self->_songLists = [self serializationJSON:json];
@@ -61,7 +60,7 @@
     for (NSDictionary *temp in [json objectForKey:@"data"]) {
         NSArray *tracks = [temp valueForKeyPath:@"relationships.tracks.data"];
         for (NSDictionary *songDict in tracks) {
-            Song *song = [Song instanceWithDict:[songDict objectForKey:@"attributes"]];
+            Song *song = [Song instanceWithDict:songDict];
             [songList addObject:song];
         }
     }

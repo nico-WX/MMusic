@@ -7,14 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SongManageObject.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol MyLikeSongDataSourceDelegate <NSObject>
 
+- (void)configureCell:(UICollectionViewCell*)cell songManageObject:(SongManageObject*)song;
 @end
 
 @interface MyLikeSongDataSource : NSObject
+@property(nonatomic,strong,readonly)NSArray<SongManageObject *> *songList;
 
 - (instancetype)initWithColleCtionView:(UICollectionView*)view
                             identifier:(NSString*)identifier

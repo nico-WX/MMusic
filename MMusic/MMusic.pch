@@ -25,6 +25,13 @@
 #import "MusicKit.h"
 #import "UIControl+MMActionBlock.h"
 
+
+
+// 主线程
+#ifndef mainDispatch
+#define mainDispatch(block) dispatch_async(dispatch_get_main_queue(), block)
+#endif
+
 //播放器大小
 #define PlayerPopSize CGSizeMake(CGRectGetWidth([UIScreen mainScreen].bounds), 55.0f)
 

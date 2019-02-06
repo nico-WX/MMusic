@@ -30,6 +30,11 @@
     if (![song isEqualToMediaItem:self.nowPlayingItem]) {
         [self setQueueWithDescriptor:self.parametersQueue];
         [self play];
+
+        [self prepareToPlayWithCompletionHandler:^(NSError * _Nullable error) {
+
+        }];
+
     }
 }
 - (void)insertSongAtEndItem:(Song *)song {
@@ -69,12 +74,12 @@
     }
 
     NSString *identifier = self.nowPlayingItem.playbackStoreID;
-    // "0"标识数据库无此歌曲
+    // "0"标识数据库无此歌曲]
     if (![identifier isEqualToString:@"0"] && identifier) {
         //异步加载
         [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-            json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
 
+            json = [(NSArray*)[json valueForKey:@"data"] firstObject] ;
             completion([Song instanceWithDict:json]);
         }];
     }else{

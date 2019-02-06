@@ -12,13 +12,14 @@
 
 #import "UIImageView+Extension.h"
 #import "MPMediaItemArtwork+Exchange.h"
-#import "ChartsSubContentCell.h"
+#import "ResourceCollectionCell.h"
 #import "Resource.h"
+#import "SongManageObject.h"
 
-@interface ChartsSubContentCell ()
+@interface ResourceCollectionCell ()
 @end
 
-@implementation ChartsSubContentCell
+@implementation ResourceCollectionCell
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
@@ -72,9 +73,6 @@
         [_subTitleLable setText:[resource.attributes valueForKey:@"curatorName"]];
         NSString *url = [resource.attributes valueForKeyPath:@"artwork.url"];
         [_imageView setImageWithURLPath:url];
-
-        [self setNeedsDisplay];
-        //[self setNeedsLayout];
     }
 }
 
@@ -92,8 +90,19 @@
         [artwork loadArtworkImageWithSize:_imageView.bounds.size completion:^(UIImage * _Nonnull image) {
             [self->_imageView setImage:image];
         }];
-        //[self setNeedsLayout];
-        [self setNeedsDisplay];
     }
 }
+
+- (void)setSongManageObject:(SongManageObject *)songManageObject{
+    if (_songManageObject != songManageObject) {
+        _songManageObject = songManageObject;
+
+        [_titleLabel setText:songManageObject.name];
+        [_subTitleLable setText:songManageObject.artistName];
+
+        NSString *url = [songManageObject.artwork valueForKey:@"url"];
+        [_imageView setImageWithURLPath:url];
+    }
+}
+
 @end

@@ -8,19 +8,22 @@
 
 #import "MyLibraryContentViewController.h"
 
-#import "ChartsSubContentCell.h"
-#import "ChartsSongCell.h"
+#import "ResourceCollectionCell.h"
+#import "SongCollectionCell.h"
 
+#import "MyLikeSongDataSource.h"
 #import "LibraryDataSource.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "MPMusicPlayerController+ResourcePlaying.h"
 
-@interface MyLibraryContentViewController ()<UICollectionViewDelegate,LibraryDataSourceDelegate>
+@interface MyLibraryContentViewController ()<UICollectionViewDelegate,LibraryDataSourceDelegate,MyLikeSongDataSourceDelegate>
 @property(nonatomic,assign) LibraryContentType type;
 
 @property(nonatomic,strong)UICollectionView *collectionView;
 @property(nonatomic,strong)UICollectionViewFlowLayout *layout;
 
 @property(nonatomic,strong)LibraryDataSource *libraryDataSource;
+@property(nonatomic,strong)MyLikeSongDataSource *myLikeDataSource;
 @end
 
 
@@ -65,6 +68,9 @@ static NSString *const identifier = @"reuseIdentifier";
         case LibraryLocalSongType:
             break;
         case LibraryMyLikeSongType:
+            _myLikeDataSource = [[MyLikeSongDataSource alloc] initWithColleCtionView:_collectionView
+                                                                          identifier:identifier
+                                                                            delegate:self];
             
             break;
         case LibraryAlbumType:{
@@ -114,7 +120,7 @@ static NSString *const identifier = @"reuseIdentifier";
 
             [_layout setItemSize:CGSizeMake(w, h)];
             [_layout setMinimumLineSpacing:0];
-            [_collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
+            [_collectionView registerClass:[SongCollectionCell class] forCellWithReuseIdentifier:identifier];
         }
             break;
 
@@ -123,7 +129,7 @@ static NSString *const identifier = @"reuseIdentifier";
             CGFloat w = CGRectGetWidth(self.view.bounds)/2 - 24;
             CGFloat h = w+40;
             [_layout setItemSize:CGSizeMake(w, h)];
-            [_collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
+            [_collectionView registerClass:[ResourceCollectionCell class] forCellWithReuseIdentifier:identifier];
         }
 
             break;
@@ -154,16 +160,32 @@ static NSString *const identifier = @"reuseIdentifier";
 
 #pragma mark - LibraryDataSourceDelegate
 -(void)configureCell:(UICollectionViewCell *)cell object:(MPMediaItem *)item{
-    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
-        [((ChartsSubContentCell*)cell) setMediaItem:item];
+    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
+        [((ResourceCollectionCell*)cell) setMediaItem:item];
+    }
+}
+#pragma mark - MyLikeSongDataSourceDelegate
+- (void)configureCell:(UICollectionViewCell *)cell songManageObject:(SongManageObject *)song{
+    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
+        ((ResourceCollectionCell*)cell).songManageObject = song;
     }
 }
 
 #pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
+    if (_type == LibraryMyLikeSongType) {
+        NSArray<SongManageObject*> *songList = [self.myLikeDataSource songList];
+        NSMutableArray<Song*> *songes = [NSMutableArray array];
+        for (SongManageObject *songMO in songList) {
+            Song *s = [Song instanceWithSongManageObject:songMO];
+            [songes addObject:s];
+        }
+        [MainPlayer playSongs:songes startIndex:indexPath.row];
 
+    }else{
 
+    }
 
 }
 @end

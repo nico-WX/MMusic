@@ -5,6 +5,7 @@
         <attribute name="term" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Song" representedClassName="SongManageObject" syncable="YES">
+        <attribute name="addDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="artistName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="artwork" optional="YES" attributeType="Transformable" valueTransformerName="" syncable="YES"/>
         <attribute name="composerName" optional="YES" attributeType="String" syncable="YES"/>
@@ -27,6 +28,6 @@
     </entity>
     <elements>
         <element name="SearchHistory" positionX="-27" positionY="162" width="128" height="75"/>
-        <element name="Song" positionX="-27" positionY="18" width="128" height="330"/>
+        <element name="Song" positionX="-27" positionY="18" width="128" height="345"/>
     </elements>
 </model>

@@ -19,21 +19,19 @@ NS_ASSUME_NONNULL_BEGIN
 /**内部注册在主托管上下文中*/
 - (instancetype)initWithSong:(Song *)song;
 
+@property(nonatomic, strong) NSDate *addDate;
+
 @property(nonatomic, copy) NSString *identifier;
-/**艺人名称*/
 @property(nonatomic, copy) NSString *artistName;
-/**作家*/
 @property(nonatomic, copy) NSString *composerName;
-/**内容评级*/
 @property(nonatomic, copy) NSString *contentRating;
-/**国际标准录音编码*/
 @property(nonatomic, copy) NSString *isrc;  
 
-@property(nonatomic, copy) NSString *movementName; //
-@property(nonatomic, copy) NSString *name;  //
-@property(nonatomic, copy) NSString *releaseDate;   //
-@property(nonatomic, copy) NSString *url;           //
-@property(nonatomic, copy) NSString *workName;  //
+@property(nonatomic, copy) NSString *movementName;
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, copy) NSString *releaseDate;
+@property(nonatomic, copy) NSString *url;
+@property(nonatomic, copy) NSString *workName;  
 
 @property(nonatomic, strong) NSDictionary *artwork;
 @property(nonatomic, strong) NSDictionary  /*EditorialNotes*/ *editorialNotes; //

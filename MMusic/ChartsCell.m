@@ -7,9 +7,9 @@
 //
 
 #import "ChartsCell.h"
-#import "ChartsSubContentCell.h"
+#import "ResourceCollectionCell.h"
 #import "ChartsSubContentDataSource.h"
-#import "ChartsSongCell.h"
+#import "SongCollectionCell.h"
 #import "Resource.h"
 #import <Masonry.h>
 
@@ -32,7 +32,7 @@ static NSString *const identifier = @"collectionView cell id";
         [_layout setMinimumLineSpacing:6];
 
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
-        [_collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
+        [_collectionView registerClass:[ResourceCollectionCell class] forCellWithReuseIdentifier:identifier];
         [_collectionView setBackgroundColor:UIColor.whiteColor];
         [_collectionView setContentInset:UIEdgeInsetsMake(0, 8, 0, 8)];
 
@@ -82,7 +82,7 @@ static NSString *const identifier = @"collectionView cell id";
         CGFloat w = CGRectGetWidth(_collectionView.bounds) -8; //
         [_layout setItemSize:CGSizeMake(w,h)];
         [_layout setMinimumInteritemSpacing:0];
-        [_collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
+        [_collectionView registerClass:[SongCollectionCell class] forCellWithReuseIdentifier:identifier];
         [_collectionView setPagingEnabled:YES];
 
     }else{
@@ -115,8 +115,8 @@ static NSString *const identifier = @"collectionView cell id";
 
 #pragma mark -delegate
 - (void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
-    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
-        ChartsSubContentCell *subCell = (ChartsSubContentCell*)cell;
+    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
+        ResourceCollectionCell *subCell = (ResourceCollectionCell*)cell;
         [subCell setResource:resource];
     }
 }

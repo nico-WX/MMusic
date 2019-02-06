@@ -7,6 +7,9 @@
 //
 
 #import "Song.h"
+#import "SongManageObject.h"
+#import "Artwork.h"
+
 #import <MediaPlayer/MediaPlayer.h>
 
 
@@ -15,14 +18,6 @@
 +(NSDictionary *)mj_objectClassInArray{
     return @{@"previews":@"Preview",@"genreNames":@"NSString"};
 }
-
-- (instancetype)initWithDict:(NSDictionary *)dict{
-    if (self = [super initWithDict:dict]) {
-        
-    }
-    return self;
-}
-
 @end
 
 @implementation SongRelationships
@@ -30,21 +25,37 @@
 
 
 @implementation Song
+
 @synthesize attributes = _attributes;
 @synthesize relationships = _relationships;
 
++(instancetype)instanceWithSongManageObject:(SongManageObject *)songManageObject{
+    return [[self alloc] initWithSongManageObject:songManageObject];
+}
+- (instancetype)initWithSongManageObject:(SongManageObject *)songManageObject{
+    if (self = [super init]) {
+        self.identifier = songManageObject.identifier;
+
+        _attributes = [[SongAttributes alloc] init];
+        _attributes.name = songManageObject.name;
+        _attributes.artwork =  [Artwork instanceWithDict:songManageObject.artwork];
+        _attributes.artistName = songManageObject.artistName;
+        _attributes.playParams = songManageObject.playParams;
+    }
+    return self;
+}
+
+
 - (instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [super initWithDict:dict]) {
-        _attributes = [SongAttributes instanceWithDict:dict];
-        _relationships = [SongRelationships instanceWithDict:dict];
+        _attributes = [SongAttributes instanceWithDict:[dict valueForKey:@"attributes"]];
+        _relationships = [SongRelationships instanceWithDict:[dict valueForKey:@"relationships"]];
     }
     return self;
 }
 
 -(BOOL)isEqualToMediaItem:(MPMediaItem *)mediaItem{
-    NSString *storeID = mediaItem.playbackStoreID;
-    NSString *songID = [self.attributes.playParams objectForKey:@"id"];
-    return [storeID isEqualToString:songID];
+    return [mediaItem.playbackStoreID isEqualToString:self.identifier];
 }
 
 @end
