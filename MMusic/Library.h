@@ -81,4 +81,5 @@ typedef NS_ENUM(NSUInteger, AddType){
  */
 - (void)defaultRecommendationsInCallBack:(RequestCallBack)handle;   // ok
 
+
 @end

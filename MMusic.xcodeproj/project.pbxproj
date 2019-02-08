@@ -70,6 +70,7 @@
 		3B679FB922088002006CBCDF /* MyLikeSongDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FB822088002006CBCDF /* MyLikeSongDataSource.m */; };
 		3B679FBC22097C3B006CBCDF /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FBB22097C3B006CBCDF /* DataManager.m */; };
 		3B679FCF2209A8B3006CBCDF /* ResourceTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FCE2209A8B3006CBCDF /* ResourceTableCell.m */; };
+		3B679FD2220C473D006CBCDF /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FD1220C473D006CBCDF /* DataSource.m */; };
 		3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895820A9968C000C3403 /* LibraryAlbum.m */; };
 		3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895B20A998B6000C3403 /* LibraryMusicVideo.m */; };
 		3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895E20A99AA5000C3403 /* LibraryPlaylist.m */; };
@@ -375,6 +376,8 @@
 		3B679FBB22097C3B006CBCDF /* DataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		3B679FCD2209A8B3006CBCDF /* ResourceTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceTableCell.h; sourceTree = "<group>"; };
 		3B679FCE2209A8B3006CBCDF /* ResourceTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResourceTableCell.m; sourceTree = "<group>"; };
+		3B679FD0220C473D006CBCDF /* DataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
+		3B679FD1220C473D006CBCDF /* DataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
 		3B69895720A9968C000C3403 /* LibraryAlbum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryAlbum.h; sourceTree = "<group>"; };
 		3B69895820A9968C000C3403 /* LibraryAlbum.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibraryAlbum.m; sourceTree = "<group>"; };
 		3B69895A20A998B6000C3403 /* LibraryMusicVideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryMusicVideo.h; sourceTree = "<group>"; };
@@ -685,6 +688,8 @@
 				3B9AA8C61FB450B600720085 /* MyMusic */,
 				3B3D998620553CEB000F2E9E /* PlayerViewController */,
 				3BDE8FED20E3981300C962F7 /* Cell */,
+				3B679FD0220C473D006CBCDF /* DataSource.h */,
+				3B679FD1220C473D006CBCDF /* DataSource.m */,
 			);
 			name = TabBarController;
 			sourceTree = "<group>";
@@ -1497,6 +1502,7 @@
 				3B64B2CA21F9D4C40029C32E /* ShowAllSearchResultsDataSource.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
 				3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */,
+				3B679FD2220C473D006CBCDF /* DataSource.m in Sources */,
 				3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */,
 				3B64B1C521F1FDBF0029C32E /* MusicVideosCollectionCell.m in Sources */,
 				3B648F2F21BBDF5E001BB801 /* UIControl+MMActionBlock.m in Sources */,

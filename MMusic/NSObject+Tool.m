@@ -26,7 +26,7 @@
 #import "Resource.h"
 #import "ResponseRoot.h"
 
-extern NSString *const developerTokenExpireNotification;
+extern NSString *const developerTokenDidExpireNotification;
 extern NSString *const userTokenIssueNotification;
 @implementation NSObject (Tool)
 
@@ -49,7 +49,7 @@ extern NSString *const userTokenIssueNotification;
             break;
         case 401:
             //开发者Token 问题
-            [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenExpireNotification object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenDidExpireNotification object:nil];
             [self showHUDToMainWindowFromText:@"开发者令牌授权过期"];
             break;
         case 403:

@@ -8,17 +8,14 @@
 
 #import "Storefront.h"
 
-@implementation StorefrontAttributes
-@end
-
 @implementation Storefront
-@synthesize attributes = _attributes;
 
 - (instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [super initWithDict:dict]) {
-        _attributes = [StorefrontAttributes instanceWithDict:dict];
+        [self mj_setKeyValues:[dict valueForKey:JSONAttributesKey]];
     }
     return self;
 }
 
 @end
+

@@ -11,24 +11,16 @@
 @implementation MusicVideoRelationships
 @end
 
-@implementation MusicVideoAttributes
+@implementation MusicVideo
+
+@synthesize relationships = _relationships;
 
 +(NSDictionary *)mj_objectClassInArray{
     return @{@"previews":@"Preview"};
 }
-
-@end
-
-@implementation MusicVideo
-
-@synthesize attributes = _attributes;
-@synthesize relationships = _relationships;
-
 - (instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [super initWithDict:dict]) {
-        _attributes = [MusicVideoAttributes instanceWithDict:dict];
-        _relationships = [MusicVideoRelationships instanceWithDict:dict];
-        
+        [self mj_setKeyValues:[dict valueForKey:JSONAttributesKey]];
     }
     return self;
 }

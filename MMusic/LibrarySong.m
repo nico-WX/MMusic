@@ -10,10 +10,5 @@
 #import "Artwork.h"
 
 @implementation LibrarySong
--(instancetype)initWithDict:(NSDictionary *)dict{
-    if (self = [super initWithDict:dict]) {
-        [self mj_setKeyValues:dict];
-    }
-    return self;
-}
+
 @end

@@ -43,11 +43,12 @@ static DataManager *_instance;
     NSError *error = nil;
     NSArray<SongManageObject*> *results = [moc executeFetchRequest:fetch error:&error];
     if (results.count > 0) {
+        //已经添加过, 跳过
         return;
     }
 
-    SongManageObject *addSong = [[SongManageObject alloc] initWithSong:song];
-    NSAssert(addSong, @"生成托管对象失败");
+    SongManageObject *addSong = [SongManageObject insertSong:song];
+    NSAssert(addSong, @"插入Song到CoreData时,生成托管对象失败");
     NSError *saveError = nil;
     BOOL success = [moc save:&saveError];
     if (success) {
@@ -65,15 +66,13 @@ static DataManager *_instance;
     [fetch setReturnsObjectsAsFaults:NO]; //返回填充实例,不使用惰值
 
     NSError *fetchError = nil;
-    NSArray *fetchObjects = [moc executeFetchRequest:fetch error:&fetchError];
+    NSArray<SongManageObject*> *fetchObjects = [moc executeFetchRequest:fetch error:&fetchError];
 
     //匹配播放参数ID, 删除
     for (SongManageObject *sqlSong in fetchObjects) {
-        NSString *lID = song.attributes.playParams[@"id"];
-        NSString *sqlID = sqlSong.playParams[@"id"];
-        if ([lID isEqualToString:sqlID]) {
+        if ([song.identifier isEqualToString:sqlSong.identifier]) {
             [moc deleteObject:sqlSong];
-            NSLog(@"删除成功");
+            NSLog(@"删除 song : %@",sqlSong.name);
         }
     }
 }
@@ -95,7 +94,6 @@ static DataManager *_instance;
     }else{
         completion(fetchedObjects);
     }
-
 }
 
 @end

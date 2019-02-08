@@ -54,7 +54,7 @@
     }];
 
     //记录 搜索记录
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[SearchHistoryManageObject name]];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[SearchHistoryManageObject entityName]];
     NSManagedObjectContext *moc = [[CoreDataStack shareDataStack] context];
 
     NSArray<SearchHistoryManageObject*> *results = [moc executeFetchRequest:request error:nil];

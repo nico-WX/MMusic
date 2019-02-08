@@ -17,11 +17,15 @@
 
 @implementation AppleCurator
 
-@synthesize attributes = _attributes;
 @synthesize relationships = _relationships;
 
+- (instancetype)initWithDict:(NSDictionary *)dict{
+    if (self = [super initWithDict:dict]) {
+        [self mj_setKeyValues:[dict valueForKey:JSONAttributesKey]];
+    }
+    return self;
+}
+
 @end
 
-@implementation AppleCuratorAttributes
 
-@end

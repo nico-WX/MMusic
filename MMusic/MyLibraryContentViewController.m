@@ -15,6 +15,7 @@
 #import "LibraryDataSource.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "MPMusicPlayerController+ResourcePlaying.h"
+#import "Song.h"
 
 @interface MyLibraryContentViewController ()<UICollectionViewDelegate,LibraryDataSourceDelegate,MyLikeSongDataSourceDelegate>
 @property(nonatomic,assign) LibraryContentType type;

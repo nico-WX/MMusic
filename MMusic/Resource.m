@@ -29,7 +29,7 @@
                               userInfo:nil];
         return nil;
     }else{
-        return [self initWithDict:((NSDictionary*)resource.attributes)];
+        return [self initWithDict:(resource.attributes)];
     }
 }
 @end

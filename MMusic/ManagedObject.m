@@ -11,22 +11,6 @@
 
 @implementation ManagedObject
 
-- (NSManagedObjectContext *)mainMoc{
-    return [CoreDataStack shareDataStack].context;
-}
-
-
-- (NSSortDescriptor *)defaultSortDescriptor{
-    return [NSSortDescriptor sortDescriptorWithKey:@"" ascending:0];
-}
--(NSPredicate *)defaultPredicate{
-    return [NSPredicate predicateWithValue:0];
-}
-@end
-
-@implementation ManagedObject (DefaultManaged)
-
-
 + (NSPredicate *)defaultPredicate{
     return [NSPredicate predicateWithValue:0];
 }
@@ -34,7 +18,13 @@
     return [NSSortDescriptor sortDescriptorWithKey:@"" ascending:0];
 }
 
-+(NSString *)name{
-    return NSStringFromClass(self);
++(NSString *)entityName{
+    NSLog(@"entityName =%@",[[self entity] name]);
+    return [[self entity] name];
+}
+
+
+- (NSManagedObjectContext *)viewContext{
+    return [CoreDataStack shareDataStack].context;
 }
 @end

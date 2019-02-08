@@ -8,19 +8,20 @@
 
 #import "Playlist.h"
 
-
-@implementation PlaylistAttributes
-+(NSDictionary*)mj_replacedKeyFromPropertyName{
-    return @{@"editorialNotes":@"description"};
-}
-
-@end
-
 @implementation PlaylistRelationships
 @end
 
 @implementation Playlist
-@synthesize attributes = _attributes;
 @synthesize relationships = _relationships;
+
++(NSDictionary*)mj_replacedKeyFromPropertyName{
+    return @{@"editorialNotes":@"description"};
+}
+-(instancetype)initWithDict:(NSDictionary *)dict{
+    if (self = [super initWithDict:dict]) {
+        [self mj_setKeyValues:[dict valueForKey:JSONAttributesKey]];
+    }
+    return self;
+}
 
 @end

@@ -30,7 +30,7 @@
 
         [view setDataSource:self];
 
-        /
+        
         view.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             [self loadDataWithCompletion:^{
                 mainDispatch(^{

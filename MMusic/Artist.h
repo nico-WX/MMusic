@@ -10,20 +10,16 @@
 
 @class EditorialNotes;
 
-@interface ArtistAttributes : MMObject
+
+@interface ArtistRelationship : Relationship
+@end
+
+@interface Artist : Resource
 @property(nonatomic, strong) NSArray<NSString*> *genreNames;
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *url;
-@end
 
-@interface ArtistRelationship : Relationship
-
-@end
-
-@interface Artist : Resource
-
-@property(nonatomic,strong) ArtistAttributes *attributes;
 @property(nonatomic,strong) ArtistRelationship *relationships;
 
 @end

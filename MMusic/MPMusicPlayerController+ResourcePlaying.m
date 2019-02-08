@@ -44,7 +44,7 @@
     self.songLists = array;
 
     //添加到当前播放队列后面
-    MPMusicPlayerPlayParameters *prameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.attributes.playParams];
+    MPMusicPlayerPlayParameters *prameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
     MPMusicPlayerPlayParametersQueueDescriptor *queue;
     queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[prameters,]];
     [self appendQueueDescriptor:queue];
@@ -59,7 +59,7 @@
     self.songLists = array;
 
     //添加到当前播放Item 后面
-    MPMusicPlayerPlayParameters *prameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.attributes.playParams];
+    MPMusicPlayerPlayParameters *prameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
     MPMusicPlayerPlayParametersQueueDescriptor *queue;
     queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[prameters,]];
     [self prependQueueDescriptor:queue];
@@ -92,7 +92,7 @@
     [self setMusicVideos:mvs];
     NSMutableArray<MPMusicPlayerPlayParameters*> *array = [NSMutableArray array];
     for (MusicVideo *mv in mvs) {
-        [array addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:mv.attributes.playParams]];
+        [array addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:mv.playParams]];
     }
     MPMusicPlayerPlayParametersQueueDescriptor *queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:array];
     [queue setStartItemPlayParameters:[array objectAtIndex:startIndex]];
@@ -104,8 +104,8 @@
                                                               startPlayIndex:(NSUInteger)index {
     NSMutableArray<MPMusicPlayerPlayParameters*> *list = [NSMutableArray array];
     for (Song *song in songs) {
-        if (song.attributes.playParams) {
-            [list addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.attributes.playParams]];
+        if ([song.attributes valueForKey:@"playParams"]) {
+            [list addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary: [song.attributes valueForKey:@"playParams"]]];
         }
     }
     MPMusicPlayerPlayParametersQueueDescriptor *queue;

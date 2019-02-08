@@ -8,9 +8,11 @@
 
 #import "Rating.h"
 
-@implementation RatingAttributes
-@end
-
 @implementation Rating
-@synthesize attributes =  _attributes;
+- (instancetype)initWithDict:(NSDictionary *)dict{
+    if (self = [super initWithDict:dict]) {
+        [self mj_setKeyValues:[dict valueForKey:JSONAttributesKey]];
+    }
+    return self;
+}
 @end

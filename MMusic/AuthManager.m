@@ -9,8 +9,8 @@ static NSString* const k_developerTokenKey  = @"developerTokenDefaultsKey";
 static NSString* const k_storefrontKey      = @"storefrontDefaultsKey";
 
 //通知
-NSString *const developerTokenExpireNotification  = @"developerTokenExpire";           //开发者Token 过期
-NSString *const developerTokenUpdatedNotification = @"developerTokenUpdated";          //开发者Token 更新
+NSString *const developerTokenDidExpireNotification  = @"developerTokenExpire";           //开发者Token 过期
+NSString *const developerTokenDidUpdateNotification = @"developerTokenUpdated";          //开发者Token 已经更新
 NSString *const userTokenIssueNotification        = @"userTokenIssueOrNotAccepted";    //userToken  问题(未订阅,修改设置等)
 NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";               //userToken  更新
 
@@ -19,68 +19,54 @@ NSString *const userTokenUpdatedNotification      = @"userTokenUpdated";        
 
 @end
 
-static AuthManager *_instance;
+static NSString *const devToken =  @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTQ3OTg5MDI4LCJleHAiOjE1NjM1NDEwMjh9.WMdZ1XSwfm2xG27CY9KbdiZXKKaQzfjl5YPUL_kZW46aoGDZ8H24k6mtGlqK616XUkbW1WqQYLTlBQuEt4t7tQ";
+
+static id _instance;
 @implementation AuthManager
 
 @synthesize developerToken  = _developerToken;
 @synthesize userToken       = _userToken;
 @synthesize storefront      = _storefront;
 
-+ (void)checkAuthTokenWith:(void (^)(AuthManager *))completion{
-
-    //以下检查token 有效性
-    NSString *testAuthPath = @"https://api.music.apple.com/v1/me/library/playlists";
-    NSURLRequest *request = [NSURLRequest createRequestWithURLString:testAuthPath setupUserToken:YES];
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        NSLog(@"check auth statusCode =%ld",response.statusCode);
-
-        AuthManager *auth = [self shareManager];
-        if (response.statusCode == 403) {
-            //无效授权
-            [auth loadUserTokenWith:^(NSString *token) {
-                auth->_userToken = token;
-            }];
-        }
-        if (response.statusCode == 401) {
-            [auth loadDeveloperTokenWith:^(NSString *token) {
-                auth->_developerToken = token;
-            }];
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion([self shareManager]);
-        });
-    }];
-}
-
 # pragma mark 初始化及单例实现
 - (instancetype)init{
     if (self = [super init]) {
-        //检查授权和账户功能
-        [self checkAuthorization];
+
+        //设置Token
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        _developerToken = [userDefaults objectForKey:k_developerTokenKey];
+        if (!_developerToken) {
+            _developerToken = devToken;
+            [userDefaults setObject:_developerToken forKey:k_developerTokenKey];
+            [userDefaults synchronize];
+        }
+        _userToken = [userDefaults objectForKey:k_userTokenKey];
+        if (!_userToken) {
+            [self loadUserToken];
+        }
+        _storefront = [userDefaults objectForKey:k_storefrontKey];
+        if (!_storefront) {
+            [self loadStorefront];
+        }
+
 
         //开发者Token过期消息
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        [center addObserverForName:developerTokenExpireNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [center addObserverForName:developerTokenDidExpireNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             NSLog(@"收到开发者Token过期通知");
-            //请求新的开发Token
-            [self loadDeveloperTokenWith:^(NSString *token) {
-                self->_developerToken = token;
-                [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenUpdatedNotification object:token];
-            }];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:k_developerTokenKey];
+
         }];
 
         //userToken 异常, 可能修改设置或者未订阅服务等
         [center addObserverForName:userTokenIssueNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             NSLog(@"监听到 <userTokenIssueNotification> 消息");
-            [self loadUserTokenWith:^(NSString *token) {
-                self->_userToken = token;
-                [[NSNotificationCenter defaultCenter] postNotificationName:userTokenUpdatedNotification object:token];
-            }];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:k_userTokenKey];
+            [self loadUserToken];
         }];
     }
     return self;
 }
-
 
 + (instancetype)shareManager{
     static dispatch_once_t onceToken;
@@ -92,9 +78,7 @@ static AuthManager *_instance;
 + (instancetype)allocWithZone:(struct _NSZone *)zone{
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        if (!_instance) {
-            _instance = [super allocWithZone:zone];
-        }
+        _instance = [super allocWithZone:zone];
     });
     return _instance;
 }
@@ -102,81 +86,52 @@ static AuthManager *_instance;
 - (id)copyWithZone:(NSZone *)zone{
     return _instance;
 }
-- (id)mutableCopyWithZone:(NSZone *)zone{
-    return _instance;
-}
+
 
 - (void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:developerTokenExpireNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:developerTokenDidExpireNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:userTokenIssueNotification object:nil];
 }
 
-
-#pragma mark - getter
-- (NSString *)developerToken{
-    if (!_developerToken) {
-        _developerToken = [[NSUserDefaults standardUserDefaults] objectForKey:k_developerTokenKey];
-        #warning The token is set manually
-         _developerToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTQ3OTg5MDI4LCJleHAiOjE1NjM1NDEwMjh9.WMdZ1XSwfm2xG27CY9KbdiZXKKaQzfjl5YPUL_kZW46aoGDZ8H24k6mtGlqK616XUkbW1WqQYLTlBQuEt4t7tQ";
-    }
-    return _developerToken;
-}
-
-- (NSString *)userToken{
-    if (!_userToken) {
-        _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:k_userTokenKey];
-    }
-    return _userToken;
-}
-
-- (NSString *)storefront{
-    if (!_storefront) {
-        _storefront = [[NSUserDefaults standardUserDefaults] objectForKey:k_storefrontKey];
-    }
-    return _storefront;
-}
-
-#pragma mark - 从网络请求token
-- (void)loadUserTokenWith:(void(^)(NSString* token))completion{
+- (void)loadUserToken{
     [SKCloudServiceController.new requestUserTokenForDeveloperToken:self.developerToken
-                                                  completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
-        if (userToken) {
-            [[NSUserDefaults standardUserDefaults] setObject:userToken forKey:k_userTokenKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            [[NSNotificationCenter defaultCenter] postNotificationName:userTokenUpdatedNotification object:nil];
-            completion(userToken);
-        }else{
-            Log(@"请求用户Token错误: %@",error);
+                                                  completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error)
+    {
+         if (userToken) {
+             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+             [userDefaults setObject:userToken forKey:k_userTokenKey];
+             [userDefaults synchronize];
+             self->_userToken= userToken;
+         }
+     }];
+}
+
+- (void)loadStorefront {
+    [SKCloudServiceController.new requestStorefrontCountryCodeWithCompletionHandler:^(NSString * _Nullable storefrontCountryCode, NSError * _Nullable error) {
+        if (storefrontCountryCode) {
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            [userDefaults setObject:storefrontCountryCode forKey:k_storefrontKey];
+            [userDefaults synchronize];
+            self->_storefront = storefrontCountryCode;
         }
     }];
 }
-- (void)loadDeveloperTokenWith:(void(^)(NSString *token))completion{
-//    NSString *path = @"http://127.0.0.1:5000/jwt";
-//    NSURL *url = [NSURL URLWithString:path];
-//    [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//        NSHTTPURLResponse *res = (NSHTTPURLResponse*) response;
-//        if (res.statusCode == 200) {
-//            NSString *token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//            if (token) {
-//                [[NSUserDefaults standardUserDefaults] setObject:token forKey:k_developerTokenKey];
-//                [[NSUserDefaults standardUserDefaults] synchronize];
-//                [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenUpdatedNotification object:nil];
-//                completion(token);
-//            }
-//        }else{
-//            Log(@"request Developer Token Error: %@",error);
-//        }
-//    }] resume];
 
-}
-- (void)loadStoreFrontWith:(void(^)(NSString* front))completion{
-    [SKCloudServiceController.new requestStorefrontCountryCodeWithCompletionHandler:^(NSString * _Nullable storefrontCountryCode, NSError * _Nullable error) {
-        if (!error && storefrontCountryCode) {
-            [[NSUserDefaults standardUserDefaults] setObject:storefrontCountryCode forKey:k_storefrontKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            self->_storefront = storefrontCountryCode;
-            completion(storefrontCountryCode);
+- (void)checkAuthTokenAvailability{
+
+    //以下检查token 有效性
+    NSString *testAuthPath = @"https://api.music.apple.com/v1/me/library/playlists";
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:testAuthPath setupUserToken:YES];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+
+        NSLog(@"check auth statusCode =%ld",response.statusCode);
+        if (response.statusCode == 403) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:k_userTokenKey];
         }
+        if (response.statusCode == 401) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:k_developerTokenKey];
+        }
+
     }];
 }
 

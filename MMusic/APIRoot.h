@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-
 @interface APIRoot : NSObject
 @property(nonatomic, readonly)NSString* rootPath;
 @end

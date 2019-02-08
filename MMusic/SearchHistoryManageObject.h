@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,copy)NSString *term;
 @property(nonatomic,strong)NSDate *date;
 
++ (instancetype)insertTerm:(NSString*)term;
 - (instancetype)initWithTerm:(NSString*)term;
 @end
 

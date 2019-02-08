@@ -129,7 +129,11 @@ static NSString *const identifier = @"cell identifier";
 
                 NSMutableArray<Song*> *songs = [NSMutableArray array];
                 for (Resource *song in resourceList) {
-                    [songs addObject:[Song instanceWithResource:song]];
+
+                    Song *s = (Song*)song;
+                    NSLog(@"song=%@",s);
+                    [songs addObject:s];
+                    //[songs addObject:[Song instanceWithResource:song]];
                 }
                 [MainPlayer playSongs:songs startIndex:indexPath.row];
                 

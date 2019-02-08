@@ -28,7 +28,7 @@
         [self sd_addActivityIndicator];
         [self sd_setShowActivityIndicatorView:YES];
 
-        UIImage *placeholder = [UIImage imageNamed:@"placeholder"];
+        //UIImage *placeholder = [UIImage imageNamed:@"placeholder"];
         path = [path stringReplacingImageURLSize:self.bounds.size];
         [self sd_setImageWithURL:[NSURL URLWithString:path]
                 placeholderImage:nil

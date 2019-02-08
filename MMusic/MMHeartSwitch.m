@@ -14,6 +14,7 @@
 #import "SongManageObject.h"
 
 #import "DataManager.h"
+#import "Song.h"
 
 @interface MMHeartSwitch()
 @property(nonatomic, strong) UIImpactFeedbackGenerator *impact;
@@ -103,6 +104,7 @@
         }
 
         [self setEnabled:YES];
+    
         [DataStore.new requestRatingForCatalogWith:song.identifier type:RTCatalogSongs callBack:^(BOOL isRating) {
             [self setOn:isRating];
         }];

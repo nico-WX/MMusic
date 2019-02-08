@@ -118,10 +118,10 @@
 
         //设置歌曲信息
         [_numberLabel setText:[NSString stringWithFormat:@"%02ld",index+1]];
-        [_nameLabel setText:song.attributes.name];
-        [_artistLabel setText:song.attributes.artistName];
+        [_nameLabel setText:song.name];
+        [_artistLabel setText:song.artistName];
 
-        NSTimeInterval duration = song.attributes.durationInMillis.doubleValue / 1000.0;
+        NSTimeInterval duration = song.durationInMillis.doubleValue / 1000.0;
         NSString *durationText = [NSString stringWithFormat:@"%d:%02d",(int32_t)duration/60,(int32_t)duration%60];
         [_durationLabel setText:durationText];
 

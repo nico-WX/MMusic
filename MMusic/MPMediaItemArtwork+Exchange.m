@@ -22,7 +22,7 @@
         completion(image);
     }else{
         [MainPlayer nowPlayingSong:^(Song * _Nonnull song) {
-            NSString *urlStr = song.attributes.artwork.url;
+            NSString *urlStr = song.artwork.url;
             urlStr = [urlStr stringReplacingImageURLSize:size];
 
             dispatch_async(dispatch_get_main_queue(), ^{

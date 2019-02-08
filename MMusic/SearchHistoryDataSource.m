@@ -63,7 +63,7 @@
 - (void)loadDataWithCompletion:(void(^)(void))completion{
     NSManagedObjectContext *moc = [CoreDataStack shareDataStack].context;
 
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[SearchHistoryManageObject name]];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[SearchHistoryManageObject entityName]];
     NSSortDescriptor *sortDescriptor = [SearchHistoryManageObject defaultSortDescriptor];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
 
