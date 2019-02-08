@@ -12,7 +12,7 @@
 		3B353F6921B2C4A80072C424 /* UIView+LayerImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B353F6821B2C4A80072C424 /* UIView+LayerImage.m */; };
 		3B3D9981205512FA000F2E9E /* SongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D9980205512FA000F2E9E /* SongCell.m */; };
 		3B3D99EA205E9910000F2E9E /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D99E9205E990F000F2E9E /* NSString+Hash.m */; };
-		3B42110421B5220B0078ECAC /* MMCloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B42110321B5220B0078ECAC /* MMCloseButton.m */; };
+		3B42110421B5220B0078ECAC /* CloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B42110321B5220B0078ECAC /* CloseButton.m */; };
 		3B4D988120BA8A2600139BE0 /* DBTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D988020BA8A2600139BE0 /* DBTool.m */; };
 		3B4D989120BA8A3D00139BE0 /* DBModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D989020BA8A3D00139BE0 /* DBModel.m */; };
 		3B4D989420BA8C1700139BE0 /* ArtistsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D989320BA8C1600139BE0 /* ArtistsModel.m */; };
@@ -258,8 +258,8 @@
 		3B3D9980205512FA000F2E9E /* SongCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SongCell.m; sourceTree = "<group>"; };
 		3B3D99E8205E990D000F2E9E /* NSString+Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hash.h"; sourceTree = "<group>"; };
 		3B3D99E9205E990F000F2E9E /* NSString+Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hash.m"; sourceTree = "<group>"; };
-		3B4210F121B5220A0078ECAC /* MMCloseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMCloseButton.h; sourceTree = "<group>"; };
-		3B42110321B5220B0078ECAC /* MMCloseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMCloseButton.m; sourceTree = "<group>"; };
+		3B4210F121B5220A0078ECAC /* CloseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloseButton.h; sourceTree = "<group>"; };
+		3B42110321B5220B0078ECAC /* CloseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloseButton.m; sourceTree = "<group>"; };
 		3B4D987F20BA8A2600139BE0 /* DBTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBTool.h; sourceTree = "<group>"; };
 		3B4D988020BA8A2600139BE0 /* DBTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBTool.m; sourceTree = "<group>"; };
 		3B4D988F20BA8A3D00139BE0 /* DBModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBModel.h; sourceTree = "<group>"; };
@@ -601,14 +601,10 @@
 		3B469ADB1FF2462C0035E138 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				3B4210F121B5220A0078ECAC /* MMCloseButton.h */,
-				3B42110321B5220B0078ECAC /* MMCloseButton.m */,
+				3B4210F121B5220A0078ECAC /* CloseButton.h */,
+				3B42110321B5220B0078ECAC /* CloseButton.m */,
 				3B87992C204FF7E000EE9D2A /* RecommentationSectionView.h */,
 				3B87992D204FF7E000EE9D2A /* RecommentationSectionView.m */,
-				3B3D997F205512FA000F2E9E /* SongCell.h */,
-				3B3D9980205512FA000F2E9E /* SongCell.m */,
-				3B64B29321F703B20029C32E /* ResourceDetailSongCell.h */,
-				3B64B29421F703B20029C32E /* ResourceDetailSongCell.m */,
 				3BEB3D8B21DA1B1B00398A5B /* MMDetailHeadView.h */,
 				3BEB3D8C21DA1B1B00398A5B /* MMDetailHeadView.m */,
 				3B64B25E21F5D65B0029C32E /* ResourceDetailHeadView.h */,
@@ -764,6 +760,10 @@
 		3B679FBE22099EA2006CBCDF /* TableCell */ = {
 			isa = PBXGroup;
 			children = (
+				3B3D997F205512FA000F2E9E /* SongCell.h */,
+				3B3D9980205512FA000F2E9E /* SongCell.m */,
+				3B64B29321F703B20029C32E /* ResourceDetailSongCell.h */,
+				3B64B29421F703B20029C32E /* ResourceDetailSongCell.m */,
 				3B679FCD2209A8B3006CBCDF /* ResourceTableCell.h */,
 				3B679FCE2209A8B3006CBCDF /* ResourceTableCell.m */,
 				3B64B29621F721C30029C32E /* AlbumSongTableCell.h */,
@@ -1464,7 +1464,7 @@
 				3B64B13A21EDF6730029C32E /* ChartsViewController.m in Sources */,
 				3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */,
 				3B64B2C121F89D290029C32E /* SearchResultsCell.m in Sources */,
-				3B42110421B5220B0078ECAC /* MMCloseButton.m in Sources */,
+				3B42110421B5220B0078ECAC /* CloseButton.m in Sources */,
 				3B9AA8E01FB461CD00720085 /* Activity.m in Sources */,
 				3B9AA8D61FB452FF00720085 /* Relationship.m in Sources */,
 				3B65B29F21E0A88700C2C388 /* ButtonStyleKit.m in Sources */,

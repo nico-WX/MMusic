@@ -50,4 +50,21 @@
 -(BOOL)isEqualToMediaItem:(MPMediaItem *)mediaItem{
     return [mediaItem.playbackStoreID isEqualToString:self.identifier];
 }
+
++(instancetype)instanceWithResource:(Resource *)resource{
+    return [[self alloc] initWithResource:resource];
+}
+- (instancetype)initWithResource:(Resource *)resource{
+    if (self = [super init]) {
+        [self mj_setKeyValues:resource.attributes];
+        self.identifier = resource.identifier;
+        self.href = resource.href;
+        self.type = resource.type;
+        self.attributes = resource.attributes;
+        self.meta = resource.meta;
+        //self.relationships = resource.relationships;
+
+    }
+    return self;
+}
 @end

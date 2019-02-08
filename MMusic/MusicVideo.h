@@ -38,4 +38,7 @@
 
 
 @property(nonatomic,strong)MusicVideoRelationships *relationships;
+
++ (instancetype)instanceWithResource:(Resource*)resource;
+- (instancetype)initWithResource:(Resource*)resource;
 @end

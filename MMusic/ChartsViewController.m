@@ -7,6 +7,7 @@
 //
 
 #import "ChartsViewController.h"
+
 #import "ResourceCollectionCell.h"
 #import "DetailViewController.h"
 #import "ChartsCell.h"
@@ -23,8 +24,8 @@
 
 @interface ChartsViewController ()<UITableViewDelegate,ChartsDataSourceDelegate,UICollectionViewDelegate>
 @property(nonatomic, strong)UITableView *tableView;
-@property(nonatomic, strong)ChartsDataSource *dataSource;
 
+@property(nonatomic, strong)ChartsDataSource *dataSource;
 @end
 
 static NSString *const identifier = @"cell reuseIdentifier";
@@ -45,8 +46,6 @@ static NSString *const identifier = @"cell reuseIdentifier";
 }
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-
-    [_tableView setNeedsDisplay];
 }
 
 #pragma mark - getter
@@ -63,6 +62,7 @@ static NSString *const identifier = @"cell reuseIdentifier";
 -(void)configureCell:(UITableViewCell *)cell object:(Chart *)chart{
     if ([cell isKindOfClass:[ChartsCell class]]) {
         ChartsCell *chartsCell = (ChartsCell*)cell;
+
         [chartsCell setChart:chart];
         //tableViewCell 中的集合视图代理设置为self, 获取选中的数据, 入栈新的控制器;
         [chartsCell.collectionView setDelegate:self];

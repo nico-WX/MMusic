@@ -44,7 +44,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
                                                              cellIdentifier:resultsIdentifier
                                                           sectionIdentifier:resultsSectionIdentifier
                                                                    delegate:self];
-
 }
 
 - (void)viewDidLayoutSubviews{

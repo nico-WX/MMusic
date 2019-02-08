@@ -20,7 +20,6 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
 
-
         _imageView = [[UIImageView alloc] init];
         _titleLabel = [[UILabel alloc] init];
 
@@ -28,16 +27,17 @@
         [_titleLabel setAdjustsFontSizeToFitWidth:YES];
         [_titleLabel setTextColor:MainColor];
         [_titleLabel setFont:[UIFont systemFontOfSize:[UIFont labelFontSize]]];
+        //[_titleLabel setBackgroundColor:UIColor.whiteColor];
 
         [self.contentView addSubview:_imageView];
         [self.contentView addSubview:_titleLabel];
 
-        //set
+
         //默认全透明, 无法显示阴影  , 设置颜色通道透明
         [self.layer setShadowColor:UIColor.lightGrayColor.CGColor];
-        [self.layer setShadowOffset:CGSizeMake(4, 8)];
-        [self.layer setShadowOpacity:0.8];
-        [self.layer setShadowRadius:6];
+        [self.layer setShadowOffset:CGSizeMake(0, 0)];
+        [self.layer setShadowOpacity:1];
+        [self.layer setShadowRadius:8];
     }
     return self;
 }
@@ -55,7 +55,7 @@
     }];
 
     [_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.mas_equalTo(superView);
+        make.left.right.mas_equalTo(superView).insets(insets);
         make.top.mas_equalTo(weakSelf.imageView.mas_bottom);
     }];
 }

@@ -1,5 +1,5 @@
 //
-//  MMCloseButton.h
+//  CloseButton.h
 //  ScrollPage
 //
 //  Created by 🐙怪兽 on 2018/12/1.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MMCloseButton : UIButton
+@interface CloseButton : UIButton
 
 @end
 

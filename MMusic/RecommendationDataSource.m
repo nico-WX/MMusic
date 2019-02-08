@@ -15,7 +15,6 @@
 
 #import "Recommendation.h"
 
-
 @interface RecommendationDataSource ()
 
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*>* dataArray;
@@ -36,6 +35,7 @@
     if (self = [super init]) {
         _collectionView = collectionView;
         collectionView.dataSource = self;
+
         _sectionIdentifier = sectionIdentifier;
         _reuseIdentifier = identifier;
         _delegate = delegate;
@@ -50,7 +50,7 @@
 
     //加载数据
     JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
-    [hud.textLabel setText:@"加载中.."];
+    [hud.textLabel setText:@"加载中..."];
     [hud showInView:view animated:YES];
 
     [self defaultRecommendataionWithCompletion:^(BOOL success) {

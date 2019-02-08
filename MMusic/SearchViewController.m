@@ -45,7 +45,7 @@ static NSString *const identifier = @"cell identifier";
     self.view.backgroundColor = UIColor.whiteColor;
 
     [self.view addSubview:self.searchHistoryView];
-    //[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [self.searchHistoryView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
     self.searchHistoryDataSource = [[SearchHistoryDataSource alloc] initWithTableView:self.searchHistoryView
                                                                            identifier:identifier
@@ -128,12 +128,9 @@ static NSString *const identifier = @"cell identifier";
             if ([res.type isEqualToString:@"songs"]) {
 
                 NSMutableArray<Song*> *songs = [NSMutableArray array];
-                for (Resource *song in resourceList) {
-
-                    Song *s = (Song*)song;
-                    NSLog(@"song=%@",s);
-                    [songs addObject:s];
-                    //[songs addObject:[Song instanceWithResource:song]];
+                for (Resource *songResource in resourceList) {
+                    Song *song = [Song instanceWithResource:songResource];
+                    [songs addObject:song];
                 }
                 [MainPlayer playSongs:songs startIndex:indexPath.row];
                 
@@ -192,10 +189,6 @@ static NSString *const identifier = @"cell identifier";
         return view;
     }
     return nil;
-}
-
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return UITableViewCellEditingStyleDelete;
 }
 
 

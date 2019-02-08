@@ -51,6 +51,9 @@
  */
 -(BOOL) isEqualToMediaItem:(MPMediaItem*) mediaItem;
 
++ (instancetype)instanceWithResource:(Resource*)resource;
+- (instancetype)initWithResource:(Resource*)resource;
+
 + (instancetype)instanceWithSongManageObject:(SongManageObject*)songManageObject;
 - (instancetype)initWithSongManageObject:(SongManageObject*)songManageObject;
 @end

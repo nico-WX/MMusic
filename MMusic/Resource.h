@@ -22,8 +22,4 @@ static NSString *const JSONAttributesKey = @"attributes";
 @property(nonatomic, strong) NSDictionary *meta;
 @property(nonatomic, strong) Relationship *relationships;
 
-/**该方法只能在Resource 子类初始中调用*/
--(instancetype)initWithResource:(Resource*) resource ;
-/**该方法只能在Resource 子类调用*/
-+(instancetype)instanceWithResource:(Resource*) resource;
 @end

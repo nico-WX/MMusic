@@ -51,9 +51,11 @@ static NSString *const identifier = @"cell dientifier";
         [self.collectionView registerClass:[ResourceCollectionCell class] forCellWithReuseIdentifier:identifier];
         UIEdgeInsets insets = UIEdgeInsetsMake(0, 8, 0, 8);
         [self.collectionView setContentInset:insets];
-        CGFloat w = CGRectGetWidth(self.view.bounds)/2 - insets.left*3;
+        CGFloat w = CGRectGetWidth(self.view.bounds)/2 - insets.left*2;
         CGFloat h = w+40;
         [self.flowLayout setItemSize:CGSizeMake(w, h)];
+        [self.flowLayout setMinimumLineSpacing:8];
+        [self.flowLayout setMinimumInteritemSpacing:8];
     }
 
     _dataSource = [[ShowAllDataSource alloc] initWithCollectionView:self.collectionView
@@ -73,7 +75,7 @@ static NSString *const identifier = @"cell dientifier";
     NSString *type = self.chart.data.firstObject.type;
     if ([type isEqualToString:@"songs"]) {
         NSMutableArray<Song*> *array = [NSMutableArray array];
-        //数据源内部的数据会自动加载为全部
+        //数据源内部的数据会自动加载全部数据, 并设置到data 中
         for (Resource *resource in self.dataSource.chart.data) {
             [array addObject:[Song instanceWithResource:resource]];
         }

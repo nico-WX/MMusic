@@ -14,7 +14,7 @@
 #import "MPMusicPlayerController+ResourcePlaying.h"
 
 #import "DetailViewController.h"
-#import "MMCloseButton.h"
+#import "CloseButton.h"
 #import "UIButton+BlockButton.h"
 
 #import "MMDetailHeadView.h"
@@ -25,7 +25,7 @@
 #import "Song.h"
 
 @interface DetailViewController ()<UITableViewDelegate, ResourceDetailDataSourceDelegate>
-@property(nonatomic, strong) MMCloseButton *closeButton;
+@property(nonatomic, strong) CloseButton *closeButton;
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) MMDetailHeadView *headView;
 
@@ -41,7 +41,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 - (instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
          _resource  = resource;
-        _closeButton = [[MMCloseButton alloc] init];
+        _closeButton = [[CloseButton alloc] init];
         //头部视图(image 和 title)
         _headView = [[MMDetailHeadView alloc] initWithFrame:CGRectZero];
         _imageView = _headView.imageView;

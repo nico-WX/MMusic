@@ -25,4 +25,19 @@
     return self;
 }
 
+
++ (instancetype)instanceWithResource:(Resource *)resource{
+    return [[self alloc] initWithResource:resource];
+}
+- (instancetype)initWithResource:(Resource *)resource{
+    if (self = [super init]) {
+        [self mj_setKeyValues:resource.attributes];
+        self.identifier = resource.identifier;
+        self.type = resource.type;
+        self.attributes = resource.attributes;
+        self.href = resource.href;
+        self.meta = resource.meta;
+    }
+    return self;
+}
 @end

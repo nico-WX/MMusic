@@ -25,6 +25,8 @@
 
     if (!image) {
 
+        [self setBackgroundColor:[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1]];
+
         [self sd_addActivityIndicator];
         [self sd_setShowActivityIndicatorView:YES];
 

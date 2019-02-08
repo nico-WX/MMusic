@@ -1,5 +1,5 @@
 //
-//  MMCloseButton.m
+//  CloseButton.m
 //  ScrollPage
 //
 //  Created by 🐙怪兽 on 2018/12/1.
@@ -7,17 +7,17 @@
 //
 
 #import <Masonry.h>
-#import "MMCloseButton.h"
+#import "CloseButton.h"
 
+@interface CloseButton ()
 
-@interface MMCloseButton ()
 @property(nonatomic, strong)UIVisualEffectView *effectView;
 
 @property(nonatomic, strong)UIView *line1;
 @property(nonatomic, strong)UIView *line2;
 @end
 
-@implementation MMCloseButton
+@implementation CloseButton
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
@@ -49,42 +49,36 @@
     [self.layer setCornerRadius:CGRectGetHeight(self.bounds)/2];
     [self.layer setMasksToBounds:YES];
 
-
-    CGFloat x = 4.0f;
-    //CGFloat w = CGRectGetWidth(self.effectView.contentView.bounds) - x*2;
     CGFloat h = 3.0f;
-    CGFloat y = CGRectGetMidY(self.effectView.contentView.bounds) - h/2;
-
     __weak typeof(self) weakSelf = self;
     UIView *superView = self.effectView.contentView;
-    [self.effectView mas_remakeConstraints:^(MASConstraintMaker *make) {
+
+    [_effectView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(weakSelf);
     }];
 
-    [self.line1 mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superView).offset(y);
-        make.left.mas_equalTo(superView).offset(x);
-        make.right.mas_equalTo(superView).offset(-x);
+    //两条线重叠
+    [_line1 mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.center.mas_equalTo(superView);
+        make.left.right.mas_equalTo(superView).insets(UIEdgeInsetsMake(0, 4, 0, 4));
         make.height.mas_equalTo(h);
     }];
-
-    [self.line2 mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superView).offset(y);
-        make.left.mas_equalTo(superView).offset(x);
-        make.right.mas_equalTo(superView).offset(-x);
-        make.height.mas_equalTo(h);
+    [_line2 mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(weakSelf.line1);
     }];
-
 
     // 转角度
     [_line1 setTransform:CGAffineTransformMakeRotation(-M_PI_4)];
     [_line2 setTransform:CGAffineTransformMakeRotation(M_PI_4)];
 
     //圆角
-    [_line1.layer setCornerRadius:h/2];
-    [_line1.layer setMasksToBounds:YES];
-    [_line2.layer setCornerRadius:h/2];
-    [_line2.layer setMasksToBounds:YES];
+    CGFloat radius = h/2;
+
+    _line1.layer.cornerRadius = radius;
+    _line2.layer.cornerRadius = radius;
+
+    _line1.layer.masksToBounds = YES;
+    _line2.layer.masksToBounds = YES;
 }
 
 
