@@ -96,4 +96,45 @@ static DataManager *_instance;
     }
 }
 
+
+
+- (void)addSearchHistory:(NSString *)term{
+
+
+    //记录 搜索记录
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[SearchHistoryManageObject entityName]];
+    NSManagedObjectContext *moc = [[CoreDataStack shareDataStack] context];
+
+    NSArray<SearchHistoryManageObject*> *results = [moc executeFetchRequest:request error:nil];
+    if (results.count > 0) {
+        for (SearchHistoryManageObject *history in results) {
+            if ([history.term isEqualToString:term]) {
+                // 匹配到, 刷新日期, 不再重复添加
+                history.date = [NSDate date];
+                [moc save:nil];
+                return;
+            }
+        }
+    }
+    //只添加5 个; 超过5 个, 用最后一个修改数据保存
+    if (results.count >= 5) {
+        SearchHistoryManageObject *history = results.lastObject;
+        history.term = term;
+        history.date = [NSDate date];
+        NSManagedObjectContext *moc = history.managedObjectContext;
+        [moc save:nil];
+        return;
+    }
+
+    SearchHistoryManageObject *history = [[SearchHistoryManageObject alloc] initWithTerm:term];
+    moc = history.managedObjectContext;
+    NSError *error = nil;
+    if (![moc save:&error]) {
+        NSLog(@"error =%@",error);
+    }
+
+}
+- (void)deleteSearchHistory:(SearchHistoryManageObject *)searchHistoryMO{
+    
+}
 @end

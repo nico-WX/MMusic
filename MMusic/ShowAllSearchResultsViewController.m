@@ -13,6 +13,7 @@
 
 #import "SongCollectionCell.h"
 #import "ResourceCollectionCell.h"
+#import "MusicVideosCollectionCell.h"
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
 #import "ResponseRoot.h"
@@ -49,6 +50,8 @@ static NSString *const identifier = @"cell identifier";
                                                             identifier:identifier
                                                           responseRoot:self.responseRoot
                                                               delegate:self];
+
+
 }
 
 -(void)viewDidLayoutSubviews{
@@ -58,13 +61,20 @@ static NSString *const identifier = @"cell identifier";
 
     // 不同的类型, 不同的cellSize  和cell 类型
     Resource *res = self.responseRoot.data.firstObject;
-    if ([res.type isEqualToString:@"songs"]) {
+    if ([res.type isEqualToString:JSONSongTypeKey]) {
         [self.collectionView registerClass:[SongCollectionCell class] forCellWithReuseIdentifier:identifier];
         CGFloat h = 80;
         CGFloat w = CGRectGetWidth(self.view.bounds);
         [self.layout setItemSize:CGSizeMake(w, h)];
         [self.layout setMinimumInteritemSpacing:1];
-    }else{
+    }else if([res.type isEqualToString:JSONMusicVideosTypeKey]){
+        [self.collectionView registerClass:[MusicVideosCollectionCell class] forCellWithReuseIdentifier:identifier];
+        CGFloat h = 100;
+        CGFloat w = CGRectGetWidth(self.view.bounds);
+        [self.layout setItemSize:CGSizeMake(w, h)];
+        [self.layout setMinimumInteritemSpacing:1];
+
+    } else{
         [self.collectionView registerClass:[ResourceCollectionCell class] forCellWithReuseIdentifier:identifier];
 
         CGFloat space = 8.0f;
@@ -102,10 +112,11 @@ static NSString *const identifier = @"cell identifier";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
 
+    // bug   选中时, 后台还在继续i加载数据, 访问data时出现错误, 即数组还在变化中,Terminating app due to uncaught exception 'NSGenericException', reason: '*** Collection <__NSArrayM: 0x283498c30> was mutated while being enumerated.'
     NSArray<Resource*> *data = self.dataSource.data;
     Resource *res = data.firstObject;
 
-    if ([res.type isEqualToString:@"songs"]) {
+    if ([res.type isEqualToString:JSONSongTypeKey]) {
 
         NSMutableArray *songList = [NSMutableArray array];
         for (Resource *resource in data) {
@@ -114,7 +125,7 @@ static NSString *const identifier = @"cell identifier";
         }
         [MainPlayer playSongs:songList startIndex:indexPath.row];
 
-    }else if ([res.type isEqualToString:@"music-videos"]){
+    }else if ([res.type isEqualToString:JSONMusicVideosTypeKey]){
         NSMutableArray<MusicVideo*> *musicVideoList = [NSMutableArray array];
         for (Resource *resource in data) {
             MusicVideo *mv = [MusicVideo instanceWithResource:resource];

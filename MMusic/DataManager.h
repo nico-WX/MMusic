@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "SongManageObject.h"
+#import "SearchHistoryManageObject.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,6 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addItem:(Song*)song;
 - (void)deleteItem:(Song*)song;
 - (void)fetchAllSong:(void(^)(NSArray<SongManageObject*>* songArray))completion;
+
+- (void)addSearchHistory:(NSString*)term;
+- (void)deleteSearchHistory:(SearchHistoryManageObject*)searchHistoryMO;
 
 @end
 

@@ -29,6 +29,11 @@
 }
 
 - (void)searchHintsWithTerm:(NSString *)term{
+
+    if (!term || [term isEqualToString:@""]) {
+        return;
+    }
+
     [MusicKit.new.catalog searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         if ([json valueForKeyPath: @"results.terms"]) {
             self.hints = [json valueForKeyPath:@"results.terms"];
@@ -41,8 +46,10 @@
     }];
 }
 - (void)clearData{
-    _hints = nil;
-    [_tableView reloadData];
+    mainDispatch(^{
+        self.hints = nil;
+        [self.tableView reloadData];
+    });
 }
 
 #pragma mark UITableViewDataSource

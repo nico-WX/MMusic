@@ -47,7 +47,9 @@
                                                                  usingBlock:^(NSNotification * _Nonnull note)
         {
             [self loadDataWithCompletion:^{
-                 [tableView reloadData];
+                mainDispatch(^{
+                    [tableView reloadData];
+                });
             }];
         }];
 

@@ -11,6 +11,8 @@
 
 
 static NSString *const JSONAttributesKey = @"attributes";
+static NSString *const JSONSongTypeKey = @"songs";
+static NSString *const JSONMusicVideosTypeKey = @"music-videos";
 
 @interface Resource : MMObject
 

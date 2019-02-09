@@ -30,12 +30,25 @@
     if (![song isEqualToMediaItem:self.nowPlayingItem]) {
         [self setQueueWithDescriptor:self.parametersQueue];
         [self play];
-
         [self prepareToPlayWithCompletionHandler:^(NSError * _Nullable error) {
 
         }];
+    }else{
+        //暂停, 继续
+        switch (self.playbackState) {
+            case MPMusicPlaybackStatePaused:
+                [self play];
+                break;
+            case MPMusicPlaybackStatePlaying:
+                [self pause];
 
+            default:
+                break;
+        }
     }
+
+
+
 }
 - (void)insertSongAtEndItem:(Song *)song {
     NSMutableArray *array = [NSMutableArray arrayWithArray:self.songLists];

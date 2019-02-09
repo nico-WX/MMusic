@@ -7,13 +7,16 @@
 //
 
 #import "SearchResultsDataSource.h"
+
 #import "ResponseRoot.h"
 #import "SearchHistoryManageObject.h"
 #import "CoreDataStack.h"
+#import "DataManager.h"
 
 @interface SearchResultsDataSource ()<UITableViewDataSource>
 @property(nonatomic, weak)UITableView *tableView;
 @property(nonatomic, weak)id<SearchResultsDataSourceDelegate> delegate;
+
 @property(nonatomic, copy)NSString *cellIdentifier;
 @property(nonatomic, copy)NSString *sectionIdentifier;
 
@@ -29,11 +32,11 @@
 
     if (self = [super init]) {
         _tableView = tableView;
+        _tableView.dataSource = self;
+
         _cellIdentifier = cellIdentifier;
         _sectionIdentifier = sectionIdentifier;
         _delegate = delegate;
-
-        [_tableView setDataSource:self];
     }
     return self;
 }
@@ -41,7 +44,7 @@
 - (void)searchTerm:(NSString *)term{
 
     //无字符串,跳出栈
-    if ([term isEqualToString:@" "] || !term) {
+    if ([term isEqualToString:@""] || !term) {
         return;
     }
     //搜索
@@ -53,37 +56,8 @@
         }
     }];
 
-    //记录 搜索记录
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[SearchHistoryManageObject entityName]];
-    NSManagedObjectContext *moc = [[CoreDataStack shareDataStack] context];
-
-    NSArray<SearchHistoryManageObject*> *results = [moc executeFetchRequest:request error:nil];
-    if (results.count > 0) {
-        for (SearchHistoryManageObject *history in results) {
-            if ([history.term isEqualToString:term]) {
-                // 匹配到, 刷新日期, 不再重复添加
-                history.date = [NSDate date];
-                [moc save:nil];
-                return;
-            }
-        }
-    }
-    //只添加5 个; 超过5 个, 用最后一个修改数据保存
-    if (results.count >= 5) {
-        SearchHistoryManageObject *history = results.lastObject;
-        history.term = term;
-        history.date = [NSDate date];
-        NSManagedObjectContext *moc = history.managedObjectContext;
-        [moc save:nil];
-        return;
-    }
-
-    SearchHistoryManageObject *history = [[SearchHistoryManageObject alloc] initWithTerm:term];
-    moc = history.managedObjectContext;
-    NSError *error = nil;
-    if (![moc save:&error]) {
-        NSLog(@"error =%@",error);
-    }
+    // 记录搜索j历史
+    [[DataManager shareDataManager] addSearchHistory:term];
 
 }
 
@@ -104,7 +78,7 @@
                     [resultsList addObject:@{(NSString*)key:root}];
                 }
             }];
-            [self setSearchResults:resultsList];
+            self.searchResults = resultsList;
         }
 
         if (completion) {
@@ -126,19 +100,24 @@
     return dict.allValues.firstObject.data;
 }
 - (void)clearData{
-    _searchResults = nil;
-    [_tableView reloadData];
+    mainDispatch(^{
+        self.searchResults = nil;
+        [self.tableView reloadData];
+    });
+
 }
 
 #pragma mark - UITableViewDataSource
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return [self.searchResults count];
 }
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSDictionary<NSString*,ResponseRoot*> *temp = [[self searchResults] objectAtIndex:section];
     return [[[[temp allValues] firstObject] data] count];
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:_cellIdentifier];
     if ([_delegate respondsToSelector:@selector(configureCell:object:)]) {

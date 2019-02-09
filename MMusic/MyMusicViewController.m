@@ -31,6 +31,7 @@ static NSString *identifier = @"cell identifier";
     [self.view addSubview:self.tableView];
     _dataSource = [[MyMusicDataSource alloc] initWithView:_tableView identifier:identifier delegate:self];
 }
+
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
 
