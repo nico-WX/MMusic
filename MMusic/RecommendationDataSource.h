@@ -6,7 +6,7 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "DataSource.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @class Resource;
@@ -18,12 +18,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)configureSupplementaryElement:(UICollectionReusableView*)reusableView object:(NSString*)title ;
 @end
 
-@interface RecommendationDataSource : NSObject<UICollectionViewDataSource>
+@interface RecommendationDataSource : DataSource
 
 - (instancetype)initWithCollectionView:(UICollectionView*)collectionView
                         cellIdentifier:(NSString*)identifier
-                     sectionIdentifier:(NSString*)sectionIdentifier
+                     sectionIdentifier:(NSString* _Nullable)sectionIdentifier
                               delegate:(id<RecommendationDataSourceDelegate>)delegate;
+
+- (Resource*)selectedResourceAtIndexPath:(NSIndexPath*)indexPath;
 @end
 
 NS_ASSUME_NONNULL_END

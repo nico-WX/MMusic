@@ -6,7 +6,9 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
+
 #import "SearchResultsDataSource.h"
+#import <UIKit/UIKit.h>
 
 #import "ResponseRoot.h"
 #import "SearchHistoryManageObject.h"
@@ -43,22 +45,18 @@
 
 - (void)searchTerm:(NSString *)term{
 
-    //无字符串,跳出栈
-    if ([term isEqualToString:@""] || !term) {
-        return;
+    if ([term length] > 0) {
+        [self clearData];
+        [self searchDataForTemr:term completion:^(BOOL success) {
+            if (success) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView reloadData];
+                });
+            }
+        }];
+        // 记录搜索j历史
+        [[DataManager shareDataManager] addSearchHistory:term];
     }
-    //搜索
-    [self searchDataForTemr:term completion:^(BOOL success) {
-        if (success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
-            });
-        }
-    }];
-
-    // 记录搜索j历史
-    [[DataManager shareDataManager] addSearchHistory:term];
-
 }
 
 // 搜索结果  json
@@ -67,7 +65,7 @@
     [[MusicKit new].catalog searchForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];
         //检查结果返回空结果字典
-        if (json.allKeys.count != 0)  {
+        if (json.allKeys.count > 0)  {
 
             NSMutableArray<NSDictionary<NSString*,ResponseRoot*>*> *resultsList = [NSMutableArray array];
             //解析字典
@@ -79,6 +77,18 @@
                 }
             }];
             self.searchResults = resultsList;
+        }else{
+            mainDispatch(^{
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"没有查找到内容" message:term preferredStyle:UIAlertControllerStyleAlert];
+        
+                UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+                [keyWindow.rootViewController presentViewController:alert animated:YES completion:^{
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+                    });
+                }];
+
+            });
         }
 
         if (completion) {

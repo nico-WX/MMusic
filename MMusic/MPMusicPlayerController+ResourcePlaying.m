@@ -117,9 +117,7 @@
                                                               startPlayIndex:(NSUInteger)index {
     NSMutableArray<MPMusicPlayerPlayParameters*> *list = [NSMutableArray array];
     for (Song *song in songs) {
-        if ([song.attributes valueForKey:@"playParams"]) {
-            [list addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary: [song.attributes valueForKey:@"playParams"]]];
-        }
+        [list addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams]];
     }
     MPMusicPlayerPlayParametersQueueDescriptor *queue;
     queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:list];

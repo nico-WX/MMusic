@@ -1,25 +1,24 @@
 //
-//  TodayCollectionViewController.m
 //  MMusic
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
 
-#import <MJRefresh.h>
 
 #import "RecommendationViewController.h"
-
 #import "DetailViewController.h"
-#import "TabBarController.h"
 
 #import "RecommentationSectionView.h"
 #import "ResourceCell.h"
+#import "ResourceCell+ConfigureForResource.h"
 
 //显示动画
 #import "MMDetailPoppingAnimator.h"
 #import "MMDetailPresentationController.h"
 
+//data
 #import "RecommendationDataSource.h"
+
 #import "Resource.h"
 
 @interface RecommendationViewController()<UICollectionViewDelegate,MMDetailViewControllerDelegate,UIViewControllerTransitioningDelegate,RecommendationDataSourceDelegate>
@@ -47,11 +46,14 @@ static NSString *const cellIdentifier = @"resourceCell";
     [self.view addSubview:self.collectionView];
 
     self.popupAnimator = [[MMDetailPoppingAnimator alloc] init];
-    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:self.collectionView
+    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:_collectionView
                                                                         cellIdentifier:cellIdentifier
                                                                      sectionIdentifier:sectionIdentifier
                                                                               delegate:self];
+    //self.transitionCoordinator
 }
+
+
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
@@ -67,7 +69,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 # pragma mark - 数据源代理
 - (void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
     if ([cell isKindOfClass:[ResourceCell class]]) {
-        [((ResourceCell*)cell) setResource:resource];
+        [((ResourceCell*)cell)  setResource:resource];
     }
 }
 - (void)configureSupplementaryElement:(UICollectionReusableView *)reusableView object:(NSString *)title{
@@ -80,7 +82,9 @@ static NSString *const cellIdentifier = @"resourceCell";
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
     ResourceCell *cell = (ResourceCell*)[collectionView cellForItemAtIndexPath:indexPath];
-    DetailViewController *detail = [[DetailViewController alloc] initWithResource:cell.resource];
+    Resource *resource = [self.recommendationData selectedResourceAtIndexPath:indexPath];
+
+    DetailViewController *detail = [[DetailViewController alloc] initWithResource:resource];
 
     //显示动画
     [detail setDisMissDelegate:self];
@@ -114,6 +118,7 @@ static NSString *const cellIdentifier = @"resourceCell";
     self.presentationController =[[MMDetailPresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
     return self.presentationController;
 }
+
 
 
 #pragma mark -  getter / setter

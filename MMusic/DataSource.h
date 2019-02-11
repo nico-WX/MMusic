@@ -11,13 +11,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol DataSourceDelegate <NSObject>
-
-
 @end
 
+typedef void(^configureTableCellBlock)(id cell, id item, NSIndexPath *atIndexPath);
+typedef void(^configureCollectionCellBlock)(id cell, id item);
+
 @interface DataSource : NSObject
-
-
 
 @end
 

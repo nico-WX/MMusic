@@ -36,15 +36,18 @@
 
 - (void)loadDataWithCompletion:(void(^)(void))completion{
     //NSArray<NSString*> * temp = @[@"本地歌曲",@"我喜欢的",@"专辑",@"歌曲",@"播放列表",@"广播"];
-    MyLibraryContentViewController *localSong   = [[MyLibraryContentViewController alloc] initWithType:LibraryLocalSongType];
     MyLibraryContentViewController *like        = [[MyLibraryContentViewController alloc] initWithType:LibraryMyLikeSongType];
+    [like setTitle:@"我喜欢的"];
     MyLibraryContentViewController *album       = [[MyLibraryContentViewController alloc] initWithType:LibraryAlbumType];
+    [album setTitle:@"专辑"];
     MyLibraryContentViewController *song        = [[MyLibraryContentViewController alloc] initWithType:LibrarySongType];
+    [song setTitle:@"单曲"];
     MyLibraryContentViewController *playlist    = [[MyLibraryContentViewController alloc] initWithType:LibraryPlaylistType];
+    [playlist setTitle:@"播放列表"];
     MyLibraryContentViewController *podcasts    = [[MyLibraryContentViewController alloc] initWithType:LibraryPodcastsType];
-
-    _lists = @[localSong,like,album,song,playlist,podcasts];
-
+    [podcasts setTitle:@"广播"];
+    
+    _lists = @[like,album,song,playlist,podcasts];
     completion();
 }
 

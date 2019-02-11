@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong) Resource *resource;
 @property(nonatomic, strong) Album    *album;
 @property(nonatomic, strong) Playlist *playlists;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

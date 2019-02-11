@@ -6,10 +6,8 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import <JGProgressHUD.h>
+
 #import <Masonry.h>
-#import <MJRefresh.h>
-#import <MediaPlayer/MediaPlayer.h>
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
 
@@ -74,6 +72,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
                                                            identifier:reuseIdentifier
                                                              resource:_resource
                                                              delegate:self];
+
 }
 
 
@@ -97,10 +96,12 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 }
 
 #pragma mark dataSourceDelegate
-- (void)configureCell:(UITableViewCell *)cell object:(Song *)song atIndex:(NSUInteger)index{
-    if ([cell isKindOfClass:[SongCell class]]) {
-        [((SongCell*)cell) setSong:song withIndex:index];
-    }
+- (void)configureCell:(SongCell *)cell object:(Song *)song atIndex:(NSUInteger)index{
+    [cell setSong:song withIndex:index];
+//
+//    if ([cell isKindOfClass:[SongCell class]]) {
+//        [((SongCell*)cell) setSong:song withIndex:index];
+//    }
 }
 
 

@@ -15,11 +15,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol LibraryDataSourceDelegate <NSObject>
 
-- (void)configureCell:(UICollectionViewCell*)cell object:(MPMediaItem*)item;
+- (void)configureCollectionCell:(UICollectionViewCell*)cell object:(MPMediaItem*)item;
+- (void)configureTableViewCell:(UITableViewCell*)cell object:(MPMediaItem*)item;
 
 @end
 
 @interface LibraryDataSource : NSObject
+
+- (instancetype)initWithTableView:(UITableView*)tableView
+                       identifier:(NSString*)identifier
+                       mediaQuery:(MPMediaQuery*)query
+                         delegate:(id<LibraryDataSourceDelegate>)delegate;
 
 - (instancetype)initWithCollectionView:(UICollectionView*)collectionView
                             identifier:(NSString*)identifier

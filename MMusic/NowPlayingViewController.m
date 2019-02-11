@@ -105,7 +105,14 @@ static NowPlayingViewController *_instance;
     [super viewDidLayoutSubviews];
 
     [_playerView setFrame:self.view.bounds];
-    [self updateUI];
+
+    [MainPlayer.nowPlayingItem.artwork loadArtworkImageWithSize:_playerView.imageView.bounds.size completion:^(UIImage * _Nonnull image) {
+        mainDispatch(^{
+            [self.playerView.imageView setImage:image];
+        });
+    }];
+
+    //[self updateUI];
 }
 
 - (void)dealloc{
@@ -131,11 +138,12 @@ static NowPlayingViewController *_instance;
     [self.playerView.artistLabel setText:nowPlayingItem.artist];
 
     //延迟0.1秒加载图片,(不延迟,子视图还未布局好,就不能拿到最后的view的大小)
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [nowPlayingItem.artwork loadArtworkImageWithSize:self.playerView.imageView.bounds.size completion:^(UIImage * _Nonnull image) {
+    [nowPlayingItem.artwork loadArtworkImageWithSize:_playerView.bounds.size completion:^(UIImage * _Nonnull image) {
+        mainDispatch(^{
             [self.playerView.imageView setImage:image];
-        }];
-    });
+        });
+    }];
+
 }
 - (MMPlayerView *)playerView{
     if (!_playerView) {

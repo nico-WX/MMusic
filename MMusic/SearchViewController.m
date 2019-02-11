@@ -51,6 +51,7 @@ static NSString *const identifier = @"cell identifier";
                                                                            identifier:identifier
                                                                              delegate:self];
 
+    
     [self setDefinesPresentationContext:YES]; //当前环境呈现
     [self.navigationController.navigationBar setPrefersLargeTitles:YES];
     [self.navigationItem setSearchController:self.searchController];

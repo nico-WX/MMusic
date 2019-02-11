@@ -6,47 +6,47 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <MJRefresh.h>
-#import "MyLikeSongDataSource.h"
 
+#import "MyLikeSongDataSource.h"
 #import "DataManager.h"
 #import "CoreDataStack.h"
 
-@interface MyLikeSongDataSource ()<UICollectionViewDataSource>
-@property(nonatomic,weak)UICollectionView *collectionView;
+@interface MyLikeSongDataSource ()<UITableViewDataSource>
 @property(nonatomic,copy)NSString *identifier;
 @property(nonatomic,weak)id<MyLikeSongDataSourceDelegate> delegate;
-
+@property(nonatomic,strong)UITableView *tableView;
 
 @end
 
 @implementation MyLikeSongDataSource
 
-- (instancetype)initWithColleCtionView:(UICollectionView *)view identifier:(NSString *)identifier delegate:(id<MyLikeSongDataSourceDelegate>)delegate{
+- (instancetype)initWithTableVoew:(UITableView *)tableView identifier:(NSString *)identifier delegate:(id<MyLikeSongDataSourceDelegate>)delegate{
     if (self = [super init]) {
-        _collectionView = view;
+        _tableView = tableView;
+        [_tableView setDataSource:self];
         _identifier = identifier;
         _delegate = delegate;
 
-        [view setDataSource:self];
+        // 监听coreData栈变化, 重新加载
+        [[NSNotificationCenter defaultCenter] addObserverForName:NSManagedObjectContextObjectsDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
 
-        
-        view.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             [self loadDataWithCompletion:^{
                 mainDispatch(^{
-                    [view reloadData];
+                    [tableView reloadData];
                 });
             }];
         }];
 
         [self loadDataWithCompletion:^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [view reloadData];
+            mainDispatch(^{
+                [tableView reloadData];
             });
         }];
-
     }
     return self;
+}
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 // 从core Data 加载数据
@@ -58,17 +58,16 @@
     }];
 }
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.songList.count;
 }
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_identifier forIndexPath:indexPath];
 
-    if ([_delegate respondsToSelector:@selector(configureCell:songManageObject:)]) {
-        [_delegate configureCell:cell songManageObject:[self.songList objectAtIndex:indexPath.row]];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:_identifier];
+    if ([_delegate respondsToSelector:@selector(configureTableCell:songManageObject:)]) {
+        [_delegate configureTableCell:cell songManageObject:[self.songList objectAtIndex:indexPath.row]];
     }
     return cell;
 }
-
 
 @end

@@ -72,7 +72,9 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.identifier];
-    [self.delegate configureCell:cell object:[self.charts objectAtIndex:indexPath.row]];
+    if ([_delegate respondsToSelector:@selector(configureCell:object:)]) {
+        [_delegate configureCell:cell object:[self.charts objectAtIndex:indexPath.row]];
+    }
     return cell;
 }
 

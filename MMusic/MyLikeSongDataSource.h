@@ -13,15 +13,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol MyLikeSongDataSourceDelegate <NSObject>
 
-- (void)configureCell:(UICollectionViewCell*)cell songManageObject:(SongManageObject*)song;
+- (void)configureTableCell:(UITableViewCell*)cell songManageObject:(SongManageObject*)song;
 @end
 
 @interface MyLikeSongDataSource : NSObject
 @property(nonatomic,strong,readonly)NSArray<SongManageObject *> *songList;
 
-- (instancetype)initWithColleCtionView:(UICollectionView*)view
-                            identifier:(NSString*)identifier
-                              delegate:(id<MyLikeSongDataSourceDelegate>)delegate;
+- (instancetype)initWithTableVoew:(UITableView*)tableView identifier:(NSString*)identifier delegate:(id<MyLikeSongDataSourceDelegate>) delegate;
+
 
 @end
 
