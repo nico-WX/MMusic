@@ -28,8 +28,9 @@ static NSString *identifier = @"cell identifier";
 
     [self.navigationItem setTitle:@"资料库"];
     [self.navigationController.navigationBar setPrefersLargeTitles:YES];
+
     [self.view addSubview:self.tableView];
-    _dataSource = [[MyMusicDataSource alloc] initWithView:_tableView identifier:identifier delegate:self];
+    self.dataSource = [[MyMusicDataSource alloc] initWithView:_tableView identifier:identifier delegate:self];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -44,6 +45,7 @@ static NSString *identifier = @"cell identifier";
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_tableView setBackgroundColor:UIColor.whiteColor];
         [_tableView registerClass:[MyMusicTableCell class] forCellReuseIdentifier:identifier];
+        [_tableView setRowHeight:50];
         [_tableView setDelegate:self];
     }
     return _tableView;

@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface LibraryDataSource : NSObject
+@property(nonatomic,strong,readonly) MPMediaQuery *query;
 
 - (instancetype)initWithTableView:(UITableView*)tableView
                        identifier:(NSString*)identifier

@@ -18,15 +18,18 @@
 - (void)loadArtworkImageWithSize:(CGSize)size completion:(void (^)(UIImage * _Nonnull))completion{
     UIImage *image = [self imageWithSize:size];
     if (image) {
-        completion(image);
+        mainDispatch(^{
+            completion(image);
+        });
     }else{
         //通过identifier 加载Song*  获取路径
         [MainPlayer nowPlayingSong:^(Song * _Nonnull song) {
             NSString *urlStr = song.artwork.url;
             urlStr = [urlStr stringReplacingImageURLSize:size];
-
             [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:urlStr] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                completion([UIImage imageWithData:data]);
+                mainDispatch(^{
+                    completion([UIImage imageWithData:data]);
+                });
             }] resume];
         }];
     }

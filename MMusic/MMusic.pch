@@ -51,6 +51,8 @@
 
 /**共用音乐播放器*/
 #define MainPlayer ([MPMusicPlayerController systemMusicPlayer])
+#import <MediaPlayer/MediaPlayer.h>
+#import "MPMusicPlayerController+ResourcePlaying.h"
     //end __OBJC__
     #endif
 #endif /* MMusic_pch */

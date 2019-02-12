@@ -73,6 +73,10 @@
 		3B679FD2220C473D006CBCDF /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FD1220C473D006CBCDF /* DataSource.m */; };
 		3B679FD522103E89006CBCDF /* LikeSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FD422103E89006CBCDF /* LikeSongCell.m */; };
 		3B679FD8221170A9006CBCDF /* ResourceCell+ConfigureForResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FD7221170A9006CBCDF /* ResourceCell+ConfigureForResource.m */; };
+		3B679FDD2212DEA0006CBCDF /* PodcastsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FDC2212DEA0006CBCDF /* PodcastsViewController.m */; };
+		3B679FE02212E695006CBCDF /* MyLikeSongViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FDF2212E695006CBCDF /* MyLikeSongViewController.m */; };
+		3B679FE32212E6AC006CBCDF /* LibrarySongViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FE22212E6AC006CBCDF /* LibrarySongViewController.m */; };
+		3B679FE62212F1C1006CBCDF /* TableSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B679FE52212F1C1006CBCDF /* TableSongCell.m */; };
 		3B69895920A9968C000C3403 /* LibraryAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895820A9968C000C3403 /* LibraryAlbum.m */; };
 		3B69895C20A998B6000C3403 /* LibraryMusicVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895B20A998B6000C3403 /* LibraryMusicVideo.m */; };
 		3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B69895E20A99AA5000C3403 /* LibraryPlaylist.m */; };
@@ -384,6 +388,14 @@
 		3B679FD422103E89006CBCDF /* LikeSongCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LikeSongCell.m; sourceTree = "<group>"; };
 		3B679FD6221170A8006CBCDF /* ResourceCell+ConfigureForResource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ResourceCell+ConfigureForResource.h"; sourceTree = "<group>"; };
 		3B679FD7221170A9006CBCDF /* ResourceCell+ConfigureForResource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ResourceCell+ConfigureForResource.m"; sourceTree = "<group>"; };
+		3B679FDB2212DEA0006CBCDF /* PodcastsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PodcastsViewController.h; sourceTree = "<group>"; };
+		3B679FDC2212DEA0006CBCDF /* PodcastsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PodcastsViewController.m; sourceTree = "<group>"; };
+		3B679FDE2212E695006CBCDF /* MyLikeSongViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyLikeSongViewController.h; sourceTree = "<group>"; };
+		3B679FDF2212E695006CBCDF /* MyLikeSongViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyLikeSongViewController.m; sourceTree = "<group>"; };
+		3B679FE12212E6AC006CBCDF /* LibrarySongViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibrarySongViewController.h; sourceTree = "<group>"; };
+		3B679FE22212E6AC006CBCDF /* LibrarySongViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibrarySongViewController.m; sourceTree = "<group>"; };
+		3B679FE42212F1C1006CBCDF /* TableSongCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableSongCell.h; sourceTree = "<group>"; };
+		3B679FE52212F1C1006CBCDF /* TableSongCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TableSongCell.m; sourceTree = "<group>"; };
 		3B69895720A9968C000C3403 /* LibraryAlbum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryAlbum.h; sourceTree = "<group>"; };
 		3B69895820A9968C000C3403 /* LibraryAlbum.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibraryAlbum.m; sourceTree = "<group>"; };
 		3B69895A20A998B6000C3403 /* LibraryMusicVideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryMusicVideo.h; sourceTree = "<group>"; };
@@ -688,6 +700,7 @@
 				3B64B12621EDD2C80029C32E /* Charts */,
 				3B78629D2060F3CA00E9A26A /* Search */,
 				3B9AA8C61FB450B600720085 /* MyMusic */,
+				3B679FDA2212DE51006CBCDF /* Podcasts */,
 				3B3D998620553CEB000F2E9E /* PlayerViewController */,
 				3BDE8FED20E3981300C962F7 /* Cell */,
 				3B679FD0220C473D006CBCDF /* DataSource.h */,
@@ -768,6 +781,8 @@
 		3B679FBE22099EA2006CBCDF /* TableCell */ = {
 			isa = PBXGroup;
 			children = (
+				3B679FE42212F1C1006CBCDF /* TableSongCell.h */,
+				3B679FE52212F1C1006CBCDF /* TableSongCell.m */,
 				3B3D997F205512FA000F2E9E /* SongCell.h */,
 				3B3D9980205512FA000F2E9E /* SongCell.m */,
 				3B679FD322103E89006CBCDF /* LikeSongCell.h */,
@@ -782,6 +797,13 @@
 				3B64B29A21F721D70029C32E /* PlaylistSongTableCell.m */,
 			);
 			name = TableCell;
+			sourceTree = "<group>";
+		};
+		3B679FDA2212DE51006CBCDF /* Podcasts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Podcasts;
 			sourceTree = "<group>";
 		};
 		3B69895620A995EA000C3403 /* Library Resource */ = {
@@ -906,6 +928,12 @@
 			children = (
 				3B9AA8871FB2E06C00720085 /* MyMusicViewController.h */,
 				3B9AA8881FB2E06C00720085 /* MyMusicViewController.m */,
+				3B679FDE2212E695006CBCDF /* MyLikeSongViewController.h */,
+				3B679FDF2212E695006CBCDF /* MyLikeSongViewController.m */,
+				3B679FE12212E6AC006CBCDF /* LibrarySongViewController.h */,
+				3B679FE22212E6AC006CBCDF /* LibrarySongViewController.m */,
+				3B679FDB2212DEA0006CBCDF /* PodcastsViewController.h */,
+				3B679FDC2212DEA0006CBCDF /* PodcastsViewController.m */,
 				3B64B2D221FCCEBC0029C32E /* MyLibraryContentViewController.h */,
 				3B64B2D321FCCEBC0029C32E /* MyLibraryContentViewController.m */,
 				3B64B2CB21FCBC8D0029C32E /* DataSource */,
@@ -1472,6 +1500,7 @@
 				3B9AA8D81FB452FF00720085 /* ResponseRoot.m in Sources */,
 				3B9AA8D71FB452FF00720085 /* Resource.m in Sources */,
 				3B64B13A21EDF6730029C32E /* ChartsViewController.m in Sources */,
+				3B679FE02212E695006CBCDF /* MyLikeSongViewController.m in Sources */,
 				3B5371FE1FDBF50B009AFE47 /* NSObject+Tool.m in Sources */,
 				3B64B2C121F89D290029C32E /* SearchResultsCell.m in Sources */,
 				3B42110421B5220B0078ECAC /* CloseButton.m in Sources */,
@@ -1497,6 +1526,7 @@
 				3B9C426721E0ADD600ED6C79 /* MMPlayerView.m in Sources */,
 				3B9AA8EF1FB46F9300720085 /* Chart.m in Sources */,
 				3B64B29B21F721D70029C32E /* PlaylistSongTableCell.m in Sources */,
+				3B679FDD2212DEA0006CBCDF /* PodcastsViewController.m in Sources */,
 				3B64B2F8220590250029C32E /* MyMusicTableCell.m in Sources */,
 				3B64B22521F49AFD0029C32E /* SearchHintsDataSource.m in Sources */,
 				3B555EED20E0EDAF00AFF9A2 /* Library.m in Sources */,
@@ -1511,6 +1541,7 @@
 				3BEB3D5921D3760D00398A5B /* CoreDataStack.m in Sources */,
 				3B64B2CA21F9D4C40029C32E /* ShowAllSearchResultsDataSource.m in Sources */,
 				3B9AA8F81FB4759F00720085 /* EditorialNotes.m in Sources */,
+				3B679FE32212E6AC006CBCDF /* LibrarySongViewController.m in Sources */,
 				3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */,
 				3B679FD8221170A9006CBCDF /* ResourceCell+ConfigureForResource.m in Sources */,
 				3B679FD2220C473D006CBCDF /* DataSource.m in Sources */,
@@ -1532,6 +1563,7 @@
 				3B64B1FF21F460450029C32E /* SearchHistoryDataSource.m in Sources */,
 				3B64B2BE21F855EC0029C32E /* ShowAllDataSource.m in Sources */,
 				3B64B18321F077720029C32E /* ResourceCollectionCell.m in Sources */,
+				3B679FE62212F1C1006CBCDF /* TableSongCell.m in Sources */,
 				3B64B29821F721C30029C32E /* AlbumSongTableCell.m in Sources */,
 				3B64B1C221F1F7230029C32E /* SongCollectionCell.m in Sources */,
 				3BE2A2522198DA7E00AEA486 /* UIImageView+Extension.m in Sources */,

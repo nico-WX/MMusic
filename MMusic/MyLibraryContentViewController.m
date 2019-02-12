@@ -44,11 +44,31 @@ static NSString *const identifier = @"reuseIdentifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-
     //数据源
     switch (_type) {
         case LibraryMyLikeSongType:
             _myLikeDataSource = [[MyLikeSongDataSource alloc] initWithTableVoew:self.tableView identifier:identifier delegate:self];
+            break;
+
+        case LibrarySongType:{
+            MPMediaQuery *query = [MPMediaQuery songsQuery];
+            _libraryDataSource = [[LibraryDataSource alloc] initWithTableView:self.tableView identifier:identifier mediaQuery:query delegate:self];
+        }
+            break;
+
+        case LibraryPodcastsType:{
+            MPMediaQuery *query = [MPMediaQuery podcastsQuery];
+
+            //[query setGroupingType:MPMediaGroupingPodcastTitle];
+            _libraryDataSource = [[LibraryDataSource alloc] initWithTableView:self.tableView identifier:identifier mediaQuery:query delegate:self];
+
+            MPMediaQuery *q = [query copy];
+            NSLog(@"q =%@",q);
+            NSLog(@"colle =%@",q.collections);
+            NSLog(@"item =%@",  q.collections.firstObject.representativeItem);
+            MPMediaItem *item = q.collections.firstObject.representativeItem;
+            NSLog(@"albumTitle =%@   title =%@   podTitle =%@ ",item.albumTitle,item.title,item.podcastTitle);
+        }
             break;
 
         case LibraryAlbumType:{
@@ -57,25 +77,8 @@ static NSString *const identifier = @"reuseIdentifier";
         }
             break;
 
-        case LibrarySongType:{
-            MPMediaQuery *query = [MPMediaQuery songsQuery];
-            _libraryDataSource = [[LibraryDataSource alloc] initWithTableView:self.tableView identifier:identifier mediaQuery:query delegate:self];
-
-            //MPMusicPlayerMediaItemQueueDescriptor *qd = [[MPMusicPlayerMediaItemQueueDescriptor alloc] initWithQuery:query];
-//            [MainPlayer setQueueWithQuery:query];
-//            [MainPlayer play];
-
-        }
-            break;
-
         case LibraryPlaylistType:{
             MPMediaQuery *query = [MPMediaQuery playlistsQuery];
-            _libraryDataSource = [[LibraryDataSource alloc] initWithCollectionView:self.collectionView identifier:identifier mediaQuery:query delegate:self];
-        }
-            break;
-        case LibraryPodcastsType:{
-            MPMediaQuery *query = [MPMediaQuery podcastsQuery];
-            [query setGroupingType:MPMediaGroupingPodcastTitle];
             _libraryDataSource = [[LibraryDataSource alloc] initWithCollectionView:self.collectionView identifier:identifier mediaQuery:query delegate:self];
         }
             break;
@@ -93,8 +96,6 @@ static NSString *const identifier = @"reuseIdentifier";
             [self.view addSubview:self.collectionView];
             break;
     }
-
-
 }
 
 - (void)viewDidLayoutSubviews{
@@ -125,7 +126,6 @@ static NSString *const identifier = @"reuseIdentifier";
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
         [_collectionView setBackgroundColor:UIColor.whiteColor];
         [_collectionView registerClass:[ResourceCollectionCell class] forCellWithReuseIdentifier:identifier];
-        //[_collectionView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight)];
 
         [_collectionView setDelegate:self];
     }
@@ -135,7 +135,6 @@ static NSString *const identifier = @"reuseIdentifier";
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_tableView registerClass:[LikeSongCell class] forCellReuseIdentifier:identifier];
-        //[_tableView setAutoresizingMask:(UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth)];
         [_tableView setRowHeight:66];
         [_tableView setDelegate:self];
     }
@@ -144,11 +143,6 @@ static NSString *const identifier = @"reuseIdentifier";
 
 
 #pragma mark - LibraryDataSourceDelegate
-//-(void)configureCell:(UICollectionViewCell *)cell object:(MPMediaItem *)item{
-//    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
-//        [((ResourceCollectionCell*)cell) setMediaItem:item];
-//    }
-//}
 - (void)configureTableViewCell:(UITableViewCell *)cell object:(MPMediaItem *)item{
     if ([cell isKindOfClass:[LikeSongCell class]]) {
         LikeSongCell *likeCell = (LikeSongCell*)cell;
@@ -164,11 +158,7 @@ static NSString *const identifier = @"reuseIdentifier";
 
 
 #pragma mark - MyLikeSongDataSourceDelegate
-- (void)configureCell:(UICollectionViewCell *)cell songManageObject:(SongManageObject *)song{
-    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
-        ((ResourceCollectionCell*)cell).songManageObject = song;
-    }
-}
+
 - (void)configureTableCell:(UITableViewCell *)cell songManageObject:(SongManageObject *)song{
     if ([cell isKindOfClass:[LikeSongCell class]]) {
         LikeSongCell *songCell = (LikeSongCell*)cell;
@@ -179,30 +169,40 @@ static NSString *const identifier = @"reuseIdentifier";
 #pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
-    if (_type == LibraryMyLikeSongType) {
-        NSArray<SongManageObject*> *songList = [self.myLikeDataSource songList];
-        NSMutableArray<Song*> *songes = [NSMutableArray array];
-        for (SongManageObject *songMO in songList) {
-            Song *s = [Song instanceWithSongManageObject:songMO];
-            [songes addObject:s];
-        }
-        [MainPlayer playSongs:songes startIndex:indexPath.row];
-
-    }else{
-
-    }
 
 }
 
 #pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSArray<SongManageObject*> *array = [self.myLikeDataSource songList];
 
-    NSMutableArray<Song*> *songArray = [NSMutableArray array];
-    for (SongManageObject *smo in array) {
-        Song *song = [Song instanceWithSongManageObject:smo];
-        [songArray addObject:song];
+    switch (_type) {
+        case LibraryMyLikeSongType:{
+            NSArray<SongManageObject*> *array = [self.myLikeDataSource songList];
+            NSMutableArray<Song*> *songArray = [NSMutableArray array];
+            for (SongManageObject *smo in array) {
+                Song *song = [Song instanceWithSongManageObject:smo];
+                [songArray addObject:song];
+            }
+            [MainPlayer playSongs:songArray startIndex:indexPath.row];
+        }
+            break;
+
+        case LibraryPodcastsType:
+        case LibrarySongType:{
+            MPMediaQuery *query = self.libraryDataSource.query;
+
+            MPMediaItemCollection *collection = [[MPMediaItemCollection alloc] initWithItems:query.items];
+            MPMusicPlayerMediaItemQueueDescriptor *des = [[MPMusicPlayerMediaItemQueueDescriptor alloc] initWithItemCollection:collection];
+            [des setStartItem:[query.items objectAtIndex:indexPath.row]];
+
+            [MainPlayer setQueueWithDescriptor:des];
+            [MainPlayer play];
+        }
+            break;
+
+
+        default:
+            break;
     }
-    [MainPlayer playSongs:songArray startIndex:indexPath.row];
 }
 @end

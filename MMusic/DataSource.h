@@ -17,6 +17,7 @@ typedef void(^configureTableCellBlock)(id cell, id item, NSIndexPath *atIndexPat
 typedef void(^configureCollectionCellBlock)(id cell, id item);
 
 @interface DataSource : NSObject
+- (instancetype)initWithIdentifier:(NSString*)identifier ;
 
 @end
 

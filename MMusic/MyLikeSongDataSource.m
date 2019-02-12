@@ -29,18 +29,14 @@
 
         // 监听coreData栈变化, 重新加载
         [[NSNotificationCenter defaultCenter] addObserverForName:NSManagedObjectContextObjectsDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-
             [self loadDataWithCompletion:^{
-                mainDispatch(^{
-                    [tableView reloadData];
-                });
+                [tableView reloadData];
             }];
         }];
 
+        //初始化数据
         [self loadDataWithCompletion:^{
-            mainDispatch(^{
-                [tableView reloadData];
-            });
+            [tableView reloadData];
         }];
     }
     return self;
@@ -53,8 +49,10 @@
 - (void)loadDataWithCompletion:(void(^)(void))completion{
     // 加载数据
     [[DataManager shareDataManager] fetchAllSong:^(NSArray<SongManageObject *> * _Nonnull songArray) {
-        self->_songList = songArray;
-        completion();
+        mainDispatch(^{
+            self->_songList = songArray;
+            completion();
+        });
     }];
 }
 

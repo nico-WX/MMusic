@@ -52,7 +52,7 @@ static DataManager *_instance;
     NSError *saveError = nil;
     BOOL success = [moc save:&saveError];
     if (success) {
-        NSLog(@"成功!");
+        NSLog(@"name:%@  保存成功!",song.name);
     }else{
         NSLog(@"error =%@",saveError);
     }
@@ -97,12 +97,12 @@ static DataManager *_instance;
 }
 
 
-
 - (void)addSearchHistory:(NSString *)term{
-
 
     //记录 搜索记录
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[SearchHistoryManageObject entityName]];
+    NSSortDescriptor *sort = [SearchHistoryManageObject defaultSortDescriptor];
+    [request setSortDescriptors:@[sort,]];
     NSManagedObjectContext *moc = [[CoreDataStack shareDataStack] context];
 
     NSArray<SearchHistoryManageObject*> *results = [moc executeFetchRequest:request error:nil];
@@ -135,6 +135,8 @@ static DataManager *_instance;
 
 }
 - (void)deleteSearchHistory:(SearchHistoryManageObject *)searchHistoryMO{
-    
+
+    //NSString *label = @"DataManager隔离队列";
+    //dispatch_queue_t isolationQueue = dispatch_queue_create([label UTF8String],DISPATCH_QUEUE_CONCURRENT);
 }
 @end

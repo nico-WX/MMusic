@@ -16,8 +16,6 @@
 @property(nonatomic,weak)id<LibraryDataSourceDelegate> delegate;
 @property(nonatomic,copy)NSString *identifier;
 
-@property(nonatomic,strong)MPMediaQuery *query;
-
 @end
 
 @implementation LibraryDataSource
@@ -69,7 +67,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:_identifier];
     if ([_delegate respondsToSelector:@selector(configureTableViewCell:object:)]) {
-        [_delegate configureTableViewCell:cell object:[_query.items objectAtIndex:indexPath.row]];
+        MPMediaItem *item = [_query.items objectAtIndex:indexPath.row];
+        [_delegate configureTableViewCell:cell object:item];
     }
     return cell;
 }

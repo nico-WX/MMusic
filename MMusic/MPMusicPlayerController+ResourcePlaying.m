@@ -79,23 +79,40 @@
 }
 
 - (void)nowPlayingSong:(void (^)(Song * _Nullable))completion{
-    for (Song *song in self.songLists) {
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_apply(self.songLists.count, queue, ^(size_t i) {
+        Song *song = [self.songLists objectAtIndex:i];
         if ([song isEqualToMediaItem:self.nowPlayingItem]) {
-            completion(song);
-            return;
+            mainDispatch(^{
+                NSLog(@"song lists song");
+                completion(song);
+            });
+            return ;
         }
-    }
+    });
+
+//    for (Song *song in self.songLists) {
+//        if ([song isEqualToMediaItem:self.nowPlayingItem]) {
+//            mainDispatch(^{
+//                completion(song);
+//            });
+//            return;
+//        }
+//    }
 
     NSString *identifier = self.nowPlayingItem.playbackStoreID;
     // "0"标识数据库无此歌曲]
     if (![identifier isEqualToString:@"0"] && identifier) {
         //异步加载
-        [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-
+        [MusicKit.new.catalog resources:@[identifier,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
             json = [(NSArray*)[json valueForKey:@"data"] firstObject] ;
-            completion([Song instanceWithDict:json]);
+            mainDispatch(^{
+                completion([Song instanceWithDict:json]);
+            });
         }];
     }else{
+        NSLog(@"now song  null");
         completion(NULL);
     }
 }
