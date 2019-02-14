@@ -133,6 +133,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "MMusic"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

@@ -19,7 +19,10 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         _titleLable = [[UILabel alloc] init];
-        _showMoreButton = [[UIButton alloc] init];
+        UIFont *font = [UIFont preferredFontForTextStyle:UIFontTextStyleLargeTitle];
+        [_titleLable setFont:font];
+
+        _showMoreButton = [UIButton buttonWithType:UIButtonTypeSystem];
         [self addSubview:_titleLable];
         [self addSubview:_showMoreButton];
 

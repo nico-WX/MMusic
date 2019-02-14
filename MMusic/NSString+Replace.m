@@ -11,6 +11,7 @@
 @implementation NSString (Replace)
 - (NSString *)stringReplacingImageURLSize:(CGSize)imageSize {
 
+    // 0 默认200*200
     if (imageSize.width == 0 || imageSize.height == 0) {
         imageSize.width = 200;
         imageSize.height = 200;

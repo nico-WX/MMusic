@@ -9,8 +9,9 @@
 #import "MyMusicDataSource.h"
 
 #import "MyLikeSongViewController.h"
-#import "MyLibraryContentViewController.h"
 #import "PodcastsViewController.h"
+#import "LibrarySongViewController.h"
+#import "DataManager.h"
 
 @interface MyMusicDataSource ()<UITableViewDataSource>
 @property(nonatomic,weak)id<MyMusicDataSourceDelegate> delegate;
@@ -36,26 +37,15 @@
 }
 
 - (void)loadDataWithCompletion:(void(^)(void))completion{
-    //NSArray<NSString*> * temp = @[@"本地歌曲",@"我喜欢的",@"专辑",@"歌曲",@"播放列表",@"广播"];
-//    MyLibraryContentViewController *like        = [[MyLibraryContentViewController alloc] initWithType:LibraryMyLikeSongType];
-//    [like setTitle:@"我喜欢的"];
-//    MyLibraryContentViewController *album       = [[MyLibraryContentViewController alloc] initWithType:LibraryAlbumType];
-//    [album setTitle:@"专辑"];
-//    MyLibraryContentViewController *song        = [[MyLibraryContentViewController alloc] initWithType:LibrarySongType];
-//    [song setTitle:@"单曲"];
-//    MyLibraryContentViewController *playlist    = [[MyLibraryContentViewController alloc] initWithType:LibraryPlaylistType];
-//    [playlist setTitle:@"播放列表"];
-//    MyLibraryContentViewController *podcasts    = [[MyLibraryContentViewController alloc] initWithType:LibraryPodcastsType];
-//    [podcasts setTitle:@"广播"];
-//
 
     MyLikeSongViewController *like = [[MyLikeSongViewController alloc] init];
     [like setTitle:@"我喜爱的"];
     PodcastsViewController *podcasts = [[PodcastsViewController alloc] init];
     [podcasts setTitle:@"播客"];
+    LibrarySongViewController *song = [[LibrarySongViewController alloc] init];
+    [song setTitle:@"本地音乐"];
 
-
-    _lists =@[like,podcasts,]; //@[like,album,song,playlist,podcasts];
+    _lists =@[like,song,podcasts,]; //@[like,album,song,playlist,podcasts];
     mainDispatch(^{
         completion();
     });

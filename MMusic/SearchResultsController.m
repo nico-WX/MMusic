@@ -59,11 +59,17 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
         CGRect frame = [UIScreen mainScreen].bounds;
         frame.size.height -= keyboardFrame.size.height;
         weakSelf.view.frame = frame;
+
+//        UIEdgeInsets insets = UIEdgeInsetsMake(0, 0, keyboardFrame.size.height, 0);
+//        [weakSelf.searchResultsView setContentInset:insets];
+//        [weakSelf.hintsTableView setContentInset:insets];
     }];
     _hideObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidHideNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
         CGRect frame = [UIScreen mainScreen].bounds;
-        //frame.size.height -= 47;
         weakSelf.view.frame = frame;
+//        UIEdgeInsets insets = UIEdgeInsetsMake(0, 0, 0, 0);
+//        [weakSelf.searchResultsView setContentInset:insets];
+//        [weakSelf.searchResultsView setContentInset:insets];
     }];
 }
 

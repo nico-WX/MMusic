@@ -98,10 +98,10 @@ static id _instance;
                                                   completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error)
     {
          if (userToken) {
+             self->_userToken = userToken;
              NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
              [userDefaults setObject:userToken forKey:k_userTokenKey];
              [userDefaults synchronize];
-             self->_userToken= userToken;
          }
      }];
 }

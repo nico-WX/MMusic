@@ -18,6 +18,7 @@
 #import "ResourceDetailDataSource.h"
 #import "SongCell.h"
 #import "Resource.h"
+#import "Song.h"
 
 
 
@@ -75,6 +76,7 @@ static NSString *const identifier = @"cell identifier";
 
 #pragma mark - ResourceDetailDataSourceDelegate
 - (void)configureCell:(UITableViewCell *)cell object:(Song *)song atIndex:(NSUInteger)index{
+
     if ([cell isKindOfClass:[AlbumSongTableCell class]]) {
         [((AlbumSongTableCell*)cell) setSong:song withIndex:index];
     }else{

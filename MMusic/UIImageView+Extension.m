@@ -11,6 +11,7 @@
 #import "UIImageView+Extension.h"
 #import <UIImageView+WebCache.h>
 #import <UIView+WebCache.h>
+#import <AFNetworking.h>
 
 @interface UIImageView ()
 @end
@@ -30,11 +31,11 @@
         [self sd_addActivityIndicator];
         [self sd_setShowActivityIndicatorView:YES];
 
-        //UIImage *placeholder = [UIImage imageNamed:@"placeholder"];
+
         path = [path stringReplacingImageURLSize:self.bounds.size];
         [self sd_setImageWithURL:[NSURL URLWithString:path]
                 placeholderImage:nil
-                         options:SDWebImageProgressiveDownload
+                         options:SDWebImageRetryFailed
                        completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL)
         {
             [self sd_setShowActivityIndicatorView:NO];

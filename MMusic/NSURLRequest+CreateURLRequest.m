@@ -25,16 +25,20 @@
     if (devToken) {
         devToken = [NSString stringWithFormat:@"Bearer %@",devToken];
         [request setValue:devToken forHTTPHeaderField:@"Authorization"];
-    }else
-        [self showHUDToMainWindowFromText:@"无法获得开发者Token"];
+    }else{
+        //[self showHUDToMainWindowFromText:@"无法获得开发者Token"];
+    }
+
 
     if (YES == setupUserToken) {
         NSString *userToken = AuthManager.shareManager.userToken;
         //NSLog(@"userToken:=%@",userToken);
         if (userToken) {
             [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];
-        }else
-            [self showHUDToMainWindowFromText:@"无法获得用户令牌"];
+        }else{
+            //[self showHUDToMainWindowFromText:@"无法获得用户令牌"];
+        }
+
     }
     return request;
 }

@@ -38,14 +38,13 @@ extern NSString *const userTokenIssueNotification;
     NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
     switch (res.statusCode) {
         case 200:
-
             if (data) {
                 json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
                 if (error) Log(@"Serialization Error:%@",error);
             }
             break;
         case 400:
-            [self showHUDToMainWindowFromText:@"400 请求错误"];
+            //[self showHUDToMainWindowFromText:@"400 请刷新"];
             break;
         case 401:
             //开发者Token 问题
@@ -153,7 +152,7 @@ extern NSString *const userTokenIssueNotification;
         [hud setRemoveFromSuperViewOnHide:YES];
         [hud.label setText:text];
         [hud setMode:MBProgressHUDModeCustomView];
-        [hud hideAnimated:YES afterDelay:2.0f];
+        [hud hideAnimated:YES afterDelay:1.35f];
         //不接收事件
         [hud setUserInteractionEnabled:NO];
     });

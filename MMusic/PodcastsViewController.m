@@ -9,6 +9,7 @@
 #import "PodcastsViewController.h"
 #import "ResourceCell+ConfigureForResource.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "PodcastsDetailViewController.h"
 
 @interface PodcastsViewController ()<UICollectionViewDelegate, UICollectionViewDataSource>
 @property(nonatomic,strong) UICollectionView *collectionView;
@@ -32,7 +33,10 @@ static NSString *const identifier =@"identifier";
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-
+    MPMediaItemCollection *collection = [self.podcastsQuery.collections objectAtIndex:indexPath.row];
+    PodcastsDetailViewController *detail = [[PodcastsDetailViewController alloc] initWithMediaItemCollection:collection];
+    detail.title = collection.representativeItem.title;
+    [self.navigationController pushViewController:detail animated:YES];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{

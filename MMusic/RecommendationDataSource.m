@@ -62,13 +62,14 @@
                 [hud removeFromSuperview];
                 [view reloadData];
             }else{
-                [hud.textLabel setText:@"数据加载失败!"];
-                [hud dismissAfterDelay:2 animated:YES];
+                hud.textLabel.text = @"数据加载失败,正在重试";
+                [hud dismissAfterDelay:1.35 animated:YES];
 
                 //加载失败, 设置刷新控件
                 [view setMj_header:[MJRefreshNormalHeader headerWithRefreshingBlock:^{
                     [self loadDataWithCollectionView:view];
                 }]];
+                [self loadDataWithCollectionView:view];
             }
         });
     }];

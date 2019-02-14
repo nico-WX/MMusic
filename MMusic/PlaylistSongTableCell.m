@@ -92,6 +92,7 @@
         [_artistLabel setText:song.artistName];
         [_artworkView setImageWithURLPath:song.artwork.url];
         [self stateForSong:song];
+        [self setNeedsDisplay];
     }
 }
 

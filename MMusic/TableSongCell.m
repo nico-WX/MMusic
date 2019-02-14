@@ -9,10 +9,12 @@
 #import <Masonry.h>
 #import <NAKPlaybackIndicatorView.h>
 
+
 #import "TableSongCell.h"
 #import "Song.h"
 #import "SongManageObject.h"
 #import "Artwork.h"
+#import "MPMediaItemArtwork+Exchange.h"
 
 @interface TableSongCell ()
 @property(nonatomic,strong)NAKPlaybackIndicatorView *playIndicator;
@@ -28,6 +30,8 @@
         _artworkView = [[UIImageView alloc] init];
         NAKPlaybackIndicatorViewStyle *style =[NAKPlaybackIndicatorViewStyle iOS10Style];
         _playIndicator = [[NAKPlaybackIndicatorView alloc] initWithStyle:style];
+
+        [_nameLabel setAdjustsFontSizeToFitWidth:YES];
 
         [_artistLabel setTextColor:UIColor.grayColor];
         [_artistLabel setFont:[UIFont systemFontOfSize:[UIFont smallSystemFontSize]]];
@@ -53,7 +57,8 @@
 }
 - (void)updateState{
     NSString *nowIdentifier = MainPlayer.nowPlayingItem.playbackStoreID;
-    if ([nowIdentifier isEqualToString:self.identifier]) {
+    // 有可能 是 @"0";
+    if ([nowIdentifier isEqualToString:self.identifier] && nowIdentifier.length > 1  ) {
         [UIView animateWithDuration:0.35 animations:^{
             [self.artworkView setAlpha:0.35];
         }];
@@ -130,6 +135,25 @@
         self.artistLabel.text = songMO.artistName;
         NSString *url = [songMO.artwork valueForKey:@"url"];
         [self.artworkView setImageWithURLPath:url];
+
+        [self updateState];
+        [self setNeedsDisplay];
+    });
+}
+
+- (void)configureForMediaItem:(MPMediaItem *)item{
+    mainDispatch(^{
+
+        self.identifier = item.playbackStoreID;
+        self.nameLabel.text = item.title;
+        NSString *artist = item.artist ? item.artist : item.albumTitle;
+        self.artistLabel.text = artist;
+
+        [item.artwork loadArtworkImageWithSize:self.artworkView.bounds.size
+                                    completion:^(UIImage * _Nonnull image)
+        {
+        [self.artworkView setImage:image];
+        }];
 
         [self updateState];
         [self setNeedsDisplay];
