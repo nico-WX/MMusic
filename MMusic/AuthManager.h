@@ -10,17 +10,19 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AuthManager : NSObject<NSCopying,NSMutableCopying>
-/**地区商店代码*/
+@interface AuthManager : NSObject
+
 @property(nonatomic, copy, readonly) NSString *storefront;
-/**开发者令牌*/
 @property(nonatomic, copy, readonly) NSString *developerToken;
-/**用户令牌*/
 @property(nonatomic, copy, readonly) NSString *userToken;
 
-/**单例*/
+
 + (instancetype)shareManager;
 
-+ (void)checkAuthTokenWith:(void(^)(AuthManager *auth))completion;
+//状态检查
+- (void)checkAuthorization;
+- (void)checkAuthTokenAvailability;
 
+//- (void)needUpdateUserToken;
+//- (void)needUpdateDeveloperToken;
 @end

@@ -11,9 +11,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 
-@protocol ChartsCellDelegate <NSObject>
-@end
-
 @interface ChartsCell : UITableViewCell
 @property(nonatomic, strong) Chart *chart;
 @property(nonatomic, strong, readonly) UICollectionView *collectionView;

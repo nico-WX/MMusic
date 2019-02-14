@@ -10,8 +10,7 @@
 @class Artwork;
 @class EditorialNotes;
 
-
-@interface StationAttributes : MMObject
+@interface Station : Resource
 @property(nonatomic, copy) NSString *name;
 @property(nonatomic, copy) NSString *url;
 
@@ -22,10 +21,5 @@
 @property(nonatomic, strong) NSDictionary *playParams;
 
 @property(nonatomic, assign) Boolean isLive;
-@end
-
-@interface Station : Resource
-@property(nonatomic,strong) StationAttributes *attributes;
-
 
 @end

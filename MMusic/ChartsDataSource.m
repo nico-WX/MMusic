@@ -30,6 +30,8 @@
         [tableView setDataSource:self];
         _identifier = identifier;
         _delegate = delegate;
+
+        //加载数据
         [self requestChartsWithCompletion:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
@@ -43,6 +45,7 @@
 - (void)requestChartsWithCompletion:(void (^)(void))completion{
 
     [MusicKit.new.catalog chartsByType:ChartsAll callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+
         NSMutableArray<Chart*> *chartArray = [NSMutableArray array];
         json = [json valueForKey:@"results"];
         if (json) {
@@ -59,40 +62,6 @@
 
         self.charts = chartArray;
         completion();
-
-//        //没有本地MV数据, 请求香港地区数据
-//        if (![json valueForKey:@"music-videos"]){
-//            [self requestHongKongMVDataWithCompletion:^(Chart *chart) {
-//                [chartArray addObject:chart];
-//                self.charts = chartArray;
-//                if (completion) completion();
-//            }];
-//        }else{
-//            self.charts = chartArray;
-//            if (completion) completion();
-//        }
-    }];
-}
-
-//内地无MV 排行数据, 请求香港地区
-- (void)requestHongKongMVDataWithCompletion:(void(^)(Chart* chart))callBack {
-
-    NSString *path = @"https://api.music.apple.com/v1/catalog/hk/charts?types=music-videos";
-    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:NO];
-
-    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        json = [json valueForKey:@"results"];
-
-        __block Chart *hkMVChart;
-        if (json) {
-            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-                NSArray *tempArray = (NSArray*)obj;
-                [tempArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    hkMVChart = [Chart instanceWithDict:(NSDictionary*)obj];
-                }];
-            }];
-        }
-        if (callBack) callBack(hkMVChart);
     }];
 }
 
@@ -103,7 +72,9 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.identifier];
-    [self.delegate configureCell:cell object:[self.charts objectAtIndex:indexPath.row]];
+    if ([_delegate respondsToSelector:@selector(configureCell:object:)]) {
+        [_delegate configureCell:cell object:[self.charts objectAtIndex:indexPath.row]];
+    }
     return cell;
 }
 

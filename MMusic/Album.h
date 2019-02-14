@@ -11,8 +11,12 @@
 @class Artwork;
 @class EditorialNotes;
 
-@interface AlbumAttributes : MMObject
 
+@interface AlbumRelationship : Relationship
+@end
+
+
+@interface Album : Resource
 @property(nonatomic, copy) NSString *artistName;
 @property(nonatomic, copy) NSString *contentRating;
 @property(nonatomic, copy) NSString *copyright;
@@ -30,18 +34,8 @@
 @property(nonatomic) Boolean isSingle;
 @property(nonatomic, strong) NSNumber *trackCount;
 
-@end
 
-@interface AlbumRelationship : Relationship
-
-@end
-
-
-
-@interface Album : Resource
-@property(nonatomic,strong) AlbumAttributes *attributes;
 @property(nonatomic,strong) AlbumRelationship *relationships;
-
 @end
 
 

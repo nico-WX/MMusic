@@ -1,8 +1,8 @@
 //
-//  PlaylistDetailCell.h
+//  PodcastsViewController.h
 //  MMusic
 //
-//  Created by 🐙怪兽 on 2019/1/22.
+//  Created by 🐙怪兽 on 2019/2/12.
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
@@ -10,8 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PlaylistDetailCell : UITableViewCell
-@property(nonatomic, strong)Song *song;
+@interface PodcastsViewController : UIViewController
 
 @end
 

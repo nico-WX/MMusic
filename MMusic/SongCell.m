@@ -118,10 +118,10 @@
 
         //设置歌曲信息
         [_numberLabel setText:[NSString stringWithFormat:@"%02ld",index+1]];
-        [_nameLabel setText:song.attributes.name];
-        [_artistLabel setText:song.attributes.artistName];
+        [_nameLabel setText:song.name];
+        [_artistLabel setText:song.artistName];
 
-        NSTimeInterval duration = song.attributes.durationInMillis.doubleValue / 1000.0;
+        NSTimeInterval duration = song.durationInMillis.doubleValue / 1000.0;
         NSString *durationText = [NSString stringWithFormat:@"%d:%02d",(int32_t)duration/60,(int32_t)duration%60];
         [_durationLabel setText:durationText];
 
@@ -153,47 +153,6 @@
 - (UITableViewCellSelectionStyle)selectionStyle{
     return UITableViewCellSelectionStyleBlue;
 }
-
-
-//- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated{
-//    [super setHighlighted:highlighted animated:animated];
-//
-//    if (animated && highlighted) {
-//
-//        UIImage *image = [self imageWithCurrentView];
-//
-//        UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.bounds];
-//        [imageView setImage:image];
-//        [imageView.layer setShadowOffset:CGSizeMake(4, 6)];
-//        [imageView.layer setShadowOpacity:1];
-//        [imageView.layer setShadowColor:UIColor.darkGrayColor.CGColor];
-//
-//        [self.contentView addSubview:imageView];
-//
-//        __block CGRect frame = self.bounds;
-//        frame.origin.y -= 8;
-//        frame.origin.x += 8;
-//
-//        [UIView animateWithDuration:0.2 animations:^{
-//            //禁用, 防止多次触发
-//            [self setUserInteractionEnabled:NO];
-//            [imageView setFrame:frame];
-//        } completion:^(BOOL finished) {
-//            if (finished) {
-//                frame.origin.x = CGRectGetMaxX([UIScreen mainScreen].bounds);
-//                [UIView animateWithDuration:0.8 animations:^{
-//                    [imageView setFrame:frame];
-//                } completion:^(BOOL finished) {
-//                    [self setUserInteractionEnabled:YES];
-//                    [imageView removeFromSuperview];
-//                }];
-//            }
-//        }];
-//    }else{
-//
-//    }
-//
-//}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated{
     [super setSelected:selected animated:animated];

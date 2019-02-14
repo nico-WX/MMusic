@@ -8,7 +8,7 @@
 
 #import "ShowAllViewController.h"
 #import "ShowAllDataSource.h"
-#import "ChartsSongCell.h"
+#import "SongCollectionCell.h"
 #import "ResourceDetailViewController.h"
 
 #import "Chart.h"
@@ -42,18 +42,20 @@ static NSString *const identifier = @"cell dientifier";
 
     NSString *type = self.chart.data.firstObject.type;
     if ([type isEqualToString:@"songs"]) {
-        [self.collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
+        [self.collectionView registerClass:[SongCollectionCell class] forCellWithReuseIdentifier:identifier];
         CGFloat w = CGRectGetWidth(self.view.bounds);
         CGFloat h = 55.0f;
         [self.flowLayout setItemSize:CGSizeMake(w, h)];
         [self.flowLayout setMinimumInteritemSpacing:0];
     }else{
-        [self.collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
+        [self.collectionView registerClass:[ResourceCollectionCell class] forCellWithReuseIdentifier:identifier];
         UIEdgeInsets insets = UIEdgeInsetsMake(0, 8, 0, 8);
         [self.collectionView setContentInset:insets];
-        CGFloat w = CGRectGetWidth(self.view.bounds)/2 - insets.left*3;
+        CGFloat w = CGRectGetWidth(self.view.bounds)/2 - insets.left*2;
         CGFloat h = w+40;
         [self.flowLayout setItemSize:CGSizeMake(w, h)];
+        [self.flowLayout setMinimumLineSpacing:8];
+        [self.flowLayout setMinimumInteritemSpacing:8];
     }
 
     _dataSource = [[ShowAllDataSource alloc] initWithCollectionView:self.collectionView
@@ -73,7 +75,7 @@ static NSString *const identifier = @"cell dientifier";
     NSString *type = self.chart.data.firstObject.type;
     if ([type isEqualToString:@"songs"]) {
         NSMutableArray<Song*> *array = [NSMutableArray array];
-        //数据源内部的数据会自动加载为全部
+        //数据源内部的数据会自动加载全部数据, 并设置到data 中
         for (Resource *resource in self.dataSource.chart.data) {
             [array addObject:[Song instanceWithResource:resource]];
         }
@@ -88,8 +90,8 @@ static NSString *const identifier = @"cell dientifier";
 
 #pragma mark - ShowAllDataSourceDelegate
 -(void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
-    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
-        [((ChartsSubContentCell*)cell) setResource:resource];
+    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
+        [((ResourceCollectionCell*)cell) setResource:resource];
     }
 }
 

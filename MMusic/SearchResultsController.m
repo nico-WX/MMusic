@@ -16,11 +16,13 @@
 
 
 @interface SearchResultsController ()<UISearchBarDelegate,UITableViewDelegate,SearchHintsDataSourceDelegate,SearchResultsDataSourceDelegate>
+
 @property(nonatomic,strong) UISearchBar *searchBar;
 @property(nonatomic,strong) UITableView *hintsTableView;
 
 @property(nonatomic,strong) SearchHintsDataSource *hintsDataSource;
 @property(nonatomic,strong) SearchResultsDataSource *resultsDataSource;
+
 @property(nonatomic,strong) id showObserver;
 @property(nonatomic,strong) id hideObserver;
 @end
@@ -37,30 +39,39 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
+    //  视图在SearchBar delegate 方法中触发添加
+
+
+
     _hintsDataSource = [[SearchHintsDataSource alloc] initWithTableView:self.hintsTableView
                                                              identifier:hintsIdentifier
                                                                delegate:self];
+
     _resultsDataSource = [[SearchResultsDataSource alloc] initWithTableView:self.searchResultsView
                                                              cellIdentifier:resultsIdentifier
                                                           sectionIdentifier:resultsSectionIdentifier
                                                                    delegate:self];
 
+    //键盘通知,修改frame
+    __weak typeof(self) weakSelf = self;
+    _showObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidShowNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        CGRect keyboardFrame = [[note.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        CGRect frame = [UIScreen mainScreen].bounds;
+        frame.size.height -= keyboardFrame.size.height;
+        weakSelf.view.frame = frame;
+    }];
+    _hideObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidHideNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        CGRect frame = [UIScreen mainScreen].bounds;
+        //frame.size.height -= 47;
+        weakSelf.view.frame = frame;
+    }];
 }
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
 
-    CGRect frame = self.view.bounds;
-    frame.origin.y = CGRectGetMaxY(self.searchBar.frame);
-    frame.size.height -= frame.origin.y;
-
-    [self.searchResultsView setFrame:frame];
-    [self.hintsTableView setFrame:frame];
-}
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-
-    [self.searchResultsView setNeedsDisplay];
+    [self.searchResultsView setFrame:self.view.bounds];
+    [self.hintsTableView setFrame:self.view.bounds];
 }
 
 - (void)dealloc{
@@ -70,7 +81,7 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     _hideObserver = nil;
 }
 
-#pragma mark - getter / setter
+#pragma mark - getter
 -(UITableView *)hintsTableView{
     if (!_hintsTableView) {
         _hintsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
@@ -81,20 +92,20 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 }
 - (UITableView *)searchResultsView{
     if (!_searchResultsView) {
+        // 问题: 使用self.view.bounds 初始化时, 为什么数据源中的tableView 为null , 且调用cell 出栈函数
         _searchResultsView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_searchResultsView registerClass:[SearchResultsCell class] forCellReuseIdentifier:resultsIdentifier];
-        [_searchResultsView setRowHeight:55];
+        [_searchResultsView setRowHeight:80];
         //代理在主搜索视图中
     }
     return _searchResultsView;
 }
 
 
-#pragma mark  - ********************Delegate
-
 #pragma mark - UITableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //选中hints cell 执行搜索
     if (tableView == self.hintsTableView) {
         NSString *term = cell.textLabel.text;
         [self.searchBar setText:term];
@@ -109,7 +120,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 
 #pragma mark - SearchResultsDataSourceDelegate;
 -(void)configureCell:(UITableViewCell *)cell object:(Resource *)resource{
-
     if ([cell isKindOfClass:[SearchResultsCell class]]) {
         [((SearchResultsCell*)cell) setResource:resource];
     }
@@ -122,23 +132,20 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
 }
 
 
-
 #pragma mark - UISearchBarDelegate
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-    [self.searchResultsView removeFromSuperview];
     [self.view addSubview:self.hintsTableView];
     [self.hintsDataSource searchHintsWithTerm:searchText];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
-    [self.hintsTableView removeFromSuperview];
     [self.view addSubview:self.searchResultsView];
     [self.resultsDataSource searchTerm:searchBar.text];
     [searchBar resignFirstResponder];
 }
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-    [self.hintsDataSource clearData];
-    [self.resultsDataSource clearData];
+//    [self.hintsDataSource clearData];
+//    [self.resultsDataSource clearData];
 }
 
 @end

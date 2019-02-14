@@ -69,7 +69,7 @@
 }
 
 - (void)dismissalTransitionWillBegin{
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.35 animations:^{
         [[self dimmingView] setAlpha:0];
     }];
 }

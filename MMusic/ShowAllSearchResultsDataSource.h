@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface ShowAllSearchResultsDataSource : NSObject
+//加载的数据
+@property(nonatomic,readonly)NSArray<Resource*> *data;
 
 - (instancetype)initWithView:(UICollectionView*)collectionView
                   identifier:(NSString*)identifier

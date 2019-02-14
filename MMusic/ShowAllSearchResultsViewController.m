@@ -11,11 +11,15 @@
 
 #import "ResourceDetailViewController.h"
 
-#import "ChartsSongCell.h"
-#import "ChartsSubContentCell.h"
+#import "SongCollectionCell.h"
+#import "ResourceCollectionCell.h"
+#import "MusicVideosCollectionCell.h"
 
+#import "MPMusicPlayerController+ResourcePlaying.h"
 #import "ResponseRoot.h"
 #import "Resource.h"
+#import "Song.h"
+#import "MusicVideo.h"
 
 @interface ShowAllSearchResultsViewController ()<UICollectionViewDelegate,ShowAllSearchResultsDataSourceDelegate>
 @property(nonatomic,strong)ResponseRoot *responseRoot;
@@ -46,6 +50,8 @@ static NSString *const identifier = @"cell identifier";
                                                             identifier:identifier
                                                           responseRoot:self.responseRoot
                                                               delegate:self];
+
+
 }
 
 -(void)viewDidLayoutSubviews{
@@ -53,15 +59,23 @@ static NSString *const identifier = @"cell identifier";
 
     [self.collectionView setFrame:self.view.bounds];
 
+    // 不同的类型, 不同的cellSize  和cell 类型
     Resource *res = self.responseRoot.data.firstObject;
-    if ([res.type isEqualToString:@"songs"]) {
-        [self.collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
-        CGFloat h = 55;
+    if ([res.type isEqualToString:JSONSongTypeKey]) {
+        [self.collectionView registerClass:[SongCollectionCell class] forCellWithReuseIdentifier:identifier];
+        CGFloat h = 80;
         CGFloat w = CGRectGetWidth(self.view.bounds);
         [self.layout setItemSize:CGSizeMake(w, h)];
         [self.layout setMinimumInteritemSpacing:1];
-    }else{
-        [self.collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
+    }else if([res.type isEqualToString:JSONMusicVideosTypeKey]){
+        [self.collectionView registerClass:[MusicVideosCollectionCell class] forCellWithReuseIdentifier:identifier];
+        CGFloat h = 100;
+        CGFloat w = CGRectGetWidth(self.view.bounds);
+        [self.layout setItemSize:CGSizeMake(w, h)];
+        [self.layout setMinimumInteritemSpacing:1];
+
+    } else{
+        [self.collectionView registerClass:[ResourceCollectionCell class] forCellWithReuseIdentifier:identifier];
 
         CGFloat space = 8.0f;
         CGFloat w = CGRectGetWidth(self.view.bounds);
@@ -88,23 +102,39 @@ static NSString *const identifier = @"cell identifier";
 
 
 #pragma mark - ShowAllSearchResultsDataSourceDelegate
-- (void)configureCollectionCell:(UICollectionViewCell *)cell object:(Resource *)resource{
-    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
-        [((ChartsSubContentCell*)cell) setResource:resource];
+- (void)configureCollectionCell:(UICollectionViewCell *)cell object:(Resource   *)resource{
+    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
+        [((ResourceCollectionCell*)cell) setResource:resource];
     }
 }
 
 #pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    Resource *res = self.responseRoot.data.firstObject;
 
-    if ([res.type isEqualToString:@"songs"]) {
+    // bug   选中时, 后台还在继续i加载数据, 访问data时出现错误, 即数组还在变化中,Terminating app due to uncaught exception 'NSGenericException', reason: '*** Collection <__NSArrayM: 0x283498c30> was mutated while being enumerated.'
+    NSArray<Resource*> *data = self.dataSource.data;
+    Resource *res = data.firstObject;
 
-    }else if ([res.type isEqualToString:@"music-videos"]){
+    if ([res.type isEqualToString:JSONSongTypeKey]) {
+
+        NSMutableArray *songList = [NSMutableArray array];
+        for (Resource *resource in data) {
+            Song *song = [Song instanceWithResource:resource];
+            [songList addObject:song];
+        }
+        [MainPlayer playSongs:songList startIndex:indexPath.row];
+
+    }else if ([res.type isEqualToString:JSONMusicVideosTypeKey]){
+        NSMutableArray<MusicVideo*> *musicVideoList = [NSMutableArray array];
+        for (Resource *resource in data) {
+            MusicVideo *mv = [MusicVideo instanceWithResource:resource];
+            [musicVideoList addObject:mv];
+        }
+        [MainPlayer playMusicVideos:musicVideoList startIndex:indexPath.row];
 
     }else{
-        Resource *res = [((ChartsSubContentCell*)cell) resource];
+        Resource *res = [((ResourceCollectionCell*)cell) resource];
         ResourceDetailViewController *detailVC = [[ResourceDetailViewController alloc] initWithResource:res];
         [detailVC.navigationItem setLargeTitleDisplayMode:UINavigationItemLargeTitleDisplayModeNever];
         [self.navigationController pushViewController:detailVC animated:YES];

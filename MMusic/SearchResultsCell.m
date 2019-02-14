@@ -38,6 +38,9 @@
         [_albumLabel setTextColor:color];
         [_artistLabel setFont:font];
         [_albumLabel setFont:font];
+
+        [_artworkView.layer setCornerRadius:4.0];
+        [_artworkView.layer setMasksToBounds:YES];
     }
     return self;
 }
@@ -50,25 +53,36 @@
     UIView *superView = self.contentView;
     __weak typeof(self) weakSelf = self;
 
-    [_artworkView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.bottom.mas_equalTo(superView).insets(insets);
-        CGFloat w = CGRectGetHeight(superView.bounds) - (insets.top+insets.bottom);
-        make.width.mas_equalTo(w);
-    }];
+    //MV 类型图片为长方形  16:9
+    if (_resource && [_resource.type isEqualToString:@"music-videos"]) {
+        [_artworkView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.bottom.mas_equalTo(superView).insets(insets);
+            CGFloat w = CGRectGetHeight(superView.bounds)*1.8;
+            make.width.mas_equalTo(w);
+        }];
+    }else{
+        [_artworkView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.bottom.mas_equalTo(superView).insets(insets);
+            CGFloat w = CGRectGetHeight(superView.bounds) - (insets.top+insets.bottom);
+            make.width.mas_equalTo(w);
+        }];
+    }
 
-    [_nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(superView).inset(insets.top);
-        make.left.mas_equalTo(weakSelf.artworkView.mas_right).inset(insets.left);
-        make.right.mas_equalTo(superView).inset(60);
-    }];
+
     [_artistLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.nameLabel.mas_bottom);
-        make.left.right.mas_equalTo(weakSelf.nameLabel);
+        make.centerY.mas_equalTo(superView);
+        make.left.mas_equalTo(weakSelf.artworkView.mas_right).inset(insets.left);
+        make.right.mas_equalTo(superView);
+    }];
+    [_nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(weakSelf.artistLabel);
+        make.bottom.mas_equalTo(weakSelf.artistLabel.mas_top);
     }];
     [_albumLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(weakSelf.artistLabel.mas_bottom);
         make.left.right.mas_equalTo(weakSelf.artistLabel);
+        make.top.mas_equalTo(weakSelf.artistLabel.mas_bottom);
     }];
+
 }
 
 - (void)setResource:(Resource *)resource{
@@ -78,6 +92,15 @@
         [_nameLabel setText:[resource.attributes valueForKey:@"name"]];
         [_artistLabel setText:[resource.attributes valueForKey:@"artistName"]];
         [_albumLabel setText:[resource.attributes valueForKey:@"albumName"]];
+        if (!_albumLabel.text) {
+            NSString *date = [resource.attributes valueForKey:@"releaseDate"];
+            if (!date) {
+                date = [resource.attributes valueForKey:@"lastModifiedDate"];
+            }
+            NSMutableAttributedString *attString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"date:%@",date]];
+            [attString addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(0, 5)];
+            [_albumLabel setAttributedText:attString];
+        }
 
         NSString *path = [resource.attributes valueForKeyPath:@"artwork.url"];
         [_artworkView setImageWithURLPath:path];

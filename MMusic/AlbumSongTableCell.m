@@ -1,5 +1,5 @@
 //
-//  AlbumDetailCell.m
+//  AlbumSongTableCell.m
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2019/1/22.
@@ -9,17 +9,17 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <Masonry.h>
 
-#import "AlbumDetailCell.h"
+#import "AlbumSongTableCell.h"
 #import "Song.h"
 
-@interface AlbumDetailCell ()
+@interface AlbumSongTableCell ()
 @property(nonatomic,strong) NAKPlaybackIndicatorView *playbackIndicatorView;
 @property(nonatomic,strong) UILabel *indexLabel;
 @property(nonatomic,strong) UILabel *nameLabel;
 
 @end
 
-@implementation AlbumDetailCell
+@implementation AlbumSongTableCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
@@ -76,7 +76,7 @@
     if (_song != song) {
         _song = song;
 
-        [_nameLabel setText:song.attributes.name];
+        [_nameLabel setText:song.name];
         [_indexLabel setText:[NSString stringWithFormat:@"%02ld",index+1]];
         [self stateForSong:song];
     }

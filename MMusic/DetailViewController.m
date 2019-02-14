@@ -6,15 +6,13 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import <JGProgressHUD.h>
+
 #import <Masonry.h>
-#import <MJRefresh.h>
-#import <MediaPlayer/MediaPlayer.h>
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
 
 #import "DetailViewController.h"
-#import "MMCloseButton.h"
+#import "CloseButton.h"
 #import "UIButton+BlockButton.h"
 
 #import "MMDetailHeadView.h"
@@ -25,7 +23,7 @@
 #import "Song.h"
 
 @interface DetailViewController ()<UITableViewDelegate, ResourceDetailDataSourceDelegate>
-@property(nonatomic, strong) MMCloseButton *closeButton;
+@property(nonatomic, strong) CloseButton *closeButton;
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) MMDetailHeadView *headView;
 
@@ -41,7 +39,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 - (instancetype)initWithResource:(Resource *)resource{
     if (self = [super init]) {
          _resource  = resource;
-        _closeButton = [[MMCloseButton alloc] init];
+        _closeButton = [[CloseButton alloc] init];
         //头部视图(image 和 title)
         _headView = [[MMDetailHeadView alloc] initWithFrame:CGRectZero];
         _imageView = _headView.imageView;
@@ -74,6 +72,7 @@ static NSString *const reuseIdentifier = @"tableview cell id";
                                                            identifier:reuseIdentifier
                                                              resource:_resource
                                                              delegate:self];
+
 }
 
 
@@ -97,10 +96,12 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 }
 
 #pragma mark dataSourceDelegate
-- (void)configureCell:(UITableViewCell *)cell object:(Song *)song atIndex:(NSUInteger)index{
-    if ([cell isKindOfClass:[SongCell class]]) {
-        [((SongCell*)cell) setSong:song withIndex:index];
-    }
+- (void)configureCell:(SongCell *)cell object:(Song *)song atIndex:(NSUInteger)index{
+    [cell setSong:song withIndex:index];
+//
+//    if ([cell isKindOfClass:[SongCell class]]) {
+//        [((SongCell*)cell) setSong:song withIndex:index];
+//    }
 }
 
 

@@ -7,14 +7,16 @@
 //
 
 #import "ChartsCell.h"
-#import "ChartsSubContentCell.h"
+
+#import "ResourceCollectionCell.h"
 #import "ChartsSubContentDataSource.h"
-#import "ChartsSongCell.h"
+#import "SongCollectionCell.h"
 #import "Resource.h"
 #import <Masonry.h>
 
 @interface ChartsCell()<ChartsSubContentDataSourceDelegate>
 @property(nonatomic, strong) UILabel *titleLabel;
+
 @property(nonatomic, strong) ChartsSubContentDataSource *contentDataSource;
 @property(nonatomic, strong) UICollectionViewFlowLayout *layout;
 @end
@@ -29,10 +31,10 @@ static NSString *const identifier = @"collectionView cell id";
 
         _layout = [[UICollectionViewFlowLayout alloc] init];
         [_layout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
-        [_layout setMinimumLineSpacing:6];
+        [_layout setMinimumLineSpacing:8];
 
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
-        [_collectionView registerClass:[ChartsSubContentCell class] forCellWithReuseIdentifier:identifier];
+        [_collectionView registerClass:[ResourceCollectionCell class] forCellWithReuseIdentifier:identifier];
         [_collectionView setBackgroundColor:UIColor.whiteColor];
         [_collectionView setContentInset:UIEdgeInsetsMake(0, 8, 0, 8)];
 
@@ -53,18 +55,19 @@ static NSString *const identifier = @"collectionView cell id";
 - (void)layoutSubviews{
     [super layoutSubviews];
 
-    UIEdgeInsets padding = UIEdgeInsetsMake(40, 0, 1, 0); // 顶部40 留给title 与 "全部"按钮
+    UIEdgeInsets insets = UIEdgeInsetsMake(40, 0, 1, 0); // 顶部40 留给title 与 "全部"按钮显示, 下面留1 显示横线
     __weak typeof(self) weakSelf = self;
     UIView *superView = self.contentView;
+
     [_collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(superView).insets(padding);
+        make.edges.mas_equalTo(superView).insets(insets);
     }];
 
     [_titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(200);
+        make.width.mas_equalTo(250);
         // 顶部空间Y轴居中布置
         CGFloat centerY = CGRectGetMidY(weakSelf.contentView.bounds);
-        centerY = (-centerY) + padding.top/2;
+        centerY = (-centerY) + insets.top/2;    // 顶部, 向下偏移上部距离的50%
         make.centerY.mas_equalTo(centerY);
         make.left.mas_equalTo(weakSelf).inset(8);
     }];
@@ -79,15 +82,15 @@ static NSString *const identifier = @"collectionView cell id";
     Resource *resource = _chart.data.firstObject;
     if ([resource.type isEqualToString:@"songs"]) {
         CGFloat h = CGRectGetHeight(_collectionView.bounds)/4; //每列4行
-        CGFloat w = CGRectGetWidth(_collectionView.bounds) -8; //
+        CGFloat w = CGRectGetWidth(_collectionView.bounds) -16; //
         [_layout setItemSize:CGSizeMake(w,h)];
         [_layout setMinimumInteritemSpacing:0];
-        [_collectionView registerClass:[ChartsSongCell class] forCellWithReuseIdentifier:identifier];
+        [_collectionView registerClass:[SongCollectionCell class] forCellWithReuseIdentifier:identifier];
         [_collectionView setPagingEnabled:YES];
 
     }else{
         CGFloat h = CGRectGetHeight(_collectionView.bounds);
-        CGFloat w = h-40; // -60
+        CGFloat w = h-40; //
         [_layout setItemSize:CGSizeMake(w, h)];
     }
 }
@@ -113,12 +116,14 @@ static NSString *const identifier = @"collectionView cell id";
     }
 }
 
-#pragma mark -delegate
+#pragma mark - ChartsSubContentDataSourceDelegate
 - (void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
-    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
-        ChartsSubContentCell *subCell = (ChartsSubContentCell*)cell;
+    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
+        ResourceCollectionCell *subCell = (ResourceCollectionCell*)cell;
         [subCell setResource:resource];
     }
 }
+
+
 
 @end

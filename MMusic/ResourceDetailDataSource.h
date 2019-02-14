@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol ResourceDetailDataSourceDelegate <NSObject>
@@ -18,7 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 @interface ResourceDetailDataSource : NSObject
 @property(nonatomic,strong,readonly) NSArray<Song*> *songLists;
-
 
 - (instancetype)initWithTableView:(UITableView*)tableView
                        identifier:(NSString*)identifier

@@ -15,15 +15,15 @@
 
 #import "Recommendation.h"
 
-
-@interface RecommendationDataSource ()
+@interface RecommendationDataSource ()<UICollectionViewDataSource>
 
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*>* dataArray;
 
-@property(nonatomic, copy) NSString *reuseIdentifier;
+@property(nonatomic, copy) NSString *identifier;
 @property(nonatomic, copy) NSString *sectionIdentifier;
 @property(nonatomic, weak) UICollectionView *collectionView;
 @property(nonatomic, weak) id<RecommendationDataSourceDelegate> delegate;
+
 @end
 
 @implementation RecommendationDataSource
@@ -31,13 +31,14 @@
 
 - (instancetype)initWithCollectionView:(UICollectionView *)collectionView
                         cellIdentifier:(nonnull NSString *)identifier
-                     sectionIdentifier:(nonnull NSString *)sectionIdentifier
+                     sectionIdentifier:(NSString * _Nullable)sectionIdentifier
                               delegate:(nonnull id<RecommendationDataSourceDelegate>)delegate{
     if (self = [super init]) {
         _collectionView = collectionView;
         collectionView.dataSource = self;
+
         _sectionIdentifier = sectionIdentifier;
-        _reuseIdentifier = identifier;
+        _identifier = identifier;
         _delegate = delegate;
 
         //加载数据
@@ -47,19 +48,19 @@
 }
 
 - (void)loadDataWithCollectionView:(UICollectionView*)view{
-
     //加载数据
     JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
-    [hud.textLabel setText:@"加载中.."];
+    [hud.textLabel setText:@"加载中..."];
     [hud showInView:view animated:YES];
 
     [self defaultRecommendataionWithCompletion:^(BOOL success) {
+
         dispatch_async(dispatch_get_main_queue(), ^{
+            [view.mj_header endRefreshing];
             if (success) {
                 [hud dismissAnimated:YES];
                 [hud removeFromSuperview];
                 [view reloadData];
-                [view.mj_header endRefreshing]; //停止刷新控件
             }else{
                 [hud.textLabel setText:@"数据加载失败!"];
                 [hud dismissAfterDelay:2 animated:YES];
@@ -72,6 +73,10 @@
         });
     }];
 }
+- (Resource *)selectedResourceAtIndexPath:(NSIndexPath *)indexPath{
+    return [self dataWithIndexPath:indexPath];
+}
+
 
 #pragma mark - collectionView DataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -83,7 +88,7 @@
     return [[[temp allValues] firstObject] count];
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_reuseIdentifier forIndexPath:indexPath];
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_identifier forIndexPath:indexPath];
     if (_delegate && [_delegate respondsToSelector:@selector(configureCell:object:)]) {
         [_delegate configureCell:cell object:[self dataWithIndexPath:indexPath]];
     }
@@ -95,7 +100,6 @@
         UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                                             withReuseIdentifier:_sectionIdentifier
                                                                                    forIndexPath:indexPath];
-
         if (_delegate && [_delegate respondsToSelector:@selector(configureSupplementaryElement:object:)]) {
             [_delegate configureSupplementaryElement:view object:[self titleWithSection:indexPath.section]];
         }
@@ -121,7 +125,6 @@
 
         NSMutableArray<NSDictionary<NSString*,NSArray<Resource*>*>*> *array = [NSMutableArray array];
         for (NSDictionary *subJSON in [json objectForKey:@"data"]) {
-
             //section title
             NSString *title = [subJSON valueForKeyPath:@"attributes.title.stringForDisplay"];
             if (!title) {

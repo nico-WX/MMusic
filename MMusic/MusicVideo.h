@@ -13,8 +13,10 @@
 @class PlayParameters;
 @class Preview;
 
+@interface MusicVideoRelationships : Relationship
+@end
 
-@interface MusicVideoAttributes : MMObject
+@interface MusicVideo : Resource
 @property(nonatomic, copy) NSString *artistName;
 @property(nonatomic, copy) NSString *contentRating;
 @property(nonatomic, copy) NSString *isrc;
@@ -32,14 +34,11 @@
 
 @property(nonatomic, strong) NSNumber *durationInMillis;
 @property(nonatomic, strong) NSNumber *trackNumber;
-@end
 
-@interface MusicVideoRelationships : Relationship
 
-@end
 
-@interface MusicVideo : Resource
-@property(nonatomic,strong)MusicVideoAttributes *attributes;
 @property(nonatomic,strong)MusicVideoRelationships *relationships;
 
++ (instancetype)instanceWithResource:(Resource*)resource;
+- (instancetype)initWithResource:(Resource*)resource;
 @end

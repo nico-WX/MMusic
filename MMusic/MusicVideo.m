@@ -11,16 +11,33 @@
 @implementation MusicVideoRelationships
 @end
 
-@implementation MusicVideoAttributes
+@implementation MusicVideo
+
+@synthesize relationships = _relationships;
 
 +(NSDictionary *)mj_objectClassInArray{
     return @{@"previews":@"Preview"};
 }
+- (instancetype)initWithDict:(NSDictionary *)dict{
+    if (self = [super initWithDict:dict]) {
+        [self mj_setKeyValues:[dict valueForKey:JSONAttributesKey]];
+    }
+    return self;
+}
 
-@end
 
-@implementation MusicVideo
-@synthesize attributes = _attributes;
-@synthesize relationships = _relationships;
-
++ (instancetype)instanceWithResource:(Resource *)resource{
+    return [[self alloc] initWithResource:resource];
+}
+- (instancetype)initWithResource:(Resource *)resource{
+    if (self = [super init]) {
+        [self mj_setKeyValues:resource.attributes];
+        self.identifier = resource.identifier;
+        self.type = resource.type;
+        self.attributes = resource.attributes;
+        self.href = resource.href;
+        self.meta = resource.meta;
+    }
+    return self;
+}
 @end

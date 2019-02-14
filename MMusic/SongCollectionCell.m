@@ -6,7 +6,7 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import "ChartsSongCell.h"
+#import "SongCollectionCell.h"
 #import "Resource.h"
 #import "Song.h"
 
@@ -14,7 +14,7 @@
 #import <NAKPlaybackIndicatorView.h>
 #import <MediaPlayer/MediaPlayer.h>
 
-@interface ChartsSongCell ()
+@interface SongCollectionCell ()
 @property(nonatomic, strong)UIImageView *lineView;
 @property(nonatomic, strong)NAKPlaybackIndicatorView *playbackIndicatorView;
 
@@ -22,7 +22,7 @@
 @property(nonatomic) id changeObserver;
 @end
 
-@implementation ChartsSongCell
+@implementation SongCollectionCell
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
@@ -56,6 +56,13 @@
     _stateObserver = nil;
     _changeObserver = nil;
 }
+- (void)didMoveToSuperview{
+    [super didMoveToSuperview];
+
+    [self stateForSong:[Song instanceWithResource:self.resource]];
+}
+
+
 
 - (void)layoutSubviews{
     [super layoutSubviews];
@@ -72,13 +79,13 @@
     }];
 
     [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        [make removeExisting];
+        [make setRemoveExisting:YES];
     }];
     [self.titleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        [make removeExisting];
+        [make setRemoveExisting:YES];
     }];
     [self.subTitleLable mas_remakeConstraints:^(MASConstraintMaker *make) {
-        [make removeExisting];
+        [make setRemoveExisting:YES];
     }];
 
     [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -102,7 +109,6 @@
         make.left.mas_equalTo(weakSelf.imageView.mas_right).inset(insets.left);
     }];
 
-
 }
 
 - (void)stateForSong:(Song*)song {
@@ -121,11 +127,19 @@
             case MPMusicPlaybackStatePlaying:
             case MPMusicPlaybackStateSeekingForward:
             case MPMusicPlaybackStateSeekingBackward:
+                NSLog(@"current =%@",[NSThread currentThread]);
                 [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePlaying];
+                [_playbackIndicatorView updateFocusIfNeeded];
                 break;
 
+            case MPMusicPlaybackStatePaused:
+                 [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
+                break;
+
+            case MPMusicPlaybackStateStopped:
+                [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStateStopped];
+
             default:
-                [_playbackIndicatorView setState:NAKPlaybackIndicatorViewStatePaused];
                 break;
         }
     }else{

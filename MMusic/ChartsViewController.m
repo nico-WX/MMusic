@@ -7,7 +7,8 @@
 //
 
 #import "ChartsViewController.h"
-#import "ChartsSubContentCell.h"
+
+#import "ResourceCollectionCell.h"
 #import "DetailViewController.h"
 #import "ChartsCell.h"
 
@@ -23,8 +24,8 @@
 
 @interface ChartsViewController ()<UITableViewDelegate,ChartsDataSourceDelegate,UICollectionViewDelegate>
 @property(nonatomic, strong)UITableView *tableView;
-@property(nonatomic, strong)ChartsDataSource *dataSource;
 
+@property(nonatomic, strong)ChartsDataSource *dataSource;
 @end
 
 static NSString *const identifier = @"cell reuseIdentifier";
@@ -43,6 +44,9 @@ static NSString *const identifier = @"cell reuseIdentifier";
 
     [_tableView setFrame:self.view.bounds];
 }
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+}
 
 #pragma mark - getter
 - (UITableView *)tableView{
@@ -58,6 +62,7 @@ static NSString *const identifier = @"cell reuseIdentifier";
 -(void)configureCell:(UITableViewCell *)cell object:(Chart *)chart{
     if ([cell isKindOfClass:[ChartsCell class]]) {
         ChartsCell *chartsCell = (ChartsCell*)cell;
+
         [chartsCell setChart:chart];
         //tableViewCell 中的集合视图代理设置为self, 获取选中的数据, 入栈新的控制器;
         [chartsCell.collectionView setDelegate:self];
@@ -80,8 +85,8 @@ static NSString *const identifier = @"cell reuseIdentifier";
 #pragma mark - UICollectionViewDelegate
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    if ([cell isKindOfClass:[ChartsSubContentCell class]]) {
-        Resource *resource = [((ChartsSubContentCell*)cell) resource];
+    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
+        Resource *resource = [((ResourceCollectionCell*)cell) resource];
 
         //选中歌曲播放, 其他显示资源详细
         if ([resource.type isEqualToString:@"songs"]) {

@@ -51,12 +51,6 @@ static NowPlayingViewController *_instance;
     return _instance;
 }
 
-- (instancetype)init{
-    if (self = [super init]) {
-
-    }
-    return self;
-}
 
 # pragma mark - lift cycle
 
@@ -110,9 +104,16 @@ static NowPlayingViewController *_instance;
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
 
-
     [_playerView setFrame:self.view.bounds];
-    [self updateUI];
+
+    [MainPlayer.nowPlayingItem.artwork loadArtworkImageWithSize:_playerView.imageView.bounds.size completion:^(UIImage * _Nonnull image) {
+        mainDispatch(^{
+            [self.playerView.imageView setImage:image];
+            [self.playerView.imageView setNeedsDisplay];
+        });
+    }];
+
+    //[self updateUI];
 }
 
 - (void)dealloc{
@@ -120,28 +121,37 @@ static NowPlayingViewController *_instance;
 }
 
 -(void)updateUI{
-    MPMediaItem *nowPlayingItem = MainPlayer.nowPlayingItem;
-    if (!nowPlayingItem) {
-        [self.playerView.heartSwitch setEnabled:NO];
-        [self.playerView.nameLabel setText:@"当前无歌曲播放"];
-        [self.playerView.artistLabel setText:@"----"];
-        return;
-    }
+    mainDispatch(^{
+        MPMediaItem *nowPlayingItem = MainPlayer.nowPlayingItem;
+        if (!nowPlayingItem) {
+            [self.playerView.heartSwitch setEnabled:NO];
+            [self.playerView.nameLabel setText:@"当前无歌曲播放"];
+            [self.playerView.artistLabel setText:@"----"];
+            return;
+        }
 
-    //播放第三方音乐时没有playbackStoreID, 从而控制喜欢开关是否有效(但4G网络播放未开启时,可能也没有playbackStoreID)
-    [MainPlayer nowPlayingSong:^(Song * _Nullable song) {
+        [self.playerView.heartSwitch setEnabled:YES];
+        [self.playerView.nameLabel setText:nowPlayingItem.title];
+        [self.playerView.artistLabel setText:nowPlayingItem.artist];
+        if (nowPlayingItem.playbackStoreID.length < 2) {
+            [self.playerView.heartSwitch setEnabled:NO];
+            return;
+        }
 
-    }];
+        CGSize size = self.playerView.imageView.bounds.size;
+        if (nowPlayingItem.artwork) {
+            [nowPlayingItem.artwork loadArtworkImageWithSize:size completion:^(UIImage * _Nonnull image) {
+                mainDispatch(^{
+                    [self.playerView.imageView setImage:image];
+                    [self.playerView.imageView setNeedsDisplay];
+                });
+            }];
+        }else{
+            [MainPlayer nowPlayingSong:^(Song * _Nullable song) {
+                [self.playerView.imageView setImageWithURLPath:song.artwork.url];
+            }];
+        }
 
-    [self.playerView.heartSwitch setEnabled:YES];
-    [self.playerView.nameLabel setText:nowPlayingItem.title];
-    [self.playerView.artistLabel setText:nowPlayingItem.artist];
-
-    //延迟0.1秒加载图片,(不延迟,子视图还未布局好,就不能拿到最后的view的大小)
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [nowPlayingItem.artwork loadArtworkImageWithSize:self.playerView.imageView.bounds.size completion:^(UIImage * _Nonnull image) {
-            [self.playerView.imageView setImage:image];
-        }];
     });
 }
 - (MMPlayerView *)playerView{

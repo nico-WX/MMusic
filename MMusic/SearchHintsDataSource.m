@@ -29,20 +29,23 @@
 }
 
 - (void)searchHintsWithTerm:(NSString *)term{
-    [MusicKit.new.catalog searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-        if ([json valueForKeyPath: @"results.terms"]) {
-            self.hints = [json valueForKeyPath:@"results.terms"];
-            if (self.hints.count > 0) {
+    if (term.length > 0) {
+        [MusicKit.new.catalog searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+            NSArray<NSString*> *temp = [json valueForKeyPath:@"results.terms"];
+            if (temp.count > 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    self.hints = temp;
                     [self.tableView reloadData];
                 });
             }
-        }
-    }];
+        }];
+    }
 }
 - (void)clearData{
-    _hints = nil;
-    [_tableView reloadData];
+    mainDispatch(^{
+        self.hints = nil;
+        [self.tableView reloadData];
+    });
 }
 
 #pragma mark UITableViewDataSource

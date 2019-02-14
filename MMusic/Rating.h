@@ -10,12 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RatingAttributes : MMObject
-@property(nonatomic,assign) NSInteger value;
-@end
 
 @interface Rating : Resource
-@property(nonatomic,strong)RatingAttributes *attributes;
+@property(nonatomic,assign) NSInteger value;
 @end
 
 NS_ASSUME_NONNULL_END

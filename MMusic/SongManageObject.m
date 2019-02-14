@@ -7,55 +7,37 @@
 //
 
 #import "SongManageObject.h"
+
 #import "CoreDataStack.h"
 #import "Artwork.h"
+#import "Song.h"
 
 @implementation SongManageObject
 
-@dynamic name,movementName,composerName,genreNames,artistName,workName,contentRating,artwork,discNumber,durationInMillis,editorialNotes,isrc,movementNumber,movementCount,playParams,releaseDate,trackNumber,url,identifier;
+@dynamic addDate, identifier,name,artistName,artwork,playParams,url,durationInMillis;
 
-//+(instancetype)insertIntoContext:(NSManagedObjectContext *)context withSong:(Song *)song{    
-//    if (self = [[super alloc] initWithContext:context]) {
-//    }
-//    return self;
-//}
+
++ (instancetype)insertSong:(Song *)song{
+    return [[self alloc] initWithSong:song];
+}
+
 
 - (instancetype)initWithSong:(Song *)song{
-    if (self = [super initWithContext:self.mainMoc]) {
+    if (self = [super initWithContext:self.viewContext]) {
 
-        //映射属性 <artwork另外生成对象> // @"previews"
-        NSArray *propertyes = @[@"name",@"movementName",@"composerName",@"genreNames",@"artistName",@"workName",@"contentRating",@"discNumber",@"durationInMillis",@"editorialNotes",@"isrc",@"movementNumber",@"movementCount",@"playParams",@"releaseDate",@"trackNumber",@"url"];
-        for (NSString *key in propertyes) {
-            if ([song.attributes valueForKey:key]) {
-                [self setValue:[song.attributes valueForKey:key] forKey:key];
-            }
-        }
+        //只读属性 addDate
+        [self setValue:[NSDate date] forKey:@"addDate"];
 
-        [self setValue:song.attributes.playParams[@"id"] forKey:@"identifier"];
-
-        Artwork *art = song.attributes.artwork;
-        NSDictionary *dict = @{@"url":art.url,@"height":@(art.height),@"width":@(art.width)};
-        [self setValue:dict forKey:@"artwork"];
+        self.identifier = song.identifier;
+        self.name = song.name;
+        self.artistName = song.artistName;
+        self.artwork = [song.artwork dictionaryValue];
+        self.playParams = song.playParams;
+        self.url = song.href;
+        self.durationInMillis = song.durationInMillis;
     }
     return self;
 }
 
-- (NSPredicate *)defaultPredicate{
-    return [NSPredicate predicateWithFormat:@" %K == %@",@"name",self.name];
-}
-- (NSSortDescriptor *)defaultSortDescriptor{
-    return [NSSortDescriptor sortDescriptorWithKey:@"artistName" ascending:NO];
-}
-
 @end
 
-@implementation SongManageObject (DefaultManaged)
-
-+ (NSSortDescriptor *)defaultSortDescriptor{
-    return [NSSortDescriptor sortDescriptorWithKey:@"artistName" ascending:0];
-}
-+(NSString *)name{
-    return @"Song";
-}
-
-@end

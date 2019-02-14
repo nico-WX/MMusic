@@ -8,10 +8,6 @@
 
 #import "Resource.h"
 
-@interface GenreAttributes : MMObject
-@property(nonatomic,copy) NSString *name;
-@end
-
 @interface Genre : Resource
-@property(nonatomic,strong)GenreAttributes *attributes;
+@property(nonatomic,copy) NSString *name;
 @end

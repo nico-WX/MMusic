@@ -17,7 +17,8 @@
 
 @interface MusicKit : NSObject
 
-/**资源入口*/
+/**目录资源入口*/
 @property(nonatomic, readonly) Catalog *catalog;
+/**个人资源入口*/
 @property(nonatomic, readonly) Library *library;
 @end

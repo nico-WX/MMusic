@@ -16,7 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)configureCell:(UICollectionViewCell*)cell object:(Resource*)resource;
 @end
 
+// cell 内部的集合视图数据源
 @interface ChartsSubContentDataSource : NSObject
+
 @property(nonatomic, strong, readonly)Chart *chart;
 
 - (instancetype)initWithChart:(Chart*)chart

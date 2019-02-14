@@ -6,24 +6,43 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
+#import <objc/runtime.h>
+#import <JGProgressHUD.h>
 #import "UIImageView+Extension.h"
 #import <UIImageView+WebCache.h>
+#import <UIView+WebCache.h>
+
+@interface UIImageView ()
+@end
 
 @implementation UIImageView (Extension)
 
 -(void)setImageWithURLPath:(NSString *)path{
+    
     NSString *md5Path = IMAGE_PATH_FOR_URL(path);
     UIImage *image = [UIImage imageWithContentsOfFile:md5Path];
     [self setImage:image];
 
     if (!image) {
-        UIImage *placeholder = [UIImage imageNamed:@"placeholder"];
+
+        [self setBackgroundColor:[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1]];
+
+        [self sd_addActivityIndicator];
+        [self sd_setShowActivityIndicatorView:YES];
+
+        //UIImage *placeholder = [UIImage imageNamed:@"placeholder"];
         path = [path stringReplacingImageURLSize:self.bounds.size];
-        [self sd_setImageWithURL:[NSURL URLWithString:path] placeholderImage:placeholder options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            //[self showImageToView:self withImageURL:path cacheToMemory:YES];    // 缓存 image
+        [self sd_setImageWithURL:[NSURL URLWithString:path]
+                placeholderImage:nil
+                         options:SDWebImageProgressiveDownload
+                       completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL)
+        {
+            [self sd_setShowActivityIndicatorView:NO];
         }];
     }
 }
+
+
 
 
 @end

@@ -1,5 +1,5 @@
 //
-//  PlaylistDetailCell.m
+//  PlaylistSongTableCell.m
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2019/1/22.
@@ -10,18 +10,18 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <NAKPlaybackIndicatorView.h>
 
-#import "PlaylistDetailCell.h"
+#import "PlaylistSongTableCell.h"
 #import "Song.h"
 #import "Artwork.h"
 
-@interface PlaylistDetailCell ()
+@interface PlaylistSongTableCell ()
 @property(nonatomic, strong) NAKPlaybackIndicatorView *playbackIndicatorView;
 @property(nonatomic, strong) UIImageView *artworkView;
 @property(nonatomic, strong) UILabel *nameLabel;
 @property(nonatomic, strong) UILabel *artistLabel;
 @end
 
-@implementation PlaylistDetailCell
+@implementation PlaylistSongTableCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
@@ -88,9 +88,9 @@
     if (_song != song) {
         _song = song;
 
-        [_nameLabel setText:song.attributes.name];
-        [_artistLabel setText:song.attributes.artistName];
-        [_artworkView setImageWithURLPath:song.attributes.artwork.url];
+        [_nameLabel setText:song.name];
+        [_artistLabel setText:song.artistName];
+        [_artworkView setImageWithURLPath:song.artwork.url];
         [self stateForSong:song];
     }
 }

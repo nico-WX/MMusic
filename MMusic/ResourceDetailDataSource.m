@@ -18,6 +18,7 @@
 @end
 
 @implementation ResourceDetailDataSource
+
 - (instancetype)initWithTableView:(UITableView *)tableView
                        identifier:(NSString *)identifier
                          resource:(Resource *)resource
@@ -39,8 +40,7 @@
 }
 
 
-
-- (void)loadDataWithResource:(Resource *)resource completion:(nonnull void (^)(BOOL))completion{
+- (void)loadDataWithResource:(Resource *)resource completion:(nonnull void (^)(BOOL success))completion{
     [MusicKit.new.catalog songListWithResource:resource completion:^(NSDictionary *json, NSHTTPURLResponse *response) {
         self->_songLists = [self serializationJSON:json];
         if (completion) {
@@ -48,7 +48,7 @@
         }
     }];
 }
-
+//下一页数据
 - (void)loadNextPageWithComplection:(void (^)(BOOL))completion{
     if (completion) {
 
@@ -61,7 +61,7 @@
     for (NSDictionary *temp in [json objectForKey:@"data"]) {
         NSArray *tracks = [temp valueForKeyPath:@"relationships.tracks.data"];
         for (NSDictionary *songDict in tracks) {
-            Song *song = [Song instanceWithDict:[songDict objectForKey:@"attributes"]];
+            Song *song = [Song instanceWithDict:songDict];
             [songList addObject:song];
         }
     }

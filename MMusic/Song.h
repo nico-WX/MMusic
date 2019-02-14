@@ -10,13 +10,14 @@
 
 @class Artwork;
 @class EditorialNotes;
-@class PlayParameters;
 @class Preview;
 @class MPMediaItem;
+@class SongManageObject;
 
+@interface SongRelationships : Relationship
+@end
 
-@interface SongAttributes : MMObject
-
+@interface Song : Resource
 @property(nonatomic, copy) NSString *artistName;
 @property(nonatomic, copy) NSString *composerName;
 @property(nonatomic, copy) NSString *contentRating;
@@ -40,14 +41,7 @@
 @property(nonatomic, assign) int movementNumber;
 @property(nonatomic, assign) int trackNumber;
 
-@end
 
-@interface SongRelationships : Relationship
-@end
-
-@interface Song : Resource
-
-@property(nonatomic,strong)SongAttributes *attributes;
 @property(nonatomic,strong)SongRelationships *relationships;
 
 /**
@@ -56,4 +50,10 @@
  @return 是否为相同的歌曲
  */
 -(BOOL) isEqualToMediaItem:(MPMediaItem*) mediaItem;
+
++ (instancetype)instanceWithResource:(Resource*)resource;
+- (instancetype)initWithResource:(Resource*)resource;
+
++ (instancetype)instanceWithSongManageObject:(SongManageObject*)songManageObject;
+- (instancetype)initWithSongManageObject:(SongManageObject*)songManageObject;
 @end

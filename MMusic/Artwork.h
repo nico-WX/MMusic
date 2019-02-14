@@ -19,4 +19,5 @@
 @property(nonatomic, copy) NSString *textColor3;
 @property(nonatomic, copy) NSString *textColor4;
 
+- (NSDictionary*)dictionaryValue;
 @end

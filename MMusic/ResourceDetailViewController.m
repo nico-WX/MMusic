@@ -12,8 +12,8 @@
 
 #import "ResourceDetailHeadView.h"
 #import "ResourceDetailSongCell.h"
-#import "AlbumDetailCell.h"
-#import "PlaylistDetailCell.h"
+#import "AlbumSongTableCell.h"
+#import "PlaylistSongTableCell.h"
 
 #import "ResourceDetailDataSource.h"
 #import "SongCell.h"
@@ -50,9 +50,9 @@ static NSString *const identifier = @"cell identifier";
     //注册不同的类型cell
     Class cellClass;
     if ([_resource.type isEqualToString:@"playlists"]) {
-        cellClass = [PlaylistDetailCell class];
+        cellClass = [PlaylistSongTableCell class];
     }else{
-        cellClass = [AlbumDetailCell class];
+        cellClass = [AlbumSongTableCell class];
     }
     [self.tableView registerClass:cellClass forCellReuseIdentifier:identifier];
 
@@ -75,10 +75,10 @@ static NSString *const identifier = @"cell identifier";
 
 #pragma mark - ResourceDetailDataSourceDelegate
 - (void)configureCell:(UITableViewCell *)cell object:(Song *)song atIndex:(NSUInteger)index{
-    if ([cell isKindOfClass:[AlbumDetailCell class]]) {
-        [((AlbumDetailCell*)cell) setSong:song withIndex:index];
+    if ([cell isKindOfClass:[AlbumSongTableCell class]]) {
+        [((AlbumSongTableCell*)cell) setSong:song withIndex:index];
     }else{
-        [((PlaylistDetailCell*)cell) setSong:song];
+        [((PlaylistSongTableCell*)cell) setSong:song];
     }
 }
 

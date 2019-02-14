@@ -20,24 +20,16 @@
 
 - (instancetype)initWithDict:(NSDictionary *)dict{
     if (self = [super initWithDict:dict]) {
-    
+        [self mj_setKeyValues:[dict valueForKey:JSONAttributesKey]];
     }
     return self;
 }
-
 @end
-
 
 @implementation ActivityRelationships
-//@synthesize data = _data;
-
 @end
 
 
-
-
-@implementation ActivityAttributes
-@end
 
 
 

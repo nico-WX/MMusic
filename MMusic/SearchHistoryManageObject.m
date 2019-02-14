@@ -16,16 +16,19 @@
     return [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO];
 }
 
++ (instancetype)insertTerm:(NSString *)term{
+    return [[self alloc] initWithTerm:term];
+}
+
 - (instancetype)initWithTerm:(NSString *)term{
-    if (self = [super initWithContext:self.mainMoc]) {
-        [self setValue:term forKey:@"term"];
-        NSDate *date = [NSDate date];
-        [self setValue:date forKey:@"date"];
+    if (self = [super initWithContext:self.viewContext]) {
+        self.date = [NSDate date];
+        self.term = term;
     }
     return self;
 }
 
-+ (NSString *)name{
++ (NSString *)entityName{
     return @"SearchHistory";
 }
 

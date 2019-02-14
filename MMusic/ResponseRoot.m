@@ -8,7 +8,6 @@
 
 #import "ResponseRoot.h"
 #import "Resource.h"
-//#import <MJExtension.h>
 
 @implementation ResponseRoot
 

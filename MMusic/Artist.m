@@ -6,25 +6,21 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-/*@class EditorialNotes;*/
 
 #import "Artist.h"
-//#import <MJExtension.h>
-
 
 @implementation Artist
-@synthesize attributes = _attributes;
+
 @synthesize relationships = _relationships;
-
-@end
-
-@implementation ArtistAttributes
 
 +(NSDictionary *)mj_objectClassInArray{
     return @{@"genreNames":@"NSString"};
 }
+- (instancetype)initWithDict:(NSDictionary *)dict{
+    if (self = [super initWithDict:dict]) {
+        [self mj_setKeyValues:[dict valueForKey:JSONAttributesKey]];
+    }
+    return self;
+}
 
-@end
-
-@implementation ArtistRelationship
 @end

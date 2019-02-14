@@ -30,7 +30,25 @@
     if (![song isEqualToMediaItem:self.nowPlayingItem]) {
         [self setQueueWithDescriptor:self.parametersQueue];
         [self play];
+        [self prepareToPlayWithCompletionHandler:^(NSError * _Nullable error) {
+
+        }];
+    }else{
+        //暂停, 继续
+        switch (self.playbackState) {
+            case MPMusicPlaybackStatePaused:
+                [self play];
+                break;
+            case MPMusicPlaybackStatePlaying:
+                [self pause];
+
+            default:
+                break;
+        }
     }
+
+
+
 }
 - (void)insertSongAtEndItem:(Song *)song {
     NSMutableArray *array = [NSMutableArray arrayWithArray:self.songLists];
@@ -39,7 +57,7 @@
     self.songLists = array;
 
     //添加到当前播放队列后面
-    MPMusicPlayerPlayParameters *prameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.attributes.playParams];
+    MPMusicPlayerPlayParameters *prameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
     MPMusicPlayerPlayParametersQueueDescriptor *queue;
     queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[prameters,]];
     [self appendQueueDescriptor:queue];
@@ -54,30 +72,47 @@
     self.songLists = array;
 
     //添加到当前播放Item 后面
-    MPMusicPlayerPlayParameters *prameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.attributes.playParams];
+    MPMusicPlayerPlayParameters *prameters = [[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams];
     MPMusicPlayerPlayParametersQueueDescriptor *queue;
     queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:@[prameters,]];
     [self prependQueueDescriptor:queue];
 }
 
 - (void)nowPlayingSong:(void (^)(Song * _Nullable))completion{
-    for (Song *song in self.songLists) {
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_apply(self.songLists.count, queue, ^(size_t i) {
+        Song *song = [self.songLists objectAtIndex:i];
         if ([song isEqualToMediaItem:self.nowPlayingItem]) {
-            completion(song);
-            return;
+            mainDispatch(^{
+                NSLog(@"song lists song");
+                completion(song);
+            });
+            return ;
         }
-    }
+    });
+
+//    for (Song *song in self.songLists) {
+//        if ([song isEqualToMediaItem:self.nowPlayingItem]) {
+//            mainDispatch(^{
+//                completion(song);
+//            });
+//            return;
+//        }
+//    }
 
     NSString *identifier = self.nowPlayingItem.playbackStoreID;
-    // "0"标识数据库无此歌曲
+    // "0"标识数据库无此歌曲]
     if (![identifier isEqualToString:@"0"] && identifier) {
         //异步加载
-        [MusicKit.new.catalog resources:@[self.nowPlayingItem.playbackStoreID,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-            json = [[(NSArray*)[json valueForKey:@"data"] firstObject] valueForKey:@"attributes"];
-
-            completion([Song instanceWithDict:json]);
+        [MusicKit.new.catalog resources:@[identifier,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
+            json = [(NSArray*)[json valueForKey:@"data"] firstObject] ;
+            mainDispatch(^{
+                completion([Song instanceWithDict:json]);
+            });
         }];
     }else{
+        NSLog(@"now song  null");
         completion(NULL);
     }
 }
@@ -87,7 +122,7 @@
     [self setMusicVideos:mvs];
     NSMutableArray<MPMusicPlayerPlayParameters*> *array = [NSMutableArray array];
     for (MusicVideo *mv in mvs) {
-        [array addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:mv.attributes.playParams]];
+        [array addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:mv.playParams]];
     }
     MPMusicPlayerPlayParametersQueueDescriptor *queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:array];
     [queue setStartItemPlayParameters:[array objectAtIndex:startIndex]];
@@ -99,9 +134,7 @@
                                                               startPlayIndex:(NSUInteger)index {
     NSMutableArray<MPMusicPlayerPlayParameters*> *list = [NSMutableArray array];
     for (Song *song in songs) {
-        if (song.attributes.playParams) {
-            [list addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.attributes.playParams]];
-        }
+        [list addObject:[[MPMusicPlayerPlayParameters alloc] initWithDictionary:song.playParams]];
     }
     MPMusicPlayerPlayParametersQueueDescriptor *queue;
     queue = [[MPMusicPlayerPlayParametersQueueDescriptor alloc] initWithPlayParametersQueue:list];
