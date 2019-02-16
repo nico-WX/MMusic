@@ -7,35 +7,25 @@
 //
 #import <MBProgressHUD.h>
 #import <UIImageView+WebCache.h>
-#import <UIKit/UIKit.h>
-#import <MediaPlayer/MediaPlayer.h>
 
 #import "NSString+Replace.h"
 #import "NSObject+Tool.h"
 #import "AuthManager.h"
 
-#import "Album.h"
-#import "Artist.h"
-#import "Activity.h"
-#import "AppleCurator.h"
-#import "Curator.h"
-#import "Song.h"
-#import "Station.h"
-#import "Playlist.h"
-#import "MusicVideo.h"
-#import "Resource.h"
-#import "ResponseRoot.h"
 
-extern NSString *const developerTokenDidExpireNotification;
-extern NSString *const userTokenIssueNotification;
+
 @implementation NSObject (Tool)
 
 //统一解析响应体,处理异常等.
 - (NSDictionary *)serializationDataWithResponse:(NSURLResponse *)response data:(NSData *)data error:(NSError *)error {
-    if (error) Log(@"Location Error:%@",error.localizedDescription);
+    if (error) Log(@"请求错误  error: %@",error.localizedDescription);
 
     NSDictionary *json;
     NSHTTPURLResponse *res = (NSHTTPURLResponse*)response;
+    NSLog(@"code =%ld",res.statusCode);
+    NSLog(@"URL =%@",res.URL);
+    NSLog(@"header = %@",res.allHeaderFields);
+
     switch (res.statusCode) {
         case 200:
             if (data) {
@@ -48,21 +38,42 @@ extern NSString *const userTokenIssueNotification;
             break;
         case 401:
             //开发者Token 问题
-            [[NSNotificationCenter defaultCenter] postNotificationName:developerTokenDidExpireNotification object:nil];
-            [self showHUDToMainWindowFromText:@"开发者令牌授权过期"];
+            NSLog(@"开发者令牌授权过期");
+
             break;
         case 403:
             //userToken 问题
-            [[NSNotificationCenter defaultCenter] postNotificationName:userTokenIssueNotification object:nil];
-            [self showHUDToMainWindowFromText:@"用户令牌授权过期"];
+            NSLog(@"用户令牌授权过期");
             break;
 
         default:
-            //[self showHUDToMainWindowFromText:[NSString stringWithFormat:@"path:%@ code =%ld",res.URL.lastPathComponent,res.statusCode]];
-             //Log(@"response info :%@",res);
             break;
     }
     return json;
+}
+
+- (NSURLRequest*)createRequestWithURLString:(NSString *)urlString setupUserToken:(BOOL)setupUserToken {
+    //移除'%' 防止将'%' 重复编码成25
+    urlString = [urlString stringByRemovingPercentEncoding];
+    urlString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+
+    //设置请求头
+    NSString *bearerString = [NSString stringWithFormat:@"Bearer %@",[AuthManager shareManager].developerToken];
+    [request setValue:bearerString forHTTPHeaderField:@"Authorization"];
+    if (setupUserToken) {
+        NSString *userToken = [AuthManager  shareManager].userToken;
+        [request setValue:userToken forHTTPHeaderField:@"Music-User-Token"];
+    }
+
+    NSLog(@"request header =%@",request.allHTTPHeaderFields);
+    return request;
+}
+- (NSURLRequest*)createRequestWithHref:(NSString *)href {
+    NSString *path = @"https://api.music.apple.com";
+    path = [path stringByAppendingPathComponent:href];
+    return [self createRequestWithURLString:path setupUserToken:NO];
 }
 
 //封装发起任务请求操作,通过block 回调返回数据.

@@ -7,6 +7,7 @@
 #import "APIRoot.h"
 #import "Library.h"
 
+@class Resource;
 #pragma mark - 枚举
 /**
  公共目录资源类型

@@ -10,19 +10,14 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString *const cloudServiceDidUpdateNotification;
+extern NSString *const authorizationDidUpdateNotification;
+
 @interface AuthManager : NSObject
 
 @property(nonatomic, copy, readonly) NSString *storefront;
 @property(nonatomic, copy, readonly) NSString *developerToken;
 @property(nonatomic, copy, readonly) NSString *userToken;
 
-
 + (instancetype)shareManager;
-
-//状态检查
-- (void)checkAuthorization;
-- (void)checkAuthTokenAvailability;
-
-//- (void)needUpdateUserToken;
-//- (void)needUpdateDeveloperToken;
 @end

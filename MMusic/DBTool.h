@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger,TableName){
 +(void) insertData:(DBModel*) dbModel;
 +(void) deleteData:(DBModel*) dbModel;
 +(void) addArtists:(ArtistsModel*) artistsModel;
-+(void) updateData:(DBModel*) dbModel withIdentifier:(NSString*) identifier;
+//+(void) updateData:(DBModel*) dbModel withIdentifier:(NSString*) identifier;
 +(NSMutableArray*) selectFromType:(TableName) tableName;
 
 @end

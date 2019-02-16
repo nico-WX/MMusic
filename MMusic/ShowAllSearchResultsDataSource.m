@@ -7,7 +7,6 @@
 //
 
 #import "ShowAllSearchResultsDataSource.h"
-#import "NSURLRequest+CreateURLRequest.h"
 #import "ResponseRoot.h"
 
 @interface ShowAllSearchResultsDataSource ()<UICollectionViewDataSource>

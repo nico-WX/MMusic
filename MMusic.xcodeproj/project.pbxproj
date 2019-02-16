@@ -60,7 +60,6 @@
 		3B64B2F522058FB30029C32E /* LibraryContentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2F422058FB30029C32E /* LibraryContentCell.m */; };
 		3B64B2F8220590250029C32E /* MyMusicTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2F6220590240029C32E /* MyMusicTableCell.m */; };
 		3B64D0EE20ECE76200D831FE /* MMHeartSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */; };
-		3B65B28B21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B28A21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m */; };
 		3B65B29F21E0A88700C2C388 /* ButtonStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B29E21E0A88700C2C388 /* ButtonStyleKit.m */; };
 		3B65B2A221E0A92000C2C388 /* MMPlayerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B65B2A121E0A92000C2C388 /* MMPlayerButton.m */; };
 		3B66A22E2195CCDC00F7DC9E /* TabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B66A22C2195CCDC00F7DC9E /* TabBarController.m */; };
@@ -358,8 +357,6 @@
 		3B64B2F7220590240029C32E /* MyMusicTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyMusicTableCell.h; sourceTree = "<group>"; };
 		3B64D0EC20ECE76200D831FE /* MMHeartSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMHeartSwitch.m; sourceTree = "<group>"; };
 		3B64D0ED20ECE76200D831FE /* MMHeartSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMHeartSwitch.h; sourceTree = "<group>"; };
-		3B65B28921DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+CreateURLRequest.h"; sourceTree = "<group>"; };
-		3B65B28A21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURLRequest+CreateURLRequest.m"; sourceTree = "<group>"; };
 		3B65B29D21E0A88700C2C388 /* ButtonStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonStyleKit.h; sourceTree = "<group>"; };
 		3B65B29E21E0A88700C2C388 /* ButtonStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonStyleKit.m; sourceTree = "<group>"; };
 		3B65B2A021E0A92000C2C388 /* MMPlayerButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMPlayerButton.h; sourceTree = "<group>"; };
@@ -895,8 +892,6 @@
 				3B9AA9151FB588AF00720085 /* AuthManager.m */,
 				3B5371FC1FDBF50B009AFE47 /* NSObject+Tool.h */,
 				3B5371FD1FDBF50B009AFE47 /* NSObject+Tool.m */,
-				3B65B28921DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.h */,
-				3B65B28A21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m */,
 				3B3D99E8205E990D000F2E9E /* NSString+Hash.h */,
 				3B3D99E9205E990F000F2E9E /* NSString+Hash.m */,
 				3BE2A2532198DC7900AEA486 /* NSString+Replace.h */,
@@ -1554,7 +1549,6 @@
 				3BE2A23B2198630100AEA486 /* Library+RecentHistory.m in Sources */,
 				3B9A371D219700E6000CB6B4 /* NowPlayingViewController.m in Sources */,
 				3B9AA8F51FB4719A00720085 /* MusicVideo.m in Sources */,
-				3B65B28B21DF6A0600C2C388 /* NSURLRequest+CreateURLRequest.m in Sources */,
 				3B4D989420BA8C1700139BE0 /* ArtistsModel.m in Sources */,
 				3B9AA8EC1FB46E7B00720085 /* Artwork.m in Sources */,
 				3B4DDC5E2192C5D700F70547 /* MPMediaItemArtwork+Exchange.m in Sources */,
@@ -1835,7 +1829,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.music.HelloMusic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1855,7 +1849,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.music.HelloMusic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

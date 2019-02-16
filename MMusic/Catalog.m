@@ -8,7 +8,7 @@
 #import "AuthManager.h"
 #import "Resource.h"
 #import "Song.h"
-#import "NSURLRequest+CreateURLRequest.h"
+
 
 @interface Catalog()
 //@property(nonatomic, strong)NSString *root;
@@ -20,8 +20,8 @@ static Catalog* _instance;
 - (instancetype)init{
     if (self =[super init]) {
         _catalogPath = [self.rootPath stringByAppendingPathComponent:@"catalog"];
-        NSString *storeFront = [AuthManager shareManager].storefront;
-        _catalogPath= [_catalogPath stringByAppendingPathComponent:storeFront];
+        NSString *store = [AuthManager shareManager].storefront;
+        _catalogPath = [_catalogPath stringByAppendingPathComponent:store];
     }
     return self;
 }
@@ -105,7 +105,7 @@ static Catalog* _instance;
             break;
     }
 
-    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:NO];
+    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
     [self dataTaskWithRequest:request handler:handle];
 }
 

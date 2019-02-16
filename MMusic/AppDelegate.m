@@ -30,10 +30,8 @@
     [self.window setRootViewController:root];
     [self.window makeKeyAndVisible];
 
+    //初始化
     self.authManager = [AuthManager shareManager];
-    //检查状态
-    [self.authManager checkAuthTokenAvailability];
-    [self.authManager checkAuthorization];
 
     self.moc = [CoreDataStack shareDataStack].context;
     [MainPlayer beginGeneratingPlaybackNotifications];

@@ -18,7 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SearchHintsDataSource : NSObject
 
-
 - (instancetype)initWithTableView:(UITableView*)tableView
                        identifier:(NSString*)identifier
                          delegate:(id<SearchHintsDataSourceDelegate>)delegate;

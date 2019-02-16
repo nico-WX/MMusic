@@ -8,7 +8,7 @@
 
 #import "Library.h"
 #import "AuthManager.h"
-#import "NSURLRequest+CreateURLRequest.h"
+
 
 @interface Library()
 @end

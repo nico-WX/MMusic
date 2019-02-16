@@ -26,4 +26,11 @@
         [self.imageView setImage:image];
     }];
 }
+- (void)configureForMediaItem:(MPMediaItem *)mediaItem{
+    [self.titleLabel setText:mediaItem.albumTitle];
+    [mediaItem.artwork loadArtworkImageWithSize:self.imageView.bounds.size completion:^(UIImage * _Nonnull image) {
+        [self.imageView setImage:image];
+    }];
+}
+
 @end

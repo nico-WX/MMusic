@@ -9,18 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@class Album;
-@class Artist;
-@class Activity;
-@class AppleCurator;
-@class Curator;
-@class Song;
-@class Station;
-@class Playlist;
-@class MusicVideo;
-@class Resource;
-@class ResponseRoot;
-@class MPMusicPlayerPlayParametersQueueDescriptor;
 
 //请求数据回调
 typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
@@ -34,6 +22,9 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
 - (NSDictionary*_Nullable)serializationDataWithResponse:(NSURLResponse* _Nullable)response
                                                    data:(NSData*_Nullable)data
                                                   error:(NSError*_Nullable)error;
+
+- (NSURLRequest*)createRequestWithURLString:(NSString*)urlString setupUserToken:(BOOL)setupUserToken;
+- (NSURLRequest*)createRequestWithHref:(NSString*)href;
 
 /**
  封装请求操作 通过回调返回json数据
