@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)configureForSong:(Song*)song;
 - (void)configureForSongManageObject:(SongManageObject*)songMO;
+- (void)configureForMediaItem:(MPMediaItem*)item;
 
 @end
 

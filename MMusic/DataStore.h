@@ -14,22 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DataStore : NSObject
 
-
-# pragma mark < Storefronts >
-
-#pragma mark < Resource Data >
-
-#pragma mark < Search >                                 == DataStore+Search
-
-#pragma mark < Charts >                                 == DataStore+Charts
-
-#pragma mark < Recent History >
-
-#pragma mark < iCloudMusicLibraryAndLibraryPlaylists >
-
-#pragma mark < Recommendations >                        == DataStore+Recommendations
-
-#pragma mark < Ratings >                                == DataStore+Rating
 @end
 
 NS_ASSUME_NONNULL_END

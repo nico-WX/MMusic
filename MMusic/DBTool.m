@@ -13,9 +13,8 @@
 
 @implementation DBTool
 
-/**艺人表名*/
+
 #define ARTISTS (@"t_artists")
-/**歌曲表名*/
 #define TRACKS  (@"t_tracks")
 
 //表字段名称
@@ -64,6 +63,11 @@ static FMDatabase *_db;
     //没有表时 自动创建,
     [_db executeUpdate:createArtists];
     [_db executeUpdate:createTracks];
+}
+- (void)dealloc{
+    if (_db) {
+        [_db close];
+    }
 }
 
 +(void)insertData:(DBModel *)dbModel{

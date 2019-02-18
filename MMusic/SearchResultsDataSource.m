@@ -64,6 +64,8 @@
 
     [[MusicKit new].catalog searchForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];
+        NSLog(@"search code =%ld",response.statusCode);
+        NSLog(@"url  =%@",response.URL);
         //检查结果返回空结果字典
         if (json.allKeys.count > 0)  {
 

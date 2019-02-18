@@ -50,7 +50,6 @@ static NSString *const cellIdentifier = @"resourceCell";
                                                                         cellIdentifier:cellIdentifier
                                                                      sectionIdentifier:sectionIdentifier
                                                                               delegate:self];
-    //self.transitionCoordinator
 }
 
 

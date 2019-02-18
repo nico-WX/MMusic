@@ -6,6 +6,7 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
+
 #import <JGProgressHUD.h>
 #import <MJRefresh.h>
 
@@ -24,6 +25,7 @@
 @property(nonatomic, weak) UICollectionView *collectionView;
 @property(nonatomic, weak) id<RecommendationDataSourceDelegate> delegate;
 
+@property(nonatomic, strong) JGProgressHUD *hud;
 @end
 
 @implementation RecommendationDataSource
@@ -47,30 +49,32 @@
     return self;
 }
 
-- (void)loadDataWithCollectionView:(UICollectionView*)view{
+- (void)loadDataWithCollectionView:(UICollectionView*)colletionView{
     //加载数据
-    JGProgressHUD *hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
-    [hud.textLabel setText:@"加载中..."];
-    [hud showInView:view animated:YES];
+    [self.hud showInView:colletionView animated:YES];
 
     [self defaultRecommendataionWithCompletion:^(BOOL success) {
+        [colletionView.mj_header endRefreshing];
 
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [view.mj_header endRefreshing];
-            if (success) {
-                [hud dismissAnimated:YES];
-                [hud removeFromSuperview];
-                [view reloadData];
-            }else{
-                [hud.textLabel setText:@"数据加载失败!"];
-                [hud dismissAfterDelay:2 animated:YES];
+        if (success) {
+            [self.hud dismissAnimated:YES];
+            [self.hud removeFromSuperview];
+            [colletionView reloadData];
 
-                //加载失败, 设置刷新控件
-                [view setMj_header:[MJRefreshNormalHeader headerWithRefreshingBlock:^{
-                    [self loadDataWithCollectionView:view];
+        }else{
+            self.hud.indicatorView = nil;
+            [self.hud.textLabel setText:@"加载失败,请下拉刷新"];
+            //加载失败, 设置刷新控件
+            if (!colletionView.mj_header) {
+                [colletionView setMj_header:[MJRefreshNormalHeader headerWithRefreshingBlock:^{
+                    [self.hud.textLabel setText:@"loading..."];
+                    JGProgressHUDIndicatorView *indicator = [JGProgressHUDIndeterminateIndicatorView new];
+                    [indicator setUpForHUDStyle:self.hud.style vibrancyEnabled:YES];
+                    [self.hud setIndicatorView:indicator];
+                    [self loadDataWithCollectionView:colletionView];
                 }]];
             }
-        });
+        }
     }];
 }
 - (Resource *)selectedResourceAtIndexPath:(NSIndexPath *)indexPath{
@@ -141,7 +145,9 @@
         //保存数据
         self.dataArray = array;
         if (completion) {
-            completion(self.dataArray.count > 0);
+            mainDispatch(^{
+                completion(self.dataArray.count > 0);
+            });
         }
     }];
 }
@@ -171,5 +177,12 @@
         }
     }
     return sectionList;
+}
+- (JGProgressHUD *)hud{
+    if (!_hud) {
+        _hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
+        _hud.textLabel.text = @"loading...";
+    }
+    return _hud;
 }
 @end

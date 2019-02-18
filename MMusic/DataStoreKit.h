@@ -9,17 +9,7 @@
 #ifndef DataStoreKit_h
 #define DataStoreKit_h
 
-
 #import "DataStore.h"
-
 #import "DataStore+Rating.h"
-
-
-//model
-
-//#import "Album.h"
-//#import "Artwork.h"
-//#import "Resource.h"
-//#import "Playlist.h"
 
 #endif /* DataStoreKit_h */

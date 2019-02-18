@@ -88,6 +88,7 @@ static NSString *const identifier = @"cell identifier";
         _searchController = [[UISearchController alloc] initWithSearchResultsController:vc];
         [_searchController setSearchResultsUpdater:vc];
         [_searchController.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
+        [_searchController.searchBar setPlaceholder:@"搜索单曲,专辑等"];
         [_searchController setDimsBackgroundDuringPresentation:NO];
     }
     return _searchController;
