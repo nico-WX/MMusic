@@ -24,6 +24,7 @@
 #import "ResponseRoot.h"
 
 #import "MPMusicPlayerController+ResourcePlaying.h"
+#import "UITableView+Extension.h"
 
 //分割代理方法
 @interface SearchViewController (Delegate)<UITableViewDelegate,SearchHistoryDataSourceDelegate>
@@ -45,13 +46,11 @@ static NSString *const identifier = @"cell identifier";
     self.view.backgroundColor = UIColor.whiteColor;
 
     [self.view addSubview:self.searchHistoryView];
-    [self.searchHistoryView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
     self.searchHistoryDataSource = [[SearchHistoryDataSource alloc] initWithTableView:self.searchHistoryView
                                                                            identifier:identifier
                                                                              delegate:self];
 
-    
     [self setDefinesPresentationContext:YES]; //当前环境呈现
     [self.navigationController.navigationBar setPrefersLargeTitles:YES];
     [self.navigationItem setSearchController:self.searchController];
@@ -62,6 +61,7 @@ static NSString *const identifier = @"cell identifier";
     [super viewDidLayoutSubviews];
 
     [_searchHistoryView setFrame:self.view.bounds];
+    [_searchController.view setFrame:self.view.bounds];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -75,6 +75,8 @@ static NSString *const identifier = @"cell identifier";
         _searchHistoryView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_searchHistoryView registerClass:[UITableViewCell class] forCellReuseIdentifier:identifier];
         [_searchHistoryView setDelegate:self];
+        [_searchHistoryView hiddenSurplusSeparator];
+
     }
     return _searchHistoryView;
 }
@@ -112,30 +114,29 @@ static NSString *const identifier = @"cell identifier";
     if (tableView == self.searchHistoryView) {
         // 选中搜索历史cell 搜索字段
         NSString *term = cell.textLabel.text;
-
         [_searchController setActive:YES];  // 激活搜索控制器
         UISearchBar *searchBar = _searchController.searchBar;
         [searchBar setText:term];
         [searchBar.delegate searchBarSearchButtonClicked:searchBar];
     }else{
 
-        /*
-         搜索结果TableView 代理, 选中song 播放, 选中mv 跳转到music 播放, 其他显示详情;
-         */
-
+        //搜索结果TableView 代理, 选中song 播放, 选中mv 跳转到music 播放, 其他显示详情;
         if ([cell isKindOfClass:[SearchResultsCell class]]) {
 
+            // 区分不同的资源类型 做出响应
             NSArray<Resource*> *resourceList = [((SearchResultsDataSource*)tableView.dataSource) allResurceAtSection:indexPath.section];
             Resource *res = [resourceList firstObject];
-            if ([res.type isEqualToString:@"songs"]) {
 
+            // 播放song
+            if ([res.type isEqualToString:@"songs"]) {
                 NSMutableArray<Song*> *songs = [NSMutableArray array];
                 for (Resource *songResource in resourceList) {
                     Song *song = [Song instanceWithResource:songResource];
                     [songs addObject:song];
                 }
                 [MainPlayer playSongs:songs startIndex:indexPath.row];
-                
+
+                //播放MV
             } else if ([res.type isEqualToString:@"music-videos"]) {
                 NSMutableArray<MusicVideo*> *mvs = [NSMutableArray array];
                 for (Resource *resource in resourceList) {
@@ -144,6 +145,7 @@ static NSString *const identifier = @"cell identifier";
                 }
                 [MainPlayer playMusicVideos:mvs startIndex:indexPath.row];
 
+                //显示资源详细song列表
             }else{
 
                 Resource *detailResource = [resourceList objectAtIndex:indexPath.row];

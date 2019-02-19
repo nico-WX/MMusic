@@ -32,8 +32,6 @@
     if (term.length > 0) {
         [MusicKit.new.catalog searchHintsForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
             NSArray<NSString*> *temp = [json valueForKeyPath:@"results.terms"];
-            NSLog(@"path =%@",response.URL);
-            NSLog(@"code  =%ld",response.statusCode);
             if (temp.count > 0) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.hints = temp;
@@ -41,11 +39,13 @@
                 });
             }
         }];
+    }else{
+        [self clearData];
     }
 }
 - (void)clearData{
     mainDispatch(^{
-        self.hints = nil;
+        self.hints = @[];
         [self.tableView reloadData];
     });
 }

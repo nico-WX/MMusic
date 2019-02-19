@@ -8,6 +8,7 @@
 
 #import "ShowAllSearchResultsDataSource.h"
 #import "ResponseRoot.h"
+#import "NSURLRequest+Extension.h"
 
 @interface ShowAllSearchResultsDataSource ()<UICollectionViewDataSource>
 @property(nonatomic,copy)NSString *identifier;

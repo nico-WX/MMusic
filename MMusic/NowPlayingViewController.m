@@ -8,6 +8,7 @@
 
 #import <MediaPlayer/MediaPlayer.h>
 #import <Masonry.h>
+#import "TabBarController.h"
 
 #import "NowPlayingViewController.h"
 #import "MPMusicPlayerController+ResourcePlaying.h"
@@ -15,48 +16,33 @@
 
 #import "PlayProgressView.h"
 #import "MMHeartSwitch.h"
-#import "MMPlayerView.h"
+#import "PlayerView.h"
 #import "MMPlayerButton.h"
 
 #import "CoreDataStack.h"
 #import "SongManageObject.h"
 
-#import "DataStoreKit.h"
 #import "Artwork.h"
 #import "Song.h"
 
 @interface NowPlayingViewController ()
-@property(nonatomic, strong) MMPlayerView *playerView;
+@property(nonatomic, strong) PlayerView *playerView;
 @end
 
-static NowPlayingViewController *_instance;
 @implementation NowPlayingViewController
 
 #pragma mark - init
 
-+ (instancetype)sharePlayerViewController {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _instance = [[self alloc] init];
-    });
-    return _instance;
-}
-+ (instancetype)allocWithZone:(struct _NSZone *)zone {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        if (!_instance){
-            _instance = [super allocWithZone:zone];
-        }
-    });
-    return _instance;
-}
+// 单例实现
+SingleImplementation(PlayerViewController);
 
 
 # pragma mark - lift cycle
-
 - (void)viewDidLoad{
     [super viewDidLoad];
 
+    //
+    self.playerView = [[PlayerView alloc] init];
     [self.view addSubview:self.playerView];
 
     //播放器通知
@@ -65,20 +51,20 @@ static NowPlayingViewController *_instance;
     }];
     [[NSNotificationCenter defaultCenter] addObserverForName:MPMusicPlayerControllerNowPlayingItemDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
         [self updateUI];
-        NSLog(@"now id =%@",MainPlayer.nowPlayingItem.playbackStoreID);
     }];
 
-    //按钮事件
-    [self.playerView.previous handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-        [self animationButton:self.playerView.previous];
+    //按钮事件, 心型开关内部已经定义好事件,不用处理
+    __weak typeof(self) weakSelf = self;
+    [_playerView.previous handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+        [weakSelf animationButton:weakSelf.playerView.previous];
         [MainPlayer skipToPreviousItem];
     }];
-    [self.playerView.next handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-        [self animationButton:self.playerView.next];
+    [_playerView.next handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+        [weakSelf animationButton:weakSelf.playerView.next];
         [MainPlayer skipToNextItem];
     }];
-    [self.playerView.play handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-        [self animationButton:self.playerView.play];
+    [_playerView.play handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+        [weakSelf animationButton:weakSelf.playerView.play];
         switch (MainPlayer.playbackState) {
             case MPMusicPlaybackStatePaused:
             case MPMusicPlaybackStateStopped:
@@ -93,6 +79,13 @@ static NowPlayingViewController *_instance;
                 break;
         }
     }];
+
+    [_playerView.shareButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+        [MainPlayer nowPlayingSong:^(Song * _Nullable song) {
+            [self shareSong:song];
+        }];
+    }];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -105,20 +98,31 @@ static NowPlayingViewController *_instance;
     [super viewDidLayoutSubviews];
 
     [_playerView setFrame:self.view.bounds];
-
-    [MainPlayer.nowPlayingItem.artwork loadArtworkImageWithSize:_playerView.imageView.bounds.size completion:^(UIImage * _Nonnull image) {
-        mainDispatch(^{
-            [self.playerView.imageView setImage:image];
-            [self.playerView.imageView setNeedsDisplay];
-        });
-    }];
-
-    //[self updateUI];
+    [self updateUI];
 }
 
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+- (void)shareSong:(Song*)song{
+    NSString *name = song.name;
+    NSURL *url = [NSURL URLWithString:song.url];
+
+    if (name && url) {
+        NSArray *item = @[name,url];
+
+        UIActivity *activity = [[UIActivity alloc] init];
+        UIActivityViewController *avc = [[UIActivityViewController alloc] initWithActivityItems:item applicationActivities:@[activity,]];
+
+        [avc setCompletionWithItemsHandler:^(UIActivityType  _Nullable activityType, BOOL completed, NSArray * _Nullable returnedItems, NSError * _Nullable activityError) {
+            // activityType  分享方向
+        }];
+        //显示
+        [self presentViewController:avc animated:YES completion:nil];
+    }
+}
+
 
 -(void)updateUI{
     mainDispatch(^{
@@ -135,31 +139,21 @@ static NowPlayingViewController *_instance;
         [self.playerView.artistLabel setText:nowPlayingItem.artist];
         if (nowPlayingItem.playbackStoreID.length < 2) {
             [self.playerView.heartSwitch setEnabled:NO];
-            return;
         }
 
         CGSize size = self.playerView.imageView.bounds.size;
         if (nowPlayingItem.artwork) {
             [nowPlayingItem.artwork loadArtworkImageWithSize:size completion:^(UIImage * _Nonnull image) {
-                mainDispatch(^{
-                    [self.playerView.imageView setImage:image];
-                    [self.playerView.imageView setNeedsDisplay];
-                });
+                [self.playerView.imageView setImage:image];
             }];
         }else{
             [MainPlayer nowPlayingSong:^(Song * _Nullable song) {
                 [self.playerView.imageView setImageWithURLPath:song.artwork.url];
             }];
         }
-
     });
 }
-- (MMPlayerView *)playerView{
-    if (!_playerView) {
-        _playerView = [[MMPlayerView alloc] init];
-    }
-    return _playerView;
-}
+
 
 - (void)updateButtonStyle{
     switch (MainPlayer.playbackState) {
@@ -168,8 +162,6 @@ static NowPlayingViewController *_instance;
             break;
 
         case MPMusicPlaybackStateStopped:
-            [self.playerView.play setStyle:MMPlayerButtonStopStyle];
-            break;
         case MPMusicPlaybackStateInterrupted:
         case MPMusicPlaybackStatePaused:
             [self.playerView.play setStyle:MMPlayerButtonPlayStyle];

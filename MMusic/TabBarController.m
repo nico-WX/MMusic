@@ -194,6 +194,7 @@
     self.popViewController = popViewController;
     [self.visualEffectView.contentView addSubview:popViewController.view];
     popViewController.view.frame = self.visualEffectView.contentView.bounds;
+    [popViewController didMoveToParentViewController:self];
 }
 
 #pragma mark - getter

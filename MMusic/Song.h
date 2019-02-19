@@ -49,11 +49,10 @@
  @param mediaItem 媒体对象
  @return 是否为相同的歌曲
  */
--(BOOL) isEqualToMediaItem:(MPMediaItem*) mediaItem;
+- (BOOL)isEqualToMediaItem:(MPMediaItem*)mediaItem;
 
-+ (instancetype)instanceWithResource:(Resource*)resource;
-- (instancetype)initWithResource:(Resource*)resource;
-
+/**托管对象转换为数据模型对象*/
 + (instancetype)instanceWithSongManageObject:(SongManageObject*)songManageObject;
+/**托管对象转换为数据模型对象*/
 - (instancetype)initWithSongManageObject:(SongManageObject*)songManageObject;
 @end

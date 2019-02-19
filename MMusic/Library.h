@@ -52,7 +52,7 @@ typedef NS_ENUM(NSUInteger, AddType){
  @param library 库资源类型
  @param handle  数据回调
  */
-- (void)resource:(NSArray<NSString*>*)ids byType:(LibraryResourceType)library callBack:(RequestCallBack)handle;  // no
+- (void)resource:(NSArray<NSString*>*)ids byType:(LibraryResourceType)library callBack:(RequestCallBack)handle;
 
 /**
  获取资源周边相关的资源
@@ -62,7 +62,7 @@ typedef NS_ENUM(NSUInteger, AddType){
  @param name        周边相关名称(如songs 的artistis 等)
  @param handle      数据回调
  */
-- (void)relationship:(NSString*)identifier forType:(LibraryResourceType)library byName:(NSString*)name callBacl:(RequestCallBack)handle; // no
+- (void)relationship:(NSString*)identifier forType:(LibraryResourceType)library byName:(NSString*)name callBacl:(RequestCallBack)handle;
 
 /**
  搜索云音乐库
@@ -71,7 +71,7 @@ typedef NS_ENUM(NSUInteger, AddType){
  @param library 搜索音乐库资源类型
  @param handle  数据回调
  */
-- (void)searchForTerm:(NSString*)term byType:(SearchLibraryType)library callBack:(RequestCallBack)handle;  // ok
+- (void)searchForTerm:(NSString*)term byType:(SearchLibraryType)library callBack:(RequestCallBack)handle;
 
 
 /**
@@ -79,7 +79,7 @@ typedef NS_ENUM(NSUInteger, AddType){
 
  @param handle 数据回调
  */
-- (void)defaultRecommendationsInCallBack:(RequestCallBack)handle;   // ok
+- (void)defaultRecommendationsInCallBack:(RequestCallBack)handle;
 
 
 @end

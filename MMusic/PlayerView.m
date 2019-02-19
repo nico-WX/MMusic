@@ -1,32 +1,37 @@
 //
-//  MMPlayerView.m
+//  PlayerView.m
 //  MMusic
 //
 //  Created by 🐙怪兽 on 2019/1/5.
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import "MMPlayerView.h"
+#import "PlayerView.h"
 #import "PlayProgressView.h"
 #import "MMHeartSwitch.h"
 #import "MMPlayerButton.h"
 
 #import <Masonry.h>
 
-@implementation MMPlayerView
+@implementation PlayerView
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
+
         _imageView = [UIImageView new];
         _playProgressView  = [PlayProgressView new];
         _nameLabel = [UILabel new];
         _artistLabel = [UILabel new];
-
         _previous = [MMPlayerButton playerButtonWithStyle:MMPlayerButtonPreviousStyle];
         _play = [MMPlayerButton playerButtonWithStyle:MMPlayerButtonPlayStyle];
         _next = [MMPlayerButton playerButtonWithStyle:MMPlayerButtonNextStyle];
-
          _heartSwitch = [MMHeartSwitch new];
+        _shareButton = [UIButton new];
+
+
+        [_shareButton setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
+        [_shareButton setBackgroundColor:[UIColor colorWithWhite:1 alpha:0]];
+
         //初始化偏移心型开关 避免出现在左上角
         [_heartSwitch setFrame:CGRectMake(-100, 100, 44, 44)];
         [_playProgressView setFrame:CGRectMake(-100, 100, 44, 44)];
@@ -39,6 +44,7 @@
         [self addSubview:_play];
         [self addSubview:_next];
         [self addSubview:_heartSwitch];
+        [self addSubview:_shareButton];
 
         [_imageView setBackgroundColor:[UIColor colorWithWhite:0.96 alpha:1]];
 
@@ -89,9 +95,6 @@
         make.width.mas_equalTo(w);
     }];
     [_play mas_remakeConstraints:^(MASConstraintMaker *make) {
-//        make.top.bottom.mas_equalTo(weakSelf).insets(padding);
-//        make.right.mas_equalTo(weakSelf.next.mas_left).offset(padding.right);
-//        make.width.mas_equalTo(weakSelf.next);
         CGFloat h = CGRectGetHeight(weakSelf.bounds)-(padding.top+padding.bottom)*2;
         CGFloat w = h;
         make.right.mas_equalTo(weakSelf.next.mas_left);//.inset(padding.right);
@@ -188,6 +191,12 @@
         make.top.mas_equalTo(weakSelf.play.mas_bottom).offset(padding.top/2);
         make.size.mas_equalTo(CGSizeMake(heartW, heartW));
         make.centerX.mas_equalTo(weakSelf);
+    }];
+
+    [_shareButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.heartSwitch);
+        make.left.mas_equalTo(weakSelf.heartSwitch.mas_right).inset(padding.left*3);
+        make.size.mas_equalTo(weakSelf.heartSwitch);
     }];
 }
 

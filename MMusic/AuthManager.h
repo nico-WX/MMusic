@@ -1,5 +1,4 @@
 //
-//  令牌/授权 管理
 //  AuthManager.h
 //  MMusic
 //
@@ -7,11 +6,17 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-
 #import <Foundation/Foundation.h>
+#import "Single.h"
 
+// update
 extern NSString *const cloudServiceDidUpdateNotification;
 extern NSString *const authorizationDidUpdateNotification;
+
+// reload token
+extern NSString *const userTokenInvalidNotification;
+extern NSString *const developerTokenInvalidNotification;
+
 
 @interface AuthManager : NSObject
 
@@ -19,5 +24,5 @@ extern NSString *const authorizationDidUpdateNotification;
 @property(nonatomic, copy, readonly) NSString *developerToken;
 @property(nonatomic, copy, readonly) NSString *userToken;
 
-+ (instancetype)shareManager;
+SingleInterface(Manager); // 单例方法声明
 @end

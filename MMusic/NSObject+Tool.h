@@ -23,25 +23,12 @@ typedef void(^RequestCallBack)(NSDictionary* json, NSHTTPURLResponse* response);
                                                    data:(NSData*_Nullable)data
                                                   error:(NSError*_Nullable)error;
 
-- (NSURLRequest*)createRequestWithURLString:(NSString*)urlString setupUserToken:(BOOL)setupUserToken;
-- (NSURLRequest*)createRequestWithHref:(NSString*)href;
 
 /**
  封装请求操作 通过回调返回json数据
  */
 - (void)dataTaskWithRequest:(NSURLRequest*)request handler:(RequestCallBack)handle;
 
-/**
- 通过Path 显示图片到ImageView 上, URL(未替换大小参数url)
- */
-- (void)showImageToView:(UIImageView*)imageView withImageURL:(NSString*)url cacheToMemory:(BOOL)cache;
-
-/**
- 主屏幕显示提示信息
-
-@param text 显示的文本信息
- */
-- (void)showHUDToMainWindowFromText:(NSString*)text;
 
 @end
 

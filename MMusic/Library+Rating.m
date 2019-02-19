@@ -5,7 +5,7 @@
 //  Created by 🐙怪兽 on 2018/11/11.
 //  Copyright © 2018 com.😈. All rights reserved.
 //
-
+#import "NSURLRequest+Extension.h"
 #import "Library+Rating.h"
 
 
@@ -13,7 +13,7 @@
 static NSString *const ratingPath = @"ratings";
 @implementation Library (Rating)
 
-- (void)addRatingToCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RequestCallBack)callBack{
+- (void)addRatingToCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RatingHandleBlock)callBack{
 
     NSString *path = [self makePathWith:identifier type:type];
 
@@ -25,21 +25,37 @@ static NSString *const ratingPath = @"ratings";
     [request setHTTPMethod:@"PUT"];
     [request setHTTPBody:data];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [self dataTaskWithRequest:request handler:callBack];
+
+
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        [self handleRequestWith:response completion:callBack];
+    }];
+
 }
-- (void)deleteRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RequestCallBack)callBack{
+- (void)deleteRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RatingHandleBlock)callBack{
     NSString *path = [self makePathWith:identifier type:type];
 
     NSMutableURLRequest *request = (NSMutableURLRequest*)[NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [request setHTTPMethod:@"DELETE"];
 
     //无响应体, 成功响应码:204
-    [self dataTaskWithRequest:request handler:callBack];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        [self handleRequestWith:response completion:callBack];
+    }];
 }
-- (void)requestRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RequestCallBack)callBack{
+- (void)requestRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RatingHandleBlock)callBack{
     NSString *path = [self makePathWith:identifier type:type];
     NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:YES];
-    [self dataTaskWithRequest:request handler:callBack];
+    [self dataTaskWithRequest:request handler:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        [self handleRequestWith:response completion:callBack];
+    }];
+}
+
+- (void)handleRequestWith:(NSHTTPURLResponse*)response completion:(void(^)(BOOL success))completion{
+    NSInteger code = response.statusCode/100;
+    if (completion) {
+        completion( 2==code ? YES : NO);
+    }
 }
 
 - (NSString*)makePathWith:(NSString*)identifier type:(RTRatingType)type {

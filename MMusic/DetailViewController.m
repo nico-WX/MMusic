@@ -72,7 +72,6 @@ static NSString *const reuseIdentifier = @"tableview cell id";
                                                            identifier:reuseIdentifier
                                                              resource:_resource
                                                              delegate:self];
-
 }
 
 

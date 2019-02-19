@@ -8,20 +8,18 @@
 #import "AuthManager.h"
 #import "Resource.h"
 #import "Song.h"
+#import "NSURLRequest+Extension.h"
 
-
-@interface Catalog()
-//@property(nonatomic, strong)NSString *root;
-@end
+#import <AFNetworking.h>
 
 static Catalog* _instance;
 @implementation Catalog
 
 - (instancetype)init{
     if (self =[super init]) {
-        _catalogPath = [self.rootPath stringByAppendingPathComponent:@"catalog"];
+        NSString *path = [self.rootPath stringByAppendingPathComponent:@"catalog"];
         NSString *store = [AuthManager shareManager].storefront;
-        _catalogPath = [_catalogPath stringByAppendingPathComponent:store];
+        _catalogPath = [path stringByAppendingPathComponent:store];
     }
     return self;
 }
@@ -85,27 +83,17 @@ static Catalog* _instance;
     [self dataTaskWithRequest:request handler:handle];
 }
 
-- (void)chartsByType:(ChartsType)type callBack:(RequestCallBack)handle {
+- (void)allChartsWithCompletion:(RequestCallBack)completion{
     NSString *path = [self.catalogPath stringByAppendingPathComponent:@"charts?types="];
-    switch (type) {
-        case ChartsAlbums:
-            path = [path stringByAppendingString:@"albums"];
-            break;
-        case ChartsPlaylists:
-            path = [path stringByAppendingString:@"playlists"];
-            break;
-        case ChartsSongs:
-            path = [path stringByAppendingString:@"songs"];
-            break;
-        case ChartsMusicVideos:
-            path = [path stringByAppendingString:@"music-videos"];
-            break;
-        case ChartsAll:
-            path = [path stringByAppendingString:@"songs,albums,playlists,music-videos"];
-            break;
-    }
+    path = [path stringByAppendingString:@"songs,albums,playlists,music-videos,"];
+    NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:NO];
 
-    NSURLRequest *request = [self createRequestWithURLString:path setupUserToken:NO];
+    [self dataTaskWithRequest:request handler:completion];
+}
+
+
+- (void)songListWithResource:(Resource *)resource completion:(RequestCallBack)handle{
+    NSURLRequest *request = [NSURLRequest createRequestWithHref:resource.href];
     [self dataTaskWithRequest:request handler:handle];
 }
 
@@ -144,11 +132,6 @@ static Catalog* _instance;
             break;
     }
     return subPath;
-}
-
-- (void)songListWithResource:(Resource *)resource completion:(RequestCallBack)handle{
-    NSURLRequest *request = [NSURLRequest createRequestWithHref:resource.href];
-    [self dataTaskWithRequest:request handler:handle];
 }
 
 @end

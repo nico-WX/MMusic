@@ -23,6 +23,7 @@
         });
     }else{
         //通过identifier 加载Song*  获取路径
+
         [MainPlayer nowPlayingSong:^(Song * _Nonnull song) {
             NSString *urlStr = song.artwork.url;
             urlStr = [urlStr stringReplacingImageURLSize:size];

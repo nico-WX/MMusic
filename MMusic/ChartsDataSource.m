@@ -38,95 +38,47 @@
     return self;
 }
 - (void)loadChartsForTableView:(UITableView*)tableView{
+
     [self.hud showInView:tableView animated:YES];
 
-
-    [MusicKit.new.catalog chartsByType:ChartsAll callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-
+    [MusicKit.new.catalog allChartsWithCompletion:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        //回调,停止刷新
+        [tableView.mj_header endRefreshing];
         if (response.statusCode == 200) {
+            NSMutableArray<Chart*> *chartArray = [NSMutableArray array];
+            json = [json valueForKey:@"results"];
+
+            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+                //每一个Key 对应数组,如{@"albums":[{Chart},]}
+                NSArray *tempArray = (NSArray*)obj;
+                [tempArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    Chart *chart = [Chart instanceWithDict:(NSDictionary*)obj];
+                    [chartArray addObject:chart];
+                }];
+            }];
+
+            self.charts = chartArray;
+            [self.hud dismissAnimated:YES];
+            [self.hud removeFromSuperview];
+            [tableView reloadData];
 
         }else{
 
-            NSString *text
-            mainDispatch(^{
-                NSString *text = [NSString stringWithFormat:@"加载h失败,请刷新. /[code: %ld/]",res];
-                [self.hud.textLabel setText:[NSString stringWithFormat:@"加载失败,请刷新.[code: %ld]",response]];
-            });
-        }
+            NSString *text = [NSString stringWithFormat:@"加载失败,请刷新.[code: %ld]",response.statusCode];
+            self.hud.indicatorView = nil;
+            [self.hud.textLabel setText:text];
+            if (!tableView.mj_header) {
+                tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+                    self.hud.textLabel.text = @"loading...";
 
-        NSMutableArray<Chart*> *chartArray = [NSMutableArray array];
-        json = [json valueForKey:@"results"];
-        if (json) {
-            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-
-                //每一个Key 对应数组,如{@"albums":[{Chart},]}
-                NSArray *tempArray = (NSArray*)obj;
-                [tempArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    Chart *chart = [Chart instanceWithDict:(NSDictionary*)obj];
-                    [chartArray addObject:chart];
+                    NSLog(@"thread =%@",[NSThread currentThread]);
+                    [self loadChartsForTableView:tableView];
                 }];
-            }];
+            }
         }
-
     }];
 
-
-//    [self.hud showInView:tableView animated:YES];
-//    [self requestChartsWithCompletion:^(NSArray<Chart *> *chartsArray) {
-//        [tableView.mj_header endRefreshing];
-//
-//        NSLog(@"array =%@",chartsArray);
-//        if (chartsArray.count > 0) {
-//            [self.hud dismissAnimated:YES];
-//            [self.hud removeFromSuperview];
-//
-//            self.charts = chartsArray;
-//            [tableView reloadData];
-//        }else{
-//            [self.hud setIndicatorView:nil];
-//            [self.hud.textLabel setText:@"加载失败,请刷新![]"];
-//
-//            if (!tableView.mj_header) {
-//                MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-//
-//                    [self.hud.textLabel setText:@"loading..."];
-//                    JGProgressHUDIndicatorView *indicator = [JGProgressHUDIndeterminateIndicatorView new];
-//                    [indicator setUpForHUDStyle:self.hud.style vibrancyEnabled:YES];
-//                    [self.hud setIndicatorView:indicator];
-//
-//                    [self loadChartsForTableView:tableView];
-//                }];
-//
-//
-//                [tableView setMj_header:header];
-//            }
-//        }
-//    }];
 }
-
-- (void)requestChartsWithCompletion:(void(^)(NSArray<Chart*> *chartsArray))completion{
-
-    [MusicKit.new.catalog chartsByType:ChartsAll callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-
-        NSMutableArray<Chart*> *chartArray = [NSMutableArray array];
-        json = [json valueForKey:@"results"];
-        if (json) {
-            [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-
-                //每一个Key 对应数组,如{@"albums":[{Chart},]}
-                NSArray *tempArray = (NSArray*)obj;
-                [tempArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    Chart *chart = [Chart instanceWithDict:(NSDictionary*)obj];
-                    [chartArray addObject:chart];
-                }];
-            }];
-        }
-        mainDispatch(^{
-            completion(chartArray);
-        });
-    }];
-}
-
 
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

@@ -19,5 +19,7 @@
 @property(nonatomic, copy) NSString *textColor3;
 @property(nonatomic, copy) NSString *textColor4;
 
-- (NSDictionary*)dictionaryValue;
+/**转换为字典值*/
+@property (nonatomic, strong) NSDictionary *dictionaryValue;
+
 @end

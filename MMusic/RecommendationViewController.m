@@ -70,6 +70,7 @@ static NSString *const cellIdentifier = @"resourceCell";
     if ([cell isKindOfClass:[ResourceCell class]]) {
         [((ResourceCell*)cell)  setResource:resource];
     }
+
 }
 - (void)configureSupplementaryElement:(UICollectionReusableView *)reusableView object:(NSString *)title{
     if ([reusableView isKindOfClass:[RecommentationSectionView class]]) {
@@ -129,7 +130,7 @@ static NSString *const cellIdentifier = @"resourceCell";
 
         UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
 
-        //两列
+        //两列  计算size
         CGFloat w = CGRectGetWidth(self.view.bounds);
         w = (w - insets.left*3)/2;
         CGFloat h = w+30;

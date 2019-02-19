@@ -11,7 +11,8 @@
 #import "UIImageView+Extension.h"
 #import <UIImageView+WebCache.h>
 #import <UIView+WebCache.h>
-#import <AFNetworking.h>
+
+
 
 @interface UIImageView ()
 @end
@@ -27,10 +28,8 @@
     if (!image) {
 
         [self setBackgroundColor:[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1]];
-
         [self sd_addActivityIndicator];
         [self sd_setShowActivityIndicatorView:YES];
-
 
         path = [path stringReplacingImageURLSize:self.bounds.size];
         [self sd_setImageWithURL:[NSURL URLWithString:path]

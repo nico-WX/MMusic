@@ -19,9 +19,12 @@ static NSString *const JSONMusicVideosTypeKey = @"music-videos";
 @property(nonatomic, copy) NSString *identifier;  // json key => id
 @property(nonatomic, copy) NSString *type;
 @property(nonatomic, copy) NSString *href;
-
-@property(nonatomic, strong) NSDictionary *attributes;  // 子类定义不同的类型, 手动合成实例变量
+@property(nonatomic, strong) NSDictionary *attributes;  //子类属性
 @property(nonatomic, strong) NSDictionary *meta;
 @property(nonatomic, strong) Relationship *relationships;
 
+
+
++ (instancetype)instanceWithResource:(Resource*)resource;
+- (instancetype)initWithResource:(Resource*)resource;
 @end

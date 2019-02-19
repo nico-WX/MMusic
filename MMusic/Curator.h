@@ -11,7 +11,6 @@
 @class Artwork;
 @class EditorialNotes;
 
-
 @interface CuratorRelationship : Relationship
 @end
 

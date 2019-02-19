@@ -8,6 +8,7 @@
 
 #import "Library.h"
 #import "AuthManager.h"
+#import "NSURLRequest+Extension.h"
 
 
 @interface Library()
@@ -50,7 +51,6 @@ static Library* _instance;
             }
         }
     }
-    NSLog(@"path =%@",path);
 
     NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     //Log(@"header %@",request.allHTTPHeaderFields);
@@ -101,8 +101,6 @@ static Library* _instance;
     NSURLRequest *request = [NSURLRequest createRequestWithURLString:path setupUserToken:YES];
     [self dataTaskWithRequest:request handler:handle];
 }
-
-
 
 
 

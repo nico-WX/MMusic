@@ -28,17 +28,12 @@
 @property(nonatomic, strong) Artwork *artwork;
 @property(nonatomic, strong) EditorialNotes *editorialNotes;
 @property(nonatomic, strong) NSDictionary *playParams;
-
 @property(nonatomic, strong) NSArray<NSString*> *genreNames;
 @property(nonatomic, strong) NSArray<Preview*> *previews;
-
 @property(nonatomic, strong) NSNumber *durationInMillis;
 @property(nonatomic, strong) NSNumber *trackNumber;
 
+@property(nonatomic,strong) MusicVideoRelationships *relationships;
 
 
-@property(nonatomic,strong)MusicVideoRelationships *relationships;
-
-+ (instancetype)instanceWithResource:(Resource*)resource;
-- (instancetype)initWithResource:(Resource*)resource;
 @end

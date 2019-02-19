@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SearchResultsController : UIViewController<UISearchResultsUpdating,UISearchControllerDelegate>
 
+/**代理在主视图控制器中, 选中可以入栈导航栏*/
 @property(nonatomic,strong,readonly) UITableView *searchResultsView;
 @end
 

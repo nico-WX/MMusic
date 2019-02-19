@@ -85,34 +85,28 @@
         Song *song = [self.songLists objectAtIndex:i];
         if ([song isEqualToMediaItem:self.nowPlayingItem]) {
             mainDispatch(^{
-                NSLog(@"song lists song");
                 completion(song);
             });
             return ;
         }
     });
 
-//    for (Song *song in self.songLists) {
-//        if ([song isEqualToMediaItem:self.nowPlayingItem]) {
-//            mainDispatch(^{
-//                completion(song);
-//            });
-//            return;
-//        }
-//    }
-
     NSString *identifier = self.nowPlayingItem.playbackStoreID;
     // "0"标识数据库无此歌曲]
-    if (![identifier isEqualToString:@"0"] && identifier) {
+    if (identifier.length > 2) {
         //异步加载
         [MusicKit.new.catalog resources:@[identifier,] byType:CatalogSongs callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
-            json = [(NSArray*)[json valueForKey:@"data"] firstObject] ;
-            mainDispatch(^{
-                completion([Song instanceWithDict:json]);
-            });
+            if (json) {
+                json = [(NSArray*)[json valueForKey:@"data"] firstObject] ;
+                mainDispatch(^{
+                    completion([Song instanceWithDict:json]);
+                });
+            }else{
+                //无数据 404 等
+                completion(NULL);
+            }
         }];
     }else{
-        NSLog(@"now song  null");
         completion(NULL);
     }
 }

@@ -8,6 +8,7 @@
 
 
 #import "MyLikeSongViewController.h"
+#import "UITableView+Extension.h"
 
 #import "TableSongCell.h"
 #import "MyLikeSongDataSource.h"
@@ -30,8 +31,11 @@ static NSString * const identifier = @"like song cell";
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-
     [self.tableView setFrame:self.view.bounds];
+}
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+
 }
 
 - (UITableView *)tableView{
@@ -40,10 +44,12 @@ static NSString * const identifier = @"like song cell";
         [_tableView registerClass:[TableSongCell class] forCellReuseIdentifier:identifier];
         [_tableView setRowHeight:66];
         [_tableView setDelegate:self];
+        [_tableView hiddenSurplusSeparator];
     }
     return _tableView;
 }
 
+#pragma mark - delegate
 - (void)configureTableCell:(TableSongCell *)cell songManageObject:(SongManageObject *)song{
     [cell configureForSongManageObject:song];
 }

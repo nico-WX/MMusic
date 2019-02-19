@@ -13,8 +13,11 @@
 #import "RecommendationDataSource.h"
 #import "ResponseRoot.h"
 #import "Resource.h"
+#import "Playlist.h"
 
 #import "Recommendation.h"
+
+#import "AuthManager.h"
 
 @interface RecommendationDataSource ()<UICollectionViewDataSource>
 
@@ -45,6 +48,12 @@
 
         //加载数据
         [self loadDataWithCollectionView:collectionView];
+
+        //监听消息,刷新数据
+        [[NSNotificationCenter defaultCenter] addObserverForName:authorizationDidUpdateNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            NSLog(@"notification--- update");
+            [self loadDataWithCollectionView:collectionView];
+        }];
     }
     return self;
 }

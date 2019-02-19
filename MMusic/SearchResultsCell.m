@@ -68,7 +68,6 @@
         }];
     }
 
-
     [_artistLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(superView);
         make.left.mas_equalTo(weakSelf.artworkView.mas_right).inset(insets.left);

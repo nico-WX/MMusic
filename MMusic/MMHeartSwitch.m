@@ -9,7 +9,7 @@
 #import "MMHeartSwitch.h"
 #import "ButtonStyleKit.h"
 #import "MPMusicPlayerController+ResourcePlaying.h"
-#import "DataStoreKit.h"
+
 #import "CoreDataStack.h"
 #import "SongManageObject.h"
 
@@ -76,16 +76,17 @@
 
             [MainPlayer nowPlayingSong:^(Song * _Nullable song) {
                 if (on) {
-                    [DataStore.new addRatingToCatalogWith:song.identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
-                        //网络上添加不成功, 设置no
-                        if (!succeed){
+                    [MusicKit.new.library addRatingToCatalogWith:song.identifier type:RTCatalogSongs responseHandle:^(BOOL success) {
+                        if (!success) {
+                            //添加失败
                             self->_on = NO;
                         }
                     }];
+
                     [[DataManager shareDataManager] addItem:song];
                 }else{
-                    [DataStore.new deleteRatingForCatalogWith:song.identifier type:RTCatalogSongs callBack:^(BOOL succeed) {
-                        self->_on = !succeed; // 成功删除, 设置为NO
+                    [MusicKit.new.library deleteRatingForCatalogWith:song.identifier type:RTCatalogSongs responseHandle:^(BOOL success) {
+                        self->_on = !success; //取反赋值
                     }];
                     [[DataManager shareDataManager] deleteItem:song];
                 }
@@ -97,28 +98,24 @@
 //网络更新
 - (void)updateWithSong:(Song*)song{
     mainDispatch(^{
-        if (!song) {
+        // Identifier < 2 都不能添加
+        if (song.identifier.length > 2) {
+            [self setEnabled:YES];
+            [MusicKit.new.library requestRatingForCatalogWith:song.identifier type:RTCatalogSongs responseHandle:^(BOOL success) {
+                [self setOn:success];
+            }];
+        }else{
             [self setOn:NO];
             [self setEnabled:NO];
-            return;
         }
-
-        [self setEnabled:YES];
-    
-        [DataStore.new requestRatingForCatalogWith:song.identifier type:RTCatalogSongs callBack:^(BOOL isRating) {
-            [self setOn:isRating];
-        }];
     });
-
 }
-
 
 // 有identifier  可以启用按钮
 -(void)enableStateWithIdentifier:(NSString*)identifier {
-    BOOL enable = (identifier && ![identifier isEqualToString:@"0"]) ? YES : NO;
+    BOOL enable = (identifier.length > 2 ) ? YES : NO;
     [self setEnabled:enable];
 }
-
 
 //简单的缩小-->恢复原始状态 动画
 - (void)animationButton:(MMHeartSwitch*)sender {

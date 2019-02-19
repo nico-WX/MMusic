@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TabBarController.h"
+//#import "TabBarController.h"
+#import "Single.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NowPlayingViewController : UIViewController
-+ (instancetype)sharePlayerViewController;
+
+//单例
+SingleInterface(PlayerViewController);
 @end
 
 NS_ASSUME_NONNULL_END

@@ -7,6 +7,7 @@
 //
 
 #import "Library+iCloud.h"
+#import "NSURLRequest+Extension.h"
 
 
 @implementation Library (iCloud)

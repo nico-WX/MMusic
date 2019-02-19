@@ -9,10 +9,4 @@
 #import "Rating.h"
 
 @implementation Rating
-- (instancetype)initWithDict:(NSDictionary *)dict{
-    if (self = [super initWithDict:dict]) {
-        [self mj_setKeyValues:[dict valueForKey:JSONAttributesKey]];
-    }
-    return self;
-}
 @end

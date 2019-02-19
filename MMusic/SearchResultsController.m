@@ -6,6 +6,7 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
+#import "UITableView+Extension.h"
 #import "SearchResultsController.h"
 #import "SearchResultsCell.h"
 #import "SearchResultsSectionView.h"
@@ -39,10 +40,6 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-    //  视图在SearchBar delegate 方法中触发添加
-
-
-
     _hintsDataSource = [[SearchHintsDataSource alloc] initWithTableView:self.hintsTableView
                                                              identifier:hintsIdentifier
                                                                delegate:self];
@@ -56,20 +53,20 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     __weak typeof(self) weakSelf = self;
     _showObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidShowNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
         CGRect keyboardFrame = [[note.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-        CGRect frame = [UIScreen mainScreen].bounds;
-        frame.size.height -= keyboardFrame.size.height;
-        weakSelf.view.frame = frame;
 
-//        UIEdgeInsets insets = UIEdgeInsetsMake(0, 0, keyboardFrame.size.height, 0);
-//        [weakSelf.searchResultsView setContentInset:insets];
-//        [weakSelf.hintsTableView setContentInset:insets];
+        //计算底部偏移
+        CGRect viewFrame = weakSelf.view.frame;
+        CGFloat bottomOffset = CGRectGetHeight(keyboardFrame) - (CGRectGetHeight([UIScreen mainScreen].bounds) - CGRectGetHeight(viewFrame));
+
+        UIEdgeInsets insets = UIEdgeInsetsMake(0, 0,bottomOffset /*keyboardFrame.size.height*/, 0);
+        [weakSelf.searchResultsView setContentInset:insets];
+        [weakSelf.hintsTableView setContentInset:insets];
     }];
     _hideObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardDidHideNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-        CGRect frame = [UIScreen mainScreen].bounds;
-        weakSelf.view.frame = frame;
-//        UIEdgeInsets insets = UIEdgeInsetsMake(0, 0, 0, 0);
-//        [weakSelf.searchResultsView setContentInset:insets];
-//        [weakSelf.searchResultsView setContentInset:insets];
+
+        UIEdgeInsets insets = UIEdgeInsetsMake(0, 0, 0, 0);
+        [weakSelf.searchResultsView setContentInset:insets];
+        [weakSelf.searchResultsView setContentInset:insets];
     }];
 }
 
@@ -93,6 +90,7 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
         _hintsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_hintsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:hintsIdentifier];
         [_hintsTableView setDelegate:self];
+        [_hintsTableView hiddenSurplusSeparator];
     }
     return _hintsTableView;
 }
@@ -102,6 +100,7 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
         _searchResultsView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [_searchResultsView registerClass:[SearchResultsCell class] forCellReuseIdentifier:resultsIdentifier];
         [_searchResultsView setRowHeight:80];
+        [_hintsTableView hiddenSurplusSeparator];
         //代理在主搜索视图中
     }
     return _searchResultsView;

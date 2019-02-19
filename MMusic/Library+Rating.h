@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void(^RatingHandleBlock)(BOOL success);
 
 typedef NS_ENUM(NSUInteger, RTRatingType){
     //catalog
@@ -27,7 +28,6 @@ typedef NS_ENUM(NSUInteger, RTRatingType){
 
 @interface Library (Rating)
 
-
 /**
  添加Rating
 
@@ -35,7 +35,7 @@ typedef NS_ENUM(NSUInteger, RTRatingType){
  @param type 目录类型
  @param callBack 回调处理
  */
-- (void)addRatingToCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RequestCallBack)callBack;
+- (void)addRatingToCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RatingHandleBlock)callBack;
 
 
 /**
@@ -45,7 +45,7 @@ typedef NS_ENUM(NSUInteger, RTRatingType){
  @param type 目录类型
  @param callBack 回调
  */
-- (void)deleteRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RequestCallBack)callBack;
+- (void)deleteRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RatingHandleBlock)callBack;
 
 
 /**
@@ -55,7 +55,7 @@ typedef NS_ENUM(NSUInteger, RTRatingType){
  @param type 目录类型
  @param callBack 回调
  */
-- (void)requestRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RequestCallBack)callBack;
+- (void)requestRatingForCatalogWith:(NSString*)identifier type:(RTRatingType)type responseHandle:(RatingHandleBlock)callBack;
 @end
 
 NS_ASSUME_NONNULL_END

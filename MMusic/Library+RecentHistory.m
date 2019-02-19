@@ -7,6 +7,7 @@
 //
 
 #import "Library+RecentHistory.h"
+#import "NSURLRequest+Extension.h"
 
 
 @implementation Library (RecentHistory)

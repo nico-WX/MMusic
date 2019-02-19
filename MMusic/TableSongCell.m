@@ -152,7 +152,7 @@
         [item.artwork loadArtworkImageWithSize:self.artworkView.bounds.size
                                     completion:^(UIImage * _Nonnull image)
         {
-        [self.artworkView setImage:image];
+            [self.artworkView setImage:image];
         }];
 
         [self updateState];

@@ -34,7 +34,6 @@
 @property(nonatomic) Boolean isSingle;
 @property(nonatomic, strong) NSNumber *trackCount;
 
-
 @property(nonatomic,strong) AlbumRelationship *relationships;
 @end
 

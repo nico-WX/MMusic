@@ -24,23 +24,12 @@ typedef NS_ENUM(NSUInteger, ResourceType){
     CatalogAppleCurators
 };
 
-/**
- 地区排行榜类型
- */
-typedef NS_ENUM(NSUInteger, ChartsType){
-    ChartsAlbums,
-    ChartsPlaylists,
-    ChartsSongs,
-    ChartsMusicVideos,
-    ChartsAll
-};
 
 
 @interface Catalog : APIRoot
 @property(nonatomic, readonly) NSString *catalogPath;
 
 #pragma mark - 公开资源实例方法
-
 
 /**
  获取歌单,播放列表等 曲目
@@ -49,7 +38,6 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  @param handle JSON 数据回调及响应头
  */
 - (void)songListWithResource:(Resource*)resource completion:(RequestCallBack)handle;
-
 
 /**
  通过资源标识获取目录资源
@@ -86,13 +74,13 @@ typedef NS_ENUM(NSUInteger, ChartsType){
  */
 - (void)songsByISRC:(NSArray<NSString*>*)ISRCs callBack:(RequestCallBack)handle;
 
-/**
- 当前地区的排行榜数据
 
- @param type    排行榜类型
- @param handle  数据回调
+/**
+ 当前地区排行榜
+
+ @param completion 数据回调
  */
-- (void)chartsByType:(ChartsType)type callBack:(RequestCallBack)handle;
+- (void)allChartsWithCompletion:(RequestCallBack)completion;
 
 //Fetch Genres  未实现
 

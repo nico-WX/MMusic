@@ -10,8 +10,8 @@
 
 #import "MyMusicViewController.h"
 #import "MyMusicTableCell.h"
-
 #import "MyMusicDataSource.h"
+#import "UITableView+Extension.h"
 
 
 @interface MyMusicViewController ()<UITableViewDelegate,MyMusicDataSourceDelegate>
@@ -47,6 +47,7 @@ static NSString *identifier = @"cell identifier";
         [_tableView registerClass:[MyMusicTableCell class] forCellReuseIdentifier:identifier];
         [_tableView setRowHeight:50];
         [_tableView setDelegate:self];
+        [_tableView hiddenSurplusSeparator];
     }
     return _tableView;
 }

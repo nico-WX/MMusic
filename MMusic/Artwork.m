@@ -11,16 +11,17 @@
 @implementation Artwork
 
 - (NSDictionary *)dictionaryValue{
-
-    NSDictionary *dict = @{@"width":@(self.width),
-                           @"height":@(self.height),
-                           @"url": self.url,
-                           @"bgColor" : self.bgColor,
-                           @"textColor1":self.textColor1,
-                           @"textColor2":self.textColor2,
-                           @"textColor3":self.textColor3,
-                           @"textColor4":self.textColor4
-                           };
-    return dict;
+    if (!_dictionaryValue) {
+        _dictionaryValue = @{@"width":@(self.width),
+                            @"height":@(self.height),
+                            @"url": self.url,
+                            @"bgColor" : self.bgColor,
+                            @"textColor1":self.textColor1,
+                            @"textColor2":self.textColor2,
+                            @"textColor3":self.textColor3,
+                            @"textColor4":self.textColor4
+                            };
+    }
+    return _dictionaryValue;
 }
 @end

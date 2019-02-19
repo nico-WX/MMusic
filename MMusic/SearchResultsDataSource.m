@@ -45,8 +45,8 @@
 
 - (void)searchTerm:(NSString *)term{
 
+    [self clearData];
     if ([term length] > 0) {
-        [self clearData];
         [self searchDataForTemr:term completion:^(BOOL success) {
             if (success) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -64,8 +64,6 @@
 
     [[MusicKit new].catalog searchForTerm:term callBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         json = [json valueForKey:@"results"];
-        NSLog(@"search code =%ld",response.statusCode);
-        NSLog(@"url  =%@",response.URL);
         //检查结果返回空结果字典
         if (json.allKeys.count > 0)  {
 
@@ -113,7 +111,7 @@
 }
 - (void)clearData{
     mainDispatch(^{
-        self.searchResults = nil;
+        self.searchResults = @[];
         [self.tableView reloadData];
     });
 

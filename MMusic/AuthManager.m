@@ -1,6 +1,9 @@
 
 #import "AuthManager.h"
 #import <StoreKit/StoreKit.h>
+#import <JGProgressHUD.h>
+
+
 
 //Token缓存Key
 static NSString* const userTokenDefaultsKey       = @"userTokenUserDefaultsKey";
@@ -8,17 +11,23 @@ static NSString* const developerTokenDefaultsKey  = @"developerTokenDefaultsKey"
 static NSString* const storefrontDefaultsKey      = @"storefrontDefaultsKey";
 
 //通知
-NSString *const cloudServiceDidUpdateNotification = @"cloudServiceDidUpdateNotification";
-NSString *const authorizationDidUpdateNotification = @"authorizationDidUpdateNotification";
+NSString *const cloudServiceDidUpdateNotification   = @"cloudServiceDidUpdateNotification";
+NSString *const authorizationDidUpdateNotification  = @"authorizationDidUpdateNotification";
+NSString *const userTokenInvalidNotification        = @"userTokenInvalidNotification";
+NSString *const developerTokenInvalidNotification   = @"developerTokenInvalidNotification";
 
 @interface AuthManager()<SKCloudServiceSetupViewControllerDelegate>
 //订阅apple music会员视图控制器, 其内容通过网络加载
 @property(nonatomic, strong)SKCloudServiceSetupViewController *subscriptionViewController;
+@property(nonatomic,strong)NSUserDefaults *defaults;
+
+@property(nonatomic, strong) id userTokenInvalidObs;
+@property(nonatomic, strong) id developerTokenInvalidObs;
 @end
 
-static NSString *const devToken =  @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTQ3OTg5MDI4LCJleHAiOjE1NjM1NDEwMjh9.WMdZ1XSwfm2xG27CY9KbdiZXKKaQzfjl5YPUL_kZW46aoGDZ8H24k6mtGlqK616XUkbW1WqQYLTlBQuEt4t7tQ";
+static NSString *const devToken =  @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTUwNTYwODYyLCJleHAiOjE1NjYxMTI4NjJ9.9bHQQjGHZ9fFALH0Kz_DcjnpZtVoHlHTsJey7_jsC4Rxy8ZSSa622b8o6Zsq_cHO7IvJj555YeiggaBVvzc0Sg";
 
-static id _instance;
+//static id _instance;
 @implementation AuthManager
 
 @synthesize developerToken = _developerToken;
@@ -27,126 +36,120 @@ static id _instance;
 
 # pragma mark - init
 
-+ (instancetype)shareManager{
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _instance = [[self alloc] init];
-    });
-    return _instance;
-}
-+ (instancetype)allocWithZone:(struct _NSZone *)zone{
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _instance = [super allocWithZone:zone];
-    });
-    return _instance;
-}
+//单例实现
+SingleImplementation(Manager);
 
 - (instancetype)init{
     if (self = [super init]) {
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
-        [center addObserver:self
-                   selector:@selector(requestCloudServiceCapabilities)
-                       name:SKCloudServiceCapabilitiesDidChangeNotification
-                     object:nil];
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            self->_defaults = [NSUserDefaults standardUserDefaults];
 
-        //请求授权
-        [self requestMediaLibraryAuthorization];
-        [self requestCloudServiceAuthorization];
+            NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+            //刷新云服务功能
+            [center addObserver:self
+                       selector:@selector(requestCloudServiceCapabilities)
+                           name:SKCloudServiceCapabilitiesDidChangeNotification
+                         object:nil];
 
-        // 预先加载Token
-        [self fetchUserToken:^(NSString *userToken) {
-            self->_userToken = userToken;
-        }];
-        [self fetchDeveloperToken:^(NSString *developerToken) {
-            self->_developerToken = developerToken;
-        }];
-        [self fetchStoreFront:^(NSString *storeFront) {
-            self->_storefront = storeFront;
-        }];
+            //过期, 运行期间, (token如果过期)只需要运行一次, 防止多次执行
+            self->_userTokenInvalidObs = [center addObserverForName:userTokenInvalidNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+                static dispatch_once_t onceToken;
+                dispatch_once(&onceToken, ^{
+                    [self->_defaults removeObjectForKey:userTokenDefaultsKey];
+                    [self requestMediaLibraryAuthorization];
+                    [self fetchUserToken];
+                });
 
+            }];
+            self->_developerTokenInvalidObs = [center addObserverForName:developerTokenInvalidNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+                static dispatch_once_t onceToken;
+                dispatch_once(&onceToken, ^{
+                    [self->_defaults removeObjectForKey:developerTokenDefaultsKey];
+                    [self fetchDeveloperToken];
+                });
+            }];
+
+            //请求授权
+            [self requestMediaLibraryAuthorization];
+            [self requestCloudServiceAuthorization];
+
+            //初始化Token
+            [self fetchDeveloperToken];
+            [self fetchUserToken];
+            [self fetchStoreFront];
+        });
     }
     return self;
 }
-- (id)copyWithZone:(NSZone *)zone{
-    return _instance;
-}
 - (void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:SKCloudServiceCapabilitiesDidChangeNotification object:nil];
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center removeObserver:self name:SKCloudServiceCapabilitiesDidChangeNotification object:nil];
+    [center removeObserver:_userTokenInvalidObs];
+    [center removeObserver:_developerTokenInvalidObs];
 }
 
 #pragma getter
 - (NSString *)developerToken{
     if (!_developerToken) {
-        _developerToken = [[NSUserDefaults standardUserDefaults] valueForKey:developerTokenDefaultsKey];
+        _developerToken = [_defaults valueForKey:developerTokenDefaultsKey];
     }
     return _developerToken;
 }
 - (NSString *)userToken{
     if (!_userToken) {
-        _userToken = [[NSUserDefaults standardUserDefaults] valueForKey:userTokenDefaultsKey];
+        _userToken = [_defaults valueForKey:userTokenDefaultsKey];
     }
     return _userToken;
 }
 - (NSString *)storefront{
     if (_storefront) {
-        _storefront = [[NSUserDefaults standardUserDefaults] valueForKey:storefrontDefaultsKey];
+        _storefront = [_defaults valueForKey:storefrontDefaultsKey];
     }
     return _storefront;
 }
 
-
-#pragma mark - Handle Token
-- (void)fetchDeveloperToken:(void (^)(NSString *developerToken))completion{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *token = [defaults valueForKey:developerTokenDefaultsKey];
-
-    if (token && completion) {
-        completion(token);
-    }else{
-        //网络异步加载Token
+#pragma mark - load Token
+- (void)fetchDeveloperToken{
+    NSString *token = [self.defaults valueForKey:developerTokenDefaultsKey];
+    if (!token) {
+        // 自己的服务器加载Token ...
         token = devToken;
-        [defaults setValue:token forKey:developerTokenDefaultsKey];
-        [defaults synchronize];
-        if (completion) {
-            completion(token);
-        }
+        [self.defaults setValue:token forKey:developerTokenDefaultsKey];
+        [self.defaults synchronize];
     }
+    _developerToken = token;
 }
-- (void)fetchUserToken:(void (^)(NSString *userToken))completion{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    __block NSString *token = [defaults valueForKey:userTokenDefaultsKey];
-    if (token && completion) {
-        completion(token);
-    }else{
-        [self fetchDeveloperToken:^(NSString *developerToken) {
-            [SKCloudServiceController.new requestUserTokenForDeveloperToken:developerToken completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
-                token = userToken;
-                [defaults setValue:userToken forKey:userTokenDefaultsKey];
-                [defaults synchronize];
-                if (completion) {
-                    completion(token);
-                }
-            }];
+- (void)fetchUserToken{
+
+    NSString *token = [self.defaults valueForKey:userTokenDefaultsKey];
+    if (!token) {
+        [SKCloudServiceController.new requestUserTokenForDeveloperToken:self.developerToken completionHandler:^(NSString * _Nullable userToken, NSError * _Nullable error) {
+            if (userToken) {
+                [self.defaults setValue:userToken forKey:userTokenDefaultsKey];
+                [self.defaults synchronize];
+                self->_userToken = userToken;
+            }
+
         }];
     }
+    _userToken = token;
 }
-- (void)fetchStoreFront:(void (^)(NSString *storeFront))completion{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    __block NSString *token = [defaults valueForKey:storefrontDefaultsKey];
-    if (token && completion) {
-        completion(token);
-    }else{
+- (void)fetchStoreFront{
+
+    NSString *token = [self.defaults valueForKey:storefrontDefaultsKey];
+    if (!token) {
+
         [SKCloudServiceController.new  requestStorefrontCountryCodeWithCompletionHandler:^(NSString * _Nullable storefrontCountryCode, NSError * _Nullable error) {
-            token = storefrontCountryCode;
-            [defaults setValue:storefrontCountryCode forKey:storefrontDefaultsKey];
-            [defaults synchronize];
-            if (completion) {
-                completion(storefrontCountryCode);
+            if (storefrontCountryCode.length > 0) {
+                [self.defaults setValue:storefrontCountryCode forKey:storefrontDefaultsKey];
+                [self.defaults synchronize];
+                self->_storefront = storefrontCountryCode;
             }
         }];
     }
+    _storefront = token;
 }
 
 #pragma mark - Handle Authorization & CloudServiceCapability
@@ -157,6 +160,7 @@ static id _instance;
                 break;
 
             case SKCloudServiceAuthorizationStatusDenied:
+                // 提示授权
                 break;
 
             case SKCloudServiceAuthorizationStatusRestricted:
@@ -164,23 +168,20 @@ static id _instance;
 
             case SKCloudServiceAuthorizationStatusAuthorized:{
                 [self requestCloudServiceCapabilities];
-                //授权后,才能请求到Token
-                [self fetchUserToken:^(NSString *userToken) {
-                    self->_userToken = userToken;
-                }];
+                [self fetchUserToken];//授权后,才能请求到userToken
+                [self fetchStoreFront];//授权才能请求到店面
             }
                 break;
         }
-
         [[NSNotificationCenter defaultCenter] postNotificationName:authorizationDidUpdateNotification object:nil];
     }];
-
 }
 - (void)requestCloudServiceCapabilities{
     [SKCloudServiceController.new requestCapabilitiesWithCompletionHandler:^(SKCloudServiceCapability capabilities, NSError * _Nullable error) {
         if (error) {
             NSLog(@"访问云服务功能出错:  error :%@",error.localizedDescription);
         }
+
         switch (capabilities) {
             case SKCloudServiceCapabilityNone:{
                 //显示订阅
@@ -202,10 +203,21 @@ static id _instance;
                 [self requestCloudServiceAuthorization];
                 break;
 
+            case MPMediaLibraryAuthorizationStatusDenied:{
+                NSString *text = @"没有授权访问音乐库,请手动开启";
+                JGProgressHUD *hud = [[JGProgressHUD alloc]initWithStyle:JGProgressHUDStyleExtraLight];
+                [hud setIndicatorView:nil];
+                [hud.textLabel setText:text];
+                UIView *window = [UIApplication  sharedApplication].keyWindow;
+                [hud showInView:window animated:YES];
+                [hud dismissAfterDelay:1.35 animated:YES];
+
+            }
+                break;
+
             default:
                 break;
         }
-
         [[NSNotificationCenter defaultCenter] postNotificationName:cloudServiceDidUpdateNotification object:nil];
     }];
 }
