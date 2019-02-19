@@ -6,7 +6,7 @@
 //  Copyright © 2017年 com.😈. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "BaseViewController.h"
 
-@interface RecommendationViewController : UIViewController
+@interface RecommendationViewController : BaseViewController
 @end

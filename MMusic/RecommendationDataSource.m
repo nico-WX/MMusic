@@ -19,41 +19,17 @@
 
 #import "AuthManager.h"
 
-@interface RecommendationDataSource ()<UICollectionViewDataSource>
-
+@interface RecommendationDataSource ()
 @property(nonatomic, strong) NSArray<NSDictionary<NSString*,NSArray<Resource*>*>*>* dataArray;
-
-@property(nonatomic, copy) NSString *identifier;
-@property(nonatomic, copy) NSString *sectionIdentifier;
-@property(nonatomic, weak) UICollectionView *collectionView;
-@property(nonatomic, weak) id<RecommendationDataSourceDelegate> delegate;
-
 @property(nonatomic, strong) JGProgressHUD *hud;
 @end
 
 @implementation RecommendationDataSource
 
-
-- (instancetype)initWithCollectionView:(UICollectionView *)collectionView
-                        cellIdentifier:(nonnull NSString *)identifier
-                     sectionIdentifier:(NSString * _Nullable)sectionIdentifier
-                              delegate:(nonnull id<RecommendationDataSourceDelegate>)delegate{
-    if (self = [super init]) {
-        _collectionView = collectionView;
-        collectionView.dataSource = self;
-
-        _sectionIdentifier = sectionIdentifier;
-        _identifier = identifier;
-        _delegate = delegate;
-
+- (instancetype)initWithCollectionView:(UICollectionView *)collectionView identifier:(NSString *)identifier sectionIdentifier:(NSString *)sectionIdentifier delegate:(id<DataSourceDelegate>)delegate{
+    if (self = [super initWithCollectionView:collectionView identifier:identifier sectionIdentifier:sectionIdentifier delegate:delegate]) {
         //加载数据
         [self loadDataWithCollectionView:collectionView];
-
-        //监听消息,刷新数据
-        [[NSNotificationCenter defaultCenter] addObserverForName:authorizationDidUpdateNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            NSLog(@"notification--- update");
-            [self loadDataWithCollectionView:collectionView];
-        }];
     }
     return self;
 }
@@ -86,9 +62,6 @@
         }
     }];
 }
-- (Resource *)selectedResourceAtIndexPath:(NSIndexPath *)indexPath{
-    return [self dataWithIndexPath:indexPath];
-}
 
 
 #pragma mark - collectionView DataSource
@@ -101,9 +74,9 @@
     return [[[temp allValues] firstObject] count];
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_identifier forIndexPath:indexPath];
-    if (_delegate && [_delegate respondsToSelector:@selector(configureCell:object:)]) {
-        [_delegate configureCell:cell object:[self dataWithIndexPath:indexPath]];
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.identifier forIndexPath:indexPath];
+    if ([self.delegate respondsToSelector:@selector(configureCell:item:)]) {
+        [self.delegate configureCell:cell item:[self dataWithIndexPath:indexPath]];
     }
     return cell;
 }
@@ -111,10 +84,13 @@
     //节头
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind
-                                                                            withReuseIdentifier:_sectionIdentifier
+                                                                            withReuseIdentifier:self.sectionIdentifier
                                                                                    forIndexPath:indexPath];
-        if (_delegate && [_delegate respondsToSelector:@selector(configureSupplementaryElement:object:)]) {
-            [_delegate configureSupplementaryElement:view object:[self titleWithSection:indexPath.section]];
+        if ([self.delegate conformsToProtocol:@protocol(RecommendationDataSourceDelegate)]) {
+            id<RecommendationDataSourceDelegate> currentDelegate = (id<RecommendationDataSourceDelegate>)self.delegate;
+            if ([currentDelegate respondsToSelector:@selector(configureSupplementaryElement:object:)]) {
+                [currentDelegate configureSupplementaryElement:view object:[self titleWithSection:indexPath.section]];
+            }
         }
         return view;
     }
@@ -126,9 +102,14 @@
 - (NSString *)titleWithSection:(NSInteger)section{
     return [[[_dataArray objectAtIndex:section] allKeys] firstObject];
 }
+//row data
 - (Resource *)dataWithIndexPath:(NSIndexPath *)indexPath{
     NSDictionary<NSString*,NSArray<Resource*>*> * temp = [_dataArray objectAtIndex:indexPath.section];
     return [[[temp allValues] firstObject] objectAtIndex:indexPath.row];
+}
+//selected row data
+- (Resource *)selectedResourceAtIndexPath:(NSIndexPath *)indexPath{
+    return [self dataWithIndexPath:indexPath];
 }
 
 - (void)defaultRecommendataionWithCompletion:(void (^)(BOOL success))completion{

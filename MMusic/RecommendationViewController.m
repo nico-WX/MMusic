@@ -4,7 +4,6 @@
 //
 
 
-
 #import "RecommendationViewController.h"
 #import "DetailViewController.h"
 
@@ -46,12 +45,14 @@ static NSString *const cellIdentifier = @"resourceCell";
     [self.view addSubview:self.collectionView];
 
     self.popupAnimator = [[MMDetailPoppingAnimator alloc] init];
-    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:_collectionView
-                                                                        cellIdentifier:cellIdentifier
-                                                                     sectionIdentifier:sectionIdentifier
-                                                                              delegate:self];
-}
+    self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:self.collectionView identifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:self];
 
+//    __weak typeof(self) weakSelf = self;
+//    [self setAuthorizationManagerDidUpdateHandle:^{
+//        NSLog(@"update recom in did update handle");
+//        weakSelf.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:weakSelf.collectionView identifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:weakSelf];
+//    }];
+}
 
 
 - (void)viewDidLayoutSubviews{
@@ -66,12 +67,11 @@ static NSString *const cellIdentifier = @"resourceCell";
 }
 
 # pragma mark - 数据源代理
-- (void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
-    if ([cell isKindOfClass:[ResourceCell class]]) {
-        [((ResourceCell*)cell)  setResource:resource];
-    }
 
+- (void)configureCell:(ResourceCell*)cell item:(Resource*)item{
+    [cell setResource:item];
 }
+
 - (void)configureSupplementaryElement:(UICollectionReusableView *)reusableView object:(NSString *)title{
     if ([reusableView isKindOfClass:[RecommentationSectionView class]]) {
         [((RecommentationSectionView*)reusableView).titleLabel setText:title];
@@ -156,4 +156,5 @@ static NSString *const cellIdentifier = @"resourceCell";
     }
     return _collectionView;
 }
+
 @end

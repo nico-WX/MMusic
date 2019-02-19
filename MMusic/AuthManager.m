@@ -1,8 +1,9 @@
 
+
+
 #import "AuthManager.h"
 #import <StoreKit/StoreKit.h>
 #import <JGProgressHUD.h>
-
 
 
 //Token缓存Key
@@ -27,7 +28,6 @@ NSString *const developerTokenInvalidNotification   = @"developerTokenInvalidNot
 
 static NSString *const devToken =  @"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsInR5cGUiOiJKV1QiLCJraWQiOiJTMkhFRlRWM0o5In0.eyJpc3MiOiJWOVc4MzdZNkFWIiwiaWF0IjoxNTUwNTYwODYyLCJleHAiOjE1NjYxMTI4NjJ9.9bHQQjGHZ9fFALH0Kz_DcjnpZtVoHlHTsJey7_jsC4Rxy8ZSSa622b8o6Zsq_cHO7IvJj555YeiggaBVvzc0Sg";
 
-//static id _instance;
 @implementation AuthManager
 
 @synthesize developerToken = _developerToken;

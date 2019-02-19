@@ -114,7 +114,6 @@
         self.searchResults = @[];
         [self.tableView reloadData];
     });
-
 }
 
 #pragma mark - UITableViewDataSource
