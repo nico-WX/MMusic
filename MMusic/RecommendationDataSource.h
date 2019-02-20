@@ -11,17 +11,15 @@
 NS_ASSUME_NONNULL_BEGIN
 @class Resource;
 
-
 @protocol RecommendationDataSourceDelegate <DataSourceDelegate>
-
 @optional
-//- (void)configureCell:(UICollectionViewCell*)cell object:(Resource*)resource;
 - (void)configureSupplementaryElement:(UICollectionReusableView*)reusableView object:(NSString*)title ;
 @end
 
-@interface RecommendationDataSource : DataSource
 
+@interface RecommendationDataSource : DataSource
 - (Resource*)selectedResourceAtIndexPath:(NSIndexPath*)indexPath;
+
 @end
 
 NS_ASSUME_NONNULL_END

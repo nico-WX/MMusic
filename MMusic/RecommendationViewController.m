@@ -46,12 +46,10 @@ static NSString *const cellIdentifier = @"resourceCell";
 
     self.popupAnimator = [[MMDetailPoppingAnimator alloc] init];
     self.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:self.collectionView identifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:self];
-
-//    __weak typeof(self) weakSelf = self;
-//    [self setAuthorizationManagerDidUpdateHandle:^{
-//        NSLog(@"update recom in did update handle");
-//        weakSelf.recommendationData = [[RecommendationDataSource alloc] initWithCollectionView:weakSelf.collectionView identifier:cellIdentifier sectionIdentifier:sectionIdentifier delegate:weakSelf];
-//    }];
+}
+- (void)tokenDidUpdate{
+    NSLog(@"刷新数据源");
+    [self.recommendationData reloadDataSource];
 }
 
 

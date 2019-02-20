@@ -13,6 +13,7 @@
 
 @implementation DataSource
 
+#pragma mark - init
 - (instancetype)initWithTableView:(UITableView *)tableViwe identifier:(NSString *)identifier sectionIdentifier:(NSString *)sectionIdentifier delegate:(id<DataSourceDelegate>)delegate{
     if (self = [super init]) {
         _tableView = tableViwe;
@@ -34,6 +35,12 @@
         _delegate = delegate;
     }
     return self;
+}
+
+#pragma mark - instance method
+- (void)reloadDataSource{
+}
+-(void)clearDataSource{
 }
 
 // 默认实现设置成 0

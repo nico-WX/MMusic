@@ -16,6 +16,7 @@ extern NSString *const authorizationDidUpdateNotification;
 // reload token
 extern NSString *const userTokenInvalidNotification;
 extern NSString *const developerTokenInvalidNotification;
+extern NSString *const tokenDidUpdatedNotification;
 
 
 @interface AuthManager : NSObject

@@ -10,25 +10,20 @@
 #import "Song.h"
 
 @interface ResourceDetailDataSource ()<UITableViewDataSource>
-@property(nonatomic,weak) UITableView *tableView;
-@property(nonatomic,weak) id<ResourceDetailDataSourceDelegate> delegate;
-@property(nonatomic,copy) NSString *identifier;
 @property(nonatomic,strong) Resource *resource;
 
 @end
 
 @implementation ResourceDetailDataSource
 
+
 - (instancetype)initWithTableView:(UITableView *)tableView
                        identifier:(NSString *)identifier
                          resource:(Resource *)resource
-                         delegate:(id<ResourceDetailDataSourceDelegate>)delegate{
-    if (self = [super init]) {
-        _tableView = tableView;
-        _delegate = delegate;
-        _identifier = identifier;
+                         delegate:(id<DataSourceDelegate>)delegate{
+    if (self = [super initWithTableView:tableView identifier:identifier sectionIdentifier:nil delegate:delegate]) {
         _resource = resource;
-        [_tableView setDataSource:self];
+
 
         [self loadDataWithResource:resource completion:^(BOOL success) {
             if (self.songLists.count == 0) {
@@ -49,6 +44,16 @@
         }];
     }
     return self;
+}
+-(void)clearDataSource{
+    _songLists = @[];
+    [self.tableView reloadData];
+}
+- (void)reloadDataSource{
+    _songLists = @[];
+    [self loadDataWithResource:_resource completion:^(BOOL success) {
+        [self.tableView reloadData];
+    }];
 }
 
 

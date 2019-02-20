@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 
-//预留的Block
+//预留的Block, 
 typedef void(^configureCellAtIndexPathBlock)(id cell, id item, NSIndexPath *atIndexPath);
 typedef void(^configureCellBlock)(id cell, id item);
 
@@ -31,18 +31,20 @@ typedef void(^configureCellBlock)(id cell, id item);
 @property(nonatomic,copy,readonly) NSString *identifier;
 @property(nonatomic,copy,readonly) NSString *sectionIdentifier;
 
+/**刷新数据源数据*/
+- (void)reloadDataSource;
+/**清除数据*/
+- (void)clearDataSource;
 
 - (instancetype)initWithTableView:(UITableView*)tableViwe
                        identifier:(NSString*)identifier
                 sectionIdentifier:(NSString*)sectionIdentifier
                          delegate:(id<DataSourceDelegate>)delegate;
 
-
 - (instancetype)initWithCollectionView:(UICollectionView*)collectionView
                             identifier:(NSString*)identifier
                      sectionIdentifier:(NSString*)sectionIdentifier
                               delegate:(id<DataSourceDelegate>)delegate;
-
 @end
 
 

@@ -6,24 +6,23 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "DataSource.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol ResourceDetailDataSourceDelegate <NSObject>
 
-- (void)configureCell:(UITableViewCell*)cell object:(Song*)song atIndex:(NSUInteger)index;
-//- (void)configureCell:(UITableViewCell*)cell object:(Song*)obj;
-
 @end
-@interface ResourceDetailDataSource : NSObject
+
+@interface ResourceDetailDataSource : DataSource
+
 @property(nonatomic,strong,readonly) NSArray<Song*> *songLists;
 
 - (instancetype)initWithTableView:(UITableView*)tableView
                        identifier:(NSString*)identifier
                          resource:(Resource*)resource
-                         delegate:(id<ResourceDetailDataSourceDelegate>)delegate;
+                         delegate:(id<DataSourceDelegate>)delegate;
 @end
 
 NS_ASSUME_NONNULL_END

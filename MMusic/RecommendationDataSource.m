@@ -34,6 +34,20 @@
     return self;
 }
 
+#pragma mark instance method
+
+- (void)reloadDataSource{
+    self.dataArray = @[];
+    [self loadDataWithCollectionView:self.collectionView];
+}
+- (void)clearDataSource{
+    self.dataArray = @[];
+}
+//selected row data
+- (Resource *)selectedResourceAtIndexPath:(NSIndexPath *)indexPath{
+    return [self dataWithIndexPath:indexPath];
+}
+
 - (void)loadDataWithCollectionView:(UICollectionView*)colletionView{
     //加载数据
     [self.hud showInView:colletionView animated:YES];
@@ -45,7 +59,6 @@
             [self.hud dismissAnimated:YES];
             [self.hud removeFromSuperview];
             [colletionView reloadData];
-
         }else{
             self.hud.indicatorView = nil;
             [self.hud.textLabel setText:@"加载失败,请下拉刷新"];
@@ -97,7 +110,7 @@
     return nil;
 }
 
-#pragma  mark - help
+#pragma  mark - help method
 // section title
 - (NSString *)titleWithSection:(NSInteger)section{
     return [[[_dataArray objectAtIndex:section] allKeys] firstObject];
@@ -107,11 +120,8 @@
     NSDictionary<NSString*,NSArray<Resource*>*> * temp = [_dataArray objectAtIndex:indexPath.section];
     return [[[temp allValues] firstObject] objectAtIndex:indexPath.row];
 }
-//selected row data
-- (Resource *)selectedResourceAtIndexPath:(NSIndexPath *)indexPath{
-    return [self dataWithIndexPath:indexPath];
-}
 
+//加载数据
 - (void)defaultRecommendataionWithCompletion:(void (^)(BOOL success))completion{
     [MusicKit.new.library defaultRecommendationsInCallBack:^(NSDictionary *json, NSHTTPURLResponse *response) {
         // @{@"data":@[Recommendation*]}
@@ -127,7 +137,7 @@
                 title = [list.firstObject valueForKeyPath:@"attributes.curatorName"];
             }
 
-            //分组推荐时, sunJSON 内部还包含多组subJSON, 在方法内部判断, 递归解析;
+            //每个子JSON 都是一节数据, 在辅助方法中解析,并返回
             NSArray *resources = [self serializationJSON:subJSON];
             [array addObject:@{title:resources}];
         }
@@ -168,6 +178,9 @@
     }
     return sectionList;
 }
+
+#pragma mark - getter
+
 - (JGProgressHUD *)hud{
     if (!_hud) {
         _hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
