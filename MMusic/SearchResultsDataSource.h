@@ -6,29 +6,21 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "DataSource.h"
 @class ResponseRoot;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol SearchResultsDataSourceDelegate <NSObject>
 
-- (void)configureCell:(UITableViewCell*)cell object:(Resource*)resource;
-@end
-
-@interface SearchResultsDataSource : NSObject
-
+@interface SearchResultsDataSource : DataSource
+/**搜索字段*/
 - (void)searchTerm:(NSString*)term;
 
 - (NSString*)titleAtSection:(NSUInteger)section;
 - (ResponseRoot*)dataWithSection:(NSUInteger)section;
 - (NSArray<Resource*>*)allResurceAtSection:(NSUInteger)section;
-- (void)clearData;
 
-- (instancetype)initWithTableView:(UITableView*)tableView
-                   cellIdentifier:(NSString*)cellIdentifier
-                sectionIdentifier:(NSString*)sectionIdentifier
-                         delegate:(id<SearchResultsDataSourceDelegate>)delegate;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -6,11 +6,11 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "BaseViewController.h"
 @class ResponseRoot;
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ShowAllSearchResultsViewController : UIViewController
+@interface ShowAllSearchResultsViewController : BaseViewController
 - (instancetype)initWithResponseRoot:(ResponseRoot*)responseRoot;
 @end
 

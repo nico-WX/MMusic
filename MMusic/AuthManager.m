@@ -46,54 +46,57 @@ SingleImplementation(Manager);
 - (instancetype)init{
     if (self = [super init]) {
 
-        _defaults = [NSUserDefaults standardUserDefaults];
-        _libraryAuthorizationStatus = [MPMediaLibrary authorizationStatus];
-        _cloudAuthorizationStatus = [SKCloudServiceController authorizationStatus];
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            self->_defaults = [NSUserDefaults standardUserDefaults];
+            self->_libraryAuthorizationStatus = [MPMediaLibrary authorizationStatus];
+            self->_cloudAuthorizationStatus = [SKCloudServiceController authorizationStatus];
 
-        //检查授权状态(Authorization)
-        switch (_libraryAuthorizationStatus) {
-            case MPMediaLibraryAuthorizationStatusDenied:
-            case MPMediaLibraryAuthorizationStatusNotDetermined:
-                NSLog(@"当前未授权");
-                [self requestMediaLibraryAuthorization];
-                break;
+            //检查授权状态(Authorization)
+            switch (self->_libraryAuthorizationStatus) {
+                case MPMediaLibraryAuthorizationStatusDenied:
+                case MPMediaLibraryAuthorizationStatusNotDetermined:
+                    NSLog(@"当前未授权");
+                    [self requestMediaLibraryAuthorization];
+                    break;
 
-            default:
-                break;
-        }
-        switch (_cloudAuthorizationStatus) {
-            case SKCloudServiceAuthorizationStatusDenied:
-            case SKCloudServiceAuthorizationStatusNotDetermined:
-                NSLog(@"无云服务");
-                [self requestCloudServiceAuthorization];
-                break;
+                default:
+                    break;
+            }
+            switch (self->_cloudAuthorizationStatus) {
+                case SKCloudServiceAuthorizationStatusDenied:
+                case SKCloudServiceAuthorizationStatusNotDetermined:
+                    NSLog(@"无云服务");
+                    [self requestCloudServiceAuthorization];
+                    break;
 
-            default:
-                break;
-        }
+                default:
+                    break;
+            }
 
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        //刷新云服务功能
-        [center addObserver:self
-                   selector:@selector(requestCloudServiceCapabilities)
-                       name:SKCloudServiceCapabilitiesDidChangeNotification
-                     object:nil];
+            NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+            //刷新云服务功能
+            [center addObserver:self
+                       selector:@selector(requestCloudServiceCapabilities)
+                           name:SKCloudServiceCapabilitiesDidChangeNotification
+                         object:nil];
 
-        // 开发令牌过期 刷新开发者Token
-        [center addObserver:self
-                   selector:@selector(reloadDeveloperToken)
-                       name:developerTokenInvalidNotification
-                     object:nil];
-        //用户令牌h过期 刷新用户Token
-        [center addObserver:self
-                   selector:@selector(reloadUserToken)
-                       name:userTokenInvalidNotification
-                     object:nil];
+            // 开发令牌过期 刷新开发者Token
+            [center addObserver:self
+                       selector:@selector(reloadDeveloperToken)
+                           name:developerTokenInvalidNotification
+                         object:nil];
+            //用户令牌h过期 刷新用户Token
+            [center addObserver:self
+                       selector:@selector(reloadUserToken)
+                           name:userTokenInvalidNotification
+                         object:nil];
 
-        //初始化Token
-        [self fetchDeveloperToken];
-        [self fetchUserToken];
-        [self fetchStoreFront];
+            //初始化Token
+            [self fetchDeveloperToken];
+            [self fetchUserToken];
+            [self fetchStoreFront];
+        });
     }
     return self;
 }

@@ -22,7 +22,7 @@
 
 
 
-@interface ResourceDetailViewController ()<UITableViewDelegate,ResourceDetailDataSourceDelegate>
+@interface ResourceDetailViewController ()<UITableViewDelegate,DataSourceDelegate>
 @property(nonatomic, strong) Resource *resource;
 
 @property(nonatomic, strong) ResourceDetailHeadView *headView;
@@ -65,7 +65,6 @@ static NSString *const identifier = @"cell identifier";
 }
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-
     [_tableView setFrame:self.view.bounds];
 }
 
@@ -74,11 +73,10 @@ static NSString *const identifier = @"cell identifier";
     [MainPlayer playSongs:[self.dataSource songLists] startIndex:indexPath.row];
 }
 
-#pragma mark - ResourceDetailDataSourceDelegate
-- (void)configureCell:(UITableViewCell *)cell object:(Song *)song atIndex:(NSUInteger)index{
-
+#pragma mark - DataSourceDelegate
+-(void)configureCell:(id)cell item:(Song*)song atIndexPath:(NSIndexPath *)indexPath{
     if ([cell isKindOfClass:[AlbumSongTableCell class]]) {
-        [((AlbumSongTableCell*)cell) setSong:song withIndex:index];
+        [((AlbumSongTableCell*)cell) setSong:song withIndex:indexPath.row];
     }else{
         [((PlaylistSongTableCell*)cell) setSong:song];
     }

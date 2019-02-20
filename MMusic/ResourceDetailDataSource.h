@@ -11,9 +11,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ResourceDetailDataSourceDelegate <NSObject>
-
-@end
 
 @interface ResourceDetailDataSource : DataSource
 

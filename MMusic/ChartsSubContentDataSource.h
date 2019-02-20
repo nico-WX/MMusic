@@ -6,25 +6,21 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "DataSource.h"
 
 @class Chart;
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ChartsSubContentDataSourceDelegate <NSObject>
-
-- (void)configureCell:(UICollectionViewCell*)cell object:(Resource*)resource;
-@end
 
 // cell 内部的集合视图数据源
-@interface ChartsSubContentDataSource : NSObject
+@interface ChartsSubContentDataSource : DataSource
 
 @property(nonatomic, strong, readonly)Chart *chart;
 
 - (instancetype)initWithChart:(Chart*)chart
                collectionView:(UICollectionView*)collectionView
               reuseIdentifier:(NSString*)identifier
-                     delegate:(id<ChartsSubContentDataSourceDelegate>)delegate;
+                     delegate:(id<DataSourceDelegate>)delegate;
 @end
 
 NS_ASSUME_NONNULL_END

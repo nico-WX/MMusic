@@ -9,24 +9,14 @@
 #import "ChartsSubContentDataSource.h"
 #import "Chart.h"
 
-@interface ChartsSubContentDataSource ()<UICollectionViewDataSource>
-@property(nonatomic, weak)UICollectionView *collectionView;
-@property(nonatomic, copy)NSString *identifier;
-@property(nonatomic, weak)id<ChartsSubContentDataSourceDelegate> delegate;
-
-@end
 
 @implementation ChartsSubContentDataSource
 
 - (instancetype)initWithChart:(Chart*)chart
                collectionView:(UICollectionView *)collectionView
               reuseIdentifier:(NSString *)identifier
-                     delegate:(id<ChartsSubContentDataSourceDelegate>)delegate{
-    if (self = [super init]) {
-        _collectionView = collectionView;
-        [collectionView setDataSource:self];
-        _identifier = identifier;
-        _delegate= delegate;
+                     delegate:(id<DataSourceDelegate>)delegate{
+    if (self = [super initWithCollectionView:collectionView identifier:identifier sectionIdentifier:nil delegate:delegate]) {
         _chart = chart;
     }
     return self;
@@ -37,10 +27,9 @@
     return _chart.data.count;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_identifier forIndexPath:indexPath];
-    if ([_delegate respondsToSelector:@selector(configureCell:object:)]) {
-        [_delegate configureCell:cell object:[_chart.data objectAtIndex:indexPath.row]];
-    }
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.identifier forIndexPath:indexPath];
+    Resource *resource = [self.chart.data objectAtIndex:indexPath.row];
+    [self configureCell:cell item:resource atIndexPath:indexPath];
     return cell;
 }
 

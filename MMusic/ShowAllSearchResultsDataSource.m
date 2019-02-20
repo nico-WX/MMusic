@@ -11,20 +11,16 @@
 #import "NSURLRequest+Extension.h"
 
 @interface ShowAllSearchResultsDataSource ()<UICollectionViewDataSource>
-@property(nonatomic,copy)NSString *identifier;
-@property(nonatomic,weak)id<ShowAllSearchResultsDataSourceDelegate> delegate;
 @property(nonatomic,strong)ResponseRoot *root;
 @end
 
 @implementation ShowAllSearchResultsDataSource
 
-- (instancetype)initWithView:(UICollectionView *)collectionView identifier:(NSString *)identifier responseRoot:(ResponseRoot *)root delegate:(id<ShowAllSearchResultsDataSourceDelegate>)delegate{
-    if (self = [super init]) {
-        _identifier = identifier;
-        _delegate = delegate;
+
+- (instancetype)initWithView:(UICollectionView *)collectionView identifier:(NSString *)identifier responseRoot:(ResponseRoot *)root delegate:(id<DataSourceDelegate>)delegate{
+    if (self = [super initWithCollectionView:collectionView identifier:identifier sectionIdentifier:nil delegate:delegate]) {
         _root = root;
 
-        [collectionView setDataSource:self];
         [self laodAllDataWithResponseRoot:_root completion:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [collectionView reloadData];
@@ -69,10 +65,9 @@
     return _root.data.count;
 }
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_identifier forIndexPath:indexPath];
-    if ([_delegate respondsToSelector:@selector(configureCollectionCell:object:)]) {
-        [_delegate configureCollectionCell:cell object:[_root.data objectAtIndex:indexPath.row]];
-    }
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.identifier forIndexPath:indexPath];
+    Resource *resource = [self.root.data objectAtIndex:indexPath.row];
+    [self configureCell:cell item:resource atIndexPath:indexPath];
     return cell;
 }
 @end

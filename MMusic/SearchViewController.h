@@ -5,7 +5,7 @@
 //  Copyright © 2018年 com.😈. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "BaseViewController.h"
 
-@interface SearchViewController : UIViewController
+@interface SearchViewController : BaseViewController
 @end

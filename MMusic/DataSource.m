@@ -65,12 +65,16 @@
 }
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:_identifier forIndexPath:indexPath];
+    [self configureCell:cell item:@"0" atIndexPath:indexPath];
+    return cell;
+}
+
+- (void)configureCell:(id)cell item:(id)item atIndexPath:(NSIndexPath *)indexPath{
     if ([_delegate respondsToSelector:@selector(configureCell:item:)]) {
-        [_delegate configureCell:cell item:@"0"];
+        [_delegate configureCell:cell item:item];
     }
     if ([_delegate respondsToSelector:@selector(configureCell:item:atIndexPath:)]) {
-        [_delegate configureCell:cell item:@"0" atIndexPath:indexPath];
+        [_delegate configureCell:cell item:item atIndexPath:indexPath];
     }
-    return cell;
 }
 @end

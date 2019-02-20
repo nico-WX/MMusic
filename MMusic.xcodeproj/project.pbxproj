@@ -48,7 +48,6 @@
 		3B64B29521F703B20029C32E /* ResourceDetailSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B29421F703B20029C32E /* ResourceDetailSongCell.m */; };
 		3B64B29821F721C30029C32E /* AlbumSongTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B29721F721C30029C32E /* AlbumSongTableCell.m */; };
 		3B64B29B21F721D70029C32E /* PlaylistSongTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B29A21F721D70029C32E /* PlaylistSongTableCell.m */; };
-		3B64B2BE21F855EC0029C32E /* ShowAllDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2BD21F855EB0029C32E /* ShowAllDataSource.m */; };
 		3B64B2C121F89D290029C32E /* SearchResultsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2C021F89D290029C32E /* SearchResultsCell.m */; };
 		3B64B2C421F8A7940029C32E /* SearchResultsSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2C321F8A7940029C32E /* SearchResultsSectionView.m */; };
 		3B64B2C721F9D4A00029C32E /* ShowAllSearchResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B64B2C621F9D4A00029C32E /* ShowAllSearchResultsViewController.m */; };
@@ -118,6 +117,7 @@
 		3B9AA9161FB588AF00720085 /* AuthManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9AA9151FB588AF00720085 /* AuthManager.m */; };
 		3B9C426721E0ADD600ED6C79 /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9C426621E0ADD600ED6C79 /* PlayerView.m */; };
 		3BD1EC0C221C335E00692BDF /* ImageCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD1EC0B221C335E00692BDF /* ImageCacheManager.m */; };
+		3BD1EC11221D559900692BDF /* ShowAllDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD1EC10221D559900692BDF /* ShowAllDataSource.m */; };
 		3BDFCB682082219900D85021 /* PlayProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCB672082219900D85021 /* PlayProgressView.m */; };
 		3BDFCBD3208634CD00D85021 /* UIButton+BlockButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFCBD2208634CD00D85021 /* UIButton+BlockButton.m */; };
 		3BE2A22421984BF400AEA486 /* Library+Rating.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BE2A22321984BF400AEA486 /* Library+Rating.m */; };
@@ -334,8 +334,6 @@
 		3B64B29721F721C30029C32E /* AlbumSongTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AlbumSongTableCell.m; sourceTree = "<group>"; };
 		3B64B29921F721D70029C32E /* PlaylistSongTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaylistSongTableCell.h; sourceTree = "<group>"; };
 		3B64B29A21F721D70029C32E /* PlaylistSongTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlaylistSongTableCell.m; sourceTree = "<group>"; };
-		3B64B2BC21F855EB0029C32E /* ShowAllDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShowAllDataSource.h; path = ../../../../../../Documents/ShowAllDataSource.h; sourceTree = "<group>"; };
-		3B64B2BD21F855EB0029C32E /* ShowAllDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ShowAllDataSource.m; path = ../../../../../../Documents/ShowAllDataSource.m; sourceTree = "<group>"; };
 		3B64B2BF21F89D290029C32E /* SearchResultsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchResultsCell.h; sourceTree = "<group>"; };
 		3B64B2C021F89D290029C32E /* SearchResultsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResultsCell.m; sourceTree = "<group>"; };
 		3B64B2C221F8A7940029C32E /* SearchResultsSectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchResultsSectionView.h; sourceTree = "<group>"; };
@@ -479,6 +477,8 @@
 		3BC473291FF23B380084016F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3BD1EC0A221C335E00692BDF /* ImageCacheManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageCacheManager.h; sourceTree = "<group>"; };
 		3BD1EC0B221C335E00692BDF /* ImageCacheManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageCacheManager.m; sourceTree = "<group>"; };
+		3BD1EC0F221D559900692BDF /* ShowAllDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShowAllDataSource.h; sourceTree = "<group>"; };
+		3BD1EC10221D559900692BDF /* ShowAllDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShowAllDataSource.m; sourceTree = "<group>"; };
 		3BDFCB662082219900D85021 /* PlayProgressView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayProgressView.h; sourceTree = "<group>"; };
 		3BDFCB672082219900D85021 /* PlayProgressView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayProgressView.m; sourceTree = "<group>"; };
 		3BDFCBD1208634CD00D85021 /* UIButton+BlockButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIButton+BlockButton.h"; sourceTree = "<group>"; };
@@ -571,7 +571,6 @@
 				3B6BE742219DACDD0004F3E5 /* MMDetailPresentationController.m */,
 				3B6BE743219DACDD0004F3E5 /* MMDetailPoppingAnimator.h */,
 				3B6BE744219DACDD0004F3E5 /* MMDetailPoppingAnimator.m */,
-				3B64B1D621F328AC0029C32E /* DataSource */,
 				3B469ADB1FF2462C0035E138 /* View */,
 			);
 			name = Recommendation;
@@ -635,26 +634,12 @@
 			isa = PBXGroup;
 			children = (
 				3B64B17921EF163F0029C32E /* view */,
-				3B64B17821EF16350029C32E /* dataSource */,
 				3B64B13821EDF6730029C32E /* ChartsViewController.h */,
 				3B64B13921EDF6730029C32E /* ChartsViewController.m */,
 				3B64B24A21F5A88C0029C32E /* ShowAllViewController.h */,
 				3B64B24B21F5A88C0029C32E /* ShowAllViewController.m */,
 			);
 			name = Charts;
-			sourceTree = "<group>";
-		};
-		3B64B17821EF16350029C32E /* dataSource */ = {
-			isa = PBXGroup;
-			children = (
-				3B64B17A21EF167C0029C32E /* ChartsDataSource.h */,
-				3B64B17B21EF167C0029C32E /* ChartsDataSource.m */,
-				3B64B17E21EF4E240029C32E /* ChartsSubContentDataSource.h */,
-				3B64B17F21EF4E240029C32E /* ChartsSubContentDataSource.m */,
-				3B64B2BC21F855EB0029C32E /* ShowAllDataSource.h */,
-				3B64B2BD21F855EB0029C32E /* ShowAllDataSource.m */,
-			);
-			name = dataSource;
 			sourceTree = "<group>";
 		};
 		3B64B17921EF163F0029C32E /* view */ = {
@@ -677,15 +662,6 @@
 				3B7121242219773E00CA5CB2 /* BaseViewController.m */,
 			);
 			name = TabBarController;
-			sourceTree = "<group>";
-		};
-		3B64B1D621F328AC0029C32E /* DataSource */ = {
-			isa = PBXGroup;
-			children = (
-				3B64B26F21F6F6000029C32E /* ResourceDetailDataSource.h */,
-				3B64B27021F6F6000029C32E /* ResourceDetailDataSource.m */,
-			);
-			name = DataSource;
 			sourceTree = "<group>";
 		};
 		3B64B1EF21F45FC40029C32E /* DataSource */ = {
@@ -1136,6 +1112,14 @@
 				3B679FD1220C473D006CBCDF /* DataSource.m */,
 				3B6BE7A721A7F38A0004F3E5 /* RecommendationDataSource.h */,
 				3B6BE7A821A7F38A0004F3E5 /* RecommendationDataSource.m */,
+				3B64B26F21F6F6000029C32E /* ResourceDetailDataSource.h */,
+				3B64B27021F6F6000029C32E /* ResourceDetailDataSource.m */,
+				3B64B17A21EF167C0029C32E /* ChartsDataSource.h */,
+				3B64B17B21EF167C0029C32E /* ChartsDataSource.m */,
+				3B64B17E21EF4E240029C32E /* ChartsSubContentDataSource.h */,
+				3B64B17F21EF4E240029C32E /* ChartsSubContentDataSource.m */,
+				3BD1EC0F221D559900692BDF /* ShowAllDataSource.h */,
+				3BD1EC10221D559900692BDF /* ShowAllDataSource.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1590,7 +1574,6 @@
 				3B64B2D121FCC3D40029C32E /* LibraryDataSource.m in Sources */,
 				3B9AA87A1FB04B5700720085 /* main.m in Sources */,
 				3B64B1FF21F460450029C32E /* SearchHistoryDataSource.m in Sources */,
-				3B64B2BE21F855EC0029C32E /* ShowAllDataSource.m in Sources */,
 				3B64B18321F077720029C32E /* ResourceCollectionCell.m in Sources */,
 				3B679FE62212F1C1006CBCDF /* TableSongCell.m in Sources */,
 				3B64B29821F721C30029C32E /* AlbumSongTableCell.m in Sources */,
@@ -1598,6 +1581,7 @@
 				3BE2A2522198DA7E00AEA486 /* UIImageView+Extension.m in Sources */,
 				3BEB3D5621D3750500398A5B /* SongManageObject.m in Sources */,
 				3B9AA86C1FB04B5700720085 /* AppDelegate.m in Sources */,
+				3BD1EC11221D559900692BDF /* ShowAllDataSource.m in Sources */,
 				3B64B2C421F8A7940029C32E /* SearchResultsSectionView.m in Sources */,
 				3BE2A23E21986B2D00AEA486 /* Catalog+Search.m in Sources */,
 				3B69895F20A99AA5000C3403 /* LibraryPlaylist.m in Sources */,

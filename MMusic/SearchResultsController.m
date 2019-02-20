@@ -16,7 +16,7 @@
 #import "Resource.h"
 
 
-@interface SearchResultsController ()<UISearchBarDelegate,UITableViewDelegate,SearchHintsDataSourceDelegate,SearchResultsDataSourceDelegate>
+@interface SearchResultsController ()<UISearchBarDelegate,UITableViewDelegate,SearchHintsDataSourceDelegate,DataSourceDelegate>
 
 @property(nonatomic,strong) UISearchBar *searchBar;
 @property(nonatomic,strong) UITableView *hintsTableView;
@@ -45,9 +45,9 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
                                                                delegate:self];
 
     _resultsDataSource = [[SearchResultsDataSource alloc] initWithTableView:self.searchResultsView
-                                                             cellIdentifier:resultsIdentifier
-                                                          sectionIdentifier:resultsSectionIdentifier
+                                                                 identifier:resultsIdentifier sectionIdentifier:resultsSectionIdentifier
                                                                    delegate:self];
+
 
     //键盘通知,修改frame
     __weak typeof(self) weakSelf = self;
@@ -118,15 +118,13 @@ static NSString *const resultsSectionIdentifier = @"search secetion identifier";
     }
 }
 
-#pragma mark - SearchHintsDataSourceDelegate
-- (void)configureCell:(UITableViewCell *)cell hintsString:(NSString *)term{
-    [cell.textLabel setText:term];
-}
-
-#pragma mark - SearchResultsDataSourceDelegate;
--(void)configureCell:(UITableViewCell *)cell object:(Resource *)resource{
-    if ([cell isKindOfClass:[SearchResultsCell class]]) {
-        [((SearchResultsCell*)cell) setResource:resource];
+#pragma mark - DataSourceDelegate
+- (void)configureCell:(id)cell item:(id)item{
+    //两个都调用该方法
+    if ([cell isMemberOfClass:[UITableViewCell class]]) {
+        [((UITableViewCell*)cell).textLabel setText:((NSString*)item)];
+    }else{
+        [((SearchResultsCell*)cell) setResource:((Resource*)item)];
     }
 }
 

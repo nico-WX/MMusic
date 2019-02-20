@@ -88,9 +88,7 @@
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.identifier forIndexPath:indexPath];
-    if ([self.delegate respondsToSelector:@selector(configureCell:item:)]) {
-        [self.delegate configureCell:cell item:[self dataWithIndexPath:indexPath]];
-    }
+    [self configureCell:cell item:[self dataWithIndexPath:indexPath] atIndexPath:indexPath];
     return cell;
 }
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{

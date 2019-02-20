@@ -6,21 +6,12 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "DataSource.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol SearchHistoryDataSourceDelegate <NSObject>
 
-- (void)configureCell:(UITableViewCell*)cell object:(NSString*)obj;
-
-@end
-
-@interface SearchHistoryDataSource : NSObject
-
-- (instancetype)initWithTableView:(UITableView*)tableView
-                       identifier:(NSString*)identifier
-                         delegate:(id<SearchHistoryDataSourceDelegate>)delegate;
+@interface SearchHistoryDataSource : DataSource
 
 @end
 

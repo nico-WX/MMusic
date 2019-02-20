@@ -6,25 +6,19 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "DataSource.h"
 
 @class ResponseRoot;
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ShowAllSearchResultsDataSourceDelegate <NSObject>
-
-- (void)configureCollectionCell:(UICollectionViewCell*)cell object:(Resource*)resource;
-
-@end
-
-@interface ShowAllSearchResultsDataSource : NSObject
+@interface ShowAllSearchResultsDataSource : DataSource
 //加载的数据
 @property(nonatomic,readonly)NSArray<Resource*> *data;
 
 - (instancetype)initWithView:(UICollectionView*)collectionView
                   identifier:(NSString*)identifier
                 responseRoot:(ResponseRoot*)root
-                    delegate:(id<ShowAllSearchResultsDataSourceDelegate>)delegate;
+                    delegate:(id<DataSourceDelegate>)delegate;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -16,42 +16,21 @@
 #import "DataManager.h"
 
 @interface SearchResultsDataSource ()<UITableViewDataSource>
-@property(nonatomic, weak)UITableView *tableView;
-@property(nonatomic, weak)id<SearchResultsDataSourceDelegate> delegate;
-
-@property(nonatomic, copy)NSString *cellIdentifier;
-@property(nonatomic, copy)NSString *sectionIdentifier;
 
 @property(nonatomic, strong)NSArray<NSDictionary<NSString*,ResponseRoot*>*> *searchResults;
 @end
 
 @implementation SearchResultsDataSource
 
-- (instancetype)initWithTableView:(UITableView *)tableView
-                   cellIdentifier:(NSString *)cellIdentifier
-                sectionIdentifier:(NSString *)sectionIdentifier
-                         delegate:(id<SearchResultsDataSourceDelegate>)delegate{
-
-    if (self = [super init]) {
-        _tableView = tableView;
-        _tableView.dataSource = self;
-
-        _cellIdentifier = cellIdentifier;
-        _sectionIdentifier = sectionIdentifier;
-        _delegate = delegate;
-    }
-    return self;
-}
+#pragma mark - help method
 
 - (void)searchTerm:(NSString *)term{
 
-    [self clearData];
+    [self clearDataSource];
     if ([term length] > 0) {
         [self searchDataForTemr:term completion:^(BOOL success) {
             if (success) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.tableView reloadData];
-                });
+                [self.tableView reloadData];
             }
         }];
         // 记录搜索j历史
@@ -78,21 +57,25 @@
             }];
             self.searchResults = resultsList;
         }else{
-            mainDispatch(^{
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"没有查找到内容" message:term preferredStyle:UIAlertControllerStyleAlert];
-        
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSString *title = [NSString stringWithFormat:@"没有搜索内容: %@",term];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:term preferredStyle:UIAlertControllerStyleAlert];
+
                 UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
                 [keyWindow.rootViewController presentViewController:alert animated:YES completion:^{
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+                        [alert dismissViewControllerAnimated:YES completion:nil];
                     });
                 }];
-
             });
         }
 
         if (completion) {
-            completion(self.searchResults.count > 0);
+            mainDispatch(^{
+                completion(self.searchResults.count > 0);
+            });
+
         }
     }];
 }
@@ -109,31 +92,25 @@
     NSDictionary<NSString*,ResponseRoot*> *dict = [self.searchResults objectAtIndex:section];
     return dict.allValues.firstObject.data;
 }
-- (void)clearData{
-    mainDispatch(^{
-        self.searchResults = @[];
-        [self.tableView reloadData];
-    });
+- (void)clearDataSource{
+    self.searchResults = @[];
+    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return [self.searchResults count];
 }
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSDictionary<NSString*,ResponseRoot*> *temp = [[self searchResults] objectAtIndex:section];
     return [[[[temp allValues] firstObject] data] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:_cellIdentifier];
-    if ([_delegate respondsToSelector:@selector(configureCell:object:)]) {
-        NSDictionary<NSString*,ResponseRoot*> *temp = [[self searchResults] objectAtIndex:indexPath.section];
-        Resource *res = [temp.allValues.firstObject.data objectAtIndex:indexPath.row];
-        [_delegate configureCell:cell object:res];
-    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.identifier];
+    ResponseRoot *root = [self dataWithSection:indexPath.section];
+    Resource *resource = [root.data objectAtIndex:indexPath.row];
+    [self configureCell:cell item:resource atIndexPath:indexPath];
     return cell;
 }
 

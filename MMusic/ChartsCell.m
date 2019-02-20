@@ -14,7 +14,7 @@
 #import "Resource.h"
 #import <Masonry.h>
 
-@interface ChartsCell()<ChartsSubContentDataSourceDelegate>
+@interface ChartsCell()<DataSourceDelegate>
 @property(nonatomic, strong) UILabel *titleLabel;
 
 @property(nonatomic, strong) ChartsSubContentDataSource *contentDataSource;
@@ -97,7 +97,6 @@ static NSString *const identifier = @"collectionView cell id";
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
     // Configure the view for the selected state
 }
 
@@ -117,13 +116,8 @@ static NSString *const identifier = @"collectionView cell id";
 }
 
 #pragma mark - ChartsSubContentDataSourceDelegate
-- (void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
-    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
-        ResourceCollectionCell *subCell = (ResourceCollectionCell*)cell;
-        [subCell setResource:resource];
-    }
+- (void)configureCell:(ResourceCollectionCell*)cell item:(Resource*)item{
+    [cell setResource:item];
 }
-
-
 
 @end

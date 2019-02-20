@@ -22,21 +22,24 @@
 #import "MPMusicPlayerController+ResourcePlaying.h"
 #import "ShowAllViewController.h"
 
-@interface ChartsViewController ()<UITableViewDelegate,ChartsDataSourceDelegate,UICollectionViewDelegate>
+@interface ChartsViewController ()<UITableViewDelegate,DataSourceDelegate,UICollectionViewDelegate>
 @property(nonatomic, strong)UITableView *tableView;
-
 @property(nonatomic, strong)ChartsDataSource *dataSource;
 @end
 
 static NSString *const identifier = @"cell reuseIdentifier";
 @implementation ChartsViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.view addSubview:self.tableView];
 
-    _dataSource =[[ChartsDataSource alloc] initWithTableView:_tableView reuseIdentifier:identifier delegate:self];
+    _dataSource = [[ChartsDataSource alloc] initWithTableView:self.tableView
+                                                   identifier:identifier
+                                            sectionIdentifier:nil
+                                                     delegate:self];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -59,22 +62,17 @@ static NSString *const identifier = @"cell reuseIdentifier";
 }
 
 #pragma mark - ChartsDataSourceDelegate
--(void)configureCell:(UITableViewCell *)cell object:(Chart *)chart{
-    if ([cell isKindOfClass:[ChartsCell class]]) {
-        ChartsCell *chartsCell = (ChartsCell*)cell;
+-(void)configureCell:(ChartsCell*)cell item:(Chart*)item{
+    [cell setChart:item];
+    cell.collectionView.delegate = self;
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
 
-        [chartsCell setChart:chart];
-        //tableViewCell 中的集合视图代理设置为self, 获取选中的数据, 入栈新的控制器;
-        [chartsCell.collectionView setDelegate:self];
-        [chartsCell setSelectionStyle:UITableViewCellSelectionStyleNone];
-
-        __weak typeof(self) weakSelf = self; //UIContr通过联合持有Block
-        [chartsCell.showAllButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
-            ShowAllViewController *all = [[ShowAllViewController alloc] initWithChart:chart];
-            [all setTitle:chart.name];
-            [weakSelf.navigationController pushViewController:all animated:YES];
-        }];
-    }
+    __weak typeof(self) weakSelf = self; //UIContr通过联合持有Block
+    [cell.showAllButton handleControlEvent:UIControlEventTouchUpInside withBlock:^{
+        ShowAllViewController *all = [[ShowAllViewController alloc] initWithChart:item];
+        [all setTitle:item.name];
+        [weakSelf.navigationController pushViewController:all animated:YES];
+    }];
 }
 
 #pragma mark - UITableViewDelegate

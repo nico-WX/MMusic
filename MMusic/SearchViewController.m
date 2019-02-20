@@ -27,7 +27,7 @@
 #import "UITableView+Extension.h"
 
 //分割代理方法
-@interface SearchViewController (Delegate)<UITableViewDelegate,SearchHistoryDataSourceDelegate>
+@interface SearchViewController (Delegate)<UITableViewDelegate,DataSourceDelegate>
 @end
 
 @interface SearchViewController ()
@@ -49,6 +49,7 @@ static NSString *const identifier = @"cell identifier";
 
     self.searchHistoryDataSource = [[SearchHistoryDataSource alloc] initWithTableView:self.searchHistoryView
                                                                            identifier:identifier
+                                                                    sectionIdentifier:nil
                                                                              delegate:self];
 
     [self setDefinesPresentationContext:YES]; //当前环境呈现
@@ -101,10 +102,11 @@ static NSString *const identifier = @"cell identifier";
 
 @implementation SearchViewController (Delegate)
 
-#pragma mark - SearchHistoryDataSourceDelegate
--(void)configureCell:(UITableViewCell *)cell object:(nonnull NSString *)obj{
-    [cell.textLabel setText:obj];
+#pragma mark - DataSourceDelegate
+- (void)configureCell:(UITableViewCell*)cell item:(NSString*)item{
+    [cell.textLabel setText:item];
 }
+
 
 #pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

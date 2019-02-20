@@ -21,7 +21,7 @@
 #import "Song.h"
 #import "MusicVideo.h"
 
-@interface ShowAllSearchResultsViewController ()<UICollectionViewDelegate,ShowAllSearchResultsDataSourceDelegate>
+@interface ShowAllSearchResultsViewController ()<UICollectionViewDelegate,DataSourceDelegate>
 @property(nonatomic,strong)ResponseRoot *responseRoot;
 @property(nonatomic,strong)UICollectionViewFlowLayout *layout;
 @property(nonatomic,strong)UICollectionView *collectionView;
@@ -101,11 +101,9 @@ static NSString *const identifier = @"cell identifier";
 }
 
 
-#pragma mark - ShowAllSearchResultsDataSourceDelegate
-- (void)configureCollectionCell:(UICollectionViewCell *)cell object:(Resource   *)resource{
-    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
-        [((ResourceCollectionCell*)cell) setResource:resource];
-    }
+#pragma mark - DataSourceDelegate
+- (void)configureCell:(ResourceCollectionCell*)cell item:(Resource*)item{
+    [cell setResource:item];
 }
 
 #pragma mark - UICollectionViewDelegate

@@ -6,11 +6,11 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "BaseViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ResourceDetailViewController : UIViewController
+@interface ResourceDetailViewController : BaseViewController
 
 - (instancetype)initWithResource:(Resource*)resource;
 @end

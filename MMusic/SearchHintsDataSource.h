@@ -6,24 +6,14 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "DataSource.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol SearchHintsDataSourceDelegate <NSObject>
-
-- (void)configureCell:(UITableViewCell*)cell hintsString:(NSString*)term;
-
-@end
-
-@interface SearchHintsDataSource : NSObject
-
-- (instancetype)initWithTableView:(UITableView*)tableView
-                       identifier:(NSString*)identifier
-                         delegate:(id<SearchHintsDataSourceDelegate>)delegate;
+@interface SearchHintsDataSource : DataSource
 
 - (void)searchHintsWithTerm:(NSString*)term;
-- (void)clearData;
+
 @end
 
 NS_ASSUME_NONNULL_END

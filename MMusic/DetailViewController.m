@@ -22,7 +22,7 @@
 #import "Resource.h"
 #import "Song.h"
 
-@interface DetailViewController ()<UITableViewDelegate, ResourceDetailDataSourceDelegate>
+@interface DetailViewController ()<UITableViewDelegate, DataSourceDelegate>
 @property(nonatomic, strong) CloseButton *closeButton;
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) MMDetailHeadView *headView;
@@ -44,7 +44,6 @@ static NSString *const reuseIdentifier = @"tableview cell id";
         _headView = [[MMDetailHeadView alloc] initWithFrame:CGRectZero];
         _imageView = _headView.imageView;
         _titleLabel = _headView.label;
-
     }
     return self;
 }
@@ -95,12 +94,8 @@ static NSString *const reuseIdentifier = @"tableview cell id";
 }
 
 #pragma mark dataSourceDelegate
-- (void)configureCell:(SongCell *)cell object:(Song *)song atIndex:(NSUInteger)index{
-    [cell setSong:song withIndex:index];
-//
-//    if ([cell isKindOfClass:[SongCell class]]) {
-//        [((SongCell*)cell) setSong:song withIndex:index];
-//    }
+- (void)configureCell:(SongCell*)cell item:(Song*)item atIndexPath:(NSIndexPath *)indexPath{
+    [cell setSong:item withIndex:indexPath.row];
 }
 
 

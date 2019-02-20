@@ -6,7 +6,7 @@
 //  Copyright © 2018 com.😈. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "BaseViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,12 +18,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)detailViewControllerDidDismiss:(DetailViewController*)detailVC;
 @end
 
-@interface DetailViewController : UIViewController
+@interface DetailViewController : BaseViewController
 
 @property (nonatomic, weak) id<MMDetailViewControllerDelegate> disMissDelegate;
 @property (nonatomic, strong, readonly) UIImageView *imageView;
 @property (nonatomic, strong, readonly) UILabel *titleLabel;
 
+//注入资源,请求列表
 - (instancetype) initWithResource:(Resource*)resource;
 @end
 

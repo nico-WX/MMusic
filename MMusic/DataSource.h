@@ -23,18 +23,25 @@ typedef void(^configureCellBlock)(id cell, id item);
 
 //默认数据源实现都设置为 0
 @interface DataSource : NSObject<UITableViewDataSource,UICollectionViewDataSource>
-
+// init
 @property(nonatomic,weak,readonly) UITableView *tableView;
 @property(nonatomic,weak,readonly) UICollectionView *collectionView;
 @property(nonatomic,weak,readonly) id<DataSourceDelegate> delegate;
-
 @property(nonatomic,copy,readonly) NSString *identifier;
 @property(nonatomic,copy,readonly) NSString *sectionIdentifier;
+
+////数据容器
+//@property(nonatomic,strong,readonly) NSArray *sectionArray;
+//@property(nonatomic,strong,readonly) NSArray *section;
+
 
 /**刷新数据源数据*/
 - (void)reloadDataSource;
 /**清除数据*/
 - (void)clearDataSource;
+
+/**子类辅助配置代理方法,子类内部配置数据时调用*/
+- (void)configureCell:(id)cell item:(id)item atIndexPath:(NSIndexPath*)indexPath;
 
 - (instancetype)initWithTableView:(UITableView*)tableViwe
                        identifier:(NSString*)identifier

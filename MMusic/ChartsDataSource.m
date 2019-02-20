@@ -12,9 +12,6 @@
 #import "Chart.h"
 
 @interface ChartsDataSource ()<UITableViewDataSource>
-@property(nonatomic, weak)id<ChartsDataSourceDelegate> delegate;
-@property(nonatomic, weak)UITableView *tableView;
-@property(nonatomic, copy)NSString *identifier;
 @property(nonatomic,strong)JGProgressHUD *hud;
 //data
 @property(nonatomic, strong) NSArray<Chart*> *charts;
@@ -23,20 +20,14 @@
 
 @implementation ChartsDataSource
 
-- (instancetype)initWithTableView:(UITableView *)tableView
-                  reuseIdentifier:(NSString *)identifier
-                         delegate:(id<ChartsDataSourceDelegate>)delegate{
-    if (self = [super init]) {
-        _tableView = tableView;
-        [tableView setDataSource:self];
-        _identifier = identifier;
-        _delegate = delegate;
+- (instancetype)initWithTableView:(UITableView *)tableViwe identifier:(NSString *)identifier sectionIdentifier:(NSString *)sectionIdentifier delegate:(id<DataSourceDelegate>)delegate{
+    if (self = [super initWithTableView:tableViwe identifier:identifier sectionIdentifier:sectionIdentifier delegate:delegate]) {
 
-        //加载数据
-        [self loadChartsForTableView:tableView];
+        [self loadChartsForTableView:tableViwe];
     }
     return self;
 }
+
 - (void)loadChartsForTableView:(UITableView*)tableView{
 
     [self.hud showInView:tableView animated:YES];
@@ -46,8 +37,8 @@
         [tableView.mj_header endRefreshing];
         if (response.statusCode == 200) {
             NSMutableArray<Chart*> *chartArray = [NSMutableArray array];
-            json = [json valueForKey:@"results"];
 
+            json = [json valueForKey:@"results"];
             [json enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                 //每一个Key 对应数组,如{@"albums":[{Chart},]}
                 NSArray *tempArray = (NSArray*)obj;
@@ -57,6 +48,7 @@
                 }];
             }];
 
+            //解析完成
             self.charts = chartArray;
             [self.hud dismissAnimated:YES];
             [self.hud removeFromSuperview];
@@ -70,8 +62,6 @@
             if (!tableView.mj_header) {
                 tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
                     self.hud.textLabel.text = @"loading...";
-
-                    NSLog(@"thread =%@",[NSThread currentThread]);
                     [self loadChartsForTableView:tableView];
                 }];
             }
@@ -86,9 +76,8 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.identifier];
-    if ([_delegate respondsToSelector:@selector(configureCell:object:)]) {
-        [_delegate configureCell:cell object:[self.charts objectAtIndex:indexPath.row]];
-    }
+    Chart *chart = [self.charts objectAtIndex:indexPath.row];
+    [self configureCell:cell item:chart atIndexPath:indexPath];
     return cell;
 }
 

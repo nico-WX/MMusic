@@ -6,20 +6,12 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-@class Chart;
+
+#import "DataSource.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ChartsDataSourceDelegate <NSObject>
-- (void)configureCell:(UITableViewCell*)cell object:(Chart*)chart;
-@end
-
-@interface ChartsDataSource : NSObject
-
-- (instancetype)initWithTableView:(UITableView*)tableView
-                  reuseIdentifier:(NSString*)identifier
-                         delegate:(id<ChartsDataSourceDelegate>)delegate;
+@interface ChartsDataSource : DataSource
 @end
 
 NS_ASSUME_NONNULL_END

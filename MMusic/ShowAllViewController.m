@@ -16,7 +16,7 @@
 #import "Song.h"
 #import "MPMusicPlayerController+ResourcePlaying.h"
 
-@interface ShowAllViewController ()<UICollectionViewDelegate,ShowAllDataSourceDelegate>
+@interface ShowAllViewController ()<UICollectionViewDelegate,DataSourceDelegate>
 @property(nonatomic,strong) UICollectionViewFlowLayout *flowLayout;
 @property(nonatomic,strong) UICollectionView *collectionView;
 
@@ -88,11 +88,9 @@ static NSString *const identifier = @"cell dientifier";
     }
 }
 
-#pragma mark - ShowAllDataSourceDelegate
--(void)configureCell:(UICollectionViewCell *)cell object:(Resource *)resource{
-    if ([cell isKindOfClass:[ResourceCollectionCell class]]) {
-        [((ResourceCollectionCell*)cell) setResource:resource];
-    }
+#pragma mark - DataSourceDelegate
+- (void)configureCell:(ResourceCollectionCell*)cell item:(Resource*)item{
+    [cell setResource:item];
 }
 
 #pragma mark - setter/getter

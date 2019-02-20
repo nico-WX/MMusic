@@ -6,16 +6,17 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
+#import <JGProgressHUD.h>
 #import "ResourceDetailDataSource.h"
 #import "Song.h"
 
 @interface ResourceDetailDataSource ()<UITableViewDataSource>
 @property(nonatomic,strong) Resource *resource;
-
+@property(nonatomic,strong) JGProgressHUD *hud;
 @end
 
-@implementation ResourceDetailDataSource
 
+@implementation ResourceDetailDataSource
 
 - (instancetype)initWithTableView:(UITableView *)tableView
                        identifier:(NSString *)identifier
@@ -24,39 +25,48 @@
     if (self = [super initWithTableView:tableView identifier:identifier sectionIdentifier:nil delegate:delegate]) {
         _resource = resource;
 
-
-        [self loadDataWithResource:resource completion:^(BOOL success) {
-            if (self.songLists.count == 0) {
-                // 无内容HUD
-                UIAlertAction *action = [UIAlertAction actionWithTitle:@"内容不存在" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                }];
-                UIAlertController *alertController = [[UIAlertController alloc] init];
-                [alertController addAction:action];
-                UIViewController *root = [[UIApplication sharedApplication].keyWindow rootViewController];
-                [root presentViewController:alertController animated:YES completion:^{
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.35 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [alertController dismissViewControllerAnimated:YES completion:nil];
-                    });
-                }];
-            }
-
+        [self loadDataForTableView:tableView withResource:resource completion:^{
             [self.tableView reloadData];
         }];
     }
     return self;
 }
+
+#pragma instance method
 -(void)clearDataSource{
     _songLists = @[];
     [self.tableView reloadData];
 }
 - (void)reloadDataSource{
     _songLists = @[];
-    [self loadDataWithResource:_resource completion:^(BOOL success) {
+    [self loadDataForTableView:self.tableView withResource:self.resource completion:^{
         [self.tableView reloadData];
     }];
 }
 
+# pragma mark - laod data
+- (void)loadDataForTableView:(UITableView*)tableView withResource:(Resource*)resource completion:(void(^)(void))completion{
 
+    [MusicKit.new.catalog songListWithResource:resource completion:^(NSDictionary *json, NSHTTPURLResponse *response) {
+        self->_songLists = [self serializationJSON:json];
+        mainDispatch(^{
+            completion();
+            //无数据显示HUD
+            if (self->_songLists.count == 0) {
+                [self.hud showInView:tableView animated:YES];
+                [self.hud dismissAfterDelay:1.35];
+            }
+        });
+    }];
+}
+- (JGProgressHUD *)hud{
+    if (_hud) {
+        _hud = [JGProgressHUD progressHUDWithStyle:JGProgressHUDStyleExtraLight];
+        _hud.textLabel.text = @"资源存在";
+        _hud.indicatorView = nil;
+    }
+    return _hud;
+}
 - (void)loadDataWithResource:(Resource *)resource completion:(nonnull void (^)(BOOL success))completion{
     [MusicKit.new.catalog songListWithResource:resource completion:^(NSDictionary *json, NSHTTPURLResponse *response) {
         self->_songLists = [self serializationJSON:json];
@@ -69,15 +79,10 @@
 }
 //下一页数据
 - (void)loadNextPageWithComplection:(void (^)(BOOL))completion{
-    if (completion) {
-
-    }
 }
-
 
 /**解析返回的JSON 数据*/
 - (NSArray<Song*>*) serializationJSON:(NSDictionary*)json{
-
     NSMutableArray<Song*> *songList = [NSMutableArray array];
     for (NSDictionary *temp in [json objectForKey:@"data"]) {
         NSArray *tracks = [temp valueForKeyPath:@"relationships.tracks.data"]; // 部分歌曲只有identifier,type,href
@@ -94,16 +99,15 @@
     return songList;
 }
 
+
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.songLists.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.identifier];
-    if ([_delegate respondsToSelector:@selector(configureCell:object:atIndex:)]) {
-        Song *song = [self.songLists objectAtIndex:indexPath.row];
-        [_delegate configureCell:cell object:song atIndex:indexPath.row];
-    }
+    Song *song = [self.songLists objectAtIndex:indexPath.row];
+    [self configureCell:cell item:song atIndexPath:indexPath];
     return cell;
 }
 

@@ -26,10 +26,11 @@
 #import "UIControl+MMActionBlock.h"
 
 
+typedef void(^mainBlock)(void);
 
 // 主线程
 #ifndef mainDispatch
-#define mainDispatch(block) dispatch_async(dispatch_get_main_queue(), block)
+#define mainDispatch(mainBlock) dispatch_async(dispatch_get_main_queue(), mainBlock)
 #endif
 
 //播放器大小

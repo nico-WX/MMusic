@@ -13,43 +13,26 @@
 #import "CoreDataStack.h"
 
 @interface SearchHistoryDataSource ()<UITableViewDataSource>
-@property(nonatomic,weak)UITableView *tableView;
-@property(nonatomic,weak)id<SearchHistoryDataSourceDelegate> delegate;
-@property(nonatomic,copy)NSString *identifier;
-
 @property(nonatomic,strong) NSArray<SearchHistoryManageObject*> *termes;
 @property(nonatomic,strong) id observer;
-
 @end
 
 @implementation SearchHistoryDataSource
 
-- (instancetype)initWithTableView:(UITableView *)tableView
-                       identifier:(NSString *)identifier
-                         delegate:(id<SearchHistoryDataSourceDelegate>)delegate{
-    if (self = [super init]) {
-        _tableView = tableView;
-        _tableView.dataSource = self;
-        _delegate = delegate;
-        _identifier = identifier;
+-(instancetype)initWithTableView:(UITableView *)tableViwe identifier:(NSString *)identifier sectionIdentifier:(NSString *)sectionIdentifier delegate:(id<DataSourceDelegate>)delegate{
+    if (self = [super initWithTableView:tableViwe identifier:identifier sectionIdentifier:nil delegate:delegate]) {
 
+        //加载数据
         [self loadDataWithCompletion:^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                 [tableView reloadData];
-            });
+            [self.tableView reloadData];
         }];
-
-
         //监听上下文改变
        _observer = [[NSNotificationCenter defaultCenter] addObserverForName:NSManagedObjectContextDidSaveNotification
                                                                      object:nil
                                                                       queue:nil
-                                                                 usingBlock:^(NSNotification * _Nonnull note)
-        {
+                                                                 usingBlock:^(NSNotification * _Nonnull note){
             [self loadDataWithCompletion:^{
-                mainDispatch(^{
-                    [tableView reloadData];
-                });
+                    [self.tableView reloadData];
             }];
         }];
 
@@ -74,22 +57,22 @@
     if (_termes == nil) {
         NSLog(@"fetch obje error =%@",_termes);
     }else{
-        completion();
+        if (completion) {
+            mainDispatch(^{
+                completion();
+            });
+        }
     }
 }
-
-
 
 #pragma mark - dataSource
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return  self.termes.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:_identifier];
-    if ([_delegate respondsToSelector:@selector(configureCell:object:)]) {
-        NSString *term = [self.termes objectAtIndex:indexPath.row].term;
-        [_delegate configureCell:cell object:term];
-    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.identifier];
+    NSString *term = [self.termes objectAtIndex:indexPath.row].term;
+    [self configureCell:cell item:term atIndexPath:indexPath];
     return cell;
 }
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{

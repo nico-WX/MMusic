@@ -6,12 +6,12 @@
 //  Copyright © 2019 com.😈. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "BaseViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @class Chart;
 
-@interface ShowAllViewController : UIViewController
+@interface ShowAllViewController : BaseViewController
 
 - (instancetype)initWithChart:(Chart*)chart;
 @end
